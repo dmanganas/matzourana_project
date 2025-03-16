@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ματζουράνα Grill - Ελληνική Κουζίνα</title>
+    <title>Matzourana Grill - Greek Cuisine</title>
     <style>
         body {
             font-family: 'STSong', sans-serif;
@@ -11,7 +11,7 @@
             padding: 0;
             background-color: #f9f9f9;
             color: #333;
-            font-size: 28px
+            font-size: 18px; /* Base font size for desktop */
         }
         header, .about, .contact, footer {
             background-color: #4A5D4A;
@@ -23,6 +23,18 @@
         header img {
             max-width: 150px;
             margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 2.5em; /* Desktop heading size */
+        }
+        h2 {
+            font-size: 2em; /* Desktop heading size */
+        }
+        h3 {
+            font-size: 1.5em; /* Desktop heading size */
+        }
+        p {
+            font-size: 1.1em; /* Desktop paragraph size */
         }
         .language-toggle {
             position: absolute;
@@ -40,6 +52,7 @@
             right: 20px;
             cursor: pointer;
             font-size: 24px;
+            z-index: 2;
         }
         .nav-menu {
             display: none;
@@ -59,6 +72,7 @@
             text-decoration: none;
             display: block;
             padding: 5px 0;
+            font-size: 1.2em; /* Desktop navigation size */
         }
         .section-container {
             display: flex;
@@ -103,6 +117,7 @@
             cursor: pointer;
             margin: 10px 0;
             background-color: transparent;
+            font-size: 1.2em; /* Desktop button size */
         }
         .gallery .image-panel {
             display: grid;
@@ -119,9 +134,88 @@
             flex-direction: column;
             gap: 10px;
         }
+        .contact .text-panel p {
+            margin: 5px 0;
+        }
         .contact .text-panel a {
             color: #ecf0f1;
             text-decoration: underline;
+            font-size: 1.1em; /* Desktop link size */
+        }
+        footer p {
+            font-size: 1.1em; /* Desktop footer size */
+        }
+
+        /* Mobile Responsiveness (max-width: 768px) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; /* Slightly smaller base font for mobile */
+            }
+            h1 {
+                font-size: 2em; /* Reduced heading size */
+            }
+            h2 {
+                font-size: 1.5em; /* Reduced heading size */
+            }
+            h3 {
+                font-size: 1.2em; /* Reduced heading size */
+            }
+            p {
+                font-size: 1em; /* Reduced paragraph size */
+            }
+            .nav-menu {
+                top: 50px;
+                right: 10px;
+                width: 150px; /* Fixed width for mobile menu */
+            }
+            .nav-menu a {
+                font-size: 1em; /* Reduced navigation size */
+            }
+            .hero button, .return-btn {
+                font-size: 1em; /* Reduced button size */
+                padding: 8px 15px;
+            }
+            .contact .text-panel a {
+                font-size: 1em; /* Reduced link size */
+            }
+            footer p {
+                font-size: 1em; /* Reduced footer size */
+            }
+            .section-container {
+                flex-direction: column; /* Stack sections vertically */
+                padding: 10px; /* Reduced padding */
+            }
+            .text-panel, .image-panel {
+                padding: 10px; /* Reduced padding */
+                width: 100%; /* Full width on mobile */
+            }
+            .gallery .image-panel {
+                grid-template-columns: repeat(2, 1fr); /* 2-column grid on mobile */
+            }
+            .menu .image-panel img {
+                max-width: 80%; /* Adjust image size on mobile */
+                margin: 0 auto;
+            }
+            header img {
+                max-width: 120px; /* Smaller logo on mobile */
+            }
+        }
+
+        /* Extra small screens (max-width: 480px) */
+        @media (max-width: 480px) {
+            .gallery .image-panel {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+            }
+            .hamburger {
+                font-size: 20px; /* Slightly smaller hamburger icon */
+            }
+            .language-toggle {
+                top: 15px;
+                left: 10px;
+            }
+            .language-toggle span {
+                font-size: 20px; /* Smaller language toggle icons */
+            }
         }
     </style>
 </head>
