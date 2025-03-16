@@ -216,7 +216,8 @@
         <div class="section-container left-image">
             <div class="image-panel" id="gallery-images">
                 <!-- Images will be added dynamically -->
-                <input type="file" id="gallery-upload" accept="image/png" multiple onchange="addGalleryImages(event)">
+                <!-- Browse button removed -->
+                <!-- <input type="file" id="gallery-upload" accept="image/png" multiple onchange="addGalleryImages(event)"> -->
             </div>
             <div class="text-panel">
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</h2>
@@ -242,6 +243,8 @@
             });
         }
 
+        <!--
+        // Gallery image upload functionality removed
         function addGalleryImages(event) {
             const files = event.target.files;
             const gallery = document.getElementById('gallery-images');
@@ -252,6 +255,7 @@
                 gallery.appendChild(img);
             }
         }
+        -->
 
         <!--
         // Reservation system (commented out)
