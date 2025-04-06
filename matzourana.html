@@ -506,18 +506,31 @@
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
-                grid-template-columns: 1fr;
-                grid-template-rows: repeat(8, auto);
-                gap: 4px;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(2, auto);
+                gap: 8px;
+                min-height: 500px;
+                align-content: center;
             }
             .gallery .image-panel img {
-                max-width: 20%;
-                margin: 0 auto;
+                max-width: 100%;
+                height: auto;
+                object-fit: contain;
+                cursor: pointer;
                 /* Add edge diffuse effect */
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
                 border-radius: 8px; /* Optional: slight rounding for harmony */
-            }
+                min-height: 100px; /* Ensure consistent height */
+                align-content: center; /* Center the grid content */
+                /* Background image for when no images are shown */
+                background-image: url('CoreImages/empty.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: white;
+           }
             .menu .image-panel {
                 gap: 4px;
             }
