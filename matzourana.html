@@ -506,17 +506,23 @@
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
-                grid-template-columns: repeat(4, 1fr);
-                grid-template-rows: repeat(2, auto);
-                gap: 2px;
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(8, auto);
+                gap: 4px;
+                justify-items: center; /* Center images horizontally */
+                padding: 10px; /* Add padding to the grid container */
             }
             .gallery .image-panel img {
-                max-width: 200%;
-                margin: 0 auto;
-                /* Add edge diffuse effect */
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
-                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-                border-radius: 8px; /* Optional: slight rounding for harmony */
+                max-width: 90%; /* Increase size for better visibility */
+                margin: 0; /* Remove margin to let justify-items handle centering */
+            }
+            .gallery .text-panel {
+                padding: 20px; /* Increase padding for better spacing */
+                text-align: center; /* Center text for better alignment */
+            }
+            .gallery .text-panel .return-btn {
+                margin: 20px auto; /* Center the button */
+                display: block; /* Ensure it takes up the full width for centering */
             }
             .menu .image-panel {
                 gap: 4px;
