@@ -84,7 +84,7 @@
             border-radius: 5px;
             z-index: 1;
             max-height: 0;
-            overflow: hidden;≠
+            overflow: hidden;
             transition: max-height 0.3s ease;
             nav-menu
         }
@@ -506,9 +506,10 @@
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
-                grid-template-columns: 1fr;
-                grid-template-rows: repeat(8, auto);
-                gap: 4px;
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on mobile */
+                grid-template-rows: auto; /* Let rows adjust to content */
+                gap: 4px; /* Reduced gap for compactness */
+                min-height: auto; /* Remove fixed height */
                 justify-items: center; /* Center images horizontally */
                 padding: 10px; /* Add padding to the grid container */
             }
