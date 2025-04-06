@@ -208,6 +208,18 @@
         .hero .image-panel, .about .image-panel, .contact .image-panel, .menu .image-panel, .gallery .image-panel {
             background-color: #ecf0f1;
         }
+        
+        .hero .text-panel{
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .hero .image-panel{
+            display: sticky;
+        }
+        
         .image-panel img {
             max-width: 100%;
             max-height: 100%;
@@ -307,7 +319,8 @@
         .about button {
             font-family: 'Montserrat', sans-serif;
             padding: 8px 16px;
-            color: white;
+            //color: white;
+            color: #4A5D4A;
             border: 2px solid white;
             cursor: pointer;
             margin: 8px 0;
@@ -316,8 +329,8 @@
             border-radius: 25px;
         }
         .about button:hover {
-            background-color: white;
-            color: #4A5D4A;
+            background-color: #4A5D4A;
+            color: white;
         }
         .contact .text-panel a {
             color: #ecf0f1;
@@ -447,6 +460,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
             border-radius: 8px; /* Optional: slight rounding for harmony */
+       
         }
         @keyframes zoomIn {
             0% { transform: scale(1); }
