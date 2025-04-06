@@ -506,15 +506,16 @@
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
+                
                 grid-template-columns: repeat(4, 1fr); /* 4 columns on mobile */
                 grid-template-rows: auto; /* Let rows adjust to content */
-                gap: 4px; /* Reduced gap for compactness */
+                gap: 2px; /* Reduced gap for compactness */
                 min-height: auto; /* Remove fixed height */
                 justify-items: center; /* Center images horizontally */
                 padding: 10px; /* Add padding to the grid container */
             }
             .gallery .image-panel img {
-                max-width: 90%; /* Increase size for better visibility */
+                max-width: 300%; /* Increase size for better visibility */
                 margin: 0; /* Remove margin to let justify-items handle centering */
             }
             .gallery .text-panel {
@@ -595,7 +596,7 @@
                 font-size: 0.8em;
             }
             .gallery .image-panel img {
-                max-width: 400%;
+                max-width: 200%;
                 /* Add edge diffuse effect */
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
