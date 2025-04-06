@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matzourana Grill - Greek Cuisine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <style>
+        /* Define CSS variables for easy control of header dimensions */
+        :root {
+            --header-padding: 10px;
+            --header-image-width: 250px;
+            --flag-size: 30px; /* Increased from 22px */
+            --social-logo-size-hero: 60px; /* Increased from 40px */
+            --social-logo-size-footer: 60px; /* Increased from 40px */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e8e1c8 100%);
+            color: #333;
+            font-size: 32px;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #4A5D4A;
+            color: white;
+            padding: var(--header-padding);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        header img {
+            max-width: var(--header-image-width);
+            margin-bottom: 0px;
+            animation: imageFadeIn 2s ease-in forwards;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #4A5D4A;
+        }
+        h1 { font-size: 2.2em; }
+        h2 { font-size: 1.8em; }
+        h3 { font-size: 1.3em; }
+        p { font-size: 1em; line-height: 1.4; }
+        .language-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+        .language-toggle span {
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: var(--flag-size); /* Use CSS variable for flag size */
+        }
+        .hamburger {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 28px;
+            z-index: 2;
+            display: block;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 20px; /* Optional: slight rounding for harmony */
+        }
+        .nav-menu {
+            position: fixed;
+            top: 50px;
+            right: 15px;
+            background-color: #4A5D4A;
+            padding: 8px;
+            border-radius: 5px;
+            z-index: 1;
+            max-height: 0;
+            overflow: hidden;≠
+            transition: max-height 0.3s ease;
+            nav-menu
+        }
+        .nav-menu.active {
+            max-height: 300px;
+        }
+        .nav-menu button {
+            color: white;
+            background: none;
+            border: none;
+            display: block;
+            padding: 4px 0;
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+        .nav-menu button:hover {
+            color: #f4c430;
+        }
+        section {
+            display: none;
+            padding: 20px 10px;
+            min-height: 40vh;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin: 8px auto;
+            max-width: 1400px;
+            
+        }
+        section.active {
+            display: block;
+        }
+        .section-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            align-items: stretch;
+        }
+        .section-container.left-image {
+            flex-direction: row;
+        }
+        .section-container.right-image {
+            flex-direction: row-reverse;
+        }
+        .text-panel {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 500px;
+        }
+        .menu .text-panel {
+            text-align: center;
+            justify-content: flex-start;
+            min-height: 500px;
+        }
+        .menu .text-panel .catalog-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .menu .text-panel .catalog-header img {
+            width: 120px;
+            height: 120px;
+            
+        }
+        .menu .text-panel .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .menu .text-panel .menu-buttons button {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px;
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+            border-radius: 25px;
+        }
+        .menu .text-panel .menu-buttons button:hover,
+        .menu .text-panel .menu-buttons button.active {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .menu .text-panel .menu-content {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        .menu .text-panel .menu-content.active {
+            display: block;
+            opacity: 1;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes imageFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .image-panel {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px; /* Match the text panel height */
+        }
+        .hero .image-panel, .about .image-panel, .contact .image-panel, .menu .image-panel, .gallery .image-panel {
+            background-color: #ecf0f1;
+        }
+        .image-panel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        .about .image-panel img {
+            animation: imageFadeIn 2s ease-in forwards;
+        }
+        #about-image {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        #contact-map {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        .menu .image-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            grid-auto-flow: row; /* Let the grid create rows dynamically */
+            gap: 8px;
+            min-height: 400px; /* Ensure consistent height */
+            align-content: center; /* Center the grid content */
+            /* Background image for when no images are shown */
+            background-image: url('CoreImages/empty.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: white;
+        }
+        .menu .image-panel img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            cursor: pointer;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        .gallery .image-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 8px;
+            min-height: 500px;
+            align-content: center;
+        }
+        .gallery .image-panel img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            cursor: pointer;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+            min-height: 100px; /* Ensure consistent height */
+            align-content: center; /* Center the grid content */
+            /* Background image for when no images are shown */
+            background-image: url('CoreImages/empty.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: white;
+        }
+        .hero button, .return-btn, .menu button, .gallery button, .map-btn {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px; /* Consistent padding for all buttons */
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+            border-radius: 25px;
+            text-decoration: none; /* Remove underline */
+            text-align: center;
+        }
+        
+        .hero button:hover, .return-btn:hover, .menu button:hover, .gallery button:hover, .map-btn:hover {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .about button {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px;
+            color: white;
+            border: 2px solid white;
+            cursor: pointer;
+            margin: 8px 0;
+            background: transparent;
+            font-size: 1.1em;
+            border-radius: 25px;
+        }
+        .about button:hover {
+            background-color: white;
+            color: #4A5D4A;
+        }
+        .contact .text-panel a {
+            color: #ecf0f1;
+            text-decoration: underline;
+            font-size: 1em;
+        }
+        footer {
+            background-color: #4A5D4A;
+            padding: 15px;
+            color: white;
+            border-top: 3px solid #f4c430;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        footer p {
+            font-size: 1em;
+        }
+        footer .social-logos {
+            margin-top: 10px;
+        }
+        footer .social-logos img {
+            width: var(--social-logo-size-footer); /* Use CSS variable */
+            margin: 0 10px;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+            
+        }
+        .hero .social-logos {
+            margin-top: 10px;
+        }
+        .hero .social-logos img {
+            width: var(--social-logo-size-hero); /* Use CSS variable */
+            margin: 0 10px;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        .music-panel {
+            flex: 0 0 200px; /* Fixed width for the music panel */
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .music-panel h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #4A5D4A;
+        }
+        .music-panel button {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px;
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+            border-radius: 25px;
+            margin: 8px 0;
+        }
+        .music-panel button:hover {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .music-player-icon {
+            display: none;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .equalizer {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .bar {
+            width: 6px;
+            height: 18px;
+            background: linear-gradient(#4A5D4A, #f4c430);
+            display: inline-block;
+            animation: equalizer 0.8s infinite ease-in-out;
+        }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes equalizer {
+            0%, 100% { height: 18px; }
+            50% { height: 28px; }
+        }
+        .menu-catalogue table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .menu-catalogue th, .menu-catalogue td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        .menu-catalogue th {
+            background: #ecf0f1;
+            color: #4A5D4A;
+            text-align: left;
+            padding-bottom: 0;
+        }
+        .menu-catalogue td {
+            text-align: left;
+        }
+        .menu-catalogue td:last-child {
+            text-align: right;
+        }
+        .menu-catalogue th:last-child {
+            text-align: right;
+        }
+        #hero-image {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        @keyframes zoomIn {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        .zoom-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .zoom-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        .zoom-overlay img.zoomed {
+            transform: scale(1);
+        }
+        @media (max-width: 768px) {
+            body { font-size: 14px; }
+            h1 { font-size: 1.6em; }
+            h2 { font-size: 1.3em; }
+            h3 { font-size: 1em; }x
+            p { font-size: 0.85em; }
+            .nav-menu {
+                top: 45px;
+                right: 8px;
+                width: 130px;
+            }
+            .nav-menu button {
+                font-size: 0.85em;
+                padding: 2px 0;
+            }
+            .section-container {
+                flex-direction: column;
+                padding: 6px;
+            }
+            .text-panel, .image-panel {
+                padding: 6px;
+                width: 100%;
+                min-height: auto;
+            }
+            .menu .text-panel {
+                min-height: auto;
+            }
+            .menu .image-panel {
+                min-height: auto;
+                grid-template-columns: repeat(2, 1fr);
+                /* Keep grid-auto-flow: row for dynamic rows */
+            }
+            .gallery .image-panel {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(8, auto);
+                gap: 4px;
+            }
+            .gallery .image-panel img {
+                max-width: 70%;
+                margin: 0 auto;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .menu .image-panel {
+                gap: 4px;
+            }
+            .menu .image-panel img {
+                max-width: 70%;
+                margin: 0 auto;
+            }
+            header img {
+                max-width: calc(var(--header-image-width) * 0.6);
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .menu .text-panel .catalog-header img {
+                width: 90px;
+                height: 90px;
+                
+            }
+            .menu .text-panel .menu-buttons button {
+                font-size: 0.85em;
+                padding: 6px 12px;
+            }
+            footer .social-logos img {
+                width: calc(var(--social-logo-size-footer) * 0.75);
+                margin: 0 5px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hero .social-logos img {
+                width: calc(var(--social-logo-size-hero) * 0.75);
+                margin: 0 5px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .music-panel {
+                flex: 1;
+                margin-top: 10px;
+            }
+            .music-panel h3 {
+                font-size: 1em;
+            }
+            .music-panel button {
+                font-size: 0.85em;
+                padding: 6px 12px;
+            }
+            .hamburger {
+                font-size: 24px;
+            }
+            :root {
+                --flag-size: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            body { font-size: 12px; }
+            h1 { font-size: 1.4em; }
+            h2 { font-size: 1.1em; }
+            h3 { font-size: 0.9em; }
+            p { font-size: 0.8em; }
+            .nav-menu {
+                width: 110px;
+            }
+            .nav-menu button {
+                font-size: 0.8em;
+            }
+            .gallery .image-panel img {
+                max-width: 60%;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .menu .image-panel img {
+                max-width: 60%;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            header img {
+                max-width: calc(var(--header-image-width) * 0.35);
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hamburger {
+                font-size: 16px;
+            }
+            .language-toggle {
+                top: 8px;
+                left: 4px;
+            }
+            .language-toggle span {
+                font-size: 16px;
+            }
+            .menu .text-panel .catalog-header img {
+                width: 75px;
+                height: 75px;
+            }
+            .menu .text-panel .menu-buttons button {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+            footer .social-logos img {
+                width: calc(var(--social-logo-size-footer) * 0.5);
+                margin: 0 px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hero .social-logos img {
+                width: calc(var(--social-logo-size-hero) * 0.5);
+                margin: 0 3px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .music-panel h3 {
+                font-size: 0.9em;
+            }
+            .music-panel button {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+            :root {
+                --flag-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="Logos/matzourana-logo.png" alt="Matzourana Grill Logo">
+        <div class="language-toggle">
+            <span onclick="toggleLanguage('el')">🇬🇷</span>
+            <span onclick="toggleLanguage('en')">🇬🇧</span>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+        <div class="nav-menu">
+            <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
+            <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
+            <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
+            <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
+            <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="section-container left-image">
+            <div class="text-panel">
+                <h2 class="lang" data-el="Καλώς ήρθατε <br> στη Ματζουράνα" data-en="Welcome <br> to Matzourana">Καλώς ήρθατε <br> στη Ματζουράνα</h2>
+                <p class="lang" data-el="Η ελληνική κουζίνα <br> στην καλύτερη εκδοχή της!" data-en="Greek cuisine at its best!">Η ελληνική κουζίνα <br> στην καλύτερη εκδοχή της!</p>
+                <p class="lang" data-el="<br><br>Για Online Παραγγελίες:" data-en="<br><br>For Online Orders:">For Online Orders:</p>
+                <div class="social-logos">
+                    <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+                    <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+                    <!--<a href="https://www.instagram.com/matzourana_grill" target="_blank"><img src="Logos/instagramn-logo.png" alt="Instagram"></a>-->
+                    <br><br><br>
+                </div>
+                <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
+            </div>
+            <div class="image-panel">
+                <img id="hero-image" src="CoreImages/hero-image.png" alt="Hero Image">
+            </div>
+            <div class="music-panel">
+                <h3 class="lang" data-el="Ακούστε τα τραγούδια της Ματζουράνας" data-en="Listen to Matzourana's Songs">Listen to Matzourana's Songs</h3>
+                <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
+                <div class="music-player-icon">
+                    <div class="equalizer">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="section-container right-image">
+            <div class="text-panel">
+                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
+                <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+            <div class="image-panel">
+                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="section-container left-image">
+            <div class="image-panel">
+                <img id="contact-map" src="CoreImages/contact-map.png" alt="Map">
+            </div>
+            <div class="text-panel">
+                <h2 class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</h2>
+                <p class="lang" data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Κιν.: 697 1701 113<br>Διανομή καθημερινά: 11:30-19:30<br>Δευτέρα κλειστά" data-en="Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays">Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays</p>
+                <button class="map-btn lang" data-el="Δείτε στον Χάρτη Google" data-en="View on Google Maps" onclick="gotoGoogleMaps()">View on Google Maps</button>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="menu" id="menu">
+        <div class="section-container right-image">
+            <div class="text-panel">
+                <h2 class="lang" data-el="Μενού" data-en="Menu">Menu</h2>
+                <div class="catalog-header">
+                    <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Food Catalog">Food Catalog</h3>
+                    <img src="Logos/food-logo.png" alt="Food Logo">
+                </div>
+                <div class="menu-buttons">
+                    <button onclick="showMenu('appetizers')" class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizers</button>
+                    <button onclick="showMenu('salads')" class="lang" data-el="Σαλάτες" data-en="Salads">Salads</button>
+                    <button onclick="showMenu('potatoes')" class="lang" data-el="Πατάτες" data-en="Potatoes">Potatoes</button>
+                    <button onclick="showMenu('daily-dishes')" class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</button>
+                    <button onclick="showMenu('grilled-dishes')" class="lang" data-el="Ψητά Ημέρας" data-en="Grilled Dishes">Grilled Dishes</button>
+                </div>
+                <div class="menu-content" id="appetizers">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Ορεκτικό" data-en="Appetizer">Appetizer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Ψωμί προζυμένιο με λάδι κ’ ρίγανη" data-en="Sourdough Bread with Oil and Oregano">Sourdough Bread with Oil and Oregano</td><td>€0.80</td></tr>
+                            <tr><td class="lang" data-el="Σκορδαλιά μερίδα" data-en="Garlic Sauce Portion">Garlic Sauce Portion</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Τζατζίκι χειροποίητο" data-en="Homemade Tzatziki">Homemade Tzatziki</td><td>€3.80</td></tr>
+                            <tr><td class="lang" data-el="Κολοκυθοκεφτέδες 5 τμχ." data-en="Zucchini Fritters (5 pcs.)">Zucchini Fritters (5 pcs.)</td><td>€6.00</td></tr>
+                            <tr><td class="lang" data-el="Φέτα ΠΟΠ Ηπείρου με λάδι κ’ ρίγανη" data-en="Epirus PDO Feta with Oil and Oregano">Epirus PDO Feta with Oil and Oregano</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Μπουγιουρντί φέτα με μπούκοβο κ’ ντομάτα" data-en="Bouyourdi Feta with Chili Flakes and Tomato">Bouyourdi Feta with Chili Flakes and Tomato</td><td>€5.50</td></tr>
+                            <tr><td class="lang" data-el="Σαγανάκι κεφαλοτύρι" data-en="Kefalotyri Saganaki">Kefalotyri Saganaki</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Χαλούμι ψητό με μέλι κ’λεμόνι" data-en="Grilled Halloumi with Honey and Lemon">Grilled Halloumi with Honey and Lemon</td><td>€5.80</td></tr>
+                            <tr><td class="lang" data-el="Φάβα Σαντορίνης με μαϊντανό, φρέσκο κρεμμυδάκι κ’ λεμόνι" data-en="Santorini Fava with Parsley, Fresh Onion, and Lemon">Santorini Fava with Parsley, Fresh Onion, and Lemon</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Ντολμαδάκια γιαλατζί χειροποίητα 6 τμχ." data-en="Homemade Stuffed Dolmades (6 pcs.)">Homemade Stuffed Dolmades (6 pcs.)</td><td>€7.00</td></tr>
+                            <tr><td class="lang" data-el="Ψητά Λουκάνικα (κολοκυθάκια – μελιτζάνες – πιπεριές – μανιτάρια)" data-en="Grilled Sausages (Zucchini, Eggplant, Peppers, Mushrooms)">Grilled Sausages (Zucchini, Eggplant, Peppers, Mushrooms)</td><td>€8.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="salads">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Σαλάτα" data-en="Salad">Salad</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Ματζουράνα <br><br> (Mix μαρουλιών, ρόκα, ντοματίνια, αγγούρι, πράσινο μήλο, ραπανάκι, ρόδι, άνηθος, φρέσκο κρεμμύδι, παρμεζάνα, ξύδι βαλσάμικο)" data-en="Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)">Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Χαλούμι <br><br> (Λόλα, ρόκα, ψητό χαλόυμι, αποξηραμένα σύκα, καρύδια, cranberries, σουσάμι, ντοματίνια, ξύδι βαλσάμικο)" data-en="Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)">Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Ντάκος <br><br> Κρητικό παξιμάδι, κριθαροκούλουρο, φέτα ΠΟΠ, τριμμένη ντομάτα, κάπαρη, φρέσκια ρίγανη" data-en="Dakos <br><br> (Cretan rusk, barley bread, PDO feta, grated tomato, capers, fresh oregano)">Dakos <br><br> (Cretan rusk, barley bread, PDO feta, grated tomato, capers, fresh oregano)</td><td>€7.00</td></tr>
+                            <tr><td class="lang" data-el="Χωριάτικη" data-en="Greek Village Salad/ Choriatiki">Greek Village Salad</td><td>€7.50</td></tr>
+                            <tr><td class="lang" data-el="Μαρούλι" data-en="Lettuce Salad">Lettuce Salad</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Λαχανό - Καρότο" data-en="Cabbage and Carrot Salad">Cabbage and Carrot Salad</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Χόρτα" data-en="Boiled Greens">Boiled Greens</td><td>€5.50</td></tr>
+                            <tr><td class="lang" data-el="Παντζάρια" data-en="Beetroot Salad">Beetroot Salad</td><td>€5.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="potatoes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Πατάτες Φρεσκοκομμένες" data-en="Freshly Cut Potatoes">Freshly Cut Potatoes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές" data-en="French Fries">French Fries</td><td>€3.80</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με sauce Ματζουράνα και τριμένο κεφαλοτύρι)" data-en="French Fries <br><br> (with Matzourana sauce and grated kefalotyri cheese)">French Fries with marjoram sauce and grated kefalotyri cheese</td><td>€4.50</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με πεντανόστιμη σπιτική σάλτσα φρέσκου μοσχαρίσιου κιμά, μπέικον και τριμμένη φέτα)" data-en="French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)">French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)</td><td>€6.00</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες στο φούρνο <br><br> (λεμονάτες με φρέσκια ματζουράνα)" data-en="Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)">Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες με σάλτσα" data-en="Potatoes with Sauce">Potatoes with Sauce</td><td>€4.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="daily-dishes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr><td class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Pastitsio</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Μουσακάς" data-en="Moussaka">Moussaka</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Μπριάμ" data-en="Briam">Briam</td><td>€12.00</td></tr>
+                            <tr><th class="lang" data-el="Πιάτα Θαλασσινών" data-en="Seafood Dishes">Seafood Dishes</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr><td class="lang" data-el="Μπακαλιάρος φιλέτο σκορδαλιά" data-en="Cod Fillet with Garlic Sauce">Cod Fillet with Garlic Sauce</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Σαρδέλες λεμονάτες" data-en="Lemon Sardines">Lemon Sardines</td><td>€8.50</td></tr>
+                            <tr><td class="lang" data-el="Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες" data-en="Salted Cod Spetsiota with Potatoes">Salted Cod Spetsiota with Potatoes</td><td>€11.00</td></tr>
+                            <tr><td class="lang" data-el="Γαρίδες ψητές Νο.1 (5 τμχ.)" data-en="Grilled Shrimps No.1 (5 pcs.)">Grilled Shrimps No.1 (5 pcs.)</td><td>€11.00</td></tr>
+                            <tr><td class="lang" data-el="Γαριδομακαρονάδα" data-en="Shrimps Spaghetti">Shrimps Spaghetti</td><td>€13.00</td></tr>
+                            <tr><td class="lang" data-el="Κριθαρώτο με γαρίδες" data-en="Shrimps Orzo">Shrimps Orzo</td><td>€13.00</td></tr>
+                            <tr><td class="lang" data-el="Χταπόδι με κοφτό μακαρονάκι" data-en="Octopus with Short Pasta">Octopus with Short Pasta</td><td>€10.00</td></tr>
+                            <tr><td class="lang" data-el="Τσιπούρα με βραστά λαχανικά" data-en="Gilthead Seabream with Boiled Vegetables">Gilthead Seabream with Boiled Vegetables</td><td>€10.50</td></tr>
+                            <tr><th class="lang" data-el="Σούπες" data-en="Soups">Soups</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr><td class="lang" data-el="Κοτόσουπα" data-en="Chicken Soup">Chicken Soup</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Κρεατόσουπα" data-en="Meat Soup">Meat Soup</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Ψαρόσουπα" data-en="Fish Soup">Fish Soup</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Μαγειρίτσα" data-en="Magiritsa">Magiritsa</td><td>€12.00</td></tr>
+                            <tr><th class="lang" data-el="Γλυκά" data-en="Sweets">Sweets</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr><td class="lang" data-el="Χαλβάς" data-en="Halvas">Halvas</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Cheese Cake" data-en="Cheese Cake">Cheese Cake</td><td>€12.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="grilled-dishes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Ψητά Ημέρας" data-en="Grilled Dish">Grilled Dish</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Φιλέτο Κοτόπουλο" data-en="Chicken Fillet">Chicken Fillet</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Μπιφτέκι Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Patty">Homemade Beef Patty</td><td>€9.50</td></tr>
+                            <tr><td class="lang" data-el="Μπριζόλα Χοιρινή" data-en="Pork Chop">Pork Chop</td><td>€10.00</td></tr>
+                            <tr><td class="lang" data-el="Μπριζολάκια Χοιρινά, χωρίς κόκαλο" data-en="Boneless Pork Chops">Boneless Pork Chops</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Μπριζόλα Μοσχαρίσια, γάλακτος" data-en="Veal Chop">Veal Chop</td><td>€16.50</td></tr>
+                            <tr><td class="lang" data-el="Λουκάνικο Χωριάτικο Χοιρινό" data-en="Village Pork Sausage">Village Pork Sausage</td><td>€7.50</td></tr>
+                            <tr><td class="lang" data-el="Λουκάνικο Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Sausage">Homemade Beef Sausage</td><td>€9.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="catalog-header">
+                    <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks Catalog">Drinks Catalog</h3>
+                    <img src="Logos/drinks-logo.png" alt="Drinks Logo">
+                </div>
+                <div class="menu-buttons">
+                    <button onclick="showMenu('soft-drinks')" class="lang" data-el="Αναψυκτικά" data-en="Soft Drinks">Soft Drinks</button>
+                    <button onclick="showMenu('beers')" class="lang" data-el="Μπύρες" data-en="Beers">Beers</button>
+                    <button onclick="showMenu('wines')" class="lang" data-el="Κρασιά" data-en="Wines">Wines</button>
+                </div>
+                <div class="menu-content" id="soft-drinks">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Αναψυκτικό" data-en="Soft Drink">Soft Drink</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Κόκα Κόλα" data-en="Coca Cola">Coca Cola</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Κόκα Κόλα zero" data-en="Coca Cola zero">Coca Cola zero</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Σόδα" data-en="Soda">Soda</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Sprite" data-en="Sprite">Sprite</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Λουξ Πορτοκαλάδα" data-en="Loux Orange Juice">Loux Orange Juice</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Λουξ Λεμονάδα" data-en="Loux Lemon Juice">Loux Lemon Juice</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Εμφιαλωμένο νερό 1,5lt" data-en="Table Water 1,5lt">Table Water</td><td>€1.20</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="beers">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Μπύρα" data-en="Beer">Beer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Άλφα" data-en="Alpha">Alpha</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Fix" data-en="Fix">Fix</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Amstel" data-en="Amstel">Amstel</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Heineken" data-en="Heineken">Heineken</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Kaiser" data-en="Kaiser">Kaiser</td><td>€4.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="wines">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Κρασί" data-en="Wine">Wine</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Μοσχοφίλερο λευκό/κόκκινο/ροζέ 0,5lt" data-en="Moshofilero white / red / rose Wine 0,5lt">Moshofilero white / red / rose Wine 0,5lt</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Μοσχοφίλερο λευκό/κόκκινο/ροζέ 1,0lt" data-en="Moshofilero white / red / rose Wine 1,0lt">Moshofilero white / red / rose Wine 1,0lt</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Τσίπουρο εμφιαλωμένο 200ml" data-en="Tsipouro 200ml">Tsipouro 200ml</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Ούζο εμφιαλωμένο 200ml" data-en="Ouzo 200ml">Ouzo 200ml</td><td>€9.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+            <div class="image-panel">
+                <img id="menu-img-1" src="DishImages/greek-dish-1.png" alt="Greek Dish 1" onclick="zoomImage('DishImages/greek-dish-1.png')">
+                <img id="menu-img-2" src="DishImages/greek-dish-2.png" alt="Greek Dish 2" onclick="zoomImage('DishImages/greek-dish-2.png')">
+                <img id="menu-img-3" src="DishImages/greek-dish-3.png" alt="Greek Dish 3" onclick="zoomImage('DishImages/greek-dish-3.png')">
+                <img id="menu-img-4" src="DishImages/greek-dish-4.png" alt="Greek Dish 4" onclick="zoomImage('DishImages/greek-dish-4.png')">
+                <img id="menu-img-5" src="DishImages/greek-dish-5.png" alt="Greek Dish 5" onclick="zoomImage('DishImages/greek-dish-5.png')">
+                <img id="menu-img-6" src="DishImages/greek-dish-6.png" alt="Greek Dish 6" onclick="zoomImage('DishImages/greek-dish-6.png')">
+                <img id="menu-img-7" src="DishImages/greek-dish-7.png" alt="Greek Dish 7" onclick="zoomImage('DishImages/greek-dish-7.png')">
+                <img id="menu-img-8" src="DishImages/greek-dish-8.png" alt="Greek Dish 8" onclick="zoomImage('DishImages/greek-dish-8.png')">
+                <img id="menu-img-9" src="DishImages/greek-dish-9.png" alt="Greek Dish 9" onclick="zoomImage('DishImages/greek-dish-9.png')">
+                <img id="menu-img-10" src="DishImages/greek-dish-10.png" alt="Greek Dish 10" onclick="zoomImage('DishImages/greek-dish-10.png')">
+                <img id="menu-img-11" src="DishImages/greek-dish-11.png" alt="Greek Dish 11" onclick="zoomImage('DishImages/greek-dish-11.png')">
+                <img id="menu-img-12" src="DishImages/greek-dish-12.png" alt="Greek Dish 12" onclick="zoomImage('DishImages/greek-dish-12.png')">
+                <img id="menu-img-13" src="DishImages/greek-dish-13.png" alt="Greek Dish 13" onclick="zoomImage('DishImages/greek-dish-13.png')">
+                <img id="menu-img-14" src="DishImages/greek-dish-14.png" alt="Greek Dish 14" onclick="zoomImage('DishImages/greek-dish-14.png')">
+                <img id="menu-img-15" src="DishImages/greek-dish-15.png" alt="Greek Dish 15" onclick="zoomImage('DishImages/greek-dish-15.png')">
+                <img id="menu-img-16" src="DishImages/greek-dish-16.png" alt="Greek Dish 16" onclick="zoomImage('DishImages/greek-dish-16.png')">
+                <img id="menu-img-17" src="DishImages/greek-dish-17.png" alt="Greek Dish 17" onclick="zoomImage('DishImages/greek-dish-17.png')">
+                <img id="menu-img-18" src="DishImages/greek-dish-18.png" alt="Greek Dish 18" onclick="zoomImage('DishImages/greek-dish-18.png')">
+                <img id="menu-img-19" src="DishImages/greek-dish-19.png" alt="Greek Dish 19" onclick="zoomImage('DishImages/greek-dish-19.png')">
+                <img id="menu-img-20" src="DishImages/greek-dish-20.png" alt="Greek Dish 20" onclick="zoomImage('DishImages/greek-dish-20.png')">
+                <img id="menu-img-21" src="DishImages/greek-dish-21.png" alt="Greek Dish 21" onclick="zoomImage('DishImages/greek-dish-21.png')">
+            </div>
+        </div>
+    </section>
+    
+    <section class="gallery" id="gallery">
+        <div class="section-container left-image">
+            <div class="image-panel">
+                <img src="GalleryImages/gallery-1.png" alt="Gallery Image 1" onclick="zoomImage('GalleryImages/gallery-1.png')">
+                <img src="GalleryImages/gallery-2.png" alt="Gallery Image 2" onclick="zoomImage('GalleryImages/gallery-2.png')">
+                <img src="GalleryImages/gallery-3.png" alt="Gallery Image 3" onclick="zoomImage('GalleryImages/gallery-3.png')">
+                <img src="GalleryImages/gallery-4.png" alt="Gallery Image 4" onclick="zoomImage('GalleryImages/gallery-4.png')">
+                <img src="GalleryImages/gallery-5.png" alt="Gallery Image 5" onclick="zoomImage('GalleryImages/gallery-5.png')">
+                <img src="GalleryImages/gallery-6.png" alt="Gallery Image 6" onclick="zoomImage('GalleryImages/gallery-6.png')">
+                <img src="GalleryImages/gallery-7.png" alt="Gallery Image 7" onclick="zoomImage('GalleryImages/gallery-7.png')">
+                <img src="GalleryImages/gallery-8.png" alt="Gallery Image 8" onclick="zoomImage('GalleryImages/gallery-8.png')">
+                <img src="GalleryImages/gallery-9.png" alt="Gallery Image 9" onclick="zoomImage('GalleryImages/gallery-9.png')">
+                <img src="GalleryImages/gallery-10.png" alt="Gallery Image 10" onclick="zoomImage('GalleryImages/gallery-10.png')">
+                <img src="GalleryImages/gallery-11.png" alt="Gallery Image 11" onclick="zoomImage('GalleryImages/gallery-11.png')">
+                <img src="GalleryImages/gallery-12.png" alt="Gallery Image 12" onclick="zoomImage('GalleryImages/gallery-12.png')">
+            </div>
+            <div class="text-panel">
+                <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
+                <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+        </div>
+    </section>
+        
+    <footer>
+        <p class="lang" data-el="© 2025 Matzourana - Όλα τα δικαιώματα διατηρούνται." data-en="© 2025 Matzourana - All rights reserved.">© 2025 Matzourana Grill. All rights reserved.</p>
+        <div class="social-logos">
+            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+            
+        </div>
+    </footer>
+
+    <div class="zoom-overlay" onclick="closeZoom()">
+        <img id="zoomed-image" src="" alt="Zoomed Image">
+    </div>
+
+    <audio id="background-music" loop>
+        <!--<source src="Sounds/eat-them-all.mp3" type="audio/mpeg">-->
+        <source src="Sounds/matzourana-song.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="button-click-sound">
+        <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let currentLang = 'en';
+        let isPlaying = false;
+
+        function toggleLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang').forEach(el => {
+                el.innerHTML = el.getAttribute(`data-${lang}`);
+            });
+            
+            // Update music button text based on language and play state
+            const musicBtn = document.querySelector('.music-btn');
+            if (isPlaying) {
+                musicBtn.innerHTML = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
+            } else {
+                musicBtn.innerHTML = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
+            }
+        }
+
+        function toggleMenu() {
+            playButtonSound();
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            playButtonSound();
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelector(`#${sectionId}`).classList.add('active');
+            
+            // If the menu section is selected, show the "Appetizers" category by default
+            if (sectionId === 'menu') {
+                showMenu('appetizers');
+            }
+            
+            toggleMenu();
+        }
+        
+        function showMenu(menuId) {
+            playButtonSound();
+            // Hide all menu contents and remove active class from buttons
+            document.querySelectorAll('.menu-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.menu-buttons button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show the selected menu content and add active class to the button
+            const selectedContent = document.querySelector(`#${menuId}`);
+            selectedContent.classList.add('active');
+            const selectedButton = document.querySelector(`button[onclick="showMenu('${menuId}')"]`);
+            selectedButton.classList.add('active');
+
+            // Count the number of menu items (rows) in the active category, excluding header rows
+            const tableRows = selectedContent.querySelectorAll('table tr');
+            let menuItemCount = 0;
+            tableRows.forEach(row => {
+                // Exclude header rows (those with <th> elements)
+                if (!row.querySelector('th')) {
+                    menuItemCount++;
+                }
+            });
+
+            // Limit the number of images to the number of menu items, with a maximum of 20 (since there are 20 <img> elements)
+            const maxImages = 20; // Maximum number of images the grid can hold
+            let numImagesToShow = Math.min(menuItemCount, maxImages);
+
+            // Ensure the number of images is even (round down to the nearest even number)
+            numImagesToShow = Math.floor(numImagesToShow / 2) * 2;
+            if (numImagesToShow<6) numImagesToShow=6;
+
+            // List of available images (ensure the paths match the actual file structure)
+            const imageList = [
+                'DishImages/greek-dish-1.png', 'DishImages/greek-dish-2.png', 'DishImages/greek-dish-3.png', 'DishImages/greek-dish-4.png',
+                'DishImages/greek-dish-5.png', 'DishImages/greek-dish-6.png', 'DishImages/greek-dish-7.png', 'DishImages/greek-dish-8.png',
+                'DishImages/greek-dish-9.png', 'DishImages/greek-dish-10.png', 'DishImages/greek-dish-11.png', 'DishImages/greek-dish-12.png',
+                'DishImages/greek-dish-13.png', 'DishImages/greek-dish-14.png', 'DishImages/greek-dish-15.png', 'DishImages/greek-dish-16.png',
+                'DishImages/greek-dish-17.png', 'DishImages/greek-dish-18.png', 'DishImages/greek-dish-19.png', 'DishImages/greek-dish-20.png'
+            ];
+
+            // Shuffle the images and select the required number
+            const shuffledImages = imageList.sort(() => Math.random() - 0.5);
+            const selectedImages = shuffledImages.slice(0, numImagesToShow);
+
+            // Update the images in the image panel, ensuring they fill from the top down
+            const imageElements = document.querySelectorAll('.menu .image-panel img');
+            imageElements.forEach((imgElement, index) => {
+                if (index < numImagesToShow) {
+                    // Assign the image to the slot
+                    const imageName = selectedImages[index];
+                    imgElement.src = imageName;
+                    imgElement.alt = `Greek Dish ${index + 1}`;
+                    imgElement.setAttribute('onclick', `zoomImage('${imageName}')`);
+                    imgElement.style.display = 'block'; // Ensure the image is visible
+                } else {
+                    // Hide the image
+                    imgElement.style.display = 'none';
+                }
+            });
+        }
+
+        function zoomImage(src) {
+            playButtonSound();
+            const overlay = document.querySelector('.zoom-overlay');
+            const zoomedImage = document.querySelector('#zoomed-image');
+            zoomedImage.src = src;
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                zoomedImage.classList.add('zoomed');
+            }, 50);
+        }
+
+        function closeZoom() {
+            playButtonSound();
+            const overlay = document.querySelector('.zoom-overlay');
+            const zoomedImage = document.querySelector('#zoomed-image');
+            zoomedImage.classList.remove('zoomed');
+            overlay.style.display = 'none';
+        }
+
+        function toggleMusic() {
+            playButtonSound();
+            const music = document.getElementById('background-music');
+            const musicBtn = document.querySelector('.music-btn');
+            const musicIcon = document.querySelector('.music-player-icon');
+            if (isPlaying) {
+                music.pause();
+                musicBtn.textContent = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
+                musicIcon.style.display = 'none';
+            } else {
+                music.play();
+                musicBtn.textContent = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
+                musicIcon.style.display = 'block';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function playButtonSound() {
+            const sound = document.getElementById('button-click-sound');
+            sound.currentTime = 0; // Reset to start
+            sound.play();
+        }
+        
+        function gotoGoogleMaps() {
+            // Define the specific Google Maps URL (e.g., for a specific location)
+            var googleMapsURL = "https://www.google.com/maps/place/Dimosthenous+48,+Kallithea+176+74,+Greece";
+    
+            // Redirect to the Google Maps page
+            window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('home');
+            toggleLanguage('el');
+            // Ensure "Appetizers" is shown by default when the page loads
+            // showSection('menu');
+        });
+    </script>
+    
+</body>
+</html>
