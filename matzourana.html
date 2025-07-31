@@ -131,7 +131,7 @@
             flex-direction: row-reverse;
         }
         .text-panel {
-            flex: 1;
+            flex: 0.8;
             padding: 10px;
             display: flex;
             flex-direction: column;
@@ -414,9 +414,9 @@
             border: 2px solid #4A5D4A;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.8);
-            font-size: 1em;
+            font-size: 0.8em;
             border-radius: 25px;
-            margin: 8px 0;
+            margin: 12px 0;
         }
         .music-panel button:hover {
             background-color: #4A5D4A;
@@ -512,47 +512,53 @@
             h3 { font-size: 1em; }
             p { font-size: 0.85em; }
             .nav-menu {
-                top: 45px;
+                top: 5px;
                 right: 8px;
                 width: 130px;
             }
             .nav-menu button {
                 font-size: 0.85em;
-                padding: 2px 0;
+                padding: 3px 0;
             }
             .section-container {
                 flex-direction: column;
                 padding: 6px;
             }
             .text-panel, .image-panel {
-                padding: 6px;
+                padding: 2px;
                 width: 100%;
                 min-height: auto;
             }
+            .hamburger {
+                font-size: 18px;
+            }
             .menu .text-panel {
                 min-height: auto;
+                font-size: 1.0rem
             }
             .menu .image-panel {
                 min-height: auto;
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(1, 1fr);
+                padding: 1px
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
                 object-fit: contain;
                 grid-template-columns: repeat(4, 1fr); /* 4 columns on mobile */
                 grid-template-rows: auto; /* Let rows adjust to content */
-                gap: 3px; /* Reduced gap for compactness */
+                gap: 5px; /* Reduced gap for compactness */
                 min-height: auto; /* Remove fixed height */
                 justify-items: center; /* Center images horizontally */
-                padding: 10px; /* Add padding to the grid container */
+                padding: 20px; /* Add padding to the grid container */
             }
             .gallery .image-panel img {
                 max-width: 100%; /* Increase size for better visibility */
-                margin: 0; /* Remove margin to let justify-items handle centering */
+                margin: 2; /* Remove margin to let justify-items handle centering */
             }
             .gallery .text-panel {
                 padding: 20px; /* Increase padding for better spacing */
                 text-align: center; /* Center text for better alignment */
+                font-size:1.24em ;
             }
             .gallery .text-panel .return-btn {
                 margin: 20px auto; /* Center the button */
@@ -654,8 +660,21 @@
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
             .hamburger {
-                font-size: 16px;
+                font-size: 18px;
             }
+            .hamburger {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 28px;
+            z-index: 2;
+            display: block;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 20px; /* Optional: slight rounding for harmony */
+        }
             .language-toggle {
                 top: 8px;
                 left: 4px;
