@@ -299,22 +299,22 @@
             align-content: center;
         }
         .gallery .image-panel img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
             cursor: pointer;
-            /* Add edge diffuse effect */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
-            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-            border-radius: 8px; /* Optional: slight rounding for harmony */
-            min-height: 100px; /* Ensure consistent height */
-            align-content: center; /* Center the grid content */
-            /* Background image for when no images are shown */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+            border-radius: 8px;
             background-image: url('CoreImages/empty.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-color: white;
+        }
+        .gallery .image-panel img:hover {
+           transform: scale(1.03);
+           transition: transform 0.2s ease-in-out;
         }
         .hero button, .return-btn, .menu button, .gallery button, .map-btn {
             font-family: 'Montserrat', sans-serif;
@@ -543,18 +543,25 @@
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
             .gallery .image-panel {
-                object-fit: contain;
-                grid-template-columns: repeat(4, 1fr); /* 4 columns on mobile */
-                grid-template-rows: auto; /* Let rows adjust to content */
-                gap: 5px; /* Reduced gap for compactness */
-                min-height: auto; /* Remove fixed height */
-                justify-items: center; /* Center images horizontally */
-                padding: 20px; /* Add padding to the grid container */
+              display: grid;
+              grid-template-columns: repeat(2, 1fr); /* fixed 4 columns */
+              gap: 6px;
+              padding: 8px;
+              justify-items: center;
+              align-items: center;
             }
+
             .gallery .image-panel img {
-                max-width: 100%; /* Increase size for better visibility */
-                margin: 2; /* Remove margin to let justify-items handle centering */
+              width: 100%;
+              aspect-ratio: 4 / 3;
+              object-fit: cover;
+              border-radius: 6px;
+              box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+              filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.15));
+              background-color: white;
+              display: block;
             }
+
             .gallery .text-panel {
                 padding: 20px; /* Increase padding for better spacing */
                 text-align: center; /* Center text for better alignment */
@@ -973,26 +980,26 @@
     <section class="gallery" id="gallery">
         <div class="section-container left-image">
             <div class="image-panel">
-                <img src="GalleryImages/gallery-1.png" alt="Gallery Image 1" onclick="zoomImage('GalleryImages/gallery-1.png')">
-                <img src="GalleryImages/gallery-2.png" alt="Gallery Image 2" onclick="zoomImage('GalleryImages/gallery-2.png')">
-                <img src="GalleryImages/gallery-3.png" alt="Gallery Image 3" onclick="zoomImage('GalleryImages/gallery-3.png')">
-                <img src="GalleryImages/gallery-4.png" alt="Gallery Image 4" onclick="zoomImage('GalleryImages/gallery-4.png')">
-                <img src="GalleryImages/gallery-5.png" alt="Gallery Image 5" onclick="zoomImage('GalleryImages/gallery-5.png')">
-                <img src="GalleryImages/gallery-6.png" alt="Gallery Image 6" onclick="zoomImage('GalleryImages/gallery-6.png')">
-                <img src="GalleryImages/gallery-7.png" alt="Gallery Image 7" onclick="zoomImage('GalleryImages/gallery-7.png')">
-                <img src="GalleryImages/gallery-8.png" alt="Gallery Image 8" onclick="zoomImage('GalleryImages/gallery-8.png')">
-                <img src="GalleryImages/gallery-9.png" alt="Gallery Image 9" onclick="zoomImage('GalleryImages/gallery-9.png')">
-                <img src="GalleryImages/gallery-10.png" alt="Gallery Image 10" onclick="zoomImage('GalleryImages/gallery-10.png')">
-                <img src="GalleryImages/gallery-11.png" alt="Gallery Image 11" onclick="zoomImage('GalleryImages/gallery-11.png')">
-                <img src="GalleryImages/gallery-12.png" alt="Gallery Image 12" onclick="zoomImage('GalleryImages/gallery-12.png')">
-                <img src="GalleryImages/gallery-13.png" alt="Gallery Image 13" onclick="zoomImage('GalleryImages/gallery-13.png')">
-                <img src="GalleryImages/gallery-14.png" alt="Gallery Image 14" onclick="zoomImage('GalleryImages/gallery-14.png')">
-                <img src="GalleryImages/gallery-15.png" alt="Gallery Image 15" onclick="zoomImage('GalleryImages/gallery-15.png')">
-                <img src="GalleryImages/gallery-16.png" alt="Gallery Image 16" onclick="zoomImage('GalleryImages/gallery-16.png')">
-                <img src="GalleryImages/gallery-17.png" alt="Gallery Image 17" onclick="zoomImage('GalleryImages/gallery-17.png')">
-                <img src="GalleryImages/gallery-18.png" alt="Gallery Image 18" onclick="zoomImage('GalleryImages/gallery-18.png')">
-                <img src="GalleryImages/gallery-19.png" alt="Gallery Image 19" onclick="zoomImage('GalleryImages/gallery-19.png')">
-                <img src="GalleryImages/gallery-20.png" alt="Gallery Image 20" onclick="zoomImage('GalleryImages/gallery-20.png')">
+                <img src="GalleryImages/gallery-1.png" alt="Gallery Image 1" onclick="zoomImage('GalleryImages/gallery-1.png')" loading="lazy">
+                <img src="GalleryImages/gallery-2.png" alt="Gallery Image 2" onclick="zoomImage('GalleryImages/gallery-2.png')" loading="lazy">
+                <img src="GalleryImages/gallery-3.png" alt="Gallery Image 3" onclick="zoomImage('GalleryImages/gallery-3.png')" loading="lazy">
+                <img src="GalleryImages/gallery-4.png" alt="Gallery Image 4" onclick="zoomImage('GalleryImages/gallery-4.png')" loading="lazy">
+                <img src="GalleryImages/gallery-5.png" alt="Gallery Image 5" onclick="zoomImage('GalleryImages/gallery-5.png')" loading="lazy">
+                <img src="GalleryImages/gallery-6.png" alt="Gallery Image 6" onclick="zoomImage('GalleryImages/gallery-6.png')" loading="lazy">
+                <img src="GalleryImages/gallery-7.png" alt="Gallery Image 7" onclick="zoomImage('GalleryImages/gallery-7.png')" loading="lazy">
+                <img src="GalleryImages/gallery-8.png" alt="Gallery Image 8" onclick="zoomImage('GalleryImages/gallery-8.png')" loading="lazy">
+                <img src="GalleryImages/gallery-9.png" alt="Gallery Image 9" onclick="zoomImage('GalleryImages/gallery-9.png')" loading="lazy">
+                <img src="GalleryImages/gallery-10.png" alt="Gallery Image 10" onclick="zoomImage('GalleryImages/gallery-10.png')" loading="lazy">
+                <img src="GalleryImages/gallery-11.png" alt="Gallery Image 11" onclick="zoomImage('GalleryImages/gallery-11.png')" loading="lazy">
+                <img src="GalleryImages/gallery-12.png" alt="Gallery Image 12" onclick="zoomImage('GalleryImages/gallery-12.png')" loading="lazy">
+                <img src="GalleryImages/gallery-13.png" alt="Gallery Image 13" onclick="zoomImage('GalleryImages/gallery-13.png')" loading="lazy">
+                <img src="GalleryImages/gallery-14.png" alt="Gallery Image 14" onclick="zoomImage('GalleryImages/gallery-14.png')" loading="lazy">
+                <img src="GalleryImages/gallery-15.png" alt="Gallery Image 15" onclick="zoomImage('GalleryImages/gallery-15.png')" loading="lazy">
+                <img src="GalleryImages/gallery-16.png" alt="Gallery Image 16" onclick="zoomImage('GalleryImages/gallery-16.png')" loading="lazy">
+                <img src="GalleryImages/gallery-17.png" alt="Gallery Image 17" onclick="zoomImage('GalleryImages/gallery-17.png')" loading="lazy">
+                <img src="GalleryImages/gallery-18.png" alt="Gallery Image 18" onclick="zoomImage('GalleryImages/gallery-18.png')" loading="lazy">
+                <img src="GalleryImages/gallery-19.png" alt="Gallery Image 19" onclick="zoomImage('GalleryImages/gallery-19.png')" loading="lazy">
+                <img src="GalleryImages/gallery-20.png" alt="Gallery Image 20" onclick="zoomImage('GalleryImages/gallery-20.png')" loading="lazy">
             </div>
             <div class="text-panel">
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
