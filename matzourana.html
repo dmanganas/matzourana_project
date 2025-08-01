@@ -508,6 +508,17 @@
         .zoom-overlay img.zoomed {
             transform: scale(1);
         }
+
+        .logo-img {
+            max-width: var(--header-image-width);
+            margin-bottom: 0px;
+            animation: imageFadeIn 2s ease-in forwards;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+
         @media (max-width: 768px) {
             body { font-size: 14px; }
             h1 { font-size: 1.6em; }
@@ -515,13 +526,19 @@
             h3 { font-size: 1em; }
             p { font-size: 0.85em; }
             .nav-menu {
-                top: 5px;
+                top: 10px;
                 right: 8px;
                 width: 130px;
             }
+            
             .nav-menu button {
                 font-size: 0.85em;
-                padding: 3px 0;
+                padding: 5.5px 0;
+                display: block;
+                width: 100%;
+                border: none;
+                background: none;
+                text-align: left;
             }
             .section-container {
                 flex-direction: column;
@@ -779,6 +796,12 @@
                             <span class="bar"></span>
                         </div>
                     </div>
+                    <p id="music-info" class="lang" 
+                       data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
+                       data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
+                       style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
+                       Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
+                    </p>
                 </div>
             </div>
         </div>
@@ -817,7 +840,7 @@
                 <h2 class="lang" data-el="Μενού" data-en="Menu">Menu</h2>
                 <div class="catalog-header">
                     <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Food Catalog">Food Catalog</h3>
-                    <img src="Logos/food-logo.png" alt="Food Logo">
+                    <img src="Logos/food-logo.png" alt="Food Logo", class="logo-img">
                 </div>
                 <div class="menu-buttons">
                     <button onclick="showMenu('appetizers')" class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizers</button>
@@ -949,7 +972,7 @@
                 </div>
                 <div class="catalog-header">
                     <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks Catalog">Drinks Catalog</h3>
-                    <img src="Logos/drinks-logo.png" alt="Drinks Logo">
+                    <img src="Logos/drinks-logo.png" alt="Drinks Logo", class="logo-img">
                 </div>
                 <div class="menu-buttons">
                     <button onclick="showMenu('soft-drinks')" class="lang" data-el="Αναψυκτικά" data-en="Soft Drinks">Soft Drinks</button>
@@ -1189,16 +1212,22 @@
             const music = document.getElementById('background-music');
             const musicBtn = document.querySelector('.music-btn');
             const musicIcon = document.querySelector('.music-player-icon');
+            const info = document.getElementById('music-info');
+
             if (isPlaying) {
                 music.pause();
                 musicBtn.textContent = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
                 musicIcon.style.display = 'none';
+                info.style.display = 'none';
             } else {
                 music.play();
                 musicBtn.textContent = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
                 musicIcon.style.display = 'block';
+                
+                info.style.display = 'block';
             }
             isPlaying = !isPlaying;
+            
         }
 
         function playButtonSound() {
