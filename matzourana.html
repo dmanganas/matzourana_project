@@ -316,7 +316,7 @@
            transform: scale(1.03);
            transition: transform 0.2s ease-in-out;
         }
-        .hero button, .return-btn, .menu button, .gallery button, .map-btn {
+        .hero button, .about button, .return-btn, .menu button, .gallery button, .map-btn {
             font-family: 'Montserrat', sans-serif;
             padding: 8px 16px; /* Consistent padding for all buttons */
             color: #4A5D4A;
@@ -334,27 +334,30 @@
             background-color: #4A5D4A;
             color: white;
         }
-        .about button {
+        .about .return-btn {
             font-family: 'Montserrat', sans-serif;
             padding: 8px 16px;
-            //color: white;
+            
             color: #4A5D4A;
-            border: 2px solid white;
+            border: 2px solid  #4A5D4A;
             cursor: pointer;
             margin: 8px 0;
             background: transparent;
             font-size: 1.1em;
             border-radius: 25px;
         }
-        .about button:hover {
+        .about .return-btn:hover {
             background-color: #4A5D4A;
             color: white;
         }
+
+         
         .contact .text-panel a {
             color: #ecf0f1;
             text-decoration: underline;
             font-size: 1em;
         }
+        
         footer {
             background-color: #4A5D4A;
             padding: 15px;
@@ -542,6 +545,12 @@
                 padding: 1px
                 /* Keep grid-auto-flow: row for dynamic rows */
             }
+            .contact .text-panel {
+                padding: 10px;
+            }
+            .about .text-panel {
+                padding: 10px;
+            }
             .gallery .image-panel {
               display: grid;
               grid-template-columns: repeat(2, 1fr); /* fixed 4 columns */
@@ -645,6 +654,7 @@
             .nav-menu button {
                 font-size: 0.8em;
             }
+            
             .gallery .image-panel img {
                 max-width: 200%;
                 /* Add edge diffuse effect */
