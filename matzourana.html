@@ -786,23 +786,49 @@
             </div>
             <div class="image-panel">
                 <img id="hero-image" src="CoreImages/hero-image.png" alt="Hero Image" style="max-width: 100%; margin-bottom: 20px;">
-                <div class="music-panel">
-                    <h3 class="lang" data-el="Ακούστε το τραγούδι της Ματζουράνας" data-en="Listen to Matzourana's Song">Listen to Matzourana's Songs</h3>
-                    <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
-                    <div class="music-player-icon">
+                <div id="dynamic-panel"></div>
+
+                <script>
+                const load_music_menu = false; // Set to true if you want to show the music panel
+                const dynamicPanel = document.getElementById('dynamic-panel');
+
+                if (load_music_menu) {
+                    dynamicPanel.innerHTML = `
+                    <div class="music-panel">
+                        <h3 class="lang" data-el="Ακούστε το τραγούδι της Ματζουράνας" data-en="Listen to Matzourana's Song">Listen to Matzourana's Songs</h3>
+                        <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
+                        <div class="music-player-icon">
                         <div class="equalizer">
                             <span class="bar"></span>
                             <span class="bar"></span>
                             <span class="bar"></span>
                         </div>
+                        </div>
+                        <p id="music-info" class="lang" 
+                          data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
+                          data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
+                          style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
+                          Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
+                        </p>
                     </div>
-                    <p id="music-info" class="lang" 
-                       data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
-                       data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
-                       style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
-                       Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
-                    </p>
-                </div>
+                    `;
+                } else {
+                    dynamicPanel.innerHTML = `
+                    <div class="contact-panel">
+                        <img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">
+                        <p class="lang" 
+                          data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Κιν.: 697 1701 113<br>Διανομή καθημερινά: 11:30-19:30<br>Δευτέρα κλειστά" 
+                          data-en="Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays">
+                          Dimosthenous 48, Kallithea<br>
+                          Tel: 210 9577 846<br>
+                          Mobile: 697 1701 113<br>
+                          Daily Delivery: 11:30–19:30<br>
+                          Closed on Mondays
+                        </p>
+                    </div>
+                    `;
+                }
+                </script>
             </div>
         </div>
     </section>
