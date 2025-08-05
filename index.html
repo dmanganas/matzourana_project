@@ -532,6 +532,7 @@
         .logo-img {
           max-width: var(--header-image-width);
           height: auto; /* <-- maintain aspect ratio */
+          width: auto;
           margin-bottom: 0px;
           animation: imageFadeIn 2s ease-in forwards;
 
@@ -910,7 +911,7 @@
                 <div class="menu-content" id="appetizers">
                     <div class="menu-catalogue">
                         <table>
-                            <tr><th class="lang" data-el="Ορεκτικό" data-en="Appetizers">Appetizer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><th class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
                             <tr><td class="lang" data-el="Ψωμί προζυμένιο με λάδι κ’ ρίγανη" data-en="Sourdough Bread with Oil and Oregano">Sourdough Bread with Oil and Oregano</td><td>€0.80</td></tr>
                             <!--<tr><td class="lang" data-el="Σκορδαλιά μερίδα" data-en="Garlic Sauce">Garlic Sauce Portion</td><td>€3.50</td></tr>-->
                             <tr><td class="lang" data-el="Τζατζίκι χειροποίητο" data-en="Homemade Tzatziki">Homemade Tzatziki</td><td>€4.00</td></tr>
@@ -929,10 +930,10 @@
                 <div class="menu-content" id="salads">
                     <div class="menu-catalogue">
                         <table>
-                            <tr><th class="lang" data-el="Σαλάτα" data-en="Salad">Salad</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><th class="lang" data-el="Σαλάτες" data-en="Salads">Salad</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
                             <tr><td class="lang" data-el="Ματζουράνα <br><br> (Mix μαρουλιών, ρόκα, ντοματίνια, αγγούρι, πράσινο μήλο, ραπανάκι, ρόδι, άνηθος, φρέσκο κρεμμύδι, παρμεζάνα, ξύδι βαλσάμικο)" data-en="Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)">Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)</td><td>€8.00</td></tr>
                             <tr><td class="lang" data-el="Χαλούμι <br><br> (Λόλα, ρόκα, ψητό χαλόυμι, αποξηραμένα σύκα, καρύδια, cranberries, σουσάμι, ντοματίνια, ξύδι βαλσάμικο)" data-en="Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)">Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)</td><td>€8.00</td></tr>
-                            <tr><td class="lang" data-el="Ντάκος <br><br> Κριθαροκούλουρο, φέτα ΠΟΠ, τριμμένη ντομάτα, κάπαρη, φρέσκια ρίγανη" data-en="Dakos <br><br> (Cretan rusk, PDO feta, grated tomato, capers, fresh oregano)">Dakos <br><br> (Cretan rusk, barley bread, PDO feta, grated tomato, capers, fresh oregano)</td><td>€7.80</td></tr>
+                            <tr><td class="lang" data-el="Ντάκος <br><br> (Κριθαροκούλουρο, φέτα ΠΟΠ, τριμμένη ντομάτα, κάπαρη, φρέσκια ρίγανη)" data-en="Dakos <br><br> (Cretan rusk, PDO feta, grated tomato, capers, fresh oregano)">Dakos <br><br> (Cretan rusk, barley bread, PDO feta, grated tomato, capers, fresh oregano)</td><td>€7.80</td></tr>
                             <tr><td class="lang" data-el="Χωριάτικη" data-en="Greek Village Salad/ Choriatiki">Greek Village Salad</td><td>€7.50</td></tr>
                             <tr><td class="lang" data-el="Μαρούλι" data-en="Lettuce Salad">Lettuce Salad</td><td>€5.00</td></tr>
                             <tr><td class="lang" data-el="Λαχανό - Καρότο" data-en="Cabbage and Carrot Salad">Cabbage and Carrot Salad</td><td>€5.00</td></tr>
@@ -947,9 +948,9 @@
                             <tr><th class="lang" data-el="Πατάτες Φρεσκοκομμένες" data-en="Freshly Cut Potatoes">Freshly Cut Potatoes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
                             <tr><td class="lang" data-el="Πατάτες τηγανητές" data-en="French Fries">French Fries</td><td>€4.00</td></tr>
                             <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με sauce Ματζουράνα και τριμένο κεφαλοτύρι)" data-en="French Fries <br><br> (with Matzourana sauce and grated kefalotyri cheese)">French Fries with marjoram sauce and grated kefalotyri cheese</td><td>€4.50</td></tr>
-                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με πεντανόστιμη σπιτική σάλτσα φρέσκου μοσχαρίσιου κιμά, μπέικον και τριμμένη φέτα)" data-en="French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)">French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)</td><td>€6.00</td></tr>
-                            <tr><td class="lang" data-el="Πατάτες στο φούρνο <br><br> (λεμονάτες με φρέσκια ματζουράνα)" data-en="Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)">Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)</td><td>€4.00</td></tr>
-                            <tr><td class="lang" data-el="Πατάτες με σάλτσα" data-en="Potatoes with Sauce">Potatoes with Sauce</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με πεντανόστιμη σπιτική σάλτσα φρέσκου μοσχαρίσιου κιμά)" data-en="French Fries <br><br> (with delicious homemade sauce of fresh ground beef)">French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)</td><td>€6.50</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες στο φούρνο <br><br> (λεμονάτες με φρέσκια ματζουράνα)" data-en="Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)">Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)</td><td>€4.50</td></tr>
+                            <!--<tr><td class="lang" data-el="Πατάτες με σάλτσα" data-en="Potatoes with Sauce">Potatoes with Sauce</td><td>€4.00</td></tr>-->
                         </table>
                     </div>
                 </div>
@@ -1019,13 +1020,13 @@
                     <div class="menu-catalogue">
                         <table>
                             <tr><th class="lang" data-el="Ψητά Ημέρας" data-en="Grilled Dish">Grilled Dish</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
-                            <tr><td class="lang" data-el="Φιλέτο Κοτόπουλο" data-en="Chicken Fillet">Chicken Fillet</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Φιλέτο Κοτόπουλο" data-en="Chicken Fillet">Chicken Fillet</td><td>€9.50</td></tr>
                             <tr><td class="lang" data-el="Μπιφτέκι Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Patty">Homemade Beef Patty</td><td>€9.50</td></tr>
-                            <tr><td class="lang" data-el="Μπριζόλα Χοιρινή" data-en="Pork Chop">Pork Chop</td><td>€10.00</td></tr>
+                            <tr><td class="lang" data-el="Μπριζόλα Χοιρινή" data-en="Pork Chop">Pork Chop</td><td>€9.80</td></tr>
                             <tr><td class="lang" data-el="Μπριζολάκια Χοιρινά, χωρίς κόκαλο" data-en="Boneless Pork Chops">Boneless Pork Chops</td><td>€9.00</td></tr>
-                            <tr><td class="lang" data-el="Μπριζόλα Μοσχαρίσια, γάλακτος" data-en="Veal Chop">Veal Chop</td><td>€16.50</td></tr>
+                            <!--<tr><td class="lang" data-el="Μπριζόλα Μοσχαρίσια, γάλακτος" data-en="Veal Chop">Veal Chop</td><td>€16.50</td></tr>-->
                             <tr><td class="lang" data-el="Λουκάνικο Χωριάτικο Χοιρινό" data-en="Village Pork Sausage">Village Pork Sausage</td><td>€7.50</td></tr>
-                            <tr><td class="lang" data-el="Λουκάνικο Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Sausage">Homemade Beef Sausage</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Λουκάνικο Μοσχαρίσιο Χειροποίητο" data-en="Handmade Beef Sausage">Handmade Beef Sausage</td><td>€9.50</td></tr>
                         </table>
                     </div>
                 </div>
