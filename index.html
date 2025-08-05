@@ -90,7 +90,6 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            display: none !important;
         }
 
         /* Show when active */
@@ -788,13 +787,13 @@
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu">
+        <div class="nav-menu hide-on-load">
             <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
             <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
             <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
             <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
             <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
-        </div>
+        <div class="nav-menu hide-on-load">
     </header>
 
     <section class="hero" id="home">
@@ -1171,6 +1170,10 @@
         function toggleMenu() {
             playButtonSound();
             const navMenu = document.querySelector('.nav-menu');
+            // Remove the hide-on-load class the first time toggle is used
+            if (navMenu.classList.contains('hide-on-load')) {
+                navMenu.classList.remove('hide-on-load');
+            }
             navMenu.classList.toggle('active');
         }
 
