@@ -65,10 +65,10 @@
         .hamburger {
             position: fixed;
             top: 15px;
-            right: 15px;
+            right: 25px;
             cursor: pointer;
-            font-size: 28px;
-            z-index: 20;
+            font-size: 48px;
+            z-index: 3;
             display: block;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
@@ -78,18 +78,22 @@
         /* Hide initially */
         .nav-menu {
             position: fixed;
-            top: 50px;
-            right: 15px;
+            top: 15px;
+            right: 60px;
             background-color: #4A5D4A;
             padding: 8px;
             border-radius: 5px;
-            z-index: 10;
+            z-index: 2;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
+            width: auto;
+            min-width: 100px;
+            max-width: 10vw;
+            padding: 10px;
         }
 
         /* Show when active */
@@ -117,8 +121,8 @@
             color: #f4c430;
         }
 
-        .nav-menu.hide-on-load {
-            display: none !important;
+        .hide-on-load {
+            display: none;
         }
 
         section {
@@ -544,22 +548,25 @@
             h2 { font-size: 1.3em; }
             h3 { font-size: 1em; }
             p { font-size: 0.85em; }
+            
             .nav-menu {
-                top: 10px;
-                right: 8px;
-                width: 130px;
+                top: 15px;
+                right: 40px;
+                width: 5px;
             }
             
             .nav-menu button {
                 font-size: 0.85em;
-                padding: 1.5px 0;
-                z-index: 9999; 
-                position: relative;
+                padding: 1.5px 1;
+                z-index: 3; 
                 display: block;
                 width: 100%;
                 border: none;
                 background: none;
                 text-align: left;
+                width: auto;
+                min-width: 100px;
+                max-width: 200px;
             }
             .section-container {
                 flex-direction: column;
@@ -728,7 +735,7 @@
             /* Add edge diffuse effect */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-            border-radius: 20px; /* Optional: slight rounding for harmony */
+            border-radius: 10px; /* Optional: slight rounding for harmony */
         }
             .language-toggle {
                 top: 8px;
@@ -787,13 +794,13 @@
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu hide-on-load">
+        <div class="nav-menu active">
             <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
             <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
             <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
             <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
             <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
-        <div class="nav-menu hide-on-load">
+        </div>
     </header>
 
     <section class="hero" id="home">
