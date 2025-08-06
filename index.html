@@ -507,6 +507,25 @@
             border-radius: 8px; /* Optional: slight rounding for harmony */
        
         }
+        .image-panel-info {
+          max-width: 100%;
+          background-color: white;
+          border-radius: 10px;
+          padding: 15px;
+          margin-top: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+          filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+          font-size: 0.95em;
+          color: #4A5D4A;
+          animation: fadeIn 2s ease-in forwards;
+          border-radius: 8px; /* Optional: slight rounding for harmony */
+          max-width: 100%;
+          max-height: 80%;
+          object-fit: cover;
+          margin-bottom: 30px;
+       
+        }
+
         @keyframes zoomIn {
             0% { transform: scale(1); }
             100% { transform: scale(1.05); }
@@ -853,15 +872,17 @@
                     dynamicPanel.innerHTML = `
                     <div class="contact-panel">
                         <img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">
-                        <p class="lang" 
-                          data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Κιν.: 697 1701 113<br>Διανομή καθημερινά: 11:30-19:30<br>Δευτέρα κλειστά" 
-                          data-en="Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays">
-                          Dimosthenous 48, Kallithea<br>
-                          Tel: 210 9577 846<br>
-                          Mobile: 697 1701 113<br>
-                          Daily Delivery: 11:30–19:30<br>
-                          Closed on Mondays
-                        </p>
+                        <div class="image-panel-info">
+                           <p class="lang" 
+                              data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Κιν.: 697 1701 113<br>Διανομή καθημερινά: 11:30-19:30<br>Δευτέρα κλειστά" 
+                              data-en="Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays">
+                              Dimosthenous 48, Kallithea<br>
+                              Tel: 210 9577 846<br>
+                              Mobile: 697 1701 113<br>
+                              Daily Delivery: 11:30–19:30<br>
+                              Closed on Mondays
+                           </p>
+                        </div>
                     </div>
                     `;
                 }
