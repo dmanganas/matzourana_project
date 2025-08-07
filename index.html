@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matzourana Grill - Traditional Greek Μαγειρευτά in Kallithea</title>
     <meta name="description" content="Enjoy authentic Greek μαγειρευτά at Matzourana Grill in Kallithea. Fresh, traditional meals daily at Dimosthenous 48.">
-    <meta name="keywords" content="μαγειρευτά Καλλιθέα, μαγειρεία Καλλιθέα, εστιατόριο Καλλιθέα, ελληνική κουζίνα, παραδοσιακές συνταγές, Greek cuisine, traditional Greek food, fresh cooked food Kallithea, Matzourana Grill">
+    <meta name="keywords" content="μαγειρευτά Καλλιθέα, μαγειρεία Καλλιθέα, μαγειρεμένο φαγητό Καλλιθέα, μαγειρευτά φαγητά Καλλιθέα, εστιατόριο Καλλιθέα, 
+                                   ελληνική κουζίνα, παραδοσιακές συνταγές, παραδοσιακή κουζίνα, λαδερά φαγητά Καλλιθέα, σπιτικό φαγητό Καλλιθέα, 
+                                   σπιτικές γεύσεις, μαγειρευτά φαγητά ημέρας, παραδοσιακές γεύσεις, αυθεντική ελληνική κουζίνα, χειροποίητα πιάτα, 
+                                   φαγητό σαν της μαμάς, οικογενειακό φαγητό Καλλιθέα, μεσημεριανό Καλλιθέα, φρεσκομαγειρεμένο φαγητό, ελληνικές γεύσεις, 
+                                   μαγειρευτό delivery Καλλιθέα, υγιεινή διατροφή, ελαφρύ φαγητό, καθημερινά μαγειρευτά, μενού ημέρας Καλλιθέα, 
+                                   νόστιμα μαγειρευτά, φαγητό σε πακέτο Καλλιθέα, παραδοσιακό μαγείρεμα, λαχανικά εποχής, νηστίσιμα φαγητά Καλλιθέα, 
+                                   vegetarian ελληνική κουζίνα, Greek cuisine, traditional Greek food, fresh cooked food Kallithea, traditional cuisine, 
+                                   home-style Greek food, homemade meals Kallithea, comfort food Kallithea, healthy Greek food, Matzourana Grill, 
+                                   Greek lunch Kallithea, cooked dishes Kallithea, vegetarian Greek cuisine, food delivery Kallithea, 
+                                   handmade Greek dishes, authentic Greek flavors, daily Greek menu">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     
@@ -543,33 +552,27 @@
    
         .zoom-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: rgba(0,0,0,0.85);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
             display: none;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             z-index: 9999;
-        }
-        .zoom-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-        .zoom-overlay img.zoomed {
-            transform: scale(1);
-        }
-        #zoomed-image {
-            max-width: 90vw;
-            max-height: 90vh;
-            border-radius: 8px;
-            box-shadow: 0 0 20px black;
-            transition: transform 0.3s ease;
-            cursor: grab;
+            cursor: zoom-out;
         }
 
-        .zoomed {
+        .zoom-overlay img#zoomed-image {
+            max-width: 90%;
+            max-height: 90%;
+            transition: transform 0.3s ease;
+            transform: scale(1);
+            pointer-events: none;
+        }
+
+        .zoom-overlay img.zoomed {
             transform: scale(1.05);
         }
 
@@ -577,25 +580,43 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            border: none;
+            width: 70px;
+            height: 70px;
+            font-size: 2.5rem;
+            font-weight: 900;
             color: white;
-            font-size: 2em;
-            padding: 0.5em 0.8em;
+            background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+            border: 3px solid white;
+            border-radius: 12px;
             cursor: pointer;
             z-index: 10000;
-            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+            user-select: none;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
         }
 
         .nav-btn.left {
             left: 20px;
         }
+
         .nav-btn.right {
             right: 20px;
         }
 
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.4);
+        @media (hover: none) and (pointer: coarse) {
+            .nav-btn {
+                font-size: 3rem;
+                width: 90px;
+                height: 90px;
+            }
         }
         
         .logo-img {
@@ -611,6 +632,7 @@
           border-radius: 8px; /* Optional: slight rounding for harmony */
         }
 
+        
 
         @media (max-width: 768px) {
             body { font-size: 14px; }
@@ -1224,10 +1246,10 @@
     </footer>
 
     <div class="zoom-overlay" onclick="closeZoom()">
-        <img id="zoomed-image" src="" alt="Zoomed Image">
-        <button class="nav-btn left" onclick="event.stopPropagation(); prevImage()">←</button>
-        <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">→</button>
-    </div>
+      <img id="zoomed-image" src="" alt="Zoomed Image">
+      <button class="nav-btn left" onclick="event.stopPropagation(); prevImage()">⟨</button>
+      <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">⟩</button>
+   </div>
 
     <audio id="background-music" loop>
         <source src="Sounds/matzourana-song.mp3" type="audio/mpeg">
@@ -1339,8 +1361,7 @@
 
         function zoomImage(src) {
             playButtonSound();
-            playButtonSound();
-            collectZoomableImages(); // Refresh in case dynamic images were added later
+            collectZoomableImages();
             currentImageIndex = zoomableImages.findIndex(img => img.src.includes(src));
             const overlay = document.querySelector('.zoom-overlay');
             const zoomedImage = document.querySelector('#zoomed-image');
@@ -1370,6 +1391,40 @@
             if (currentImageIndex > 0) {
                 currentImageIndex--;
                 zoomImage(zoomableImages[currentImageIndex].src);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const overlay = document.querySelector('.zoom-overlay');
+            if (overlay.style.display === 'flex') {
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'Escape') closeZoom();
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.querySelector('.zoom-overlay').addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.querySelector('.zoom-overlay').addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleGesture();
+        }, false);
+
+        function handleGesture() {
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 50) { // minimum swipe distance
+                if (diff > 0) {
+                    prevImage(); // Swipe Right → Previous
+                } else {
+                    nextImage(); // Swipe Left → Next
+                }
             }
         }
 
