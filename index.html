@@ -187,6 +187,7 @@
         }
         .menu .text-panel .menu-buttons button {
             font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
             padding: 8px 16px;
             color: #4A5D4A;
             border: 2px solid #4A5D4A;
@@ -227,7 +228,8 @@
             min-height: 400px; /* Match the text panel height */
         }
         .hero .image-panel, .about .image-panel, .contact .image-panel, .menu .image-panel, .gallery .image-panel {
-            background-color: #ecf0f1;
+            /*background-color: #ecf0f1;*/
+            background-color: white;
         }
         
         .hero .text-panel{
@@ -293,26 +295,33 @@
         .menu .image-panel {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 2 columns */
-            grid-auto-flow: row; /* Let the grid create rows dynamically */
+            grid-template-rows: repeat(2, auto);  
             gap: 8px;
-            min-height: 400px; /* Ensure consistent height */
+            min-height: 500px; /* Ensure consistent height */
             align-content: center; /* Center the grid content */
             /* Background image for when no images are shown */
-            background-image: url('CoreImages/empty.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: white;
+            
         }
         .menu .image-panel img {
-            max-width: 100%;
+            width: 100%;
             height: auto;
-            object-fit: contain;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
             cursor: pointer;
             /* Add edge diffuse effect */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
             border-radius: 8px; /* Optional: slight rounding for harmony */
+            background-image: url('CoreImages/empty.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: white;
+            
+        }
+        .menu .image-panel img:hover {
+           transform: scale(1.03);
+           transition: transform 0.2s ease-in-out;
         }
         .gallery .image-panel {
             display: grid;
@@ -326,6 +335,7 @@
             width: 100%;
             aspect-ratio: 4 / 3;
             object-fit: cover;
+            /*object-fit: contain;*/
             cursor: pointer;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
@@ -519,10 +529,10 @@
           color: #4A5D4A;
           animation: fadeIn 2s ease-in forwards;
           border-radius: 8px; /* Optional: slight rounding for harmony */
-          max-width: 100%;
-          max-height: 80%;
+          max-height: 100%;
+          height: auto;
           object-fit: cover;
-          margin-bottom: 30px;
+          margin-bottom: 10px;
        
         }
 
@@ -923,7 +933,7 @@
             <div class="text-panel">
                 <h2 class="lang" data-el="Μενού" data-en="Menu">Menu</h2>
                 <div class="catalog-header">
-                    <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Food Catalog">Food Catalog</h3>
+                    <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Dishes">Food Catalog</h3>
                     <img src="Logos/food-logo.png" alt="Food Logo", class="logo-img">
                 </div>
                 <div class="menu-buttons">
@@ -1062,7 +1072,7 @@
                     </div>
                 </div>
                 <div class="catalog-header">
-                    <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks Catalog">Drinks Catalog</h3>
+                    <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks">Drinks Catalog</h3>
                     <img src="Logos/drinks-logo.png" alt="Drinks Logo", class="logo-img">
                 </div>
                 <div class="menu-buttons">
@@ -1168,7 +1178,7 @@
     </section>
         
     <footer>
-        <p class="lang" data-el="© 2025 Matzourana - Όλα τα δικαιώματα διατηρούνται." data-en="© 2025 Matzourana - All rights reserved.">© 2025 Matzourana Grill. All rights reserved.</p>
+        <p class="lang" data-el="© 2025 Matzourana - All rights reserved." data-en="© 2025 Matzourana - All rights reserved.">© 2025 Matzourana Grill. All rights reserved.</p>
         <div class="social-logos">
             <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
             <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
