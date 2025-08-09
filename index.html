@@ -219,6 +219,10 @@
             display: block;
             opacity: 1;
         }
+        button.lang {
+            font-weight: 400 !important; /* Override any bold styles */
+            font-family: 'Open Sans', sans-serif !important;
+        }
         @keyframes fadeIn {
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
@@ -515,13 +519,7 @@
         .menu-catalogue th:last-child {
             text-align: right;
         }
-        .menu-catalogue th#daily-dishes-header {
-            white-space: nowrap;
-            width: 30%;
-        }
-        .menu-catalogue th:not(#daily-dishes-header) {
-            width: 30%;
-        }
+       
         .menu-catalogue th#daily-dishes-header {
             text-align: center;
             white-space: nowrap;
@@ -682,22 +680,40 @@
             .hamburger {
                 font-size: 18px;
             }
-            .menu .text-panel {
-                min-height: auto;
-                font-size: 1.0rem
-            }
-            .menu .image-panel {
-                min-height: auto;
-                grid-template-columns: repeat(1, 1fr);
-                padding: 1px
-                /* Keep grid-auto-flow: row for dynamic rows */
-            }
+
             .contact .text-panel {
                 padding: 10px;
             }
             .about .text-panel {
                 padding: 10px;
             }
+
+            .menu .text-panel {
+                min-height: auto;
+                font-size: 1.0rem;
+            }
+            .menu .text-panel .catalog-header img {
+                width: 90px;
+                height: 90px;
+            }
+            .menu .text-panel .menu-buttons button {
+                font-size: 0.65em;
+                padding: 6px 12px;
+                font-family: 'Open Sans', sans-serif !important;
+                font-weight: 400 !important;
+            }
+            .menu .image-panel {
+                min-height: auto;
+                grid-template-columns: repeat(1, 1fr);
+                padding: 1px;
+                gap: 4px;
+            }
+            .menu .image-panel img {
+                max-width: 70%;
+                margin: 0 auto;
+            }
+            
+
             .gallery .image-panel {
               display: grid;
               grid-template-columns: repeat(2, 1fr); /* fixed 4 columns */
@@ -732,13 +748,7 @@
             font-size: 0.85em;
             
             }
-            .menu .image-panel {
-                gap: 4px;
-            }
-            .menu .image-panel img {
-                max-width: 70%;
-                margin: 0 auto;
-            }
+            
             header img {
                 max-width: calc(var(--header-image-width) * 0.6);
                 /* Add edge diffuse effect */
@@ -746,15 +756,7 @@
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
-            .menu .text-panel .catalog-header img {
-                width: 90px;
-                height: 90px;
-                
-            }
-            .menu .text-panel .menu-buttons button {
-                font-size: 0.85em;
-                padding: 6px 12px;
-            }
+            
             footer .social-logos img {
                 width: calc(var(--social-logo-size-footer) * 0.75);
                 margin: 0 5px;
@@ -811,10 +813,19 @@
             }
             .menu .image-panel img {
                 max-width: 60%;
-                /* Add edge diffuse effect */
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
-                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-                border-radius: 8px; /* Optional: slight rounding for harmony */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+                border-radius: 8px;
+            }
+            .menu .text-panel .catalog-header img {
+                width: 50px;
+                height: 50px;
+            }
+            .menu .text-panel .menu-buttons button {
+                font-size: 0.9em;
+                padding: 5px 10px;
+                font-family: 'Open Sans', sans-serif !important;
+                font-weight: 400 !important;
             }
             header img {
                 max-width: calc(var(--header-image-width) * 0.35);
@@ -827,18 +838,18 @@
                 font-size: 18px;
             }
             .hamburger {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            cursor: pointer;
-            font-size: 28px;
-            z-index: 2;
-            display: block;
-            /* Add edge diffuse effect */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
-            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-            border-radius: 10px; /* Optional: slight rounding for harmony */
-        }
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                cursor: pointer;
+                font-size: 28px;
+                z-index: 2;
+                display: block;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 10px; /* Optional: slight rounding for harmony */
+            }
             .language-toggle {
                 top: 8px;
                 left: 4px;
@@ -846,14 +857,7 @@
             .language-toggle span {
                 font-size: 16px;
             }
-            .menu .text-panel .catalog-header img {
-                width: 75px;
-                height: 75px;
-            }
-            .menu .text-panel .menu-buttons button {
-                font-size: 0.8em;
-                padding: 5px 10px;
-            }
+            
             footer .social-logos img {
                 width: calc(var(--social-logo-size-footer) * 0.5);
                 margin: 0 px;
@@ -1060,8 +1064,7 @@
                 <div class="menu-content" id="daily-dishes">
                     <div class="menu-catalogue">
                         <table>
-                            <!-- Daily Dishes -->
-                            
+                            <!-- Daily Dishes --> 
                             <!--<tr><th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
                             <tr>
                                 <th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th>
@@ -1144,7 +1147,7 @@
                 <div class="menu-content" id="grilled-dishes">
                     <div class="menu-catalogue">
                         <table>
-                            <tr><th class="lang" data-el="Ψητά Ημέρας" data-en="Grilled Dish">Grilled Dish</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><th class="lang" data-el="Ψητά Ημέρας" data-en="Grilled Dishes">Grilled Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
                             <tr><td class="lang" data-el="Φιλέτο Κοτόπουλο" data-en="Chicken Fillet">Chicken Fillet</td><td>€9.50</td></tr>
                             <tr><td class="lang" data-el="Μπιφτέκι Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Patty">Homemade Beef Patty</td><td>€9.50</td></tr>
                             <tr><td class="lang" data-el="Μπριζόλα Χοιρινή" data-en="Pork Chop">Pork Chop</td><td>€9.80</td></tr>
