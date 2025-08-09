@@ -515,6 +515,13 @@
         .menu-catalogue th:last-child {
             text-align: right;
         }
+        .menu-catalogue th#daily-dishes-header {
+            white-space: nowrap;
+            width: 70%;
+        }
+        .menu-catalogue th:not(#daily-dishes-header) {
+            width: 30%;
+        }
         #hero-image {
             animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
             transform-origin: center center;
@@ -632,8 +639,6 @@
           filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
           border-radius: 8px; /* Optional: slight rounding for harmony */
         }
-
-        
 
         @media (max-width: 768px) {
             body { font-size: 14px; }
@@ -1052,8 +1057,15 @@
                     <div class="menu-catalogue">
                         <table>
                             <!-- Daily Dishes -->
-                            <tr><th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            
+                            <!--<tr><th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
+                            <!--<tr><th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
+                            <tr>
+                            <th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th>
+                            <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
+                            </tr>
                             <tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <!--<tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>-->
                             <tr><td class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Pastitsio</td><td>€7.00</td></tr>
                             <!--<tr><td class="lang" data-el="Μουσακάς" data-en="Moussaka">Moussaka</td><td>€8.50</td></tr>-->
                             <!--<tr><td class="lang" data-el="Μπριάμ" data-en="Briam">Briam</td><td>€6.00</td></tr>-->
@@ -1275,6 +1287,7 @@
             document.querySelectorAll('.lang').forEach(el => {
                 el.innerHTML = el.getAttribute(`data-${lang}`);
             });
+            updateDailyDishesDate(lang); // Update date after language change
             
             const musicBtn = document.querySelector('.music-btn');
             if (isPlaying) {
@@ -1282,6 +1295,9 @@
             } else {
                 musicBtn.innerHTML = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
             }
+            // Dispatch languageChange event
+            const event = new CustomEvent('languageChange', { detail: { lang } });
+            document.dispatchEvent(event);
         }
 
         function toggleMenu() {
@@ -1360,6 +1376,42 @@
                 }
             });
         }
+
+        // ---------------------------------------------------------
+        // Function: getFormattedDate(lang)
+        // Purpose:  Returns the current date formatted according to 
+        //           the given language ("el" for Greek, otherwise English).
+        // Arguments:
+        //   lang — String: "el" for Greek date format, anything else for English.
+        // Returns:
+        //   String: Formatted date, e.g. "9 Αυγούστου 2025" or "August 9, 2025"
+        // ---------------------------------------------------------
+        function getFormattedDate(lang) {
+            const today = new Date();
+            return today.toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        // ---------------------------------------------------------
+        // Function: updateDailyDishesDate(lang)
+        // Purpose:  Updates the "Daily Dishes" table header to include 
+        //           the current date in the appropriate language.
+        // Arguments:
+        //   lang — String: "el" for Greek, "en" for English.
+        // Usage:
+        //   updateDailyDishesDate("el"); // Greek version
+        //   updateDailyDishesDate("en"); // English version
+        // ---------------------------------------------------------
+        function updateDailyDishesDate(lang) {
+            const header = document.getElementById("daily-dishes-header");
+            const baseText = header.getAttribute(`data-${lang}`);
+            header.textContent = baseText + getFormattedDate(lang);
+        }
+        
+
 
         function zoomImage(src) {
             playButtonSound();
@@ -1468,18 +1520,32 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Navigation menu show on load ---
             const navMenu = document.querySelector('.nav-menu');
             navMenu.classList.remove('hide-on-load');
-            const overlay = document.querySelector('.zoom-overlay');
-            if (overlay.style.display === 'flex') {
-                if (e.key === 'ArrowRight') nextImage();
-                if (e.key === 'ArrowLeft') prevImage();
-                if (e.key === 'Escape') closeZoom();
-            }
+
+            // --- Show home section by default ---
             showSection('home');
             toggleLanguage('el');
-            // Ensure "Appetizers" is shown by default when the page loads
-            // showSection('menu');
+
+            // Detect current language (default to Greek)
+            let currentLang = document.documentElement.lang || "el";
+            updateDailyDishesDate(currentLang);
+
+            // Hook into existing language change system
+            document.addEventListener("languageChange", function(e) {
+                updateDailyDishesDate(e.detail.lang);
+            });
+
+            // Keyboard navigation for zoom overlay
+            document.addEventListener('keydown', (e) => {
+                const overlay = document.querySelector('.zoom-overlay');
+                if (overlay && overlay.style.display === 'flex') {
+                    if (e.key === 'ArrowRight') nextImage();
+                    if (e.key === 'ArrowLeft') prevImage();
+                    if (e.key === 'Escape') closeZoom();
+                }
+            });
         });
     </script>
 
