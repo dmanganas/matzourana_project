@@ -517,10 +517,14 @@
         }
         .menu-catalogue th#daily-dishes-header {
             white-space: nowrap;
-            width: 70%;
+            width: 30%;
         }
         .menu-catalogue th:not(#daily-dishes-header) {
             width: 30%;
+        }
+        .menu-catalogue th#daily-dishes-header {
+            text-align: center;
+            white-space: nowrap;
         }
         #hero-image {
             animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
@@ -1059,13 +1063,21 @@
                             <!-- Daily Dishes -->
                             
                             <!--<tr><th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
-                            <!--<tr><th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
+                            <tr>
+                                <th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th>
+                                <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
+                            </tr>
+                            <tr>
+                                <th class="lang" data-el="" data-en="" id="daily-dishes-header" colspan="2"></th>
+                            </tr>
+                           
+                            <!--<tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
                             <tr>
                             <th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th>
                             <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
-                            </tr>
-                            <tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            </tr>-->
                             <!--<tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>-->
+                            <tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
                             <tr><td class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Pastitsio</td><td>€7.00</td></tr>
                             <!--<tr><td class="lang" data-el="Μουσακάς" data-en="Moussaka">Moussaka</td><td>€8.50</td></tr>-->
                             <!--<tr><td class="lang" data-el="Μπριάμ" data-en="Briam">Briam</td><td>€6.00</td></tr>-->
@@ -1406,11 +1418,12 @@
         //   updateDailyDishesDate("en"); // English version
         // ---------------------------------------------------------
         function updateDailyDishesDate(lang) {
-            const header = document.getElementById("daily-dishes-header");
-            const baseText = header.getAttribute(`data-${lang}`);
-            header.textContent = baseText + getFormattedDate(lang);
+            const header = document.getElementById('daily-dishes-header');
+            if (header) {
+                header.textContent = `- ${getFormattedDate(lang)} -`;
+            }
         }
-        
+
 
 
         function zoomImage(src) {
