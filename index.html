@@ -692,20 +692,24 @@
                 height: 90px;
             }
             .menu .text-panel .menu-buttons button {
-                font-size: 0.65em;
-                padding: 6px 12px;
+                font-size: 0.85em;
+                padding: 8px 16px;
+                min-width: 80px;
                 font-family: 'Open Sans', sans-serif !important;
                 font-weight: 400 !important;
             }
             .menu .image-panel {
                 min-height: auto;
                 grid-template-columns: repeat(1, 1fr);
-                padding: 1px;
-                gap: 3px;
+                padding: 2px;
+                gap: 4px;
             }
             .menu .image-panel img {
-                max-width: 90%;
+                max-width: 70%;
                 margin: 0 auto;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+                border-radius: 8px;
             }
             
 
@@ -807,20 +811,20 @@
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
             .menu .image-panel img {
-                max-width: 90%;
+                max-width: 60%;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
                 border-radius: 8px;
             }
-            .menu .text-panel .catalog-header img {
-                width: 50px;
-                height: 50px;
+            .menu-section {
+                max-width: 100%;
             }
-            .menu .text-panel .menu-buttons button {
-                font-size: 0.9em;
-                padding: 5px 10px;
-                font-family: 'Open Sans', sans-serif !important;
-                font-weight: 400 !important;
+            .menu-section p, .menu-section ul {
+                font-size: 0.8em;
+                line-height: 1.5;
+            }
+            .menu-section img {
+                max-width: 60%;
             }
             header img {
                 max-width: calc(var(--header-image-width) * 0.35);
