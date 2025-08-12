@@ -248,6 +248,7 @@
             flex-wrap: wrap;
             flex-direction: column;
             justify-content: center;
+            max-width: 100%;
         }
         
         .hero .image-panel{
@@ -550,6 +551,22 @@
           object-fit: cover;
           margin-bottom: 10px;
        
+        }
+
+        .hero .text-panel-info {
+            max-width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.95em;
+            color: #4A5D4A;
+            animation: fadeIn 2s ease-in forwards;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 10px;
         }
 
         @keyframes zoomIn {
@@ -961,7 +978,9 @@
         <div class="section-container left-image">
             <div class="text-panel">
                 <h2 class="lang" data-el="Καλώς ήρθατε <br> στη Ματζουράνα" data-en="Welcome <br> to Matzourana">Καλώς ήρθατε <br> στη Ματζουράνα</h2>
-                <p class="lang" data-el="Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών. 
+            
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών. 
                                         <br> <br> Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.
                                         <br> <br> Σας περιμένουμε στην οδό Δημοσθένους 48, στην Καλλιθέα, για να μοιραστούμε μαζί σας ό,τι καλύτερο έχει να προσφέρει η ελληνική κουζίνα στην πιο value for money εκδοχή της."  
                                         data-en="In our small gastro-tavern you will enjoy home-cooked meals and freshly grilled dishes, infused with our love for authentic flavors and the quality of our ingredients.
@@ -970,11 +989,20 @@
                                         Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών. 
                                         <br> <br> Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς. 
                                         <br> <br> Σας περιμένουμε στην οδό Δημοσθένους 48, στην Καλλιθέα, για να μοιραστούμε μαζί σας ό,τι καλύτερο έχει να προσφέρει η ελληνική κουζίνα στην πιο value for money εκδοχή της.</p>
-                <p class="lang" data-el="<br><br>Για Online Παραγγελίες:" data-en="<br><br>For Online Orders:">For Online Orders:</p>
-                <div class="social-logos">
-                    <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
-                    <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
-                    <br><br><br>
+                </div> 
+                
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Για Online Παραγγελίες:" data-en="For Online Orders:">For Online Orders:</p>
+                    <div class="social-logos">
+                        <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+                        <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+                        <br>
+                    </div>
+                </div>
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά ή επισκεφθείτε μας στο κατάστημα. Θα χαρούμε να σας εξυπηρετήσουμε." 
+                                    data-en="To enjoy even more favorable prices, place your order by phone or visit us in-store. We will be happy to serve you.">
+                                    Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά ή επισκεφθείτε μας στο κατάστημα. Θα χαρούμε να σας εξυπηρετήσουμε.</p>
                 </div>
                 <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
             </div>
