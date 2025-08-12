@@ -16,6 +16,7 @@
     <link rel="canonical" href="https://matzourana.gr/">
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
         /* Define CSS variables for easy control of header dimensions */
         :root {
             --header-padding: 10px;
@@ -66,6 +67,7 @@
             position: absolute;
             top: 15px;
             left: 15px;
+            
         }
         .language-toggle span {
             cursor: pointer;
@@ -168,6 +170,99 @@
             justify-content: center;
             min-height: 500px;
         }
+
+        .brand-panel {
+            background-color: white;
+            color: #4A5D4A; /* Green tone from logo */
+            max-width: 600px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid #4A5D4A;
+        }
+
+        /* Header */
+        .brand-header {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .brand-header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3em;
+            margin: 0;
+            color: #4A5D4A;
+        }
+
+        .leaf-icon {
+            width: 40px;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -120%);
+        }
+
+        /* Content */
+        .brand-content {
+            padding: 20px 30px;
+            text-align: justify;
+            line-height: 1.6em;
+        }
+
+        /* Footer */
+        .brand-footer {
+            text-align: center;
+            border-top: 2px solid #4A5D4A;
+            padding: 10px;
+            font-family: 'Great Vibes', cursive;
+            font-size: 2em;
+            color: #4A5D4A;
+        }
+        .footer {
+            background-color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-line {
+            position: relative;
+            display: inline-block;
+            align-items: center;       /* vertical center */
+            justify-content: center;   /* horizontal center */
+            width: 100%;
+            max-width: 600px;
+            border-top: 4px solid #4A5D4A; /* line color */
+            margin: 0 auto;
+        }
+
+        .footer-line .leafs {
+            position: absolute;
+            top: -45px; /* adjust leaf overlap */
+            left: 50%;
+            transform: translateX(-50%);
+            background: white; /* so leaves don't overlap the line */
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+        }
+        
+
+        .footer-line img {
+            height: 60px; /* adjust size */
+            width: auto;
+        }
+
+        
+
+        
+        
+        
+
+        
+        
         .menu .text-panel {
             text-align: center;
             justify-content: flex-start;
@@ -248,6 +343,7 @@
             flex-wrap: wrap;
             flex-direction: column;
             justify-content: center;
+            
             max-width: 100%;
             padding: 15px;
         }
@@ -282,6 +378,73 @@
             max-height: 100%;
             object-fit: cover;
         }
+        /* About Section Styles */
+        .about .section-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 1px;
+        }
+        .about .left-panel {
+            flex: 1; /* 2/3 of the width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-right: 10px;
+        }
+        .about .right-panel {
+            flex: 1; /* 1/3 of the width */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10px;
+        }
+        .about .right-panel .text-info {
+            max-width: 100%;
+            background-color: white;
+            font-family: 'Montserrat', sans-serif;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.85em;
+            animation: fadeIn 2s ease-in forwards;
+            border-radius: 8px;
+            max-height: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left; /* Changed from justify to avoid spacing issues */
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+        }
+        .about .left-panel .text-info {
+            max-width: 100%;
+            background-color: white;
+            font-family: 'Montserrat', sans-serif;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.85em;
+            animation: fadeIn 2s ease-in forwards;
+            border-radius: 8px;
+            max-height: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left; /* Changed from justify to avoid spacing issues */
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+        }
+        .about .left-panel img {
+            animation: imageFadeIn 2s ease-in forwards;
+        }
+        
+        
         .about .image-panel img {
             animation: imageFadeIn 2s ease-in forwards;
         }
@@ -569,6 +732,12 @@
             height: auto;
             object-fit: cover;
             margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left;           /* justified text */
+            
+            hyphens: auto;                 /* καλύτερη σπάση λέξεων */
+            overflow-wrap: break-word;     /* αποφύγετε overflow λέξεων */
+            -webkit-font-smoothing:antialiased;
         }
 
         @keyframes zoomIn {
@@ -657,6 +826,21 @@
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
           filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
           border-radius: 8px; /* Optional: slight rounding for harmony */
+
+          .section-container {
+                flex-direction: column;
+                padding: 1px;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .text-panel, .image-panel {
+                padding: 1px;
+                width: 100%;
+                min-height: auto;
+            }
         }
         
 
@@ -686,14 +870,19 @@
                 min-width: 100px;
                 max-width: 200px;
             }
+            
             .section-container {
                 flex-direction: column;
-                padding: 6px;
+                padding: 1px;
             }
             .text-panel, .image-panel {
                 padding: 2px;
                 width: 100%;
                 min-height: auto;
+            }
+            .hero .text-panel-info {
+                padding: 10px;
+                font-size: 0.92rem;
             }
             .hamburger {
                 font-size: 18px;
@@ -702,11 +891,29 @@
             .contact .text-panel {
                 padding: 10px;
             }
-            .about .text-panel {
-                padding: 10px;
+             .section-container {
+                flex-direction: column;
+                padding: 1px;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .text-panel, .image-panel {
+                padding: 1px;
+                width: 100%;
+                min-height: auto;
             }
 
-            
+            .footer-line img {
+                height: 30px; /* adjust size */
+                width: auto;
+            }
+            .footer-line .leafs {
+                position: absolute;
+                top: -20px; /* adjust leaf overlap */
+            }
             /* Main Layout Adjustments */
             .menu .main-content {
                 display: flex;
@@ -951,6 +1158,17 @@
             :root {
                 --flag-size: 20px;
             }
+            .about .section-container {
+                flex-direction: column;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .about .left-panel .text-info, .about .right-panel .text-info {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -985,7 +1203,13 @@
                     <p class="lang" 
                         data-el="Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς."  
                         data-en="In our small gastro-tavern you will enjoy home-cooked meals and freshly grilled dishes, infused with our love for authentic flavors and the quality of our ingredients.<br><br>We collaborate with certified small producers from the Ionian and Western Greece to offer you familiar, traditional dishes — sometimes with a modern twist — always focusing on taste and highlighting our culinary heritage.">
-                        Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.</p>
+                        Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.
+                    </p>
+                     <div class="footer-line">
+                        <span class="leafs">
+                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                        </span>
+                    </div>
                 </div> 
                 
                 <div class="text-panel-info">
@@ -1060,7 +1284,7 @@
     </section>
 
     <section class="about" id="about">
-        <div class="section-container right-image">
+        <!--<div class="section-container right-image">
             <div class="text-panel">
                 <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
                 <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
@@ -1068,6 +1292,31 @@
             </div>
             <div class="image-panel">
                 <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+            </div>
+        </div>-->
+        <div class="section-container">
+            <div class="left-panel">
+                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+                <div class="text-info">
+                    
+                        <p class="lang" data-el="Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτσερή, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον." 
+                                        data-en="Our kitchen focuses on the nutritional value and quality of our ingredients. Our meats are all sourced from the Skoutseri family, from Astakos, Aetoloakarnania, renowned for adhering to strict standards in their products. Our minced meat is 100% beef. Our feta is PDO. Our vegetables, always fresh and seasonal, are selected from our local farmers’ market as well as from small certified producers. Our eggs are organic. The olive oil we use in all our dishes is exceptional extra virgin olive oil from Achaia and Kefalonia. The sunflower oil we use only for frying is of high quality and changed very frequently. Our care in ingredient selection is non-negotiable. Every dish is the result of respect and love for both people and the environment.">
+                                        Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτσερή, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον.</p>
+                    <div class="footer-line">
+                        <span class="leafs">
+                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-panel">
+                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
+                <div class="text-panel">
+                    <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" 
+                                    data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">
+                                    Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
+                </div>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
         </div>
     </section>
