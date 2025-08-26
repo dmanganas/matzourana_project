@@ -1454,8 +1454,8 @@
                                                  data-en="Stuffed Vegetables <br><br> (Tomato and pepper, with bulgur, herbs, and potatoes. Both healthy and delicious!)">
                                                 Stuffed Vegetables (Tomato and pepper, with bulgur, herbs, and potatoes. Both healthy and delicious!)    
                             </td><td>€8.00</td></tr>
-                            <tr><td class="lang" data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο (Χειροποίητα μπιφτέκια μοσχαρίσια 300 γραμμάρια, με πατατούλες στο φούρνο και όποιος μπορέσει να τους αντισταθεί, να μας το πει!)"
-                                                 data-en="Oven-Baked Beef Patties with Potatoes (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)">
+                            <tr><td class="lang" data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα μπιφτέκια μοσχαρίσια 300 γραμμάρια, με πατατούλες στο φούρνο και όποιος μπορέσει να τους αντισταθεί, να μας το πει!)"
+                                                 data-en="Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)">
                                                  Oven-Baked Beef Patties with Potatoes (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)
                             </td><td>€9.00</td></tr>
                             <!--<tr><td class="lang" data-el="Κεφτεδάκια με σάλτσα" data-en="Meatballs in Tomato Sauce">Meatballs in Tomato Sauce</td><td>€8.00</td></tr>-->
@@ -1506,8 +1506,8 @@
 
                             <!-- Soups -->
                             <tr><th class="lang" data-el="Σούπες" data-en="Soups">Soups</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
-                            <tr><td class="lang" data-el="Κοτόσουπα (Θρεπτική και πολύ νόστιμη. Με εκλεκτό κοτόπουλο Ναυπάκτου.)" 
-                                                 data-en="Chicken Soup (Nutritious and very tasty. Made with select Nafpaktos chicken.)">
+                            <tr><td class="lang" data-el="Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη. Με εκλεκτό κοτόπουλο Ναυπάκτου.)" 
+                                                 data-en="Chicken Soup <br><br> (Nutritious and very tasty. Made with select Nafpaktos chicken.)">
                                                  Chicken Soup (Nutritious and very tasty. Made with select Nafpaktos chicken.)
                             </td><td>€6.50</td></tr>
                             <!--<tr><td class="lang" data-el="Κρεατόσουπα" data-en="Meat Soup">Meat Soup</td><td>€12.00</td></tr>-->
@@ -1745,7 +1745,8 @@
 
             const maxImages = 21;
             let numImagesToShow = Math.min(menuItemCount, maxImages);
-            numImagesToShow = Math.floor(numImagesToShow / 2) * 2;
+            //numImagesToShow = Math.floor(numImagesToShow / 2) * 2;
+            numImagesToShow = Math.floor(numImagesToShow) * 2;
             if (numImagesToShow < 6) numImagesToShow = 10;
 
             const imageList = [
