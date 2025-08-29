@@ -1,72 +1,2063 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matzourana Grill - Greek Cuisine</title>
+    <meta name="google-site-verification" content="M0239OJAvZTfS5DmE3g4u5pX2TOqW_JWkb8ktE2KFzA">
+    <title>Matzourana Grill - Traditional Greek Μαγειρευτά in Kallithea</title>
+    <title>Matzourana Grill - Authentic Μαγειρευτά & Greek Cuisine in Kallithea</title>
+    <meta name="description" content="Savor authentic Greek μαγειρευτά at Matzourana Grill in Kallithea. 
+                                      Fresh daily specials and delivery at Dimosthenous 48. Σπιτική κουζίνα παραδοσιακών
+                                      μαγειρευτών φαγητών στηκ Καλλιθέα.">
+    <meta name="keywords" content="μαγειρευτά Καλλιθέα, μαγειρεία Καλλιθέα, εστιατόριο Καλλιθέα, ελληνική κουζίνα, 
+                                   παραδοσιακές συνταγές, σπιτικά μαγειρευτά, μαγειρευτό delivery Καλλιθέα, Greek cuisine, 
+                                   traditional Greek food, home-style Greek food, food delivery Kallithea, Matzourana Grill, Greek lunch Kallithea">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://matzourana.gr/">
+    
     <style>
-        /* Same CSS as original file - copy the entire <style> block here */
-        /* For brevity, I'll assume it's unchanged and omit it here */
-        /* Recommendation: Move to styles.css and link it with <link rel="stylesheet" href="styles.css"> */
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+        /* Define CSS variables for easy control of header dimensions */
+        :root {
+            --header-padding: 10px;
+            --header-image-width: 250px;
+            --flag-size: 30px; /* Increased from 22px */
+            --social-logo-size-hero: 60px; /* Increased from 40px */
+            --social-logo-size-footer: 60px; /* Increased from 40px */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e8e1c8 100%);
+            color: #333;
+            font-size: 32px;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #4A5D4A;
+            color: white;
+            padding: var(--header-padding);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        header img {
+            max-width: var(--header-image-width);
+            margin-bottom: 0px;
+            animation: imageFadeIn 2s ease-in forwards;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #4A5D4A;
+        }
+        h1 { font-size: 2.2em; }
+        h2 { font-size: 1.8em; }
+        h3 { font-size: 1.3em; }
+        p { font-size: 1em; line-height: 1.4; }
+        .language-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            
+        }
+        .language-toggle span {
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: var(--flag-size); /* Use CSS variable for flag size */
+        }
+        .hamburger {
+            position: fixed;
+            top: 15px;
+            right: 25px;
+            cursor: pointer;
+            font-size: 48px;
+            z-index: 3;
+            display: block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+            border-radius: 20px;
+        }
+
+        /* Hide initially */
+        .nav-menu {
+            position: fixed;
+            top: 15px;
+            right: 60px;
+            background-color: #4A5D4A;
+            padding: 8px;
+            border-radius: 5px;
+            z-index: 2;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            width: auto;
+            min-width: 100px;
+            max-width: 10vw;
+            padding: 10px;
+        }
+
+        /* Show when active */
+        .nav-menu.active {
+            max-height: 400px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .nav-menu button {
+            color: white;
+            background: none;
+            border: none;
+            display: block;
+            padding: 4px 0;
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-menu button:hover {
+            color: #f4c430;
+        }
+
+        .hide-on-load {
+            display: none;
+        }
+
+        section {
+            display: none;
+            padding: 20px 10px;
+            min-height: 40vh;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin: 8px auto;
+            max-width: 1400px;
+        }
+        section.active {
+            display: block;
+        }
+        .section-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            align-items: stretch;
+        }
+        .section-container.left-image {
+            flex-direction: row;
+        }
+        .section-container.right-image {
+            flex-direction: row-reverse;
+        }
+        .text-panel {
+            flex: 0.8;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .brand-panel {
+            background-color: white;
+            color: #4A5D4A; /* Green tone from logo */
+            max-width: 600px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid #4A5D4A;
+        }
+
+        /* Header */
+        .brand-header {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .brand-header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3em;
+            margin: 0;
+            color: #4A5D4A;
+        }
+
+        .leaf-icon {
+            width: 40px;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -120%);
+        }
+
+        /* Content */
+        .brand-content {
+            padding: 20px 30px;
+            text-align: justify;
+            line-height: 1.6em;
+        }
+
+        /* Footer */
+        .brand-footer {
+            text-align: center;
+            border-top: 2px solid #4A5D4A;
+            padding: 10px;
+            font-family: 'Great Vibes', cursive;
+            font-size: 2em;
+            color: #4A5D4A;
+        }
+        .footer {
+            background-color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-line {
+            position: relative;
+            display: inline-block;
+            align-items: center;       /* vertical center */
+            justify-content: center;   /* horizontal center */
+            width: 100%;
+            max-width: 600px;
+            border-top: 4px solid #4A5D4A; /* line color */
+            margin: 0 auto;
+        }
+
+        .footer-line .leafs {
+            position: absolute;
+            top: -45px; /* adjust leaf overlap */
+            left: 50%;
+            transform: translateX(-50%);
+            background: white; /* so leaves don't overlap the line */
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+        
+
+        .footer-line img {
+            height: 60px; /* adjust size */
+            width: auto;
+        }
+
+        .menu .text-panel {
+            text-align: center;
+            justify-content: flex-start;
+            min-height: 500px;
+        }
+        .menu .text-panel .catalog-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .menu .text-panel .catalog-header img {
+            width: 120px;
+            height: 120px;
+        }
+        .menu .text-panel .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .menu .text-panel .menu-buttons button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            padding: 8px 16px;
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+            border-radius: 25px;
+        }
+        .menu .text-panel .menu-buttons button:hover,
+        .menu .text-panel .menu-buttons button.active {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .menu .text-panel .menu-content {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        .menu .text-panel .menu-content.active {
+            display: block;
+            opacity: 1;
+        }
+        button.lang {
+            font-weight: 400 !important; /* Override any bold styles */
+            font-family: 'Open Sans', sans-serif !important;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes imageFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .image-panel {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px; /* Match the text panel height */
+        }
+        .hero .image-panel, .about .image-panel, .contact .image-panel, .menu .image-panel, .gallery .image-panel {
+            /*background-color: #ecf0f1;*/
+            background-color: white;
+        }
+        
+        .hero .text-panel{
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            
+            max-width: 100%;
+            padding: 15px;
+        }
+        
+        .hero .image-panel{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero .image-panel img {
+            max-width: 100%;
+            max-height: 60%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        
+        .hero .image-panel h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .hero .image-panel button {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .hero .section-container .text-panel{
+            font-size: 1.0em;
+        }
+        
+        .image-panel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        /* About Section Styles */
+        .about .section-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 1px;
+        }
+        .about .left-panel {
+            flex: 1; /* 2/3 of the width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-right: 10px;
+        }
+        .about .right-panel {
+            flex: 1; /* 1/3 of the width */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10px;
+        }
+        .about .right-panel .text-info {
+            max-width: 100%;
+            background-color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.85em;
+            animation: fadeIn 2s ease-in forwards;
+            border-radius: 8px;
+            max-height: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left; /* Changed from justify to avoid spacing issues */
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+        }
+        .about .left-panel .text-info {
+            max-width: 100%;
+            background-color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.85em;
+            animation: fadeIn 2s ease-in forwards;
+            border-radius: 8px;
+            max-height: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left; /* Changed from justify to avoid spacing issues */
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+        }
+        .about .left-panel img {
+            animation: imageFadeIn 2s ease-in forwards;
+        }
+        
+        
+        .about .image-panel img {
+            animation: imageFadeIn 2s ease-in forwards;
+        }
+        #about-image {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        #contact-map {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        .menu .image-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            grid-template-rows: repeat(2, auto);  
+            gap: 8px;
+            min-height: 500px; /* Ensure consistent height */
+            align-content: center; /* Center the grid content */
+            /* Background image for when no images are shown */
+            
+        }
+        .menu .image-panel img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            cursor: pointer;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+            background-image: url('CoreImages/empty.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: white;
+            
+        }
+        .menu .image-panel img:hover {
+           transform: scale(1.03);
+           transition: transform 0.2s ease-in-out;
+        }
+        .gallery .image-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 8px;
+            min-height: 500px;
+            align-content: center;
+        }
+        .gallery .image-panel img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            /*object-fit: contain;*/
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+            border-radius: 8px;
+            background-image: url('CoreImages/empty.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: white;
+        }
+        .gallery .image-panel img:hover {
+           transform: scale(1.03);
+           transition: transform 0.2s ease-in-out;
+        }
+        .hero button, .about button, .return-btn, .menu button, .gallery button, .map-btn {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px; /* Consistent padding for all buttons */
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+            border-radius: 25px;
+            text-decoration: none; /* Remove underline */
+            text-align: center;
+        }
+        
+        .hero button:hover, .return-btn:hover, .menu button:hover, .gallery button:hover, .map-btn:hover {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .about .return-btn {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px;
+            
+            color: #4A5D4A;
+            border: 2px solid  #4A5D4A;
+            cursor: pointer;
+            margin: 8px 0;
+            background: transparent;
+            font-size: 1.1em;
+            border-radius: 25px;
+        }
+        .about .return-btn:hover {
+            background-color: #4A5D4A;
+            color: white;
+        }
+
+         
+        .contact .text-panel a {
+            color: #ecf0f1;
+            text-decoration: underline;
+            font-size: 1em;
+        }
+        
+        footer {
+            background-color: #4A5D4A;
+            padding: 15px;
+            color: white;
+            border-top: 3px solid #f4c430;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        footer p {
+            font-size: 1em;
+        }
+        footer .social-logos {
+            margin-top: 10px;
+        }
+        footer .social-logos img {
+            width: var(--social-logo-size-footer); /* Use CSS variable */
+            margin: 0 10px;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+            
+        }
+        .hero .social-logos {
+            margin-top: 10px;
+        }
+        .hero .social-logos img {
+            width: var(--social-logo-size-hero); /* Use CSS variable */
+            margin: 0 10px;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+        }
+        .music-panel {
+            flex: 0 0 200px; /* Fixed width for the music panel */
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .music-panel h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #4A5D4A;
+        }
+        .music-panel button {
+            font-family: 'Montserrat', sans-serif;
+            padding: 8px 16px;
+            color: #4A5D4A;
+            border: 2px solid #4A5D4A;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 0.8em;
+            border-radius: 25px;
+            margin: 12px 0;
+        }
+        .music-panel button:hover {
+            background-color: #4A5D4A;
+            color: white;
+        }
+        .music-player-icon {
+            display: none;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .equalizer {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .bar {
+            width: 6px;
+            height: 18px;
+            background: linear-gradient(#4A5D4A, #f4c430);
+            display: inline-block;
+            animation: equalizer 0.8s infinite ease-in-out;
+        }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes equalizer {
+            0%, 100% { height: 18px; }
+            50% { height: 28px; }
+        }
+        .menu-catalogue table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .menu-catalogue th, .menu-catalogue td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        .menu-catalogue th {
+            background: #ecf0f1;
+            color: #4A5D4A;
+            text-align: left;
+            padding-bottom: 0;
+        }
+        .menu-catalogue td {
+            text-align: left;
+        }
+        .menu-catalogue td:last-child {
+            text-align: right;
+        }
+        .menu-catalogue th:last-child {
+            text-align: right;
+        }
+       
+        .menu-catalogue th#daily-dishes-header {
+            text-align: center;
+            white-space: nowrap;
+        }
+        #hero-image {
+            animation: zoomIn 10s infinite ease-in-out, fadeIn 2s ease-in forwards;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+       
+        }
+        .image-panel-info {
+          max-width: 100%;
+          background-color: white;
+          border-radius: 10px;
+          padding: 15px;
+          margin-top: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+          filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+          font-size: 0.95em;
+          color: #4A5D4A;
+          animation: fadeIn 2s ease-in forwards;
+          border-radius: 8px; /* Optional: slight rounding for harmony */
+          max-height: 100%;
+          height: auto;
+          object-fit: cover;
+          margin-bottom: 10px;
+       
+        }
+
+        .hero .text-panel-info {
+            max-width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+            font-size: 0.85em;
+            animation: fadeIn 2s ease-in forwards;
+            border-radius: 8px; /* Optional: slight rounding for harmony */
+            max-height: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 2px;
+            line-height: 1.45;
+            text-align: left;           /* justified text */
+            
+            hyphens: auto;                 /* καλύτερη σπάση λέξεων */
+            overflow-wrap: break-word;     /* αποφύγετε overflow λέξεων */
+            -webkit-font-smoothing:antialiased;
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+   
+        .zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: zoom-out;
+        }
+
+        .zoom-overlay img#zoomed-image {
+            max-width: 90%;
+            max-height: 90%;
+            transition: transform 0.3s ease;
+            transform: scale(1);
+            pointer-events: none;
+        }
+
+        .zoom-overlay img.zoomed {
+            transform: scale(1.05);
+        }
+        
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 70px;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+            border: 3px solid white;
+            border-radius: 12px;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+            user-select: none;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .nav-btn.left {
+            left: 20px;
+        }
+
+        .nav-btn.right {
+            right: 20px;
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .nav-btn {
+                font-size: 3rem;
+                width: 90px;
+                height: 90px;
+            }
+        }
+        
+        .logo-img {
+          max-width: var(--header-image-width);
+          height: auto; /* <-- maintain aspect ratio */
+          width: auto;
+          margin-bottom: 0px;
+          animation: imageFadeIn 2s ease-in forwards;
+
+          /* Add edge diffuse effect */
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+          filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+          border-radius: 8px; /* Optional: slight rounding for harmony */
+
+          .section-container {
+                flex-direction: column;
+                padding: 1px;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .text-panel, .image-panel {
+                padding: 1px;
+                width: 100%;
+                min-height: auto;
+            }
+        }
+        
+
+        @media (max-width: 768px) {
+            body { font-size: 14px; }
+            h1 { font-size: 1.6em; }
+            h2 { font-size: 1.3em; }
+            h3 { font-size: 1em; }
+            p { font-size: 0.85em; }
+            
+            .nav-menu {
+                top: 15px;
+                right: 40px;
+                width: 5px;
+            }
+            
+            .nav-menu button {
+                font-size: 0.85em;
+                padding: 1.5px 1;
+                z-index: 3; 
+                display: block;
+                width: 100%;
+                border: none;
+                background: none;
+                text-align: left;
+                width: auto;
+                min-width: 100px;
+                max-width: 200px;
+            }
+            
+            .section-container {
+                flex-direction: column;
+                padding: 1px;
+            }
+            .text-panel, .image-panel {
+                padding: 2px;
+                width: 100%;
+                min-height: auto;
+            }
+            .hero .section-container .text-panel{
+                font-size: 1.2em;
+            }
+            .hero .text-panel-info {
+                padding: 7px;
+                font-size: 10px;
+            }
+            .hamburger {
+                font-size: 18px;
+            }
+
+            .contact .text-panel {
+                padding: 10px;
+                font-size: 0.65rem;
+            }
+             .section-container {
+                flex-direction: column;
+                padding: 1px;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .text-panel, .image-panel {
+                padding: 1px;
+                width: 100%;
+                min-height: auto;
+            }
+            .footer-line {
+                border-top: 2px solid #4A5D4A;      
+            }
+            
+            .footer-line img {
+                height: 20px; /* adjust size */
+                width: auto;
+                
+            }
+            .footer-line .leafs {
+                position: absolute;
+                top: -15px; /* adjust leaf overlap */
+            }
+            /* Main Layout Adjustments */
+            .menu .main-content {
+                display: flex;
+                flex-direction: column;
+                gap: 1px; /* Minimal padding between panels */
+            }
+
+            .menu .text-panel {
+                min-height: auto;
+                font-size: 1.0rem;
+                padding: 8px;
+                flex: 2.3; /* 2.3 times the space of image panel */
+                flex-grow: 2.3;
+                flex-shrink: 0;
+            }
+            .menu .text-panel .catalog-header img {
+                width: 90px;
+                height: 90px;
+            }
+            .menu .text-panel .menu-buttons {
+                gap: 6px;
+                margin-bottom: 4px;
+            }
+            .menu .text-panel .menu-buttons button {
+                font-size: 0.8em;
+                padding: 6px 10px;
+                min-width: 80px;
+                max-width: 140px;
+                border: 1px solid #4A5D4A;
+                
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                font-family: 'Open Sans', sans-serif !important;
+                font-weight: 400 !important;
+            }
+            .menu .image-panel {
+                max-width: 50%; /* Shrink images */
+                min-height: auto;
+                grid-template-columns: repeat(1, 1fr);
+                padding: 4px;
+                
+                flex: 1; /* Base unit for ratio */
+                flex-grow: 1;
+                flex-shrink: 0;
+            }
+            .menu .image-panel img {
+                max-width: 100%; /* Smaller images */
+                margin: 0 auto;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+                filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+                border-radius: 8px;
+            }
+            .menu-section {
+                max-width: 100%;
+                padding: 6px;
+            }
+            .menu-section p, .menu-section ul {
+                font-size: 0.85em;
+                line-height: 1.3;
+            }
+            .menu-section img {
+                max-width: 100%;
+            }
+            .menu-catalogue th, .menu-catalogue td {
+                font-size: 0.8em;
+            }
+            
+
+            .gallery .image-panel {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr); /* fixed 4 columns */
+              gap: 6px;
+              padding: 8px;
+              justify-items: center;
+              align-items: center;
+            }
+
+            .gallery .image-panel img {
+              width: 100%;
+              aspect-ratio: 4 / 3;
+              object-fit: cover;
+              border-radius: 6px;
+              box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+              filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.15));
+              background-color: white;
+              display: block;
+            }
+
+            .gallery .text-panel {
+                padding: 20px; /* Increase padding for better spacing */
+                text-align: center; /* Center text for better alignment */
+                font-size:1.24em ;
+            }
+            .gallery .text-panel .return-btn {
+                margin: 20px auto; /* Center the button */
+                display: block; /* Ensure it takes up the full width for centering */
+            }
+            .hero button, .return-btn, .menu button, .gallery button, .map-btn {
+            
+            font-size: 0.85em;
+            
+            }
+            
+            header img {
+                max-width: calc(var(--header-image-width) * 0.6);
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            
+            footer .social-logos img {
+                width: calc(var(--social-logo-size-footer) * 0.75);
+                margin: 0 5px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hero .social-logos img {
+                width: calc(var(--social-logo-size-hero) * 0.75);
+                margin: 0 5px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .music-panel {
+                flex: 1;
+                margin-top: 10px;
+            }
+            .music-panel h3 {
+                font-size: 1em;
+            }
+            .music-panel button {
+                font-size: 0.85em;
+                padding: 6px 12px;
+            }
+            .hamburger {
+                font-size: 24px;
+            }
+            :root {
+                --flag-size: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            body { font-size: 12px; }
+            h1 { font-size: 1.4em; }
+            h2 { font-size: 1.1em; }
+            h3 { font-size: 0.9em; }
+            p { font-size: 0.9em; }
+            .nav-menu {
+                width: 110px;
+            }
+            .nav-menu button {
+                font-size: 0.8em;
+            }
+            
+            .gallery .image-panel img {
+                max-width: 200%;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .menu .image-panel img {
+                max-width: 100%;
+                box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+                filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
+                border-radius: 6px;
+            }
+            .menu-section {
+                max-width: 100%;
+                padding: 4px;
+            }
+            .menu-section p, .menu-section ul {
+                font-size: 0.8em;
+                line-height: 1.2;
+            }
+            .menu-section img {
+                max-width: 100%;
+            }
+            .menu-catalogue th, .menu-catalogue td {
+                font-size: 0.75em;
+            }
+
+            header img {
+                max-width: calc(var(--header-image-width) * 0.35);
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hamburger {
+                font-size: 18px;
+            }
+            .hamburger {
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                cursor: pointer;
+                font-size: 28px;
+                z-index: 2;
+                display: block;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 10px; /* Optional: slight rounding for harmony */
+            }
+            .language-toggle {
+                top: 8px;
+                left: 4px;
+            }
+            .language-toggle span {
+                font-size: 16px;
+            }
+            
+            footer .social-logos img {
+                width: calc(var(--social-logo-size-footer) * 0.5);
+                margin: 0 px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .hero .social-logos img {
+                width: calc(var(--social-logo-size-hero) * 0.5);
+                margin: 0 3px;
+                /* Add edge diffuse effect */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
+            }
+            .music-panel h3 {
+                font-size: 0.9em;
+            }
+            .music-panel button {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+            :root {
+                --flag-size: 20px;
+            }
+            .about .section-container {
+                flex-direction: column;
+            }
+            .about .left-panel, .about .right-panel {
+                flex: 1;
+                padding: 0;
+                width: 100%;
+            }
+            .about .left-panel .text-info, .about .right-panel .text-info {
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <header>
+        <img src="Logos/matzourana-logo.png" alt="Matzourana Grill Logo">
+        <!-- <div class="language-toggle">
+            <span onclick="toggleLanguage('el')">🇬🇷</span>
+            <span onclick="toggleLanguage('en')">🇬🇧</span>
+        </div> -->
         <div class="language-toggle">
-            <span onclick="setLanguage('el')">🇬🇷</span>
-            <span onclick="setLanguage('en')">🇬🇧</span>
+            <span onclick="toggleLanguage('el')">EL</span>
+            <span onclick="toggleLanguage('en')">EN</span>
         </div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <img src="matzourana-logo.png" alt="Ματζουράνα Grill Logo">
-        <h1 class="lang" data-el="Ματζουράνα" data-en="Matzourana">Ματζουράνα</h1>
-        <p class="lang" data-el="Ελληνική Κουζίνα - Grill" data-en="Greek Cuisine - Grill">Ελληνική Κουζίνα - Grill</p>
-        <nav class="nav-menu" id="navMenu">
-            <a href="index.html" class="lang" data-el="Αρχική" data-en="Home">Αρχική</a>
-            <a href="menu.html" class="lang" data-el="Μενού" data-en="Menu">Μενού</a>
-            <a href="about.html" class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</a>
-            <a href="contact.html" class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</a>
-            <a href="gallery.html" class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</a>
-        </nav>
+        <div class="nav-menu active">
+            <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
+            <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
+            <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
+            <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
+            <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
+        </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="home">
         <div class="section-container left-image">
-            <div class="image-panel">
-                <img src="hero-image.png" alt="Hero Image" id="hero-image">
-            </div>
             <div class="text-panel">
-                <h2 class="lang" data-el="Καλώς ήρθατε στη Ματζουράνα" data-en="Welcome to Matzourana">Καλώς ήρθατε στη Ματζουράνα</h2>
-                <p class="lang" data-el="η ελληνική κουζίνα στην καλύτερη εκδοχή της!" data-en="Greek cuisine at its best!">η ελληνική κουζίνα στην καλύτερη εκδοχή της!</p>
-                <p class="lang" data-el="<br><br><br><br><br><br><br>Για Online Παραγγελίες:" data-en="<br><br><br><br><br><br><br>For Online Orders:">For Online Orders:</p>
-                <div class="order-logos">
-                    <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="efood-logo.png" alt="eFood"></a>
-                    <a href="https://wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="wolt-logo.png" alt="Wolt"></a>
+                <h2 class="lang" data-el="Καλώς ήρθατε <br> στη Ματζουράνα" data-en="Welcome <br> to Matzourana">Καλώς ήρθατε <br> στη Ματζουράνα</h2>
+            
+                <div class="text-panel-info">
+                    <p class="lang" 
+                        data-el="Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς."  
+                        data-en="In our small gastro-tavern you will enjoy home-cooked meals and freshly grilled dishes, infused with our love for authentic flavors and the quality of our ingredients.<br><br>We collaborate with certified small producers from the Ionian and Western Greece to offer you familiar, traditional dishes — sometimes with a modern twist — always focusing on taste and highlighting our culinary heritage.">
+                        Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.
+                    </p>
+                     <div class="footer-line">
+                        <span class="leafs">
+                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                        </span>
+                    </div>
+                </div> 
+                
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Για Online Παραγγελίες:" data-en="For Online Orders:">For Online Orders:</p>
+                    <div class="social-logos">
+                        <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+                        <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+                        <br>
+                    </div>
                 </div>
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά ή επισκεφθείτε μας στο κατάστημα. <br><br> Θα χαρούμε να σας εξυπηρετήσουμε!" 
+                                    data-en="To enjoy even more favorable prices, place your order by phone or visit us in-store. <br><br> We will be happy to serve you!">
+                                    Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά ή επισκεφθείτε μας στο κατάστημα. <br><br> Θα χαρούμε να σας εξυπηρετήσουμε!</p>
+                </div>
+                <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
+            </div>
+            <div class="image-panel">
+                <img id="hero-image" src="CoreImages/hero-image.png" alt="Hero Image" style="max-width: 100%; margin-bottom: 20px;">
+                <div id="dynamic-panel"></div>
+
+                <script>
+                const load_music_menu = false; // Set to true if you want to show the music panel
+                const dynamicPanel = document.getElementById('dynamic-panel');
+
+                if (load_music_menu) {
+                    dynamicPanel.innerHTML = `
+                    <div class="music-panel">
+                        <h3 class="lang" data-el="Ακούστε το τραγούδι της Ματζουράνας" data-en="Listen to Matzourana's Song">Listen to Matzourana's Songs</h3>
+                        <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
+                        <div class="music-player-icon">
+                        <div class="equalizer">
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                        </div>
+                        </div>
+                        <p id="music-info" class="lang" 
+                          data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
+                          data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
+                          style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
+                          Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
+                        </p>
+                    </div>
+                    `;
+                } else {
+                    dynamicPanel.innerHTML = `
+                    <div class="contact-panel">
+                        <img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">
+                        <div class="image-panel-info">
+                           <p class="lang" 
+                              data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" 
+                              data-en="Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Daily Delivery: 12:00-19:30<br>Closed on Mondays">
+                              Dimosthenous 48, Kallithea<br>
+                              Tel: 210 9577 846<br>
+                              Mobile: 697 1701 113<br>
+                              Daily Delivery: 11:30–19:30<br>
+                              Closed on Mondays
+                           </p>
+                           <!--
+                            <p class="lang" style="font-weight: bold; color: #4A5D4A;"
+                                data-el="H Matzourana θα παραμείνει κλειστή από 12/8 έως 26/8. Καλή ξεκούραση! Ανυπομονούμε να σας εξυπηρετήσουμε σύντομα! 🌞🏖️🌴"
+                                data-en="Matzourana will be closed from 12/8 to 26/8. We wish you a nice holiday period! We look forward to serving you soon! 🌞🏖️🌴">
+                                Matzourana will be closed from 12/8 to 26/8. We wish you a nice holiday period! We look forward to serving you soon! 🌞🏖️🌴
+                            </p>
+                            -->
+                        </div>
+                    </div>
+                    `;
+                }
+                </script>
             </div>
         </div>
     </section>
 
+    <section class="about" id="about">
+        <!--<div class="section-container right-image">
+            <div class="text-panel">
+                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
+                <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+            <div class="image-panel">
+                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+            </div>
+        </div>-->
+        <div class="section-container">
+            <div class="left-panel">
+                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+                <div class="text-info">
+                    
+                        <p class="lang" data-el="Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτέρη, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον." 
+                                        data-en="Our kitchen focuses on the nutritional value and quality of our ingredients. Our meats are all sourced from the Skouteri family, from Astakos, Aetoloakarnania, renowned for adhering to strict standards in their products. Our minced meat is 100% beef. Our feta is PDO. Our vegetables, always fresh and seasonal, are selected from our local farmers’ market as well as from small certified producers. Our eggs are organic. The olive oil we use in all our dishes is exceptional extra virgin olive oil from Achaia and Kefalonia. The sunflower oil we use only for frying is of high quality and changed very frequently. Our care in ingredient selection is non-negotiable. Every dish is the result of respect and love for both people and the environment.">
+                                        Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτέρη, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον.</p>
+                    <div class="footer-line">
+                        <span class="leafs">
+                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-panel">
+                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
+                <div class="text-panel">
+                    <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" 
+                                    data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">
+                                    Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
+                </div>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="section-container left-image">
+            <div class="image-panel">
+                <img id="contact-map" src="CoreImages/contact-map.png" alt="Map">
+            </div>
+            <div class="text-panel">
+                <h2 class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</h2>
+                <p class="lang" data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" data-en="Dimosthenous 48, Kallithea<br>Mobile: 697 1701 113<br>Daily Delivery: 12:00-19:30<br>Closed on Mondays">Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays</p>
+                <button class="map-btn lang" data-el="Δείτε στον Χάρτη Google" data-en="View on Google Maps" onclick="gotoGoogleMaps()">View on Google Maps</button>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="menu" id="menu">
+        <div class="section-container right-image">
+            <div class="text-panel">
+                <h2 class="lang" data-el="Μενού" data-en="Menu">Menu</h2>
+                <div class="catalog-header">
+                    <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Dishes Catalog">Food Catalog</h3>
+                    <img src="Logos/food-logo.png" alt="Food Logo", class="logo-img">
+                </div>
+                <div class="menu-buttons">
+                    <button onclick="showMenu('appetizers')" class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizers</button>
+                    <button onclick="showMenu('salads')" class="lang" data-el="Σαλάτες" data-en="Salads">Salads</button>
+                    <button onclick="showMenu('potatoes')" class="lang" data-el="Πατάτες" data-en="Potatoes">Potatoes</button>
+                    <button onclick="showMenu('daily-dishes')" class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</button>
+                    <button onclick="showMenu('grilled-dishes')" class="lang" data-el="Ψητά της Ώρας" data-en="Grilled Dishes">Grilled Dishes</button>
+                </div>
+                <div class="menu-content" id="appetizers">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Ψωμί προζυμένιο με λάδι κ’ ρίγανη" data-en="Sourdough Bread with Oil and Oregano">Sourdough Bread with Oil and Oregano</td><td>€0.80</td></tr>
+                            <!--<tr><td class="lang" data-el="Σκορδαλιά μερίδα" data-en="Garlic Sauce">Garlic Sauce Portion</td><td>€3.50</td></tr>-->
+                            <tr><td class="lang" data-el="Τζατζίκι χειροποίητο" data-en="Homemade Tzatziki">Homemade Tzatziki</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Χειροποίητοι Κολοκυθοκεφτέδες 5 τμχ." data-en="Handmade Zucchini Fritters (5 pcs.)">Zucchini Fritters (5 pcs.)</td><td>€6.00</td></tr>
+                            <tr><td class="lang" data-el="Φέτα ΠΟΠ Ηπείρου με έξτρα παρθένο ελαιόλαδο κ’ ρίγανη" data-en="Epirus PDO Feta with Extra Virgin Oliveoil and Oregano">Epirus PDO Feta with Oil and Oregano</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Μπουγιουρντί φέτα με μπούκοβο κ’ ντομάτα" data-en="Bouyourdi Feta with Chili Flakes and Tomato">Bouyourdi Feta with Chili Flakes and Tomato</td><td>€6.00</td></tr>
+                            <tr><td class="lang" data-el="Σαγανάκι κεφαλοτύρι" data-en="Kefalotyri Saganaki">Kefalotyri Saganaki</td><td>€5.30</td></tr>
+                            <tr><td class="lang" data-el="Χαλούμι ψητό " data-en="Grilled Halloumi">Grilled Halloumi</td><td>€6.00</td></tr>
+                            <tr><td class="lang" data-el="Χαλούμι ψητό με μέλι Κεφαλονιάς κ’ σουσάμι" data-en="Grilled Halloumi with Honey from Kefaloniaand and Sesame">Grilled Halloumi with Honey from Kefalonia and and Sesame</td><td>€6.90</td></tr>
+                            <tr><td class="lang" data-el="Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" data-en="Fava (Yellow split peas, with Parsley, Onion and Lemon)">Fava with Parsley, Onion and Lemon</td><td>€5.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Ντολμαδάκια γιαλατζί χειροποίητα 6 τμχ." data-en="Handmade Stuffed Dolmades (6 pcs.)">Homemade Stuffed Dolmades (6 pcs.)</td><td>€7.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Ψητά Λαχανικά (κολοκυθάκια – μελιτζάνες – πιπεριές – μανιτάρια)" data-en="Grilled Vegetables (Zucchini, Eggplant, Peppers, Mushrooms)">Grilled Vegetables (Zucchini, Eggplant, Peppers, Mushrooms)</td><td>€8.00</td></tr>-->
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="salads">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Σαλάτες" data-en="Salads">Salad</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Ματζουράνα <br><br> (Mix μαρουλιών, ρόκα, ντοματίνια, αγγούρι, πράσινο μήλο, ραπανάκι, ρόδι, άνηθος, φρέσκο κρεμμύδι, παρμεζάνα, ξύδι βαλσάμικο)" data-en="Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)">Matzourana Salad <br><br> (Mixed lettuces, arugula, cherry tomatoes, cucumber, green apple, radish, pomegranate, dill, fresh onions, parmesan, balsamic vinegar)</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Χαλούμι <br><br> (Λόλα, ρόκα, ψητό χαλόυμι, αποξηραμένα σύκα, καρύδια, cranberries, σουσάμι, ντοματίνια, ξύδι βαλσάμικο)" data-en="Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)">Halloumi Salad <br><br> (Lola lettuce, arugula, grilled halloumi, dried figs, walnuts, cranberries, sesame, cherry tomatoes, balsamic vinegar)</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Ντάκος <br><br> (Κριθαροκούλουρο, φέτα ΠΟΠ, τριμμένη ντομάτα, κάπαρη, φρέσκια ρίγανη)" data-en="Dakos <br><br> (Cretan rusk, PDO feta, grated tomato, capers, fresh oregano)">Dakos <br><br> (Cretan rusk, barley bread, PDO feta, grated tomato, capers, fresh oregano)</td><td>€7.80</td></tr>
+                            <tr><td class="lang" data-el="Χωριάτικη" data-en="Greek Village Salad/ Choriatiki">Greek Village Salad</td><td>€7.50</td></tr>
+                            <tr><td class="lang" data-el="Μαρούλι" data-en="Lettuce Salad">Lettuce Salad</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Λαχανό - Καρότο" data-en="Cabbage and Carrot Salad">Cabbage and Carrot Salad</td><td>€5.00</td></tr>
+                            <tr><td class="lang" data-el="Χόρτα Εποχής" data-en="Seasonale Greens">Seasonale Greens</td><td>€6.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Παντζάρια" data-en="Beetroot Salad">Beetroot Salad</td><td>€5.00</td></tr>-->
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="potatoes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Πατάτες Φρεσκοκομμένες" data-en="Freshly Cut Potatoes">Freshly Cut Potatoes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές" data-en="French Fries">French Fries</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με sauce Ματζουράνα και τριμμένο κεφαλοτύρι)" data-en="French Fries <br><br> (with Matzourana sauce and grated kefalotyri cheese)">French Fries with marjoram sauce and grated kefalotyri cheese</td><td>€4.50</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες τηγανητές <br><br> (με πεντανόστιμη σπιτική σάλτσα φρέσκου μοσχαρίσιου κιμά)" data-en="French Fries <br><br> (with delicious homemade sauce of fresh ground beef)">French Fries <br><br> (with delicious homemade sauce of fresh ground beef, bacon, and crumbled feta)</td><td>€6.50</td></tr>
+                            <tr><td class="lang" data-el="Πατάτες στο φούρνο <br><br> (λεμονάτες με φρέσκια ματζουράνα)" data-en="Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)">Oven-baked Potatoes <br><br> (lemon-flavored with fresh marjoram)</td><td>€4.50</td></tr>
+                            <!--<tr><td class="lang" data-el="Πατάτες με σάλτσα" data-en="Potatoes with Sauce">Potatoes with Sauce</td><td>€4.00</td></tr>-->
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="daily-dishes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <!-- Daily Dishes --> 
+                            <!--<tr><th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>-->
+                            <tr>
+                                <th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th>
+                                <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
+                            </tr>
+                            <tr>
+                                <th class="lang" data-el="" data-en="" id="daily-dishes-header" colspan="2"></th>
+                            </tr>
+                           
+                            <!--<tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr>
+                            <th class="lang" data-el="Πιάτα Ημέρας - " data-en="Daily Dishes - " id="daily-dishes-header">Daily Dishes - </th>
+                            <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
+                            </tr>-->
+                            <tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <!--<tr><th class="lang" data-el="Φρεσκομαγειρεμένα" data-en="Freshly Cooked">Freshly Cooked</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <tr><td class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Pastitsio</td><td>€8.00</td></tr>-->
+                            <!--<tr><td class="lang" 
+                                data-el="Παστίτσιο <br><br> (Παστίτσιο με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι. Η συνταγή της επιτυχίας...)" 
+                                data-en="Pastitsio <br><br> (Pastitsio with handmade béchamel, 100% beef mince and rigatoni. The recipe for success...)">
+                                Pastitsio<br><br>(Pastitsio with handmade béchamel, 100% beef mince and rigatoni. The recipe for success...)
+                            </td><td>€8.00</td></tr>-->
+                            <!--<td class="lang" 
+                                data-el="Μουσακάς <br><br> (Δεν υπάρχουν λόγια για να περιγράψεις αυτόν το μουσακα! Με 100% μοσχαρίσιο κιμά, 
+                                                 από τα Κρέατα Αστακού, πλούσια μπεσαμέλ, ψητές μελιτζάνες και κολοκύθια, πατατούλες 
+                                                και τριμμένο κεφαλοτύρι, θα είναι ο πιο νόστιμος και πιο ελαφρύς μουσακάς που έχεις δοκιμάσει!)" 
+                                data-en="Moussaka <br><br> (There are no words to describe this moussaka! With 100% beef mince from Astakou Meats, 
+                                                    rich béchamel, roasted eggplants and courgettes, potatoes, and grated kefalotyri, 
+                                                    it will be the tastiest and lightest moussaka you’ve ever tried!)">
+                                Moussaka (There are no words to describe this moussaka! With 100% beef mince from Astakou Meats, rich béchamel,
+                                          roasted eggplants and courgettes, potatoes, and grated kefalotyri, it will be the tastiest and lightest moussaka you’ve ever tried!)
+                            </td><td>€8.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές, πατάτες, ντοματούλα και μυρίζει καλοκαίρι όλο το χρόνο!)" 
+                                                 data-en="Briam <br><br> (With eggplants, courgettes, colorful peppers, potatoes, and a tomato, it smells like summer all year round!)">
+                                                 Briam (With eggplants, courgettes, colorful peppers, potatoes, and a tomato, it smells like summer all year round!)
+                            </td><td>€6.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μοσχαράκι Στιφάδο" data-en="Beef Stifado">Beef Stifado</td><td>€11.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Γιούλμπασι στην λαδόκολλα" data-en="Gioulmpasi in Greaseproof Paper">Gioulmasi in Greaseproof Paper</td><td>€12.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μπιφτέκια κοτόπουλο στον φούρνο" data-en="Chicken Patties">Baked Chicken Patties</td><td>€9.50</td></tr>-->
+                            <tr><td class="lang" data-el="Μελιτζάνες παπουτσάκια <br><br> (Απλά ονειρεμένα! Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού και βελούδινη μπεσαμέλ.)"
+                                                 data-en="Stuffed Eggplants (Papoutsakia) <br><br> (Simply dreamy! With 100% beef mince from Astakou Meats and velvety béchamel.)">
+                                                 Stuffed Eggplants (Papoutsakia) (Simply dreamy! With 100% beef mince from Astakou Meats and velvety béchamel.)
+                            </td><td>€8.50</td></tr>
+                            <!--<tr><td class="lang" data-el="Πατάτες με Μελιτζάνες Γιαχνί" data-en="Potatoes with Eggplants in Tomato Sauce">Potatoes with Eggplants in Tomato Sauce</td><td>€6.00</td></tr>-->
+                            <tr><td class="lang" data-el="Γεμιστά <br><br> (Ντομάτα και πιπεριά, με πλιγούρι, μυρωδικά και πατατούλες. Και υγιεινά και νόστιμα!)" 
+                                                 data-en="Stuffed Vegetables <br><br> (Tomato and pepper, with bulgur, herbs, and potatoes. Both healthy and delicious!)">
+                                                Stuffed Vegetables (Tomato and pepper, with bulgur, herbs, and potatoes. Both healthy and delicious!)    
+                            </td><td>€8.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα μπιφτέκια μοσχαρίσια 300 γραμμάρια, με πατατούλες στο φούρνο και όποιος μπορέσει να τους αντισταθεί, να μας το πει!)"
+                                                 data-en="Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)">
+                                                 Oven-Baked Beef Patties with Potatoes (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)
+                            </td><td>€9.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Κεφτεδάκια με σάλτσα" data-en="Meatballs in Tomato Sauce">Meatballs in Tomato Sauce</td><td>€8.00</td></tr>-->
+                            <tr><td class="lang" data-el="Κεφτεδάκια τηγανιτά <br><br> (Τα μυρωδάτα κεφτεδάκια της μαμάς, τηγανίζονται την ώρα της παραγγελίας σας και υπόσχονται να σας ξυπνήσουν τις παιδικές σας αναμνήσεις! Συνοδεύονται με γαρνιτούρα της επιλογής σας.)"
+                                                 data-en="Fried Meatballs <br><br> (Mom’s fragrant meatballs, fried fresh upon your order, promising to awaken your childhood memories! Served with your choice of side.)">
+                            Fried Meatballs (Mom’s fragrant meatballs, fried fresh upon your order, promising to awaken your childhood memories! Served with your choice of side.)
+                            </td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι κοκκινιστό χτένι (κρέατα Αστακού) με γαρνιτούρα της επιλογής σας.)" 
+                                                 data-en="Beef in Red Sauce <br><br> (Tender beef in red sauce from Astakou Meats, served with your choice of side.)">
+                                                 Beef in Red Sauce (Tender beef in red sauce from Astakou Meats, served with your choice of side.)
+                            </td><td>€9.80</td></tr>
+                           <!--<tr><td class="lang" data-el="Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι (κρέατα Αστακού) με τριμμένη μυζήθρα.)" 
+                                                 data-en="Beef Giouvetsi <br><br> (Beef with Orzo in Tomato Sauce) (Traditional beef giouvetsi from Astakou Meats, served with grated myzithra.)">
+                                                 Beef Giouvetsi (Beef with Orzo in Tomato Sauce) (Traditional beef giouvetsi from Astakou Meats, served with grated myzithra.)
+                            </td><td>€10.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Αρακάς λεμονάτος" data-en="Lemony Peas">Lemony Peas</td><td>€5.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Γίγαντες φασόλια" data-en="Giant Beans">Giant Beans</td><td>€6.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο (κρέατα Αστακού), με γαρνιτούρα της επιλογής σας.)" 
+                                                 data-en="Lemony Beef Stew <br><br> (Tender lemony beef shank from Astakou Meats, served with your choice of side.)">
+                                                 Lemony Beef Stew (Tender lemony beef shank from Astakou Meats, served with your choice of side.)
+                            </td><td>€9.30</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Κόκορας κρασάτος <br><br> (Ποιος μπορεί να αντισταθεί στη νοστιμιά του? Από τα εκλεκτά κοτόπουλα Ναυπάκτου. Συνοδεύεται με γαρνιτούρα της επιλογής σας.)" 
+                                                 data-en="Rooster in Wine Sauce <br><br> (Who can resist its deliciousness? Made from select Nafpaktos chickens. Served with your choice of side.)">
+                                                 Rooster in Wine Sauce (Who can resist its deliciousness? Made from select Nafpaktos chickens. Served with your choice of side.)
+                            </td><td>€9.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Κόκορας με χωριάτικες χυλοπίτες" data-en="Rooster with Country-Style Pasta (Hilopites)">Rooster with Country-Style Handmade Pasta (Hilopites)</td><td>€9.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Σουτζουκάκια Σμυρνέικα" data-en="Smyrna-Style Soutzoukakia">Smyrna-Style Soutzoukakia</td><td>€8.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Σπετζοφάϊ με βόειο λουκάνικο" data-en="Spetzofai with Beef Sausage">Spetzofai with Beef Sausage</td><td>€8.30</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μοσχαράκι Νουά" data-en="Veal Noix">Veal Noix</td><td>€10.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Φρέσκα Φασολάκια λαδερά <br><br> (Φρέσκα, με ντοματούλα και πατάτες, σε περιμένουν να τα δοκιμάσεις!)" 
+                                                 data-en="Fresh Green Beans in Olive Oil <br><br> (Fresh, with tomato and potatoes, waiting for you to try them!)">
+                                                 Fresh Green Beans in Olive Oil (Fresh, with tomato and potatoes, waiting for you to try them!)
+                            </td><td>€6.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Φασολάκια λαδερά" data-en="Green Beans in Olive Oil">Green Beans in Olive Oil</td><td>€6.00</td></tr>-->
+                            <tr><td class="lang" data-el="Μελιτζάνες ιμάμ με φέτα ΠΟΠ <br><br> (Τσακώνικες μελιτζάνες με σάλτσα φρέσκιας ντομάτας, μελωμένο κρεμμυδάκι και τριμμένη φέτα ΠΟΠ. Πώς να μη λυποθυμήσει ο ιμάμης?)"
+                                                 data-en="Imam Eggplants with PDO Feta <br><br> (Tsakonian eggplants with fresh tomato sauce, caramelized onion, and grated PDO feta. How could the imam not faint?)">
+                                                 Imam Eggplants with PDO Feta (Tsakonian eggplants with fresh tomato sauce, caramelized onion, and grated PDO feta. How could the imam not faint?
+                            </td><td>€7.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Λαχανοντολμάδες" data-en="Cabbage Rolls">Cabbage Rolls</td><td>€8.50</td></tr>-->
+                            <tr><td class="lang" data-el="Κολοκυθάκια γεμιστά με κιμά αυγολέμονο <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
+                                                 data-en="Stuffed Zucchini with Meat & Egg-Lemon Sauce <br><br> (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)">
+                                                 Stuffed Zucchini with Meat & Egg-Lemon Sauce (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)
+                            </td><td>€8.50</td></tr>
+                            <!--<tr><td class="lang" data-el="Κοτόπουλο στο φούρνο, ελευθέρας βοσκής <br><br> (Κοτόπουλο ελευθέρας βοσκής, από τα εκλεκτά κοτόπουλα Ναυπάκτου, με πολλή φροντίδα και το πιο μαμαδίστικο φαγάκι είναι έτοιμο!)" 
+                                                 data-en="Free-Range Roast Chicken <br><br> (Free-range chicken from select Nafpaktos chickens, prepared with care, offering the most home-cooked taste!)">
+                                                 Free-Range Roast Chicken (Free-range chicken from select Nafpaktos chickens, prepared with care, offering the most home-cooked taste!)
+                            </td><td>€8.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Αγγινάρες φρέσκιες αλά πολίτα" data-en="Fresh Artichokes à la Polita">Fresh Artichokes à la Polita</td><td>€9.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μακαρονάδα Μπολονέζ με τριμένο κεφαλοτύρι" data-en="Bolognese Spaghetti with grated kefalotyri cheese">Bolognese Spaghetti with grated kefalotyri cheese </td><td>€8.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Μακαρόνια με κιμά <br><br> (Έχει ψηφιστεί το αγαπημένο φαγητό των Ελλήνων και καταλαβαίνουμε γιατί...με 100% μοσχαρίσιο κιμά από τα Κρέατα Αστακού, θα γίνει και το δικό σας αγαπημένο!)" 
+                                                 data-en="Spaghetti with Minced Meat <br><br> (Voted the favorite dish of Greeks, and we understand why... with 100% beef mince from Astakou Meats, it will become your favorite too!)">
+                                                 Spaghetti with Minced Meat (Voted the favorite dish of Greeks, and we understand why... with 100% beef mince from Astakou Meats, it will become your favorite too!)
+
+                            </td><td>€7.00</td></tr>-->
+                            <!-- Seefood Dishes -->
+                            <tr><th class="lang" data-el="Πιάτα Θαλασσινών" data-en="Seafood Dishes">Seafood Dishes</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <!--<tr><td class="lang" data-el="Μπακαλιάρος φιλέτο σκορδαλιά" data-en="Cod Fillet with Garlic Sauce">Cod Fillet with Garlic Sauce</td><td>€12.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Σαρδέλες λεμονάτες" data-en="Lemon Sardines">Lemon Sardines</td><td>€8.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Λιγκουίνι με γαριδούλες" data-en="Linguine with small shrimps">Linguine with small shrimps</td><td>€8.00</td></tr>-->
+                            <!--<<tr><td class="lang" data-el="Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες" data-en="Salted Cod Spetsiota with Potatoes">Salted Cod Spetsiota with Potatoes</td><td>€11.00</td></tr>-->
+                            <tr><td class="lang" data-el="Πελαγίσιες Τσιπούρες <br><br> (Με φρέσκο ψάρι στο φούρνο με πατάτες)" 
+                                                 data-en="Wild Gilthead Seabream <br><br> (Fresh fish oven-baked with potatoes)">
+                                                 Wild Gilthead Seabream (oven-baked with potatoes))
+                            </td><td>€13.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Γαρίδες ψητές Νο.1 (5 τμχ.)" data-en="Grilled Shrimps No.1 (5 pcs.)">Grilled Shrimps No.1 (5 pcs.)</td><td>€11.00</td></tr>
+                            <tr><td class="lang" data-el="Γαριδομακαρονάδα" data-en="Shrimps Spaghetti">Shrimps Spaghetti</td><td>€13.00</td></tr>
+                            <tr><td class="lang" data-el="Κριθαρώτο με γαρίδες" data-en="Shrimps Orzo">Shrimps Orzo</td><td>€13.00</td></tr>
+                            <tr><td class="lang" data-el="Χταπόδι με κοφτό μακαρονάκι" data-en="Octopus with Short Pasta">Octopus with Short Pasta</td><td>€10.00</td></tr>
+                            <tr><td class="lang" data-el="Τσιπούρα με βραστά λαχανικά" data-en="Gilthead Seabream with Boiled Vegetables">Gilthead Seabream with Boiled Vegetables</td><td>€10.50</td></tr>
+                            <tr><td class="lang" data-el="Γαύρος φρέσκος πλακί" data-en="Fresh Baked Anchovies">Fresh Baked Anchovies</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Γαύρος φρέσκος τηγανητός" data-en="Fresh Fried Anchovies">Fresh Fried Anchovies</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Χταπόδι φρέσκο με μακαρόνι" data-en="Fresh Octopus with Pasta">Fresh Octopus with Pasta</td><td>€12.00</td></tr>
+                            <tr><td class="lang" data-el="Μυδοπίλαφο" data-en="Mussel Pilaf">Mussel Pilaf</td><td>€9.00</td></tr>-->
+
+                            <!-- Soups -->
+                            <tr><th class="lang" data-el="Σούπες" data-en="Soups">Soups</th><th class="lang" data-el="    " data-en="    ">    </th></tr>
+                            <!--<tr><td class="lang" data-el="Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη. Με εκλεκτό κοτόπουλο Ναυπάκτου.)" 
+                                                 data-en="Chicken Soup <br><br> (Nutritious and very tasty. Made with select Nafpaktos chicken.)">
+                                                 Chicken Soup (Nutritious and very tasty. Made with select Nafpaktos chicken.)
+                            </td><td>€6.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Κρεατόσουπα" data-en="Meat Soup">Meat Soup</td><td>€12.00</td></tr>-->
+                            <tr><td class="lang" data-el="Ψαρόσουπα με φρέσκο ψάρι <br><br> (Με φρέσκο ψάρι και λαχανικά. Ό,τι χρειάζεται ο οργανισμός σου, σε ένα πιάτο!)" 
+                                                 data-en="Fish Soup with fresh fish <br><br> (With fresh fish and vegetables. Everything your body needs, in one dish!)">
+                                                Fish Soup with fresh fish (With fresh fish and vegetables. Everything your body needs, in one dish!)
+
+                            </td><td>€9.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Μαγειρίτσα" data-en="Magiritsa">Magiritsa</td><td>€12.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
+                                                 data-en="Meatball Egg-Lemon Soup <br><br> (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)">
+                                                 Meatball Egg-Lemon Soup (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)
+                            </td><td>€8.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Φακές" data-en="Lentil Soup">Lentil Soup</td><td>€5.50</td></tr>-->
+                            <tr><td class="lang" data-el="Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους, αλλά και για όσους θέλουν να φάνε απλά κάτι νόστιμο.)" 
+                                                 data-en="Chickpea Stew <br><br> (For those watching their diet, and for those who simply want to enjoy something tasty.)">
+                                                 Chickpea Stew (For those watching their diet, and for those who simply want to enjoy something tasty.)
+                            </td><td>€6.00</td></tr>
+                             
+                            <!-- Sweets -->
+                            <!--<tr><th class="lang" data-el="Γλυκά" data-en="Sweets">Sweets</th><th class="lang" data-el="    " data-en="    ">    </th></tr>-->
+                            <!--<tr><td class="lang" data-el="Χαλβάς" data-en="Halvas">Halvas</td><td>€4.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Cheese Cake" data-en="Cheese Cake">Cheese Cake</td><td>€4.50</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Σοκολατόπιτα" data-en="Chocolate Pie">Chocolate Pie</td><td>€4.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Λεμονόπιτα" data-en="Lemon Pie">Lemon Pie</td><td>€4.00</td></tr>-->
+                            <!--<tr><td class="lang" data-el="Προφιτερόλ" data-en="Profiterole">Profiterole</td><td>€5.00</td></tr>-->
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="grilled-dishes">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Ψητά της Ώρας" data-en="Grilled Dishes">Grilled Dishes</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Φιλέτο Κοτόπουλο" data-en="Chicken Fillet">Chicken Fillet</td><td>€9.50</td></tr>
+                            <tr><td class="lang" data-el="Μπιφτέκι Μοσχαρίσιο Χειροποίητο" data-en="Homemade Beef Patty">Homemade Beef Patty</td><td>€9.50</td></tr>
+                            <tr><td class="lang" data-el="Μπριζόλα Χοιρινή" data-en="Pork Chop">Pork Chop</td><td>€9.80</td></tr>
+                            <tr><td class="lang" data-el="Μπριζολάκια Χοιρινά, χωρίς κόκαλο" data-en="Boneless Pork Chops">Boneless Pork Chops</td><td>€9.00</td></tr>
+                            <!--<tr><td class="lang" data-el="Μπριζόλα Μοσχαρίσια, γάλακτος" data-en="Veal Chop">Veal Chop</td><td>€16.50</td></tr>-->
+                            <tr><td class="lang" data-el="Λουκάνικο Χωριάτικο Χοιρινό" data-en="Village Pork Sausage">Village Pork Sausage</td><td>€7.50</td></tr>
+                            <tr><td class="lang" data-el="Λουκάνικο Μοσχαρίσιο Χειροποίητο" data-en="Handmade Beef Sausage">Handmade Beef Sausage</td><td>€9.50</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="catalog-header">
+                    <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks Catalog">Drinks Catalog</h3>
+                    <img src="Logos/drinks-logo.png" alt="Drinks Logo", class="logo-img">
+                </div>
+                <div class="menu-buttons">
+                    <button onclick="showMenu('soft-drinks')" class="lang" data-el="Αναψυκτικά" data-en="Soft Drinks">Soft Drinks</button>
+                    <button onclick="showMenu('beers')" class="lang" data-el="Μπύρες" data-en="Beers">Beers</button>
+                    <button onclick="showMenu('wines')" class="lang" data-el="Κρασιά" data-en="Wines">Wines</button>
+                </div>
+                <div class="menu-content" id="soft-drinks">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Αναψυκτικό" data-en="Soft Drink">Soft Drink</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Κόκα Κόλα" data-en="Coca Cola">Coca Cola</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Κόκα Κόλα zero" data-en="Coca Cola zero">Coca Cola zero</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Σόδα" data-en="Soda">Soda</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Sprite" data-en="Sprite">Sprite</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Λουξ Πορτοκαλάδα" data-en="Loux Orange Juice">Loux Orange Juice</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Λουξ Λεμονάδα" data-en="Loux Lemon Juice">Loux Lemon Juice</td><td>€2.00</td></tr>
+                            <tr><td class="lang" data-el="Εμφιαλωμένο νερό 1,5lt" data-en="Table Water 1,5lt">Table Water</td><td>€1.20</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="beers">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Μπύρα" data-en="Beer">Beer</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Άλφα" data-en="Alpha">Alpha</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Fix" data-en="Fix">Fix</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Amstel" data-en="Amstel">Amstel</td><td>€3.00</td></tr>
+                            <tr><td class="lang" data-el="Heineken" data-en="Heineken">Heineken</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Kaiser" data-en="Kaiser">Kaiser</td><td>€4.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="menu-content" id="wines">
+                    <div class="menu-catalogue">
+                        <table>
+                            <tr><th class="lang" data-el="Κρασί" data-en="Wine">Wine</th><th class="lang" data-el="Τιμή" data-en="Price">Price</th></tr>
+                            <tr><td class="lang" data-el="Μοσχοφίλερο λευκό/κόκκινο/ροζέ 0,5lt" data-en="Moshofilero white / red / rose Wine 0,5lt">Moshofilero white / red / rose Wine 0,5lt</td><td>€4.00</td></tr>
+                            <tr><td class="lang" data-el="Μοσχοφίλερο λευκό/κόκκινο/ροζέ 1,0lt" data-en="Moshofilero white / red / rose Wine 1,0lt">Moshofilero white / red / rose Wine 1,0lt</td><td>€8.00</td></tr>
+                            <tr><td class="lang" data-el="Τσίπουρο εμφιαλωμένο 200ml" data-en="Tsipouro 200ml">Tsipouro 200ml</td><td>€9.00</td></tr>
+                            <tr><td class="lang" data-el="Ούζο εμφιαλωμένο 200ml" data-en="Ouzo 200ml">Ouzo 200ml</td><td>€9.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+            <div class="image-panel">
+                <img id="menu-img-1" src="DishImages/greek-dish-1.png" alt="Greek Dish 1" onclick="zoomImage('DishImages/greek-dish-1.png')">
+                <img id="menu-img-2" src="DishImages/greek-dish-2.png" alt="Greek Dish 2" onclick="zoomImage('DishImages/greek-dish-2.png')">
+                <img id="menu-img-3" src="DishImages/greek-dish-3.png" alt="Greek Dish 3" onclick="zoomImage('DishImages/greek-dish-3.png')">
+                <img id="menu-img-4" src="DishImages/greek-dish-4.png" alt="Greek Dish 4" onclick="zoomImage('DishImages/greek-dish-4.png')">
+                <img id="menu-img-5" src="DishImages/greek-dish-5.png" alt="Greek Dish 5" onclick="zoomImage('DishImages/greek-dish-5.png')">
+                <img id="menu-img-6" src="DishImages/greek-dish-6.png" alt="Greek Dish 6" onclick="zoomImage('DishImages/greek-dish-6.png')">
+                <img id="menu-img-7" src="DishImages/greek-dish-7.png" alt="Greek Dish 7" onclick="zoomImage('DishImages/greek-dish-7.png')">
+                <img id="menu-img-8" src="DishImages/greek-dish-8.png" alt="Greek Dish 8" onclick="zoomImage('DishImages/greek-dish-8.png')">
+                <img id="menu-img-9" src="DishImages/greek-dish-9.png" alt="Greek Dish 9" onclick="zoomImage('DishImages/greek-dish-9.png')">
+                <img id="menu-img-10" src="DishImages/greek-dish-10.png" alt="Greek Dish 10" onclick="zoomImage('DishImages/greek-dish-10.png')">
+                <img id="menu-img-11" src="DishImages/greek-dish-11.png" alt="Greek Dish 11" onclick="zoomImage('DishImages/greek-dish-11.png')">
+                <img id="menu-img-12" src="DishImages/greek-dish-12.png" alt="Greek Dish 12" onclick="zoomImage('DishImages/greek-dish-12.png')">
+                <img id="menu-img-13" src="DishImages/greek-dish-13.png" alt="Greek Dish 13" onclick="zoomImage('DishImages/greek-dish-13.png')">
+                <img id="menu-img-14" src="DishImages/greek-dish-14.png" alt="Greek Dish 14" onclick="zoomImage('DishImages/greek-dish-14.png')">
+                <img id="menu-img-15" src="DishImages/greek-dish-15.png" alt="Greek Dish 15" onclick="zoomImage('DishImages/greek-dish-15.png')">
+                <img id="menu-img-16" src="DishImages/greek-dish-16.png" alt="Greek Dish 16" onclick="zoomImage('DishImages/greek-dish-16.png')">
+                <img id="menu-img-17" src="DishImages/greek-dish-17.png" alt="Greek Dish 17" onclick="zoomImage('DishImages/greek-dish-17.png')">
+                <img id="menu-img-18" src="DishImages/greek-dish-18.png" alt="Greek Dish 18" onclick="zoomImage('DishImages/greek-dish-18.png')">
+                <img id="menu-img-19" src="DishImages/greek-dish-19.png" alt="Greek Dish 19" onclick="zoomImage('DishImages/greek-dish-19.png')">
+                <img id="menu-img-20" src="DishImages/greek-dish-20.png" alt="Greek Dish 20" onclick="zoomImage('DishImages/greek-dish-20.png')">
+                <img id="menu-img-21" src="DishImages/greek-dish-21.png" alt="Greek Dish 21" onclick="zoomImage('DishImages/greek-dish-21.png')">
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery" id="gallery">
+        <div class="section-container left-image">
+            <div class="image-panel">
+                <img src="GalleryImages/gallery-1.png" alt="Gallery Image 1" onclick="zoomImage('GalleryImages/gallery-1.png')" loading="lazy">
+                <img src="GalleryImages/gallery-2.png" alt="Gallery Image 2" onclick="zoomImage('GalleryImages/gallery-2.png')" loading="lazy">
+                <img src="GalleryImages/gallery-3.png" alt="Gallery Image 3" onclick="zoomImage('GalleryImages/gallery-3.png')" loading="lazy">
+                <img src="GalleryImages/gallery-4.png" alt="Gallery Image 4" onclick="zoomImage('GalleryImages/gallery-4.png')" loading="lazy">
+                <img src="GalleryImages/gallery-5.png" alt="Gallery Image 5" onclick="zoomImage('GalleryImages/gallery-5.png')" loading="lazy">
+                <img src="GalleryImages/gallery-6.png" alt="Gallery Image 6" onclick="zoomImage('GalleryImages/gallery-6.png')" loading="lazy">
+                <img src="GalleryImages/gallery-7.png" alt="Gallery Image 7" onclick="zoomImage('GalleryImages/gallery-7.png')" loading="lazy">
+                <img src="GalleryImages/gallery-8.png" alt="Gallery Image 8" onclick="zoomImage('GalleryImages/gallery-8.png')" loading="lazy">
+                <img src="GalleryImages/gallery-9.png" alt="Gallery Image 9" onclick="zoomImage('GalleryImages/gallery-9.png')" loading="lazy">
+                <img src="GalleryImages/gallery-10.png" alt="Gallery Image 10" onclick="zoomImage('GalleryImages/gallery-10.png')" loading="lazy">
+                <img src="GalleryImages/gallery-11.png" alt="Gallery Image 11" onclick="zoomImage('GalleryImages/gallery-11.png')" loading="lazy">
+                <img src="GalleryImages/gallery-12.png" alt="Gallery Image 12" onclick="zoomImage('GalleryImages/gallery-12.png')" loading="lazy">
+                <img src="GalleryImages/gallery-13.png" alt="Gallery Image 13" onclick="zoomImage('GalleryImages/gallery-13.png')" loading="lazy">
+                <img src="GalleryImages/gallery-14.png" alt="Gallery Image 14" onclick="zoomImage('GalleryImages/gallery-14.png')" loading="lazy">
+                <img src="GalleryImages/gallery-15.png" alt="Gallery Image 15" onclick="zoomImage('GalleryImages/gallery-15.png')" loading="lazy">
+                <img src="GalleryImages/gallery-16.png" alt="Gallery Image 16" onclick="zoomImage('GalleryImages/gallery-16.png')" loading="lazy">
+                <img src="GalleryImages/gallery-17.png" alt="Gallery Image 17" onclick="zoomImage('GalleryImages/gallery-17.png')" loading="lazy">
+                <img src="GalleryImages/gallery-18.png" alt="Gallery Image 18" onclick="zoomImage('GalleryImages/gallery-18.png')" loading="lazy">
+                <img src="GalleryImages/gallery-19.png" alt="Gallery Image 19" onclick="zoomImage('GalleryImages/gallery-19.png')" loading="lazy">
+                <img src="GalleryImages/gallery-20.png" alt="Gallery Image 20" onclick="zoomImage('GalleryImages/gallery-20.png')" loading="lazy">
+            </div>
+            <div class="text-panel">
+                <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
+                <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+            </div>
+        </div>
+    </section>
+        
     <footer>
-        <p class="lang" data-el="© 2025 Ματζουράνα | Ακολουθήστε μας στο <a href='https://www.instagram.com/matzourana_eatery/' target='_blank'><img src='instagram-logo.png' alt='Instagram' class='inline-logo'></a> | Online Παραγγελίες <a href='https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385' target='_blank'><img src='efood-logo.png' alt='eFood' class='inline-logo'></a>   <a href='https://wolt.com/el/grc/athens/restaurant/mantzourana-athens' target='_blank'><img src='wolt-logo.png' alt='Wolt' class='inline-logo'></a>"
-                        data-en="© 2025 Matzourana | Follow us on <a href='https://www.instagram.com/matzourana_eatery/' target='_blank'><img src='instagram-logo.png' alt='Instagram' class='inline-logo'></a> | Online Orders <a href='https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385' target='_blank'><img src='efood-logo.png' alt='eFood' class='inline-logo'></a> <a href='https://wolt.com/el/grc/athens/restaurant/mantzourana-athens' target='_blank'><img src='wolt-logo.png' alt='Wolt' class='inline-logo'></a>"></p>
+        <p class="lang" data-el="© 2025 Matzourana - All rights reserved." data-en="© 2025 Matzourana - All rights reserved.">© 2025 Matzourana Grill. All rights reserved.</p>
+        <div class="social-logos">
+            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+            
+        </div>
     </footer>
 
+    <div class="zoom-overlay" onclick="closeZoom()">
+      <img id="zoomed-image" src="" alt="Zoomed Image">
+      <button class="nav-btn left" onclick="event.stopPropagation(); prevImage()">⟨</button>
+      <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">⟩</button>
+   </div>
+
+    <audio id="background-music" loop>
+        <source src="Sounds/matzourana-song.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="button-click-sound">
+        <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
+        let currentLang = 'en';
+        let isPlaying = false;
+        let zoomableImages = [];
+        let currentImageIndex = -1;
+
+        function collectZoomableImages() {
+            zoomableImages = Array.from(document.querySelectorAll('img[onclick*="zoomImage"]'));
+        }  
+
+        function toggleLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang').forEach(el => {
+                el.innerHTML = el.getAttribute(`data-${lang}`);
+            });
+            updateDailyDishesDate(lang); // Update date after language change
+            
+            const musicBtn = document.querySelector('.music-btn');
+            if (isPlaying) {
+                musicBtn.innerHTML = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
+            } else {
+                musicBtn.innerHTML = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
+            }
+            // Dispatch languageChange event
+            const event = new CustomEvent('languageChange', { detail: { lang } });
+            document.dispatchEvent(event);
+        }
+
         function toggleMenu() {
-            const navMenu = document.getElementById('navMenu');
+            playButtonSound();
+            const navMenu = document.querySelector('.nav-menu');
+            // Remove the hide-on-load class the first time toggle is used
+            if (navMenu.classList.contains('hide-on-load')) {
+                navMenu.classList.remove('hide-on-load');
+            }
             navMenu.classList.toggle('active');
         }
 
-        function setLanguage(lang) {
-            document.querySelectorAll('.lang').forEach(element => {
-                let text = element.getAttribute(`data-${lang}`);
-                element.innerHTML = text.replace(/\n/g, '<br>');
+        function showSection(sectionId) {
+            playButtonSound();
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelector(`#${sectionId}`).classList.add('active');
+            
+            if (sectionId === 'menu') {
+                showMenu('appetizers');
+            }
+            
+            toggleMenu();
+        }
+        
+        function showMenu(menuId) {
+            playButtonSound();
+            document.querySelectorAll('.menu-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.menu-buttons button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            const selectedContent = document.querySelector(`#${menuId}`);
+            selectedContent.classList.add('active');
+            const selectedButton = document.querySelector(`button[onclick="showMenu('${menuId}')"]`);
+            selectedButton.classList.add('active');
+
+
+            const tableRows = selectedContent.querySelectorAll('table tr');
+            let menuItemCount = 0;
+            tableRows.forEach(row => {
+                if (!row.querySelector('th')) {
+                    menuItemCount++;
+                }
+            });
+
+            const maxImages = 21;
+            let numImagesToShow = Math.min(menuItemCount, maxImages);
+            //numImagesToShow = Math.floor(numImagesToShow / 2) * 2;
+            numImagesToShow = Math.floor(numImagesToShow) * 2;
+            if (numImagesToShow < 6) numImagesToShow = 10;
+
+            const imageList = [
+                'DishImages/greek-dish-1.png', 'DishImages/greek-dish-2.png', 'DishImages/greek-dish-3.png', 'DishImages/greek-dish-4.png',
+                'DishImages/greek-dish-5.png', 'DishImages/greek-dish-6.png', 'DishImages/greek-dish-7.png', 'DishImages/greek-dish-8.png',
+                'DishImages/greek-dish-9.png', 'DishImages/greek-dish-10.png', 'DishImages/greek-dish-11.png', 'DishImages/greek-dish-12.png',
+                'DishImages/greek-dish-13.png', 'DishImages/greek-dish-14.png', 'DishImages/greek-dish-15.png', 'DishImages/greek-dish-16.png',
+                'DishImages/greek-dish-17.png', 'DishImages/greek-dish-18.png', 'DishImages/greek-dish-19.png', 'DishImages/greek-dish-20.png',
+                'DishImages/greek-dish-21.png'
+            ];
+
+            const shuffledImages = imageList.sort(() => Math.random() - 0.5);
+            const selectedImages = shuffledImages.slice(0, numImagesToShow);
+
+            const imageElements = document.querySelectorAll('.menu .image-panel img');
+            imageElements.forEach((imgElement, index) => {
+                if (index < numImagesToShow) {
+                    const imageName = selectedImages[index];
+                    imgElement.src = imageName;
+                    imgElement.alt = `Greek Dish ${index + 1}`;
+                    imgElement.setAttribute('onclick', `zoomImage('${imageName}')`);
+                    imgElement.style.display = 'block';
+                } else {
+                    imgElement.style.display = 'none';
+                }
             });
         }
 
-        window.onload = function() {
-            setLanguage('en'); // Default to English
-        };
+        // ---------------------------------------------------------
+        // Function: getFormattedDate(lang)
+        // Purpose:  Returns the current date formatted according to 
+        //           the given language ("el" for Greek, otherwise English).
+        // Arguments:
+        //   lang — String: "el" for Greek date format, anything else for English.
+        // Returns:
+        //   String: Formatted date, e.g. "9 Αυγούστου 2025" or "August 9, 2025"
+        // ---------------------------------------------------------
+        function getFormattedDate(lang) {
+            const today = new Date();
+            return today.toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        // ---------------------------------------------------------
+        // Function: updateDailyDishesDate(lang)
+        // Purpose:  Updates the "Daily Dishes" table header to include 
+        //           the current date in the appropriate language.
+        // Arguments:
+        //   lang — String: "el" for Greek, "en" for English.
+        // Usage:
+        //   updateDailyDishesDate("el"); // Greek version
+        //   updateDailyDishesDate("en"); // English version
+        // ---------------------------------------------------------
+        function updateDailyDishesDate(lang) {
+            const header = document.getElementById('daily-dishes-header');
+            if (header) {
+                header.textContent = `🍽️ ${getFormattedDate(lang)}`;
+            }
+        }
+
+
+
+        function zoomImage(src) {
+            playButtonSound();
+            collectZoomableImages();
+            currentImageIndex = zoomableImages.findIndex(img => img.src.includes(src));
+            const overlay = document.querySelector('.zoom-overlay');
+            const zoomedImage = document.querySelector('#zoomed-image');
+            zoomedImage.src = src;
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                zoomedImage.classList.add('zoomed');
+            }, 50);
+        }
+
+        function closeZoom() {
+            playButtonSound();
+            const overlay = document.querySelector('.zoom-overlay');
+            const zoomedImage = document.querySelector('#zoomed-image');
+            zoomedImage.classList.remove('zoomed');
+            overlay.style.display = 'none';
+        }
+
+        function nextImage() {
+            if (currentImageIndex < zoomableImages.length - 1) {
+                currentImageIndex++;
+                zoomImage(zoomableImages[currentImageIndex].src);
+            }
+        }
+
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                zoomImage(zoomableImages[currentImageIndex].src);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const overlay = document.querySelector('.zoom-overlay');
+            if (overlay.style.display === 'flex') {
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'Escape') closeZoom();
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.querySelector('.zoom-overlay').addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.querySelector('.zoom-overlay').addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleGesture();
+        }, false);
+
+        function handleGesture() {
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 50) { // minimum swipe distance
+                if (diff > 0) {
+                    prevImage(); // Swipe Right → Previous
+                } else {
+                    nextImage(); // Swipe Left → Next
+                }
+            }
+        }
+
+        function toggleMusic() {
+            playButtonSound();
+            const music = document.getElementById('background-music');
+            const musicBtn = document.querySelector('.music-btn');
+            const musicIcon = document.querySelector('.music-player-icon');
+            const info = document.getElementById('music-info');
+
+            if (isPlaying) {
+                music.pause();
+                musicBtn.textContent = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
+                musicIcon.style.display = 'none';
+                info.style.display = 'none';
+            } else {
+                music.play();
+                musicBtn.textContent = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
+                musicIcon.style.display = 'block';
+                
+                info.style.display = 'block';
+            }
+            isPlaying = !isPlaying;
+            
+        }
+
+        function playButtonSound() {
+            const sound = document.getElementById('button-click-sound');
+            sound.currentTime = 0; // Reset to start
+            sound.play();
+        }
+        
+        function gotoGoogleMaps() {
+            // Define the specific Google Maps URL (e.g., for a specific location)
+            var googleMapsURL = "https://www.google.com/maps/place/MATZOURANA/@37.9566025,23.7106779,17z/data=!4m15!1m8!3m7!1s0x14a1bc55ee53ece7:0xf88c808dd92b6d74!2sDimosthenous+48,+Kallithea+176+71,+Griechenland!3b1!8m2!3d37.9566025!4d23.7106779!16s%2Fg%2F11pw2vry8d!3m5!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!16s%2Fg%2F11m5lpfpyp?entry=ttu&g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D";
+    
+            // Redirect to the Google Maps page
+            window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Navigation menu show on load ---
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.classList.remove('hide-on-load');
+
+            // --- Show home section by default ---
+            showSection('home');
+            toggleLanguage('el');
+
+            // Detect current language (default to Greek)
+            let currentLang = document.documentElement.lang || "el";
+            updateDailyDishesDate(currentLang);
+
+            // Hook into existing language change system
+            document.addEventListener("languageChange", function(e) {
+                updateDailyDishesDate(e.detail.lang);
+            });
+
+            // Keyboard navigation for zoom overlay
+            document.addEventListener('keydown', (e) => {
+                const overlay = document.querySelector('.zoom-overlay');
+                if (overlay && overlay.style.display === 'flex') {
+                    if (e.key === 'ArrowRight') nextImage();
+                    if (e.key === 'ArrowLeft') prevImage();
+                    if (e.key === 'Escape') closeZoom();
+                }
+            });
+        });
     </script>
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HYZYNG1DM0');
+    </script>
+
+     
+  <!--Structured Data (JSON-LD) for SEO 
+  Describes Matzourana Grill as a traditional Greek restaurant in Kallithea.
+
+  Includes multilingual descriptions (Greek and English) for search engines.
+  Helps improve visibility on Google Search, Google Maps, and rich snippets.-->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Matzourana Grill",
+      "image": "https://matzourana.gr/Logos/matzourana-logo.png",
+      "url": "https://matzourana.gr",
+      "description": {
+        "el": "Η Ματζουράνα είναι ένα παραδοσιακό μαγειρείο στην Καλλιθέα, με φρεσκομαγειρεμένα φαγητά και αυθεντικές ελληνικές συνταγές.",
+        "en": "Matzourana Grill is a traditional Greek μαγειρείο in Kallithea offering home-style meals made with fresh ingredients and authentic recipes."
+      },
+      "telephone": "+30 210 9577 846",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": {
+          "el": "Δημοσθένους 48",
+          "en": "Dimosthenous 48"
+        },
+        "addressLocality": {
+          "el": "Καλλιθέα",
+          "en": "Kallithea"
+        },
+        "addressRegion": {
+          "el": "Αττική",
+          "en": "Attica"
+        },
+        "postalCode": "17672",
+        "addressCountry": "GR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "37.9540",
+        "longitude": "23.7027"
+      },
+      "servesCuisine": ["Greek", "Traditional", "Home-cooked"],
+      "priceRange": "5-10€",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "11:30",
+          "closes": "19:30"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Monday",
+          "opens": "00:00",
+          "closes": "00:00"
+        }
+      ],
+      "acceptsReservations": false
+    }
+  </script>
+
 </body>
 </html>
