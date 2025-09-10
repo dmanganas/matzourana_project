@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: https://matzourana.gr/sitemap.xml
+Sitemap: https://www.matzourana.gr/sitemap.xml
