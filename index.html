@@ -86,6 +86,33 @@
             border-radius: 20px;
         }
 
+        
+
+        .logo-container {
+    text-align: center;
+    width: 100%;
+}
+
+.logo-container img {
+    display: block;
+    max-width: 15%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.logo-container .lang {
+    margin-top: 10px; /* space between logo and text */
+    color: white;
+    /*background-color: rgba(0, 0, 0, 0.5); /* optional: for readability */
+    padding: 0.4em 1em;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center;
+    display: inline-block;
+}
+
+
         /* Hide initially */
         .nav-menu {
             position: fixed;
@@ -1180,7 +1207,14 @@
 
 <body>
     <header>
-        <img src="Logos/matzourana-logo.png" alt="Matzourana Grill Logo">
+        <!--<img src="Logos/matzourana-logo.png" alt="Matzourana Grill Logo">-->
+        <div class="logo-container">
+            <img src="Logos/matzourana-autumn-logo.png" alt="Matzourana Grill Logo">
+            <p class="lang" data-el="Η Matzourana σας εύχεται καλό Φθινόπωρο!" 
+                        data-en="Matzourana wishes you a happy Fall season!">
+                Η Matzourana σας εύχεται καλό Φθινόπωρο
+            </p>
+        </div>
         <!-- <div class="language-toggle">
             <span onclick="toggleLanguage('el')">🇬🇷</span>
             <span onclick="toggleLanguage('en')">🇬🇧</span>
@@ -1189,6 +1223,7 @@
             <span onclick="toggleLanguage('el')">EL</span>
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
+        
         <div class="hamburger" onclick="toggleMenu()">☰</div>
         <div class="nav-menu active">
             <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
