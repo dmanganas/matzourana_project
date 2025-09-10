@@ -89,28 +89,28 @@
         
 
         .logo-container {
-    text-align: center;
-    width: 100%;
-}
+            text-align: center;
+            width: 100%;
+        }
 
-.logo-container img {
-    display: block;
-    max-width: 40%;
-    height: auto;
-    margin: 0 auto;
-}
+        .logo-container img {
+            display: block;
+            max-width: 10%;
+            height: auto;
+            margin: 0 auto;
+        }
 
-.logo-container .lang {
-    margin-top: 10px; /* space between logo and text */
-    color: white;
-    /*background-color: rgba(0, 0, 0, 0.5); /* optional: for readability */
-    padding: 0.4em 1em;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 1.1em;
-    text-align: center;
-    display: inline-block;
-}
+        .logo-container .lang {
+            margin-top: 10px; /* space between logo and text */
+            color: white;
+            /*background-color: rgba(0, 0, 0, 0.5); /* optional: for readability */
+            padding: 0.4em 1em;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: center;
+            display: inline-block;
+        }
 
 
         /* Hide initially */
@@ -894,6 +894,11 @@
                 min-width: 100px;
                 max-width: 200px;
             }
+
+            .logo-container img {
+                max-width: 40%;  /* make the logo larger on smaller screens */
+            }
+
             
             .section-container {
                 flex-direction: column;
