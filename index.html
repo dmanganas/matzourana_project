@@ -675,10 +675,10 @@
             border-radius: 8px; /* Optional: slight rounding for harmony */
             
         }
-        .hero .social-logos {
+        .hero .social-logos, .gallery .social-logos {
             margin-top: 10px;
         }
-        .hero .social-logos img {
+        .hero .social-logos img, .gallery .social-logos img {
             width: var(--social-logo-size-hero); /* Use CSS variable */
             margin: 0 10px;
             /* Add edge diffuse effect */
@@ -800,7 +800,7 @@
        
         }
 
-        .hero .text-panel-info {
+        .hero .text-panel-info, .gallery .text-panel-info {
             max-width: 100%;
             background-color: white;
             border-radius: 10px;
@@ -978,7 +978,7 @@
             .hero .section-container .text-panel{
                 font-size: 1.2em;
             }
-            .hero .text-panel-info {
+            .hero .text-panel-info, .gallery .text-panel-info {
                 padding: 7px;
                 font-size: 10px;
             }
@@ -1137,7 +1137,7 @@
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
-            .hero .social-logos img {
+            .hero .social-logos img, .gallery .social-logos img{
                 width: calc(var(--social-logo-size-hero) * 0.75);
                 margin: 0 5px;
                 /* Add edge diffuse effect */
@@ -1243,7 +1243,7 @@
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
-            .hero .social-logos img {
+            .hero .social-logos img, .gallery .social-logos img {
                 width: calc(var(--social-logo-size-hero) * 0.5);
                 margin: 0 3px;
                 /* Add edge diffuse effect */
@@ -1921,6 +1921,25 @@
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
                 <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
                 <!-- Social Media Integration Starts Here -->
+        
+            <!--<div class="social-logos">-->
+                <!--<p class="lang" data-el="Για περαιτέρω Δημιουργίες του Εστιατορίου μας!" data-en="For further Creations of our Restaurant!">Για περαιτέρω Δημιουργίες του Εστιατορίου μας!</p>-->
+                 <!--<a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>  -->
+            <!--</div>-->
+            <div class="text-panel-info">
+                    <p class="lang" data-el="Για περισσότερες δημιουργίες ακολουθήστε μας στα Social Media:" 
+                                    data-en="For further crations, follow us on Social Media:">
+                                    Για περισσότερες δημιουργίες ακολουθήστε μας στα Social Media:
+                    </p>
+                    <div class="social-logos">
+                        <a href="https://www.instagram.com/ukeinukein/" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+                        <a href="https://www.tripadvisor.de/Restaurant_Review-g262046-d33012087-Reviews-Matzourana-Kallithea_Attica.html" target="_blank"><img src="Logos/tripadvisor-logo.png" alt="Tripadvisor"></a>
+                        <a href="https://pin.it/55X8DXufq" target="_blank"><img src="Logos/pinterest-logo.png" alt="Pinterest"></a>
+                        <!--<a href="https://www.tiktok.com/@ukeinukein/" target="_blank"><img src="Logos/tiktok-logo.png" alt="Tiktok"></a>-->
+                        <br>
+                    </div>
+                </div>
+
 <!-- <div class="social-feed"> -->
 <!--   <h3 class="lang" data-el="Για περαιτέρω Δημιουργίες του Εστιατορίου μας!" data-en="For further Creations of our Restaurant!">Για περαιτέρω Δημιουργίες του Εστιατορίου μας!</h3> -->
 <!--   <p class="lang" data-el="Ακολουθήστε τους Φίλους του Matzourana στο Instagram" data-en="Follow friends of Matzourana on Instagram"> -->
