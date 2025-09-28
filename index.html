@@ -800,7 +800,7 @@
        
         }
 
-        .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info{
+        .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info{
             max-width: 100%;
             background-color: white;
             border-radius: 10px;
@@ -974,7 +974,7 @@
                 padding: 4px;
                 width: 90%;
             }
-            .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info{
+            .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info{
                 padding: 10px;
                 font-size: 10px;
             }
@@ -1079,7 +1079,7 @@
             .hero .section-container .text-panel{
                 font-size: 1.2em;
             }
-            .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info {
+            .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info {
                 padding: 7px;
                 font-size: 12px;
             }
@@ -1186,7 +1186,11 @@
                 font-size: 0.8em;
             }
             
-
+            .gallery {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            }
             .gallery .image-panel {
               display: grid;
               grid-template-columns: repeat(2, 1fr); /* fixed 4 columns */
@@ -1379,16 +1383,16 @@
 
 <body>
     <header>
-        <!--<img src="Logos/matzourana-logo.png" alt="Matzourana Grill Logo">-->
+        <!--<img src="MatzouranaImages/matzourana-logo.png" alt="Matzourana Grill Logo">-->
         <div class="logo-container">
-            <img src="Logos/matzourana-autumn-logo.png" alt="Matzourana Grill Logo">
+            <img src="MatzouranaImages/matzourana-autumn-logo.png" alt="Matzourana Grill Logo">
             <p class="lang" data-el="Η Matzourana σας εύχεται καλό Φθινόπωρο!" 
                         data-en="Matzourana wishes you a happy Fall season!">
                 Η Matzourana σας εύχεται καλό Φθινόπωρο
             </p>
         </div>
         <!--<div class="logo-container">
-            <img src="Logos/matzourana-shield-logo.png" alt="Matzourana Grill Logo">
+            <img src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Grill Logo">
             <p class="lang" data-el="Η Matzourana σας εύχεται καλό Φθινόπωρο!" 
                         data-en="Matzourana wishes you a happy Fall season!">
                 Η Matzourana σας εύχεται καλό Φθινόπωρο
@@ -1538,7 +1542,7 @@
         </div>-->
         <div class="section-container">
             <div class="left-panel">
-                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
+                <img id="about-image" src="MatzouranaImages/matzourana-about-logo.png" alt="About Us Image">
                 <div class="text-info">
                     
                         <p class="lang" data-el="Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτέρη, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον." 
@@ -1554,9 +1558,11 @@
             <div class="right-panel">
                 <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
                 <div class="text-panel">
-                    <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" 
+                    <div class="text-panel-info">
+                        <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" 
                                     data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">
                                     Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
+                    </div>
                 </div>
                 <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
@@ -1572,7 +1578,7 @@
             <div class="text-panel">
                 <h2 class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</h2>
                 <div class="image-panel">
-                    <img id="contact-map" src="Logos/matzourana-contact-logo.png" alt="Matzourana Grill Logo">
+                    <img id="contact-map" src="MatzouranaImages/matzourana-contact-logo.png" alt="Matzourana Grill Logo">
                 </div>
                 <div class="text-panel-info">
                     <p class="lang" data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" data-en="Dimosthenous 48, Kallithea<br>Mobile: 697 1701 113<br>Daily Delivery: 12:00-19:30<br>Closed on Mondays">Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays</p>
@@ -2067,15 +2073,9 @@
       
             <div class="text-panel">
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
-                <img id="contact-map" src="Logos/matzourana-shield-logo.png" alt="Matzourana Grill Logo">
+                <img id="contact-map" src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Grill Logo">
                 <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
-                <!-- Social Media Integration Starts Here -->
-        
-            <!--<div class="social-logos">-->
-                <!--<p class="lang" data-el="Για περαιτέρω Δημιουργίες του Εστιατορίου μας!" data-en="For further Creations of our Restaurant!">Για περαιτέρω Δημιουργίες του Εστιατορίου μας!</p>-->
-                 <!--<a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>  -->
-            <!--</div>-->
-                
+
                 <div class="text-panel-info">
                     <p class="lang" 
                             data-el="Ανακαλύψτε περισσότερες δημιουργίες του εστιατορίου μας και διαβάστε κριτικές για την ποιότητα των πιάτων μας στα Social Media:" 
@@ -2452,7 +2452,7 @@
       "@context": "https://schema.org",
       "@type": "Restaurant",
       "name": "Matzourana Eatery",
-      "image": "https://www.matzourana.gr/Logos/matzourana-logo.png",
+      "image": "https://www.matzourana.gr/MatzouranaImages/matzourana-logo.png",
       "url": "https://www.matzourana.gr",
       "description": {
         "el": "Η Ματζουράνα είναι ένα παραδοσιακό μαγειρείο στην Καλλιθέα, με φρεσκομαγειρεμένα φαγητά και αυθεντικές ελληνικές συνταγές.",
