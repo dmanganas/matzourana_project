@@ -1503,7 +1503,9 @@
                 } else {
                     dynamicPanel.innerHTML = `
                     <div class="contact-panel">
-                        <img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">
+                        <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">-->
+                        <a href=onclick="gotoGoogleMaps()
+                                target="_blank"><img src="CoreImages/contact-map.png" alt="ContactMap"></a>
                         <div class="image-panel-info">
                            <p class="lang" 
                               data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" 
@@ -1577,6 +1579,7 @@
             <div class="image-panel">
                 <img id="contact-map" src="CoreImages/contact-map.png" alt="Map">
                 <button class="map-btn lang" data-el="Δείτε στον Χάρτη Google" data-en="View on Google Maps" onclick="gotoGoogleMaps()">View on Google Maps</button>
+                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
             <div class="text-panel">
                 <h2 class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</h2>
@@ -1586,7 +1589,7 @@
                 <div class="text-panel-info">
                     <p class="lang" data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" data-en="Dimosthenous 48, Kallithea<br>Mobile: 697 1701 113<br>Daily Delivery: 12:00-19:30<br>Closed on Mondays">Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays</p>
                 </div>
-                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+                
             </div>
         </div>
     </section>
@@ -2077,8 +2080,9 @@
             <div class="text-panel">
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
                 <img id="contact-map" src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Shield Logo">
-                <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
-
+                <div class="text-panel-info">
+                    <p class="lang" data-el="Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!" data-en="Enjoy a glimpse of our creations and the ambiance of our restaurant!">Απολαύστε μια ματιά στις δημιουργίες μας και το περιβάλλον του εστιατορίου μας!</p>
+                </div>
                 <div class="text-panel-info">
                     <p class="lang" 
                             data-el="Ανακαλύψτε περισσότερες δημιουργίες του εστιατορίου μας και διαβάστε κριτικές για την ποιότητα των πιάτων μας στα Social Media:" 
