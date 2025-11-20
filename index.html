@@ -941,6 +941,25 @@
                 min-height: auto;
             }
         }
+
+        .yt-preview {
+            display: block;
+            margin-top: 15px;
+            max-width: 300px;
+        }
+
+        .yt-thumb {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .yt-thumb:hover {
+            transform: scale(1.03);
+        }
+
+
         
         /* Media query for laptop screens (769px to 1200px) */
         @media (min-width: 769px) and (max-width: 1200px) {
@@ -1628,6 +1647,12 @@
                 <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map">-->
                 <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
                 <button class="map-btn lang" data-el="Δείτε στον Χάρτη Google" data-en="View on Google Maps" onclick="gotoGoogleMaps()">View on Google Maps</button>
+                <!-- YouTube Shorts Preview -->
+                <a href="https://youtube.com/shorts/czBhNw-r-vU" target="_blank" class="yt-preview">
+                    <img src="https://img.youtube.com/vi/czBhNw-r-vU/hqdefault.jpg" 
+                    alt="YouTube Shorts Preview"
+                    class="yt-thumb">
+                </a>
                 <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
             <div class="text-panel">
