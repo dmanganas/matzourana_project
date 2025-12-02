@@ -1433,13 +1433,18 @@
         <!--<img src="MatzouranaImages/matzourana-logo.png" alt="Matzourana Grill Logo">-->
         <div class="logo-container">
             <!--<img src="MatzouranaImages/matzourana-autumn-october-logo.png" alt="Matzourana Grill Logo">-->
-            <video autoplay loop muted playsinline class="logo-video">
+            <!--<video autoplay loop muted playsinline class="logo-video">-->
                 <!--<source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mov" type="video/quicktime">-->
                 <!-- Optional fallback -->
                 <!--<source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mp4" type="video/mp4">-->
-                <source src="MatzouranaImages/matzourana-winter-december-movie-logo.mp4" type="video/mp4">
+                <!--<source src="MatzouranaImages/matzourana-winter-december-movie-logo.mp4" type="video/mp4">-->
                 <!-- Your browser does not support the video tag.-->
+            <!--</video>-->
+            <video id="logoVideo" autoplay loop muted playsinline class="logo-video">
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
             </video>
+
             <!--<p class="lang" data-el="Η Matzourana σας εύχεται καλό Φθινόπωρο!" 
                         data-en="Matzourana wishes you a happy Fall season!">
                 Η Matzourana σας εύχεται καλό Φθινόπωρο
@@ -2681,11 +2686,34 @@
                 }
             });
         });
-    </script>
+    
+        // Array of 7 video paths
+        const videos = [
+            "MatzouranaImages/matzourana-winter-december-movie-logo.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo2.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo3.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo4.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo5.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo6.mp4",
+            "MatzouranaImages/matzourana-winter-december-movie-logo7.mp4"
+        ];
 
+        // Get current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+        const dayIndex = new Date().getDay();
+
+        // Select video element
+        const videoElement = document.getElementById("logoVideo");
+
+        // Set video source based on day
+        videoElement.querySelector("source").src = videos[dayIndex];
+
+        // Reload video to apply the new source
+        videoElement.load();
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0"></script>
+    
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
