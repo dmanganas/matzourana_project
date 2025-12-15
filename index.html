@@ -35,7 +35,7 @@
             overflow-x: hidden;
         }
         header {
-            background-color: #6a836a;
+            background-color: hsl(120, 10%, 21%);
             color: white;
             padding: var(--header-padding);
             text-align: center;
@@ -1478,10 +1478,16 @@
                         data-en="Matzourana wishes you a happy Fall season!">
                 Η Matzourana σας εύχεται καλό Φθινόπωρο
             </p>-->
-            <p class="lang" data-el="Η Matzourana σας εύχεται καλό Χειμώνα!" 
+            <!--<p class="lang" data-el="Η Matzourana σας εύχεται καλό Χειμώνα!" 
                         data-en="Matzourana wishes you a happy Winter season!">
                 Η Matzourana σας εύχεται καλό Χειμώνα
+            </p>-->
+            <p class="lang"
+                data-el="Η Matzourana σας εύχεται καλά Χριστούγεννα!"
+                data-en="Matzourana wishes you a happy Christmas season!">
+                Η Matzourana σας εύχεται καλά Χριστούγεννα!
             </p>
+
         </div>
         <!--<div class="logo-container">
             <img src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Shield Logo">
@@ -1651,11 +1657,11 @@
                                 Matzourana will be exceptionally closed today. We look forward to serving you tomorrow! 🌿
                             </p>-->
 
-                            <p class="lang" style="font-weight: bold; color: #4A5D4A;"
+                            <!--<p class="lang" style="font-weight: bold; color: #4A5D4A;"
                                 data-el="Η Matzourana σήμερα, Κυριακή 14/12, εκτάκτως θα παραμείνει κλειστή. Ανυπομονούμε να σας εξυπηρετήσουμε από την Τρίτη! 🌿"
                                 data-en="Matzourana will be exceptionally closed today, Sunday 14/12. We look forward to serving you from Tuesday! 🌿">
                                 Matzourana will be exceptionally closed today. We look forward to serving you from Tuesday! 🌿
-                            </p>    
+                            </p>-->   
                         </div>
                     </div>
                     `;
@@ -2402,8 +2408,8 @@
                 <h2 class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</h2>
                 <!--<img id="contact-map" src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Shield Logo">-->
                 <div class="text-panel-info">
-                    <a href="https://youtube.com/shorts/oC8GdkPsG94" target="_blank">
-                        <img id="contact-map" src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Shield Logo">
+                    <a href="https://youtube.com/shorts/NtpI1nyO7fc" target="_blank">
+                        <img id="contact-map" src="MatzouranaImages/matzourana-xmas-logo.png" alt="Matzourana XMas Logo">
                     </a>
                 </div>
                 <div class="text-panel-info">
@@ -2418,6 +2424,16 @@
                         Κάντε κλικ στους πίνακες της Matzourana για μια μουσική εμπειρία από την
                         <a href="https://www.youtube.com/playlist?list=PLMjTwL26LwLrD1K80YClo057Xoxz28_TK" target="_blank"><img src="Logos/youtube-logo.png" alt="YouTube" style="width:1em; height:1em; vertical-align:-0.15em;"></a> Matzourana-PlayList!
                     </p>
+                </div>
+                <div class="text-panel-info">
+                    <a href="https://youtube.com/shorts/BPh8AwMJLBw" target="_blank">
+                        <img id="contact-map" src="MatzouranaImages/matzourana-hero-logo.png" alt="Matzourana Hero Logo">
+                    </a>
+                </div>
+                <div class="text-panel-info">
+                    <a href="https://youtube.com/shorts/oC8GdkPsG94" target="_blank">
+                        <img id="contact-map" src="MatzouranaImages/matzourana-shield-logo.png" alt="Matzourana Shield Logo">
+                    </a>
                 </div>
                 <div class="text-panel-info">
                     <a href="https://youtube.com/shorts/ZgnnWFEKhSY" target="_blank">
@@ -2777,13 +2793,20 @@
     
         // Array of 7 video paths
         const videos = [
-            "MatzouranaImages/matzourana-winter-december-movie-logo.mp4",
+            /*"MatzouranaImages/matzourana-winter-december-movie-logo.mp4",
             "MatzouranaImages/matzourana-winter-december-movie-logo2.mp4",
             "MatzouranaImages/matzourana-winter-december-movie-logo3.mp4",
             "MatzouranaImages/matzourana-winter-december-movie-logo4.mp4",
             "MatzouranaImages/matzourana-winter-december-movie-logo5.mp4",
             "MatzouranaImages/matzourana-winter-december-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo7.mp4"
+            "MatzouranaImages/matzourana-winter-december-movie-logo7.mp4"*/
+            "MatzouranaImages/matzourana-xmas-movie-logo.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo2.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo3.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo4.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo5.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo6.mp4",
+            "MatzouranaImages/matzourana-xmas-movie-logo7.mp4"
         ];
 
         // Get current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
