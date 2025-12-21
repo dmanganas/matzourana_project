@@ -117,6 +117,30 @@
             border-radius: 8px; /* Optional: slight rounding for harmony */
         }
 
+        .phone-link {
+            color: #4A5D4A;        /* dark green */
+            font-weight: 700;
+            text-decoration: none;
+
+            border: 1px solid #4A5D4A;
+            border-radius: 8px;
+
+            cursor: pointer;
+        }
+
+        .phone-link:hover {
+            background-color: rgba(74, 93, 74, 0.1);
+            color: #163a21;
+        }
+
+    
+
+        .phone-icon {
+            width: 25px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
         .logo-container .lang {
             margin-top: 10px; /* space between logo and text */
             color: white;
@@ -1219,11 +1243,15 @@
                 width: 90px;
                 height: 90px;
             }
+            
             .menu .text-panel .catalog-header .logo-video {
               width: 40%;
-              max-width: 400px;
+              max-width: 300px;
               height: auto;
+              position: relative;
+              top: -10px; 
             }
+
             .menu .text-panel .menu-buttons {
                 gap: 6px;
                 margin-bottom: 4px;
@@ -1395,6 +1423,13 @@
             }
             .menu-catalogue th, .menu-catalogue td {
                 font-size: 0.75em;
+            }
+            .menu .text-panel .catalog-header .logo-video {
+              width: 40%;
+              max-width: 300px;
+              height: auto;
+              position: relative;
+              top: -50px; 
             }
 
             header img {
@@ -1577,15 +1612,11 @@
                 <div class="text-panel-info">
                     <p class="lang"
                         data-el="Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά 
-                        <a href='tel:2109577846'>
-                            <img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:5px;'>
-                        </a> 
+                        <a href='tel:2109577846'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:1px;'></a><br>
                         ή επισκεφθείτε μας στο κατάστημα. <br><br> Θα χαρούμε να σας εξυπηρετήσουμε!"
 
                         data-en="To enjoy even more favorable prices, place your order by phone 
-                        <a href='tel:2109577846'>
-                            <img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:5px;'>
-                        </a> 
+                        <a href='tel:2109577846'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:1px;'></a><br>
                         or visit us in-store. <br><br> We will be happy to serve you!">
 
                         Για να απολαύσετε ακόμα πιο προνομιακές τιμές, δώστε μας την παραγγελία σας τηλεφωνικά
@@ -1640,33 +1671,37 @@
                         <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
                         <div class="image-panel-info">
                            <p class="lang"
-                                data-el="Δημοσθένους 48, Καλλιθέα<br>
-                                Τηλ.: <a href='tel:2109577846'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:20px;'></a> 210 9577 846<br>
-                                Διανομή καθημερινά: 12:00–19:30<br>
-                                Δευτέρα κλειστά"
+   data-el="Δημοσθένους 48, Καλλιθέα<br>
+   Τηλ.: <a href='tel:2109577846' class='phone-link'>
+   <!--<img src='Logos/phone-logo.png' alt='Call' class='phone-icon'>-->
+   210 9577 846</a><br>
+   Διανομή καθημερινά: 12:00–19:30<br>
+   Δευτέρα κλειστά"
 
-                                data-en="Dimosthenous 48, Kallithea<br>
-                                Tel: <a href='tel:2109577846'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:20px;'></a> 210 9577 846<br>
-                                Daily Delivery: 12:00–19:30<br>
-                                Closed on Mondays">
+   data-en="Dimosthenous 48, Kallithea<br>
+   Tel: <a href='tel:2109577846' class='phone-link'>
+   <!--<img src='Logos/phone-logo.png' alt='Call' class='phone-icon'>-->
+   210 9577 846</a><br>
+   Daily Delivery: 12:00–19:30<br>
+   Closed on Mondays">
 
-                                Dimosthenous 48, Kallithea<br>
+    Dimosthenous 48, Kallithea<br>
 
-                                Tel:
-                                <a href="tel:2109577846">
-                                    <img src="Logos/phone-logo.png" alt="Call" style="width:25px; vertical-align:middle;">
-                                </a>
-                                210 9577 846<br>
+    Tel:
+    <a href="tel:2109577846" class="phone-link">
+        <!--<img src="Logos/phone-logo.png" alt="Call" class="phone-icon">-->
+        210 9577 846
+    </a><br>
 
-                                Mobile:
-                                <a href="tel:6971701113">
-                                    <img src="Logos/phone-logo.png" alt="Call" style="width:25px; vertical-align:middle;">
-                                </a>
-                                697 1701 113<br>
+    Mobile:
+    <a href="tel:6971701113" class="phone-link">
+        <!--<img src="Logos/phone-logo.png" alt="Call" class="phone-icon">-->
+        697 1701 113
+    </a><br>
 
-                                Daily Delivery: 11:30–19:30<br>
-                                Closed on Mondays
-                            </p>
+    Daily Delivery: 11:30–19:30<br>
+    Closed on Mondays
+</p>
                            
                             <!--<p class="lang" style="font-weight: bold; color: #4A5D4A;"
                                 data-el="H Matzourana θα παραμείνει κλειστή από 12/8 έως 26/8. Καλή ξεκούραση! Ανυπομονούμε να σας εξυπηρετήσουμε σύντομα! 🌞🏖️🌴"
