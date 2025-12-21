@@ -388,6 +388,13 @@
             width: 120px;
             height: 120px;
         }
+        .menu .text-panel .catalog-header .logo-video {
+            width: 300px;   /* increase this */
+            height: auto;   /* keeps proportions */
+        }
+
+    
+
         .menu .text-panel .menu-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -1212,6 +1219,11 @@
                 width: 90px;
                 height: 90px;
             }
+            .menu .text-panel .catalog-header .logo-video {
+              width: 40%;
+              max-width: 400px;
+              height: auto;
+            }
             .menu .text-panel .menu-buttons {
                 gap: 6px;
                 margin-bottom: 4px;
@@ -1779,7 +1791,10 @@
                 <h2 class="lang" data-el="Μενού" data-en="Menu">Menu</h2>
                 <div class="catalog-header">
                     <h3 class="lang" data-el="Τιμοκατάλογος Φαγητών" data-en="Dishes Catalog">Food Catalog</h3>
-                    <img src="Logos/food-logo.png" alt="Food Logo", class="logo-img">
+                    <!--<img src="Logos/food-logo.png" alt="Food Logo", class="logo-img">-->
+                    <video class="logo-video" autoplay loop muted playsinline>
+                        <source src="Logos/food-logo_xai.mp4" type="video/mp4">
+                    </video>
                 </div>
                 <div class="menu-buttons">
                     <button onclick="showMenu('appetizers')" class="lang" data-el="Ορεκτικά" data-en="Appetizers">Appetizers</button>
@@ -2302,7 +2317,10 @@
                 </div>
                 <div class="catalog-header">
                     <h3 class="lang" data-el="Τιμοκατάλογος Ποτών" data-en="Drinks Catalog">Drinks Catalog</h3>
-                    <img src="Logos/drinks-logo.png" alt="Drinks Logo", class="logo-img">
+                    <!--<img src="Logos/drinks-logo.png" alt="Drinks Logo", class="logo-img">-->
+                    <video class="logo-video" autoplay loop muted playsinline>
+                        <source src="Logos/drinks-logo_xai.mp4" type="video/mp4">
+                    </video>
                 </div>
                 <div class="menu-buttons">
                     <button onclick="showMenu('soft-drinks')" class="lang" data-el="Αναψυκτικά" data-en="Soft Drinks">Soft Drinks</button>
