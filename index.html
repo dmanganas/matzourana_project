@@ -989,19 +989,23 @@
             }
         }
 
+        .yt-previews {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
         .yt-preview {
-            display: block;
-            margin-top: 15px;
-            max-width: 300px;
+            max-width: 340px;
         }
 
         .yt-thumb {
             width: 100%;
-            border-radius: 12px;
-            cursor: pointer;
+            height: auto;
+            border-radius: 10px;
             transition: transform 0.2s ease;
         }
-
+        
         .yt-thumb:hover {
             transform: scale(1.03);
         }
@@ -1099,14 +1103,6 @@
                 font-size: 1.3em;
             }
             
-            .yt-preview {
-                max-width: 360px;
-                margin-top: 18px;
-            }
-
-            .yt-thumb {
-                border-radius: 14px;
-             }
              
             .hero button, .return-btn, .menu button, .gallery button, .map-btn {
                 font-size: 1em;
@@ -1181,14 +1177,14 @@
             .leaf:nth-child(3n+6) { background-image: url('Logos/winter-ball5.png'); }
         
             
-            .yt-preview {
-                max-width: 360px;
-                margin-top: 18px;
+            .yt-previews {
+                flex-direction: column;
+                align-items: center;
             }
 
-            .yt-thumb {
-                border-radius: 14px;
-             }
+            .yt-preview {
+                max-width: 90%;
+            }
 
             .section-container {
                 flex-direction: column;
@@ -1420,14 +1416,14 @@
                 border-radius: 8px; /* Optional: slight rounding for harmony */
             }
 
-            .yt-preview {
-                max-width: 360px;
-                margin-top: 18px;
+            .yt-previews {
+                flex-direction: column;
+                align-items: center;
             }
 
-            .yt-thumb {
-                border-radius: 14px;
-             }
+            .yt-preview {
+                max-width: 90%;
+            }
 
             .menu .image-panel img {
                 max-width: 100%;
@@ -1756,23 +1752,33 @@
                             🌿 Matzourana will be closed from 25/12 to 26/12. Merry Christmas and enjoy a well-deserved rest! We look forward to welcoming you from 27/12! 🎄✨
                             </p>-->
                             <p class="lang"
-                                data-el="Για μια χριστουγεννιάτικη μουσική εμπειρία από τη Matzourana, κάντε κλικ στην εικόνα του YouTube Short.
-                                Καλά Χριστούγεννα! 🎄✨"
-                                data-en="For a Christmas musical experience by Matzourana, click on the YouTube Short image.
-                                Merry Christmas! 🎄✨">
+                                data-el="Για μια χριστουγεννιάτικη μουσική εμπειρία από τη Matzourana, κάντε κλικ στις εικόνες των YouTube Short.
+                                Καλά Χριστούγεννα και Καλή Πρωτοχρονιά! 🎄✨"
+                                data-en="For a Christmas musical experience by Matzourana, click on the YouTube Short images.
+                                Merry Christmas and Happy New Year! 🎄✨">
 
-                                Για μια χριστουγεννιάτικη μουσική εμπειρία από τη Matzourana, κάντε κλικ στην εικόνα του YouTube Short.
-                                Καλά Χριστούγεννα! 🎄✨
+                                Για μια χριστουγεννιάτικη μουσική εμπειρία από τη Matzourana, κάντε κλικ στις εικόνες των YouTube Short.
+                                Καλά Χριστούγεννα και Καλή Πρωτοχρονιά! 🎄✨
                             </p>            
-                            <!-- YouTube Shorts Preview -->
-                            <a href="https://youtube.com/shorts/i0nDRwIKk6w"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="yt-preview">
-                            <img src="https://img.youtube.com/vi/i0nDRwIKk6w/hqdefault.jpg"
-                            alt="YouTube Shorts Preview"
-                            class="yt-thumb">
-                            </a>
+                            <div class="yt-previews">
+                                <a href="https://youtube.com/shorts/i0nDRwIKk6w"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="yt-preview">
+                                    <img src="https://img.youtube.com/vi/i0nDRwIKk6w/hqdefault.jpg"
+                                    alt="YouTube Shorts Preview"
+                                    class="yt-thumb">
+                                </a>
+
+                                <a href="https://youtube.com/shorts/oLalaDHkwSE"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="yt-preview">
+                                    <img src="https://img.youtube.com/vi/oLalaDHkwSE/hqdefault.jpg"
+                                    alt="YouTube Shorts Preview"
+                                    class="yt-thumb">
+                                </a>
+                            </div>
                         </div>
                     </div>
                     `;
