@@ -757,6 +757,10 @@
             max-width: 280px;   /* ρύθμισε κατά βούληση */
             width: 100%;
             height: auto;
+            /* Add edge diffuse effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+            border-radius: 4px; /* Optional: slight rounding for harmony */
         }
 
         .hero .social-logos, .gallery .social-logos {
@@ -2769,9 +2773,9 @@
             
         </div>
 
-        <!--<div class="footer-logo">
+        <div class="footer-logo">
             <img src="Logos/logotipo.png" alt="Matzourana Logo">
-        </div>-->
+        </div>
     </footer>
 
     <div class="zoom-overlay" onclick="closeZoom()">
