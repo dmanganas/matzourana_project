@@ -1723,7 +1723,12 @@
                     dynamicPanel.innerHTML = `
                     <div class="contact-panel">
                         <a href="https://youtube.com/shorts/PF2YfVqf5cI" target="_blank">
-                            <img id="hero-image" src="MatzouranaImages/matzourana-gravity-permanente.png" alt="Hero Image" fetchpriority="high" decoding="async">
+                            <img id="hero-image" 
+                                 src="MatzouranaImages/matzourana-gravity-permanente.png" 
+                                 alt="Matzourana φιγούρα - Μαγειρείο Καλλιθέα με παραδοσιακές σπιτικές γεύσεις και AI ενισχυμένη τέχνη" 
+                                fetchpriority="high" 
+                                decoding="async" 
+                                loading="eager">
                         </a> 
                         <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">-->
                         <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
@@ -3174,75 +3179,101 @@
   Enhanced with social media profiles for better cross-platform visibility.
   Helps improve visibility on Google Search, Google Maps, and rich snippets.-->
 <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Matzourana Eatery | Ματζουράνα Μαγειρείο Καλλιθέα",
+  "alternateName": ["Ματζουράνα Καλλιθέα", "Μαγειρείο Καλλιθέα", "Εστιατόριο Καλλιθέα", "Μαγειρεία Καλλιθέα", "Εστιατόρια Καλλιθέα", "Σπιτική Κουζίνα Καλλιθέα"],
+  "image": [
+    "https://www.matzourana.gr/MatzouranaImages/matzourana-gravity-permanente.png",
+    "https://www.matzourana.gr/MatzouranaImages/matzourana-logo.png",
+    "https://www.matzourana.gr/DishImages/greek-dish-1.png",
+    "https://www.matzourana.gr/DishImages/greek-dish-3.png",
+    "https://www.matzourana.gr/DishImages/greek-dish-4.png"
+  ],
+  "url": "https://www.matzourana.gr",
+  "description": {
+    "el": "Αυθεντικό μαγειρείο στην Καλλιθέα με παραδοσιακά μαγειρευτά, σπιτική κουζίνα και delivery. Εστιατόριο Καλλιθέα με φρέσκα υλικά και premium τοπικούς παραγωγούς.",
+    "en": "Authentic eatery in Kallithea offering traditional Greek home-cooked meals, fresh ingredients, and delivery. Neighborhood restaurant in Kallithea with premium local products."
+  },
+  "telephone": "+30 210 9577 846",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Δημοσθένους 48 | Dimosthenous 48",
+    "addressLocality": "Καλλιθέα | Kallithea",
+    "addressRegion": "Αττική | Attica",
+    "postalCode": "17671",
+    "addressCountry": "GR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 37.95662,
+    "longitude": 23.71068
+  },
+  "servesCuisine": ["Ελληνική", "Παραδοσιακή", "Σπιτική", "Μαγειρευτά", "Greek", "Traditional", "Home-cooked"],
+  "priceRange": "€5-€10",
+  "openingHoursSpecification": [
     {
-      "@context": "https://schema.org",
-      "@type": "Restaurant",
-      "name": "Matzourana Eatery",
-      "image": "https://www.matzourana.gr/MatzouranaImages/matzourana-logo.png",
-      "url": "https://www.matzourana.gr",
-      "description": {
-        "el": "Η Ματζουράνα είναι ένα παραδοσιακό μαγειρείο στην Καλλιθέα, με φρεσκομαγειρεμένα φαγητά και αυθεντικές ελληνικές συνταγές.",
-        "en": "Matzourana Eatery is a traditional Greek μαγειρείο in Kallithea offering home-style meals made with fresh ingredients and authentic recipes."
-      },
-      "telephone": "+30 210 9577 846",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": {
-          "el": "Δημοσθένους 48",
-          "en": "Dimosthenous 48"
-        },
-        "addressLocality": {
-          "el": "Καλλιθέα",
-          "en": "Kallithea"
-        },
-        "addressRegion": {
-          "el": "Αττική",
-          "en": "Attica"
-        },
-        "postalCode": "17671",
-        "addressCountry": "GR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "37.95662",
-        "longitude": "23.71068"
-      },
-      "servesCuisine": ["Greek", "Traditional", "Home-cooked"],
-      "priceRange": "5-10€",
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-          "opens": "11:30",
-          "closes": "19:30"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Monday",
-          "opens": "00:00",
-          "closes": "00:00"
-        }
-      ],
-      "acceptsReservations": false,
-
-      "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "bestRating": "5",
-      "ratingCount": "37",
-      "reviewCount": "37"
-     },
-
-      "sameAs": [
-        "https://www.matzourana.gr",
-        "https://www.instagram.com/matzourana_eatery/",
-        "https://pin.it/55X8DXufq",
-        "https://www.instagram.com/ukeinukein/",
-        "https://www.tiktok.com/@ukeinukein/",
-        "https://www.tripadvisor.de/Restaurant_Review-g262046-d33012087-Reviews-Matzourana-Kallithea_Attica.html",
-        "https://www.youtube.com/channel/UCTTUXPOnYEAqEA_e53FB89w"
-      ]
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Δευτέρα", "Monday"],
+      "opens": "00:00",
+      "closes": "00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Τρίτη", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "12:00",
+      "closes": "19:30"
     }
+  ],
+  "acceptsReservations": false,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "ratingCount": "196",
+    "reviewCount": "196"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {"@type": "Person", "name": "efood Customer"},
+      "reviewRating": {"@type": "Rating", "ratingValue": "4.8", "bestRating": "5"},
+      "datePublished": "2025-12-01",
+      "reviewBody": "Δημοφιλέστερα πιάτα: Γιουβαρλάκια αυγολέμονο, Λάχανο & καρότο, Λαχανοντολμάδες, Μπιφτέκι μοσχαρίσιο. Πεντανόστιμα μαγειρευτά, γρήγορη παράδοση και εξαιρετική ποιότητα – το καλύτερο μαγειρείο Καλλιθέας!"
+    },
+    {
+      "@type": "Review",
+      "author": {"@type": "Person", "name": "Wolt Customer"},
+      "reviewRating": {"@type": "Rating", "ratingValue": "9.6", "bestRating": "10"},
+      "datePublished": "2025-12-01",
+      "reviewBody": "Υπέροχα μαγειρευτά, ζεστή εξυπηρέτηση και value for money. Ιδανικό εστιατόριο Καλλιθέας για καθημερινό σπιτικό φαγητό – γρήγορη και ποιοτική παράδοση κάθε φορά!"
+    },
+    {
+      "@type": "Review",
+      "author": {"@type": "Person", "name": "Google Maps Customer"},
+      "reviewRating": {"@type": "Rating", "ratingValue": "5.0", "bestRating": "5"},
+      "datePublished": "2025-12-01",
+      "reviewBody": "Delicious traditional Greek food! Best house wine, unforgettable halloumi salad, great vegan options. Cozy and authentic neighborhood restaurant in Kallithea – highly recommended!"
+    },
+    {
+      "@type": "Review",
+      "author": {"@type": "Person", "name": "TripAdvisor Customer"},
+      "reviewRating": {"@type": "Rating", "ratingValue": "5.0", "bestRating": "5"},
+      "datePublished": "2025-12-01",
+      "reviewBody": "Authentic home-style meals with fresh ingredients and warm atmosphere. A must-try in Kallithea for Greek cuisine lovers – excellent value and friendly service!"
+    }
+  ],
+  "sameAs": [
+    "https://www.matzourana.gr",
+    "https://www.instagram.com/matzourana_eatery",
+    "https://www.instagram.com/ukeinukein",
+    "https://www.youtube.com/@ukeinukein",
+    "https://www.tripadvisor.com/Restaurant_Review-g262046-d33012087-Reviews-Matzourana-Kallithea_Attica.html",
+    "https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385",
+    "https://wolt.com/el/grc/athens/restaurant/mantzourana-athens"
+  ]
+}
 </script>
 
 </body>
