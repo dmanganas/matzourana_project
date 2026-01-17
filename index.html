@@ -1038,36 +1038,20 @@
         .daily-highlights {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1.2em;                /* space between recipes */
-            max-width: 800px;
+            gap: 0.5em;
+            max-width: 900px;
             margin: 2em auto;
-            padding: 1.5em;
-            background-color: #f9f9f7;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            font-family: inherit;      /* keep your site font */
+            padding: 0.5em;
+            
         }
 
-        .daily-highlights p {
-            margin: 0;
-            text-align: center;
-            font-size: 1.3em;          /* bigger for highlights */
-            line-height: 1.4;
-        }
-
-        .daily-highlights p:hover {
-            color: #3a4a3a;            /* subtle hover effect */
-            transform: translateY(-2px);
-            transition: all 0.2s ease;
-        }
-
-        .daily-highlights img {
-            height: 1.6em;                  /* perfect for most titles */
-            width: auto;                    /* preserve natural aspect ratio */
-            vertical-align: middle;         /* aligns nicely with text baseline */
-            margin-right: 0.4em;            /* balanced spacing – adjust as needed */
-            display: inline-block;          /* prevents weird line breaks */
+        /* Base icon styles */
+            .category-icon {
+            height: 1.6em;              /* good size on desktop/tablet */
+            width: auto;
+            vertical-align: middle;
+            margin-right: 0.4em;
+            display: inline-block;
         }
 
         
@@ -1493,6 +1477,16 @@
                 max-width: 90%;
             }
 
+            .category-icon {
+                height: 1.2em;          /* smaller but still readable */
+                margin-right: 0.3em;    /* tighter spacing */
+            }
+
+            .daily-highlights .lang {
+                font-size: 1.1em;       /* optional: slightly reduce text size too */
+                gap: 0.4em;
+            }
+
             .menu .image-panel img {
                 max-width: 100%;
                 box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
@@ -1906,28 +1900,38 @@
                                 <span style="font-size: 1.35em; margin-right: 0.3em;">𓆝</span>
                                 Μπακαλιάρος παστός α λα σπετσιώτα
                             </p>-->
-                            <!-- Beef Patties -->
-                            <p class="lang"
-                                style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                data-el=" <img src='Logos/meat-logo.png' alt='Meat' > Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
-                                data-en=" <img src='Logos/meat-logo.png' alt='Meat' > Beef Patties with Oven-Baked Potatoes"
-                                Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο>
-                            </p>
-                            <!-- Meat Soup -->
-                            <p class="lang" 
-                                style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                data-el="<img src='Logos/soup-logo.png' alt='Soup'><img src='Logos/meat-logo.png' alt='Meat' > Κρεατόσουπα"
-                                data-en="<img src='Logos/soup-logo.png' alt='Soup'><img src='Logos/meat-logo.png' alt='Meat' > Meat Soup"
-                                Κρεατόσουπα>
-                            </p>
+                            
 
-                             <!-- Chickpea Soup (with combined icons – keep your fancy version) -->
-                            <p class="lang" 
-                                style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                data-el="<img src='Logos/soup-logo.png' alt='Soup'><img src='Logos/vegeterian-logo.png' alt='Veg'> Ρεβύθια Σούπα"
-                                data-en="<img src='Logos/soup-logo.png' alt='Soup'><img src='Logos/vegeterian-logo.png' alt='Veg'> Chickpea Soup"
-                                Ρεβύθια Σούπα>
-                            </p>
+                                <!-- Beef Patties -->
+                                <p class="lang"
+                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
+                                    data-el="<img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
+                                    data-en="<img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Beef Patties with Oven-Baked Potatoes">
+                                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
+                                    Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο
+                                </p>
+
+                                <!-- Meat Soup -->
+                                <p class="lang"
+                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
+                                    data-el="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Κρεατόσουπα"
+                                    data-en="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Meat Soup">
+                                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
+                                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
+                                    Κρεατόσουπα
+                                </p>
+
+                                <!-- Chickpea Soup -->
+                                <p class="lang"
+                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
+                                    data-el="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/vegeterian-logo.png' alt='Vegetarian' class='category-icon'> Ρεβύθια Σούπα"
+                                    data-en="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/vegeterian-logo.png' alt='Vegetarian' class='category-icon'> Chickpea Soup">
+                                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
+                                    <img src="Logos/vegeterian-logo.png" alt="Vegetarian" class="category-icon">
+                                    Ρεβύθια Σούπα
+                                </p>
+
+                           
 
 
                             <p class="lang" 
