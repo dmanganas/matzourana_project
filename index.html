@@ -1036,55 +1036,59 @@
         }
 
         .daily-highlights {
-    max-width: 900px;
-    margin: 2em auto;
-    padding: 1em;
-    background: #f9f9f7;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
+            max-width: auto;
+            margin: 0.5em auto;
+            padding: 0.5em;
+            background: #f7f9f7;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
 
-.highlights-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 1.2em;
-    table-layout: auto; /* auto is better than fixed here for content-based widths */
-}
+        .highlights-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.3em;
+            table-layout: auto; /* auto is better than fixed here for content-based widths */
+        }
 
-.highlights-table tr {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
+        .highlights-table tr {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            min-height: 0.1em;       /* ← minimal shell height for short items (adjust 3.2–3.8em) */
+            height: 0.1em;            /* allows growth for longer text */
+        }
 
-.highlights-table td {
-    padding: 0.9em 1.1em;
-    vertical-align: top;     /* ← KEY CHANGE: top alignment instead of middle */
-}
+        .highlights-table td {
+            padding: 0.9em 1.1em;
+            vertical-align: top;     /* ← KEY CHANGE: top alignment instead of middle */
+            height: auto
+        }
 
-.highlight-icons {
-    width: auto;                    /* let it take only needed space */
-    white-space: nowrap;            /* CRITICAL: keeps all icons in ONE line */
-    text-align: right;
-    padding-right: 0.5em;             /* breathing room between icons & text */
-    padding-left: 0.8em;
-}
+        .highlight-icons {
+            width: auto;                    /* let it take only needed space */
+            white-space: nowrap;            /* CRITICAL: keeps all icons in ONE line */
+            text-align: right;
+            padding-right: 0.8em;             /* breathing room between icons & text */
+            padding-left: 0.5em;
+            white-space: nowrap;     /* keeps multiple icons in one line */
+        }
 
-.highlight-name {
-    font-weight: bold;
-    color: #4A5D4A;
-    font-size: 1.0em;
-    line-height: 1.35;
-    text-align: left;
-}
+        .highlight-name {
+            font-weight: bold;
+            color: #4A5D4A;
+            font-size: 1.0em;
+            line-height: 1.35;
+            text-align: left;
+        }
 
-/* Base icons – good for desktop */
-.category-icon {
-    height: 1.65em;
-    width: auto;
-    vertical-align: middle;
-    margin: 0 0.3em 0 0; /* right margin only between icons */
-}
+        /* Base icons – good for desktop */
+        .category-icon {
+            height: 1.65em;
+            width: auto;
+            vertical-align: middle;
+            margin: 0 0.5em 0 0; /* right margin only between icons */
+        }
         
 
         
@@ -1508,29 +1512,29 @@
                 max-width: 90%;
             }
 
-            @media (max-width: 480px) {
-    .highlights-table tr {
-        height: 3.2em;       /* smaller shell/row height on mobile – adjust 3.2em–3.6em */
-    }
+            
+            .highlights-table tr {
+                height: 3.2em;       /* smaller shell/row height on mobile – adjust 3.2em–3.6em */
+            }
 
-    .highlights-table td {
-        padding: 1em 1em;
-    }
+            .highlights-table td {
+                padding: 1em 1em;
+            }
 
-    .highlight-icons {
-        padding-right: 0.8em;
-        padding-left: 0.6em;
-    }
+            .highlight-icons {
+                padding-right: 0.8em;
+                padding-left: 0.6em;
+            }
 
-    .category-icon {
-        height: 1.3em;       /* smaller to fit better */
-        margin: 0 0.22em 0 0;
-    }
+            .category-icon {
+                height: 1.2em;       /* smaller to fit better */
+                margin: 0 0.22em 0 0;
+            }
 
-    .highlight-name {
-        font-size: 0.9em;
-        line-height: 1.32;
-    }
+            .highlight-name {
+                font-size: 0.8em;
+                line-height: 1.32;
+            }
 
     
 
@@ -1949,7 +1953,7 @@
                             </p>-->
                             
 
-                                
+    <div class="daily-highlights">                            
     <table class="highlights-table">
         <tbody>
 
@@ -1993,6 +1997,7 @@
 
         </tbody>
     </table>
+    </div>
 
                            
 
