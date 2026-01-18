@@ -1036,24 +1036,55 @@
         }
 
         .daily-highlights {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5em;
-            max-width: 900px;
-            margin: 2em auto;
-            padding: 0.5em;
-            
-        }
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 1em;
+    background: #f9f9f7;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
 
-        /* Base icon styles */
-            .category-icon {
-            height: 1.6em;              /* good size on desktop/tablet */
-            width: auto;
-            vertical-align: middle;
-            margin-right: 0.4em;
-            display: inline-block;
-        }
+.highlights-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1.2em;
+    table-layout: auto; /* auto is better than fixed here for content-based widths */
+}
 
+.highlights-table tr {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.highlights-table td {
+    padding: 0.9em 1.1em;
+    vertical-align: top;     /* ← KEY CHANGE: top alignment instead of middle */
+}
+
+.highlight-icons {
+    width: auto;                    /* let it take only needed space */
+    white-space: nowrap;            /* CRITICAL: keeps all icons in ONE line */
+    text-align: right;
+    padding-right: 0.5em;             /* breathing room between icons & text */
+    padding-left: 0.8em;
+}
+
+.highlight-name {
+    font-weight: bold;
+    color: #4A5D4A;
+    font-size: 1.0em;
+    line-height: 1.35;
+    text-align: left;
+}
+
+/* Base icons – good for desktop */
+.category-icon {
+    height: 1.65em;
+    width: auto;
+    vertical-align: middle;
+    margin: 0 0.3em 0 0; /* right margin only between icons */
+}
         
 
         
@@ -1477,15 +1508,31 @@
                 max-width: 90%;
             }
 
-            .category-icon {
-                height: 1.2em;          /* smaller but still readable */
-                margin-right: 0.3em;    /* tighter spacing */
-            }
+            @media (max-width: 480px) {
+    .highlights-table tr {
+        height: 3.2em;       /* smaller shell/row height on mobile – adjust 3.2em–3.6em */
+    }
 
-            .daily-highlights .lang {
-                font-size: 1.1em;       /* optional: slightly reduce text size too */
-                gap: 0.4em;
-            }
+    .highlights-table td {
+        padding: 1em 1em;
+    }
+
+    .highlight-icons {
+        padding-right: 0.8em;
+        padding-left: 0.6em;
+    }
+
+    .category-icon {
+        height: 1.3em;       /* smaller to fit better */
+        margin: 0 0.22em 0 0;
+    }
+
+    .highlight-name {
+        font-size: 0.9em;
+        line-height: 1.32;
+    }
+
+    
 
             .menu .image-panel img {
                 max-width: 100%;
@@ -1902,34 +1949,50 @@
                             </p>-->
                             
 
-                                <!-- Beef Patties -->
-                                <p class="lang"
-                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                    data-el="<img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
-                                    data-en="<img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Beef Patties with Oven-Baked Potatoes">
-                                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
-                                    Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο
-                                </p>
+                                
+    <table class="highlights-table">
+        <tbody>
 
-                                <!-- Meat Soup -->
-                                <p class="lang"
-                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                    data-el="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Κρεατόσουπα"
-                                    data-en="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/meat-logo.png' alt='Meat' class='category-icon'> Meat Soup">
-                                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
-                                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
-                                    Κρεατόσουπα
-                                </p>
+            <!-- Highlight 1: Beef Patties -->
+            <tr>
+                <td class="highlight-icons">
+                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
+                </td>
+                <td class="highlight-name lang" 
+                    data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
+                    data-en="Beef Patties with Oven-Baked Potatoes">
+                    Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο
+                </td>
+            </tr>
 
-                                <!-- Chickpea Soup -->
-                                <p class="lang"
-                                    style="font-weight:bold; color:#4A5D4A; display:flex; align-items:center; gap:0.5em;"
-                                    data-el="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/vegeterian-logo.png' alt='Vegetarian' class='category-icon'> Ρεβύθια Σούπα"
-                                    data-en="<img src='Logos/soup-logo.png' alt='Soup' class='category-icon'><img src='Logos/vegeterian-logo.png' alt='Vegetarian' class='category-icon'> Chickpea Soup">
-                                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
-                                    <img src="Logos/vegeterian-logo.png" alt="Vegetarian" class="category-icon">
-                                    Ρεβύθια Σούπα
-                                </p>
+            <!-- Highlight 2: Meat Soup -->
+            <tr>
+                <td class="highlight-icons">
+                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
+                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
+                </td>
+                <td class="highlight-name lang" 
+                    data-el="Κρεατόσουπα"
+                    data-en="Meat Soup">
+                    Κρεατόσουπα
+                </td>
+            </tr>
+
+            <!-- Highlight 3: Chickpea Soup -->
+            <tr>
+                <td class="highlight-icons">
+                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
+                    <img src="Logos/vegeterian-logo.png" alt="Vegeterian" class="category-icon">
+                </td>
+                <td class="highlight-name lang" 
+                    data-el="Ρεβύθια Σούπα"
+                    data-en="Chickpea Soup">
+                    Ρεβύθια Σούπα
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
 
                            
 
