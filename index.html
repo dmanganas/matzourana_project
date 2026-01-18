@@ -1035,61 +1035,113 @@
             transform: scale(1.03);
         }
 
-        .daily-highlights {
-            max-width: auto;
-            margin: 0.5em auto;
-            padding: 0.5em;
-            background: #4A5D4A;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        }
+        .daily-highlights.notebook-bg {
+    position: relative;
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 2.5em 0.2em 1.5em 1.5em;
+    background: url('Logos/highlight-block-logo.png') center/cover no-repeat;
+    background-color: #f9f7f2; /* fallback light paper color */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
 
-        .highlights-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 0.3em;
-            table-layout: auto; /* auto is better than fixed here for content-based widths */
-        }
+/* Subtle overlay to improve text readability on notebook bg */
+.notebook-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.35); /* adjust opacity 0.25–0.45 if needed */
+    border-radius: 12px;
+    z-index: 0;
+}
 
-        .highlights-table tr {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            min-height: 0.1em;       /* ← minimal shell height for short items (adjust 3.2–3.8em) */
-            height: 0.1em;            /* allows growth for longer text */
-        }
+.highlights-table {
+    width: 50%;
+    border-collapse: separate;
+    border-spacing: 0 1.2em;
+    position: relative;
+    margin-left: auto;             /* pushes table to the right side */
+    margin-right: 0;
+    z-index: 1; /* above overlay */
+}
 
-        .highlights-table td {
-            padding: 0.9em 1.1em;
-            vertical-align: top;     /* ← KEY CHANGE: top alignment instead of middle */
-            height: auto
-        }
 
-        .highlight-icons {
-            width: auto;                    /* let it take only needed space */
-            white-space: nowrap;            /* CRITICAL: keeps all icons in ONE line */
-            text-align: right;
-            padding-right: 0.8em;             /* breathing room between icons & text */
-            padding-left: 0.5em;
-            white-space: nowrap;     /* keeps multiple icons in one line */
-        }
 
-        .highlight-name {
-            font-weight: bold;
-            color: #4A5D4A;
-            font-size: 1.0em;
-            line-height: 1.35;
-            text-align: left;
-        }
+.highlights-table tr {
+    background: transparent; /* let notebook bg show through */
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    min-height: 3.4em;       /* minimal comfortable height for single-line items */
+    height: auto;            /* expands for multi-line text */
+}
 
-        /* Base icons – good for desktop */
-        .category-icon {
-            height: 1.65em;
-            width: auto;
-            vertical-align: middle;
-            margin: 0 0.5em 0 0; /* right margin only between icons */
-        }
-        
+.highlights-table td {
+    padding: 0.9em 0.9em;
+    vertical-align: top;     /* top alignment as requested */
+    background: transparent;
+}
+
+.highlight-icons {
+    width: auto;
+    white-space: nowrap;
+    text-align: right;
+    padding-right: 0.4em;
+    padding-left: 0.2em;
+}
+
+.highlight-name {
+    font-weight: bold;
+    color: #4A5A4A;
+    font-size: 0.8em;        /* your choice – can increase to 1.1–1.2em if needed */
+    line-height: 1.35;
+    text-align: right;
+}
+
+/* Icons */
+.category-icon {
+    height: 1.3em;
+    width: auto;
+    vertical-align: left;
+    margin: 0 0.5em 0 0;
+}
+
+/* Handwriting reveal animation (staggered per row) */
+.highlight-row {
+    opacity: 0;
+    animation: writeReveal 2.8s forwards ease-out;
+    animation-delay: calc(var(--row-index) * 0.8s);
+}
+
+.highlight-row:nth-child(1) { --row-index: 0; }
+.highlight-row:nth-child(2) { --row-index: 1; }
+.highlight-row:nth-child(3) { --row-index: 2; }
+
+@keyframes writeReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(3px);
+    }
+    40% {
+        opacity: 0.4;
+        filter: blur(1px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* Pencil/ink feel */
+.highlight-name,
+.category-icon {
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.35));
+}
+
+    
 
         
         /* Media query for laptop screens (769px to 1200px) */
@@ -1272,6 +1324,32 @@
             .yt-preview {
                 max-width: 90%;
             }
+
+            .notebook-bg {
+                background-image: url('Logos/highlight-block-logo-mobile.png'); /* optional smaller version */
+        padding: 1.8em 0.6em 1.2em 1.2em;   /* reduce overall padding */
+        margin: 1.5em auto;
+        border-radius: 10px;                /* slightly softer corners */
+    }
+
+    .highlights-table {
+        width: 50%;                         /* wider than 50% on tablet/small laptop */
+        border-spacing: 0 0.9em;
+    }
+
+    .highlight-name {
+        font-size: 0.4em;
+    }
+
+    .category-icon {
+        height: 0.5em;
+        margin: 0 0.4em 0 0;
+    }
+
+    .highlights-table td {
+        padding: 0.7em 0.7em;
+    }
+
 
             .section-container {
                 flex-direction: column;
@@ -1481,6 +1559,7 @@
                 --flag-size: 24px;
             }
         }
+        
         @media (max-width: 480px) {
             body { font-size: 12px; }
             h1 { font-size: 1.1em; }
@@ -1513,19 +1592,42 @@
             }
 
             
-            .highlights-table tr {
-                height: 3.2em;       /* smaller shell/row height on mobile – adjust 3.2em–3.6em */
-            }
+            .notebook-bg {
+        background-image: url('Logos/highlight-block-logo-mobile.png'); /* optional smaller version */
+        padding: 1.4em 0.4em 1em 1em;       /* even tighter – minimal right padding */
+        margin: 1em auto;
+        background-size: cover;             /* ensure bg still fits well */
+        background-position: center 40%;    /* optional: shift focus if spiral is at top */
+    }
 
-            .highlights-table td {
-                padding: 1em 1em;
-            }
+    
 
-            .highlight-icons {
-                padding-right: 0.8em;
-                padding-left: 0.6em;
-            }
+    .highlights-table {
+        width: 100%;                         /* almost full-width on phones */
+        margin-left: auto;
+        margin-right: auto;
+        border-spacing: 0 0.7em;
+    }
 
+    .highlight-name {
+        font-size: 0.5em;
+        text-align: center;                 /* center text on very small screens for readability */
+    }
+
+    .highlight-icons {
+        text-align: center;
+        padding-right: 0.3em;
+        padding-left: 0.3em;
+    }
+
+    .category-icon {
+        height: 1.0em;
+        margin: 0 0.3em 0 0;
+    }
+
+    .highlights-table td {
+        padding: 0.6em 0.6em;
+    }
             .category-icon {
                 height: 1.2em;       /* smaller to fit better */
                 margin: 0 0.22em 0 0;
@@ -1535,6 +1637,16 @@
                 font-size: 0.8em;
                 line-height: 1.32;
             }
+
+            .notebook-bg {
+        padding: 1em;
+    }
+    .category-icon {
+        height: 1.35em;
+    }
+    .highlight-name {
+        font-size: 1.05em;
+    }
 
     
 
@@ -1953,63 +2065,52 @@
                             </p>-->
                             
 
-    <div class="daily-highlights">                            
+    
+    <div class="daily-highlights notebook-bg">
+    <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
+
     <table class="highlights-table">
         <tbody>
-
-            <!-- Highlight 1: Meat Dish -->
-            <tr>
+            <!-- Beef Patties -->
+            <tr class="highlight-row animate-write">
                 <td class="highlight-icons">
                     <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Μοσχαράκι λεμονάτο"
-                    data-en="Lemony Beef Stew">
-                    Μοσχαράκι λεμονάτο
+                    data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
+                    data-en="Beef Patties with Oven-Baked Potatoes">
+                    Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο
                 </td>
             </tr>
 
-            <!-- Highlight 2: Fish Dish -->
-            <!--<tr>
-                <td class="Salt Cod">
-                    <img src="Logos/fish-logo.png" alt="Meat" class="category-icon">
-                </td>
-                <td class="highlight-name lang" 
-                    data-el="Μπακαλιάρος παστός α λα σπετσιώτα"
-                    data-en="Salt Cod “Spetsiota” Style">
-                    Μπακαλιάρος παστός α λα σπετσιώτα
-                </td>
-            </tr>-->
-
-            <!-- Highlight 3: Meat Soup -->
-            <tr>
+            <!-- Meat Soup -->
+            <tr class="highlight-row animate-write">
                 <td class="highlight-icons">
                     <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
                     <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Κοτόσουπα"
-                    data-en="Chicken Soup">
+                    data-el="Κρεατόσουπα"
+                    data-en="Meat Soup">
                     Κρεατόσουπα
                 </td>
             </tr>
 
-            <!-- Highlight 4: Vegeterian Dish -->
-            <tr>
+            <!-- Chickpea Soup -->
+            <tr class="highlight-row animate-write">
                 <td class="highlight-icons">
-                    <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
+                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
                     <img src="Logos/vegeterian-logo.png" alt="Vegeterian" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Μπάμιες Αλεξανδρινές στο Φούρνο"
-                    data-en="Baked Okra from Alexandria">
-                    Μπάμιες στο Φούρνο
+                    data-el="Ρεβίθια Σούπα"
+                    data-en="Chickpea Soup">
+                    Ρεβίθια Σούπα
                 </td>
             </tr>
-
         </tbody>
     </table>
-    </div>
+</div>
 
                            
 
