@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="canonical" href="https://www.matzourana.gr/">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
@@ -1055,6 +1056,9 @@
     background: rgba(255, 255, 255, 0.35); /* adjust opacity 0.25–0.45 if needed */
     border-radius: 12px;
     z-index: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+                filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+                border-radius: 8px; /* Optional: slight rounding for harmony */
 }
 
 .highlights-table {
@@ -1139,6 +1143,68 @@
 .highlight-name,
 .category-icon {
     filter: drop-shadow(0 0 1px rgba(0,0,0,0.35));
+}
+
+/* Typewriter container */
+.typewriter {
+    overflow: hidden; /* Ensures content is clipped */
+    white-space: nowrap; /* Keeps text on one line during animation */
+    border-right: 0.15em solid #4A5D4A; /* Blinking cursor */
+    animation: 
+        typing 3.5s steps(40, end) forwards,  /* letter by letter */
+        blink-caret 0.75s step-end infinite;   /* cursor blink */
+}
+
+/*.typewriter {
+    border-right: 0.15em solid #4A5D4A;
+    animation: blink-caret 0.75s step-end infinite;
+    white-space: pre-wrap; /* allows wrapping after typing */
+}*/
+
+/* The actual text span */
+.typewriter-text {
+    display: inline-block;
+}
+
+/* Typing animation */
+@keyframes typing {
+    from { width: 0 }
+    to   { width: 100% }
+}
+
+/* Blinking cursor */
+@keyframes blink-caret {
+    from, to   { border-color: transparent }
+    50%        { border-color: #4A5D4A; }
+}
+.handwriting-svg {
+    width: 100%;
+    height: 100px;                /* adjust height to match your row design */
+    display: block;
+    max-width: 100%;
+}
+
+.handwriting-svg text {
+    fill: none;
+    stroke: #3a3a3a;              /* dark pencil color */
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Optional blinking pencil cursor */
+.handwriting-svg circle {
+    animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.3; }
 }
 
     
@@ -2051,6 +2117,7 @@
                             
 
     
+
     <div class="daily-highlights notebook-bg">
     <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
 
@@ -2062,8 +2129,8 @@
                     <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο"
-                    data-en="Beef Patties with Oven-Baked Potatoes">
+                    data-el="Μοσχάρι Στιφάδο"
+                    data-en="Beef Stifado"
                     Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο
                 </td>
             </tr>
@@ -2075,8 +2142,8 @@
                     <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Κρεατόσουπα"
-                    data-en="Meat Soup">
+                    data-el="Μαγειρίτσα"
+                    data-en="Magiritsa"
                     Κρεατόσουπα
                 </td>
             </tr>
@@ -2084,12 +2151,12 @@
             <!-- Chickpea Soup -->
             <tr class="highlight-row animate-write">
                 <td class="highlight-icons">
-                    <img src="Logos/soup-logo.png" alt="Soup" class="category-icon">
+                    <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
                     <img src="Logos/vegeterian-logo.png" alt="Vegeterian" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Ρεβύθια Σούπα"
-                    data-en="Chickpea Soup">
+                    data-el="Σπανακόρυζο"
+                    data-en="Spinach Rice"
                     Ρεβύθια Σούπα
                 </td>
             </tr>
@@ -2364,7 +2431,7 @@
                                                  Crepes with Mince and Béchamel (Crepes with mince and béchamel baked in the oven. A delicious choice that impresses!)
                             </td><td>€8.00</td></tr>-->
                             
-                            <!--<td class="lang" data-el="Μουσακάς <br><br> (Δεν υπάρχουν λόγια για να περιγράψεις αυτόν το μουσακα! Με 100% μοσχαρίσιο κιμά, 
+                            <td class="lang" data-el="Μουσακάς <br><br> (Δεν υπάρχουν λόγια για να περιγράψεις αυτόν το μουσακα! Με 100% μοσχαρίσιο κιμά, 
                                                      από τα Κρέατα Αστακού, πλούσια μπεσαμέλ, ψητές μελιτζάνες και κολοκύθια, πατατούλες 
                                                      και τριμμένο κεφαλοτύρι, θα είναι ο πιο νόστιμος και πιο ελαφρύς μουσακάς που έχεις δοκιμάσει!)" 
                                              data-en="Moussaka <br><br> (There are no words to describe this moussaka! With 100% beef mince from Astakou Meats, 
@@ -2372,7 +2439,7 @@
                                                     it will be the tastiest and lightest moussaka you’ve ever tried!)">
                                             Moussaka (There are no words to describe this moussaka! With 100% beef mince from Astakou Meats, rich béchamel,
                                             roasted eggplants and courgettes, potatoes, and grated kefalotyri, it will be the tastiest and lightest moussaka you’ve ever tried!)
-                            </td><td>€8.50</td></tr>-->
+                            </td><td>€8.50</td></tr>
 
                           
                             <!--<td class="lang" data-el="Μουσακάς Νηστίσιμος <br><br> (Μουσακάς νηστίσιμος, ελαφρύς, εύκολος και πεντανόστιμος. 
@@ -2389,10 +2456,10 @@
                                                  Briam (With eggplants, courgettes, colorful peppers, potatoes, and a tomato, it smells like summer all year round!)
                             </td><td>€6.00</td></tr>-->
 
-                            <!--<tr><td class="lang" data-el="Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα και η παράδοση έρχεται στο πιάτο σας!)" 
+                            <tr><td class="lang" data-el="Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα και η παράδοση έρχεται στο πιάτο σας!)" 
                                                  data-en="Giant Beans <br><br> (Gigantes Plaki - Baked in a clay pot, bringing tradition to your plate!)">
                                                  Giant Beans (Gigantes Plaki - Baked in a clay pot, bringing tradition to your plate!)
-                            </td><td>€7.50</td></tr>-->
+                            </td><td>€7.50</td></tr>
 
                             
                             <!--<tr><td class="lang" data-el="Γιούλμπασι στην λαδόκολλα" data-en="Gioulmpasi in Greaseproof Paper">Gioulmasi in Greaseproof Paper</td><td>€12.00</td></tr>-->
@@ -2463,10 +2530,10 @@
                                                  Oven-Baked Beef Patties with Potatoes (Handmade 300g beef patties, with oven-baked potatoes, and whoever can resist them, let us know!)
                             </td><td>€9.80</td></tr>
                             
-                            <!--<tr><td class="lang" data-el="Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό! Με μοσχαράκι χτένι από τα Κρέατα Αστακού.)" 
+                            <tr><td class="lang" data-el="Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό! Με μοσχαράκι χτένι από τα Κρέατα Αστακού.)" 
                                                  data-en="Beef Stifado <br><br> (Traditional and fragrant! Made with beef shank from Astakou Meats.)">
                                                  Beef Stifado (Traditional and fragrant! Made with beef shank from Astakou Meats.)
-                            </td><td>€11.00</td></tr>-->
+                            </td><td>€11.00</td></tr>
 
 
                             <tr><td class="lang" data-el="Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι κοκκινιστό χτένι (κρέατα Αστακού) με γαρνιτούρα της επιλογής σας.)" 
@@ -2479,15 +2546,15 @@
                                                  Beef Ragout (Tender beef in red sauce from Astakou Meats, served with potato ragout.)
                             </td><td>€9.80</td></tr>-->
 
-                            <tr><td class="lang" data-el="Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι (κρέατα Αστακού) με τριμμένη μυζήθρα.)" 
+                            <!--<tr><td class="lang" data-el="Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι (κρέατα Αστακού) με τριμμένη μυζήθρα.)" 
                                                  data-en="Beef Giouvetsi <br><br> (Beef with Orzo in Tomato Sauce) (Traditional beef giouvetsi from Astakou Meats, served with grated myzithra.)">
                                                  Beef Giouvetsi (Beef with Orzo in Tomato Sauce) (Traditional beef giouvetsi from Astakou Meats, served with grated myzithra.)
-                            </td><td>€10.50</td></tr>
+                            </td><td>€10.50</td></tr>-->
 
-                            <tr><td class="lang" data-el="Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο (κρέατα Αστακού), με γαρνιτούρα της επιλογής σας.)" 
+                            <!--<tr><td class="lang" data-el="Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο (κρέατα Αστακού), με γαρνιτούρα της επιλογής σας.)" 
                                                  data-en="Lemony Beef Stew <br><br> (Tender lemony beef shank from Astakou Meats, served with your choice of side.)">
                                                  Lemony Beef Stew (Tender lemony beef shank from Astakou Meats, served with your choice of side.)
-                            </td><td>€10.20</td></tr>
+                            </td><td>€10.20</td></tr>-->
 
                             <!--<tr><td class="lang" data-el="Ρολό μοσχαρίσιου κιμά <br><br> (Ρολό 100% μοσχαρίσιου κιμά, στο φούρνο με πατάτες, γεμιστό με φέτα κατσικίσια ΠΟΠ και ντοματούλα. Πιο τέλειο δε γίνεται!)" 
                                                  data-en="Beef Roll <br><br> (100% beef roll, oven-baked with potatoes, stuffed with PDO goat feta and tomato. Perfection at its best!)">
@@ -2514,10 +2581,10 @@
                                                  Meatballs in Tomato Sauce <br><br> (Our fragrant fried meatballs, slow-cooked in homemade tomato sauce. And the deliciousness is guaranteed!)
                             </td><td>€8.00</td></tr>-->
                            
-                            <tr><td class="lang" data-el="Κεφτεδάκια τηγανιτά <br><br> (Τα μυρωδάτα κεφτεδάκια της μαμάς, τηγανίζονται την ώρα της παραγγελίας σας και υπόσχονται να σας ξυπνήσουν τις παιδικές σας αναμνήσεις! Συνοδεύονται με γαρνιτούρα της επιλογής σας.)"
+                            <!--<tr><td class="lang" data-el="Κεφτεδάκια τηγανιτά <br><br> (Τα μυρωδάτα κεφτεδάκια της μαμάς, τηγανίζονται την ώρα της παραγγελίας σας και υπόσχονται να σας ξυπνήσουν τις παιδικές σας αναμνήσεις! Συνοδεύονται με γαρνιτούρα της επιλογής σας.)"
                                                      data-en="Fried Meatballs <br><br> (Mom’s fragrant meatballs, fried fresh upon your order, promising to awaken your childhood memories! Served with your choice of side.)">
                                                      Fried Meatballs (Mom’s fragrant meatballs, fried fresh upon your order, promising to awaken your childhood memories! Served with your choice of side.)
-                            </td><td>€8.50</td></tr>
+                            </td><td>€8.50</td></tr>-->
                             
                             <!--<tr><td class="lang" data-el="Κοτόπουλο κοκκινιστό Ελευθέρας βοσκής <br><br> (Παραδοσιακό κοτόπουλο ελευθέρας βοσκής από Ναύπακτο, μαγειρεμένο με πλούσια σάλτσα ντομάτας και μυρωδικά.)" 
                                                  data-en="Free-Range Chicken in Red Sauce <br><br> (Traditional free-range chicken from Nafpaktos, cooked with a rich tomato sauce and aromatic herbs.)">
@@ -2572,18 +2639,18 @@
                                                  Fresh Green Beans in Olive Oil (Fresh, with tomato and potatoes, waiting for you to try them!)
                             </td><td>€6.00</td></tr>-->
 
-                            <tr><td class="lang" data-el="Μπάμιες στο Φούρνο <br><br> (Φρέσκες, με ντοματούλα, ένα από τα πιο νόστιμα φαγητά της ελληνικής κουζίνας!)" 
+                            <!--<tr><td class="lang" data-el="Μπάμιες στο Φούρνο <br><br> (Φρέσκες, με ντοματούλα, ένα από τα πιο νόστιμα φαγητά της ελληνικής κουζίνας!)" 
                                                  data-en="Baked Okra <br><br> (Fresh, with tomato, one of the most delicious dishes of Greek cuisine!)">
                                                  Baked Okra (Fresh, with tomato, one of the most delicious dishes of Greek cuisine!)
-                            </td><td>7.50</td></tr>
+                            </td><td>7.50</td></tr>-->
 
-                            <!--<tr><td class="lang" data-el="Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα. 
+                            <tr><td class="lang" data-el="Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα. 
                                                           Μια εύκολη, γρήγορη και υγιεινή επιλογή για το καθημερινό τραπέζι. Σπυρωτό, αρωματισμένο με φρέσκο άνηθο και δροσερό λεμόνι, με την απαλή οξύτητα της ντομάτας να δένει ιδανικά το πιάτο.)" 
                                                  data-en="Spinach Rice <br><br> (Lemony with tomato. 
                                                           An easy, quick, and healthy choice for the everyday table. Fluffy, flavored with fresh dill and cool lemon, with the gentle acidity of tomato perfectly tying the dish together.)">
                                                           Σπανακόρυζο <br><br> (Lemony with tomato. An easy, quick, and healthy choice for the everyday table. 
                                                          Fluffy, flavored with fresh dill and cool lemon, with the gentle acidity of tomato perfectly tying the dish together.)
-                            </td><td>€6.00</td></tr>-->
+                            </td><td>€6.00</td></tr>
 
                             <!--<tr><td class="lang" data-el="Κουνουπίδι Γιαχνί <br><br> (Με ντοματούλα και κανέλα, η απλότητα της νόστιμης γεύσης!)" 
                                                  data-en="Stewed Cauliflower Yiahni <br><br> (With tomato and cinnamon, the simplicity of delicious taste!)">
@@ -2756,18 +2823,24 @@
                                                  data-en="Chicken Soup <br><br> (Nutritious and very tasty. Made with select Nafpaktos chicken.)">
                                                  Chicken Soup (Nutritious and very tasty. Made with select Nafpaktos chicken.)
                             </td><td>€7.50</td></tr>
-                            <tr><td class="lang" data-el="Κρεατόσουπα <br><br> (Μία πεντανόστιμη και εύκολη ζεστή σούπα με μοσχάρι, πατάτα, καρότο και σέλινο! Ιδανική χειμωνιάτικη σούπα!)"
+                            <!--<tr><td class="lang" data-el="Κρεατόσουπα <br><br> (Μία πεντανόστιμη και εύκολη ζεστή σούπα με μοσχάρι, πατάτα, καρότο και σέλινο! Ιδανική χειμωνιάτικη σούπα!)"
                                                  data-en="Meat Soup <br><br> (A delicious and easy warm soup with beef, potato, carrot, and celery! Perfect winter soup!)">
                                                  Meat Soup <br><br> (A delicious and easy warm soup with beef, potato, carrot, and celery! Perfect winter soup)!
-                            </td><td>€12.00</td></tr>
+                            </td><td>€12.00</td></tr>-->
 
                             <!--<tr><td class="lang" data-el="Ψαρόσουπα με φρέσκο ψάρι <br><br> (Με φρέσκο ψάρι και λαχανικά. Ό,τι χρειάζεται ο οργανισμός σου, σε ένα πιάτο!)" 
                                                  data-en="Fish Soup with fresh fish <br><br> (With fresh fish and vegetables. Everything your body needs, in one dish!)">
                                                 Fish Soup with fresh fish (With fresh fish and vegetables. Everything your body needs, in one dish!)
                             </td><td>€9.00</td></tr>-->
 
-                            <!--<tr><td class="lang" data-el="Μαγειρίτσα" data-en="Magiritsa">Magiritsa</td><td>€12.00</td></tr>-->
-                            <tr><td class="lang" data-el="Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
+                            <tr><td class="lang" data-el="Μαγειρίτσα" data-en="Magiritsa">Magiritsa</td><td>€10.00</td></tr>
+
+                            <tr><td class="lang" data-el="Μαγειρίτσα <br><br> (Κλασική ελληνική πασχαλινή σούπα με αρνί, αυγολέμονο και αρωματικά μυρωδικά. Ένα αυθεντικό έδεσμα που, πέρα από το Πάσχα, αποτελεί ιδανική επιλογή για ζεστό και θρεπτικό χειμωνιάτικο γεύμα.)"
+                                                 data-en="Magiritsa <br><br> (The classic Greek Easter soup made with lamb, egg-lemon sauce, and aromatic herbs. A traditional must for Easter, yet equally perfect as a comforting, nourishing winter soup.)">
+                                                 Magiritsa (The classic Greek Easter soup made with lamb, egg-lemon sauce, and aromatic herbs. A traditional must for Easter, yet equally perfect as a comforting, nourishing winter soup.)
+                            </td><td>€10.00</td></tr>
+                            
+                            tr><td class="lang" data-el="Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
                                                  data-en="Meatball Egg-Lemon Soup <br><br> (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)">
                                                  Meatball Egg-Lemon Soup (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)
                             </td><td>€8.50</td></tr>
@@ -2796,10 +2869,10 @@
                                               Fasolada (Bean Soup) (Creamy and unrivaled!)
                             </td><td>€5.50</td></tr>
                             
-                            <tr><td class="lang" data-el="Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους, αλλά και για όσους θέλουν να φάνε απλά κάτι νόστιμο.)" 
+                            <!--<tr><td class="lang" data-el="Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους, αλλά και για όσους θέλουν να φάνε απλά κάτι νόστιμο.)" 
                                                  data-en="Chickpea Stew <br><br> (For those watching their diet, and for those who simply want to enjoy something tasty.)">
                                                  Chickpea Stew (For those watching their diet, and for those who simply want to enjoy something tasty.)
-                            </td><td>€6.00</td></tr>
+                            </td><td>€6.00</td></tr>-->
                             
                             <!--<tr><td class="lang" data-el="Φάβα <br><br> (Γευστική δυναμωτική και απολαυστική!)"
                                                  data-en="Fava <br><br> (Flavorful, energizing, and delightful!)">
@@ -3404,6 +3477,33 @@
 
         // Reload video to apply the new source
         videoElement.load();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const typewriterElements = document.querySelectorAll('.typewriter');
+
+            typewriterElements.forEach((el, index) => {
+                const text = el.dataset.textEl || el.textContent.trim(); // fallback to inner text
+                el.textContent = ''; // clear initial content
+
+                let i = 0;
+                const speed = 60; // ms per character – adjust speed
+
+                function type() {
+                    if (i < text.length) {
+                        el.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        // Optional: remove cursor after finish
+                        el.style.borderRight = 'none';
+                    }
+                }
+
+                // Delay start per row for nice stagger
+                setTimeout(type, index * 800); // 800ms delay between rows
+            });
+        });
+
     </script>
 
     <!-- Google tag (gtag.js) -->
