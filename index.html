@@ -1037,63 +1037,63 @@
         }
 
         .daily-highlights.notebook-bg {
-    position: relative;
-    max-width: 900px;
-    margin: 2em auto;
-    padding: 2.5em 0.2em 1.5em 1.5em;
-    background: url('Logos/highlight-block-logo_dark.png') center/cover no-repeat;
-    background-color: #f9f7f2; /* fallback light paper color */
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    overflow: hidden;
-}
+            position: relative;
+            max-width: 900px;
+            margin: 2em auto;
+            padding: 2.5em 0.2em 1.5em 1.5em;
+            background: url('Logos/highlight-block-logo_dark.png') center/cover no-repeat;
+            background-color: #f9f7f2; /* fallback light paper color */
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
 
-/* Subtle overlay to improve text readability on notebook bg */
-.notebook-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.35); /* adjust opacity 0.25–0.45 if needed */
-    border-radius: 12px;
-    z-index: 0;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
+        /* Subtle overlay to improve text readability on notebook bg */
+        .notebook-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.35); /* adjust opacity 0.25–0.45 if needed */
+            border-radius: 12px;
+            z-index: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow for diffusion */
                 filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
                 border-radius: 8px; /* Optional: slight rounding for harmony */
-}
+        }
 
-.highlights-table {
-    width: 50%;
-    border-collapse: separate;
-    border-spacing: 0 1.2em;
-    position: relative;
-    margin-left: auto;             /* pushes table to the right side */
-    margin-right: 0;
-    z-index: 1; /* above overlay */
-}
+        .highlights-table {
+            width: 50%;
+            border-collapse: separate;
+            border-spacing: 0 1.2em;
+            position: relative;
+            margin-left: auto;             /* pushes table to the right side */
+            margin-right: 0;
+            z-index: 1; /* above overlay */
+        }
 
 
 
-.highlights-table tr {
-    background: transparent; /* let notebook bg show through */
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    min-height: 3.4em;       /* minimal comfortable height for single-line items */
-    height: auto;            /* expands for multi-line text */
-}
+        .highlights-table tr {
+            background: transparent; /* let notebook bg show through */
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            min-height: 3.4em;       /* minimal comfortable height for single-line items */
+            height: auto;            /* expands for multi-line text */
+        }
 
-.highlights-table td {
-    padding: 0.9em 0.9em;
-    vertical-align: top;     /* top alignment as requested */
-    background: transparent;
-}
+        .highlights-table td {
+            padding: 0.9em 0.9em;
+            vertical-align: top;     /* top alignment as requested */
+            background: transparent;
+        }
 
-.highlight-icons {
-    width: auto;
-    white-space: nowrap;
-    text-align: right;
-    padding-right: 0.4em;
-    padding-left: 0.2em;
-}
+        .highlight-icons {
+            width: auto;
+            white-space: nowrap;
+            text-align: right;
+            padding-right: 0.4em;
+            padding-left: 0.2em;
+        }
 
 .highlight-name {
     font-weight: bold;
@@ -1416,7 +1416,7 @@
     }
 
     .highlights-table td {
-        padding: 0.7em 0.7em;
+        padding: 0.5em 0.5em;
     }
 
 
@@ -1693,6 +1693,7 @@
     .category-icon {
         height: 0.8em;
         margin: 0 0.3em 0 0;
+        padding: 0.05em 0.05em;
     }
 
     .highlights-table td {
@@ -2143,7 +2144,7 @@
                     <img src="Logos/schrimp-logo.png" alt="Schrimp" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Γαριδομακαρονάδα"
+                    data-el="Μακαρονάδα με γαριδούλες"
                     data-en="Shcrimps Spaghetti"
                     Γαριδομακαρονάδα
                 </td>
@@ -2157,7 +2158,7 @@
                     <img src="Logos/muschroom-logo.png" alt="Muschroom" class="category-icon">
                 </td>
                 <td class="highlight-name lang" 
-                    data-el="Μανιταρόσουπα"
+                    data-el="Σούπα Μανιταριών"
                     data-en="Mushroom Soup"
                     Μανιταρόσουπα
                 </td>
