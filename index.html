@@ -1207,6 +1207,27 @@
     50% { opacity: 0.3; }
 }
 
+.clickable-panel {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable-panel:hover,
+.clickable-panel:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    outline: none;
+}
+
+.clickable-panel:active {
+    transform: translateY(-2px);
+}
+
 
     
 
@@ -2119,8 +2140,11 @@
                             
 
     
-
-    <div class="daily-highlights notebook-bg">
+<button onclick="gotoDailyDishes()" 
+        class="daily-highlights notebook-bg clickable-panel" 
+        aria-label="Πιάτα Ημέρας – Daily Dishes" 
+        type="button">
+    
     <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
 
     <table class="highlights-table">
@@ -2165,7 +2189,7 @@
             </tr>
         </tbody>
     </table>
-</div>
+</button>
 
                            
 
@@ -2843,7 +2867,7 @@
                                                  Magiritsa (The classic Greek Easter soup made with lamb, egg-lemon sauce, and aromatic herbs. A traditional must for Easter, yet equally perfect as a comforting, nourishing winter soup.)
                             </td><td>€10.00</td></tr>-->
                             
-                            tr><td class="lang" data-el="Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
+                            <tr><td class="lang" data-el="Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά, από τα Κρέατα Αστακού. Υπέροχη επιλογή για θρεπτικό και ελαφρύ φαγητό.)" 
                                                  data-en="Meatball Egg-Lemon Soup <br><br> (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)">
                                                  Meatball Egg-Lemon Soup (With 100% beef mince from Astakou Meats. A wonderful choice for a nutritious and light meal.)
                             </td><td>€8.50</td></tr>
@@ -3204,6 +3228,21 @@
             }
             
             toggleMenu();
+        }
+
+        function gotoDailyDishes() {
+            // Check if we're already in the menu section
+            // (optional – prevents unnecessary calls)
+            const currentSection = document.querySelector('.section-container.active')?.id || '';
+                if (currentSection === 'menu' || currentSection.includes('menu')) {
+                    showMenu('daily-dishes');
+                } else {
+                    // If not in menu, first show menu section, then daily dishes
+                    showSection('menu');           // your function to show the menu section
+                setTimeout(() => {
+                    showMenu('daily-dishes');
+                }, 10); // small delay to allow section transition
+            }
         }
         
         function showMenu(menuId) {
