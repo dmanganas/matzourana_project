@@ -682,7 +682,7 @@
            transform: scale(1.03);
            transition: transform 0.2s ease-in-out;
         }
-        .hero button, .about button, .return-btn, .menu button, .gallery button, .map-btn {
+        .hero button, .about button, .return-btn, .menu button, .gallery button, .map-btn  {
             font-family: 'Montserrat', sans-serif;
             padding: 8px 16px; /* Consistent padding for all buttons */
             color: #4A5D4A;
@@ -695,6 +695,7 @@
             text-decoration: none; /* Remove underline */
             text-align: center;
         }
+
         
         .hero button:hover, .return-btn:hover, .menu button:hover, .gallery button:hover, .map-btn:hover {
             background-color: #4A5D4A;
@@ -2140,10 +2141,11 @@
                             
 
     
-<button onclick="gotoDailyDishes()" 
+<button width="auto" onclick="gotoDailyDishes()" 
         class="daily-highlights notebook-bg clickable-panel" 
         aria-label="Πιάτα Ημέρας – Daily Dishes" 
-        type="button">
+        type="button"
+        style="width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box;">
     
     <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
 
@@ -3242,6 +3244,9 @@
                 setTimeout(() => {
                     showMenu('daily-dishes');
                 }, 10); // small delay to allow section transition
+                if (navMenu.classList.contains('hide-on-load')) {
+                navMenu.classList.remove('hide-on-load');
+                }
             }
         }
         
