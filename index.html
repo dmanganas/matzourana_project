@@ -3279,9 +3279,10 @@
                 setTimeout(() => {
                     showMenu('daily-dishes');
                 }, 10); // small delay to allow section transition
-                if (navMenu.classList.contains('hide-on-load')) {
-                navMenu.classList.remove('hide-on-load');
-                }
+
+                const navMenu = document.querySelector('.nav-menu');
+                navMenu.classList.remove('active');
+
             }
         }
         
