@@ -1806,7 +1806,7 @@
             .zoom-caption {
                 font-size: 13px;
             }
-            
+
             .menu .image-panel img {
                 max-width: 100%;
                 box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
@@ -3586,8 +3586,11 @@
         // - Called on every zoom open to ensure the list is fresh (after showMenu shuffles)
         // ---------------------------------------------------------
         function collectZoomableImages() {
-            zoomableImages = Array.from(document.querySelectorAll('img[onclick*="zoomImage"]'));
-        }
+        zoomableImages = Array.from(
+            document.querySelectorAll('.image-panel img[onclick*="zoomImage"][style*="display: block"]')
+        );
+        console.log('Collected visible zoomable images:', zoomableImages.length);
+}
 
         function toggleLanguage(lang) {
             currentLang = lang;
@@ -3865,6 +3868,13 @@
             const zoomedImage = document.querySelector('#zoomed-image');
             const captionCurrent = document.getElementById('caption-current');
 
+            // Find the index of the clicked image in the current visible list
+            currentImageIndex = zoomableImages.findIndex(img => img.src.includes(src));
+
+            if (currentImageIndex === -1) {
+                console.warn('Clicked image not found in visible list - resetting to 0');
+                currentImageIndex = 0;
+            }
             zoomedImage.src = src;
             zoomedImage.alt = altText || "Μεγενθυμένη φωτογραφία πιάτου από το Matzourana Eatery Καλλιθέα";
 
