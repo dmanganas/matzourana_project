@@ -1011,7 +1011,8 @@
             width: 100%;
             box-sizing: border-box;
             word-wrap: break-word;
-            white-space: pre-wrap;
+            /*white-space: pre-wrap;*/
+            white-space: pre-line; /* preserves \n and allows wrapping */
             opacity: 0;
             transition: opacity 0.4s ease;
         }
@@ -3882,17 +3883,29 @@
 
             // Set caption using current language
             if (captionCurrent) {
-                if (currentLang === 'el') {
-                    // Take Greek part (before | )
-                    captionCurrent.textContent = altText && altText.includes('|') 
-                        ? altText.split('|')[0].trim() 
-                        : altText || "Matzourana Eatery all rights reserved";
+                let displayText = "";
+
+                if (altText && altText.includes('|')) {
+                    const parts = altText.split('|').map(part => part.trim());
+                    const greekPart = parts[0] || "";
+                    const englishPart = parts[1] || "";
+
+                    displayText = currentLang === 'el' ? greekPart : englishPart;
                 } else {
-                    // Take English part (after | )
-                    captionCurrent.textContent = altText && altText.includes('|') 
-                        ? altText.split('|')[1].trim() 
-                        : altText || "Matzourana Eatery all rights reserved";
+                    // Fallback if no | separator
+                    displayText = currentLang === 'el' 
+                        ? (altText || "Πιάτο από το Matzourana Eatery Καλλιθέα")
+                        : (altText || "Dish from Matzourana Eatery Kallithea");
                 }
+
+                // Force line break before brand/location (both languages)
+                if (currentLang === 'el') {
+                    displayText = displayText.replace(/Matzourana Eatery Καλλιθέα/g, '\nMatzourana Eatery Καλλιθέα');
+                } else {
+                    displayText = displayText.replace(/Matzourana Eatery Kallithea/g, '\nMatzourana Eatery Kallithea');
+                }
+
+                captionCurrent.textContent = displayText;
             }
             console.log('Zoomed image set - src:', src, 'alt:', zoomedImage.alt); // debug
 
