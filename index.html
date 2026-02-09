@@ -1016,7 +1016,11 @@
             opacity: 0;
             transition: opacity 0.4s ease;
         }
-
+        #zoom-caption strong {
+            font-weight: 700;          /* bold styling */
+            color: #ffffff;            /* keep white */
+            font-size: 1.5em
+        }
         /* Show caption when overlay is visible */
         .zoom-overlay[style*="display: flex"] .zoom-caption {
             opacity: 1;
@@ -3751,30 +3755,30 @@
             ];
 
             const dishAlts = {
-                'DishImages/greek-dish-1.png': "Μοσχάρι κοκκινιστό - Τρυφερό μοσχαράκι χτένι (κρέατα Αστακού) με γαρνιτούρα Matzourana Eatery Καλλιθέα | Beef in Red Sauce - Tender beef shank from Astakou Meats served with your choice of side Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-2.png': "Λαχανοντολμάδες - Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο Matzourana Eatery Καλλιθέα | Cabbage Rolls - Handmade with creamy egg-lemon sauce and fresh dill Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-3.png': "Μουσακάς - Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ, ψητές μελιτζάνες, κολοκύθια, πατάτες και τριμμένο κεφαλοτύρι Matzourana Eatery Καλλιθέα | Moussaka - With 100% beef mince from Astakou Meats, rich béchamel, roasted eggplants & courgettes, potatoes and grated kefalotyri Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-4.png': "Παστίτσιο - Με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι - η συνταγή της επιτυχίας Matzourana Eatery Καλλιθέα | Pastitsio - With handmade béchamel, 100% beef mince and rigatoni – the recipe for success Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-5.png': "Μπουγιουρντί φέτα με μπούκοβο κ’ ντομάτα - Πικάντικο και λαχταριστό ορεκτικό Matzourana Eatery Καλλιθέα | Bouyourdi Feta with Chili & Tomato - Spicy and delicious baked feta appetizer Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-6.png': "Γίγαντες φασόλια - Παραδοσιακοί πλακί, ψημένοι στη γάστρα Matzourana Eatery Καλλιθέα | Giant Beans Plaki - Traditional, baked in a clay pot Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-7.png': "Ντολμαδάκια γιαλατζί χειροποίητα - Δροσερά και γευστικά Matzourana Eatery Καλλιθέα | Handmade Vegetarian Dolmades - Fresh and delicious Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-8.png': "Κόκορας κρασάτος - Αργομαγειρεμένος, πλούσιος και παραδοσιακός Matzourana Eatery Καλλιθέα | Rooster in Wine Sauce - Slow-cooked, rich and traditional Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-9.png': "Σαλάτα Mexicana - Λόλα, μαρούλι, τόνος, κόκκινα φασόλια Matzourana Eatery Καλλιθέα | Mexicana Salad - Lola lettuce, romaine, tuna, red beans Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-10.png': "Παντζάρια - Φρέσκια και γευστική παντζαροσαλάτα Matzourana Eatery Καλλιθέα | Beetroot Salad - Fresh and tasty beetroot salad Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-11.png': "Μπριζόλα Μοσχαρίσια γάλακτος - Τρυφερή και premium ψητή Matzourana Eatery Καλλιθέα | Milk-Fed Veal Chop - Tender premium grilled veal Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-12.png': "Ψητά Λαχανικά - Μελιτζάνες, κολοκυθάκια, πιπεριές και μανιτάρια Matzourana Eatery Καλλιθέα | Grilled Vegetables - Eggplant, courgettes, peppers & mushrooms Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-13.png': "Μπριζόλα Χοιρινή - Ζουμερή και τέλεια ψημένη Matzourana Eatery Καλλιθέα | Pork Chop - Juicy and perfectly grilled Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-14.png': "Κεφτεδάκια τηγανιτά - Μυρωδάτα και τραγανά Matzourana Eatery Καλλιθέα | Fried Meatballs - Aromatic and crispy Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-15.png': "Φιλέτο Κοτόπουλο - Ψητό, απαλό και γευστικό Matzourana Eatery Καλλιθέα | Chicken Fillet - Grilled, tender and tasty Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-16.png': "Γιουβαρλάκια - Με 100% μοσχαρίσιο κιμά και αυγολέμονο Matzourana Eatery Καλλιθέα | Giouvarlakia - With 100% beef mince in egg-lemon sauce Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-17.png': "Caesar's σαλάτα - Iceberg, γαλλική σαλάτα, κοτόπουλο φιλέτο, μπέικον, καλαμπόκι, κρουτόν, παρμεζάνα & χειροποίητη σως Matzourana Eatery Καλλιθέα | Caesar Salad - Iceberg, romaine, chicken fillet, bacon, corn, croutons, parmesan & homemade Caesar sauce Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-18.png': "Κριθαρώτο με γαρίδες - Αρωματικό και κρεμώδες Matzourana Eatery Καλλιθέα | Shrimp Orzo - Aromatic and creamy Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-19.png': "Μπριζολάκια Χοιρινά χωρίς κόκαλο - Ζουμερά και γευστικά Matzourana Eatery Καλλιθέα | Boneless Pork Chops - Juicy and flavourful Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-20.png': "Πανδαισία γεύσεων - Κόκορας κρασάτος, κρητικός ντάκος, χαλούμι, λαχανοντολμάδες, τυροκαυτερή, ψητά μπιφτέκια Matzourana Eatery Καλλιθέα | Feast of authentic flavors - Rooster in wine sauce, Cretan dakos, halloumi, cabbage rolls, spicy cheese dip, grilled patties Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-21.png': "Ντάκος - Τραγανός κρητικός με φέτα ΠΟΠ και τριμμένη ντομάτα Matzourana Eatery Καλλιθέα | Dakos - Crispy Cretan rusk with PDO feta and grated tomato Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-22.png': "Μπριάμ - Μελιτζάνες, κολοκυθάκια, πιπεριές, πατάτες και ντομάτα Matzourana Eatery Καλλιθέα | Briam - Eggplants, courgettes, peppers, potatoes and tomato Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-23.png': "Χειροποίητοι κολοκυθοκεφτέδες 5 τμχ Matzourana Eatery Καλλιθέα | Handmade zucchini fritters 5 pcs Matzourana Eatery Kallithea",
-                'DishImages/greek-dish-24.png': "Ρολό μοσχαρίσιου κιμά - Γεμιστό με φέτα ΠΟΠ και ντοματούλα, ψητό στο φούρνο Matzourana Eatery Καλλιθέα | Beef Roll - Stuffed with PDO goat feta and tomato, oven-baked Matzourana Eatery Kallithea"
+                'DishImages/greek-dish-1.png': "Μοσχάρι κοκκινιστό - (Τρυφερό μοσχαράκι χτένι κρέατα Αστακού με γαρνιτούρα) Matzourana Eatery Καλλιθέα | Beef in Red Sauce Tender - (beef shank from Astakou Meats served with your choice of side) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-2.png': "Λαχανοντολμάδες  - (Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο) Matzourana Eatery Καλλιθέα | Cabbage Rolls - (Handmade with creamy egg-lemon sauce and fresh dill) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-3.png': "Μουσακάς - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ, ψητές μελιτζάνες, κολοκύθια, πατάτες και τριμμένο κεφαλοτύρι) Matzourana Eatery Καλλιθέα | Moussaka - (With 100% beef mince from Astakou Meats, rich béchamel, roasted eggplants & courgettes, potatoes and grated kefalotyri) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-4.png': "Παστίτσιο - (Με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι - η συνταγή της επιτυχίας) Matzourana Eatery Καλλιθέα | Pastitsio - (With handmade béchamel, 100% beef mince and rigatoni – the recipe for success) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-5.png': "Μπουγιουρντί φέτα με μπούκοβο κ’ ντομάτα - (Πικάντικο και λαχταριστό ορεκτικό) Matzourana Eatery Καλλιθέα | Bouyourdi Feta with Chili & Tomato - (Spicy and delicious baked feta appetizer) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-6.png': "Γίγαντες φασόλια - (Παραδοσιακοί πλακί, ψημένοι στη γάστρα) Matzourana Eatery Καλλιθέα | Giant Beans Plaki - (Traditional, baked in a clay pot) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-7.png': "Ντολμαδάκια γιαλατζί χειροποίητα - (Δροσερά και γευστικά) Matzourana Eatery Καλλιθέα | Handmade Vegetarian Dolmades - (Fresh and delicious) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-8.png': "Κόκορας κρασάτος - (Αργομαγειρεμένος, πλούσιος και παραδοσιακός) Matzourana Eatery Καλλιθέα | Rooster in Wine Sauce - (Slow-cooked, rich and traditional) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-9.png': "Σαλάτα Mexicana - (Λόλα, μαρούλι, τόνος, κόκκινα φασόλια) Matzourana Eatery Καλλιθέα | Mexicana Salad - (Lola lettuce, romaine, tuna, red beans) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-10.png': "Παντζάρια - (Φρέσκια και γευστική παντζαροσαλάτα) Matzourana Eatery Καλλιθέα | Beetroot Salad - (Fresh and tasty beetroot salad) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-11.png': "Μπριζόλα Μοσχαρίσια γάλακτος - (Τρυφερή και premium ψητή) Matzourana Eatery Καλλιθέα | Milk-Fed Veal Chop - (Tender premium grilled veal) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-12.png': "Ψητά Λαχανικά - (Μελιτζάνες, κολοκυθάκια, πιπεριές και μανιτάρια) Matzourana Eatery Καλλιθέα | Grilled Vegetables - (Eggplant, courgettes, peppers & mushrooms) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-13.png': "Μπριζόλα Χοιρινή - (Ζουμερή και τέλεια ψημένη) Matzourana Eatery Καλλιθέα | Pork Chop - (Juicy and perfectly grilled) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-14.png': "Κεφτεδάκια τηγανιτά - (Μυρωδάτα και τραγανά) Matzourana Eatery Καλλιθέα | Fried Meatballs - (Aromatic and crispy) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-15.png': "Φιλέτο Κοτόπουλο - (Ψητό, απαλό και γευστικό) Matzourana Eatery Καλλιθέα | Chicken Fillet - (Grilled, tender and tasty) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-16.png': "Γιουβαρλάκια - (Με 100% μοσχαρίσιο κιμά και αυγολέμονο) Matzourana Eatery Καλλιθέα | Giouvarlakia - (With 100% beef mince in egg-lemon sauce) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-17.png': "Caesar's σαλάτα - (Iceberg, γαλλική σαλάτα, κοτόπουλο φιλέτο, μπέικον, καλαμπόκι, κρουτόν, παρμεζάνα & χειροποίητη σως) Matzourana Eatery Καλλιθέα | Caesar Salad - (Iceberg, romaine, chicken fillet, bacon, corn, croutons, parmesan & homemade Caesar sauce) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-18.png': "Κριθαρώτο με γαρίδες - (Αρωματικό και κρεμώδες) Matzourana Eatery Καλλιθέα | Shrimp Orzo - (Aromatic and creamy) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-19.png': "Μπριζολάκια Χοιρινά χωρίς κόκαλο - (Ζουμερά και γευστικά) Matzourana Eatery Καλλιθέα | Boneless Pork Chops - (Juicy and flavourful) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-20.png': "Πανδαισία γεύσεων - (Κόκορας κρασάτος, κρητικός ντάκος, χαλούμι, λαχανοντολμάδες, τυροκαυτερή, ψητά μπιφτέκια) Matzourana Eatery Καλλιθέα | Feast of authentic flavors - (Rooster in wine sauce, Cretan dakos, halloumi, cabbage rolls, spicy cheese dip, grilled patties) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-21.png': "Ντάκος - (Τραγανός κρητικός με φέτα ΠΟΠ και τριμμένη ντομάτα) Matzourana Eatery Καλλιθέα | Dakos - (Crispy Cretan rusk with PDO feta and grated tomato) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-22.png': "Μπριάμ - (Μελιτζάνες, κολοκυθάκια, πιπεριές, πατάτες και ντομάτα) Matzourana Eatery Καλλιθέα | Briam - (Eggplants, courgettes, peppers, potatoes and tomato) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-23.png': "Χειροποίητοι κολοκυθοκεφτέδες -(5 τμχ.) Matzourana Eatery Καλλιθέα | Handmade zucchini fritters - (5 pcs) Matzourana Eatery Kallithea",
+                'DishImages/greek-dish-24.png': "Ρολό μοσχαρίσιου κιμά - (Γεμιστό με φέτα ΠΟΠ και ντοματούλα, ψητό στο φούρνο) Matzourana Eatery Καλλιθέα | Beef Roll - (Stuffed with PDO goat feta and tomato, oven-baked) Matzourana Eatery Kallithea"
             };
 
             const shuffledImages = imageList.sort(() => Math.random() - 0.5);
@@ -3884,28 +3888,35 @@
             // Set caption using current language
             if (captionCurrent) {
                 let displayText = "";
-
-                if (altText && altText.includes('|')) {
+                
+                // Step 1: Pick the language part
+               if (altText && altText.includes('|')) {
                     const parts = altText.split('|').map(part => part.trim());
-                    const greekPart = parts[0] || "";
-                    const englishPart = parts[1] || "";
-
-                    displayText = currentLang === 'el' ? greekPart : englishPart;
+                    displayText = currentLang === 'el' ? parts[0] : parts[1];
                 } else {
-                    // Fallback if no | separator
                     displayText = currentLang === 'el' 
-                        ? (altText || "Γκαλερί Φώτο Matzourana Eatery Καλλιθέα")
-                        : (altText || "Gallery Photo from Matzourana Eatery Kallithea");
+                        ? (altText || "Πιάτο από το Matzourana Eatery Καλλιθέα")
+                        : (altText || "Dish from Matzourana Eatery Kallithea");
                 }
 
-                // Force line break before brand/location (both languages)
+                // Step 2: Force line break before brand/location (as before)
                 if (currentLang === 'el') {
                     displayText = displayText.replace(/Matzourana Eatery Καλλιθέα/g, '\nMatzourana Eatery Καλλιθέα');
                 } else {
                     displayText = displayText.replace(/Matzourana Eatery Kallithea/g, '\nMatzourana Eatery Kallithea');
                 }
 
-                captionCurrent.textContent = displayText;
+                // Step 3: Add line break after the first '-' (or before parentheses content)
+                // Example: "Μοσχάρι κοκκινιστό - (Τρυφερό...)" → "Μοσχάρι κοκκινιστό\n(Τρυφερό...)"
+                displayText = displayText.replace(/ - /g, '\n');  // break after first " - "
+
+                // Step 4: Bold text outside parentheses, regular inside
+                // This uses <strong> tags for bold – captionCurrent must allow HTML (innerHTML)
+                displayText = displayText.replace(/([^()]+)(?=\()/g, '<strong>$1</strong>'); // bold before '('
+                displayText = displayText.replace(/\((.*?)\)/g, '($1)'); // keep inside regular
+
+                // Set caption with HTML for bold
+                captionCurrent.innerHTML = displayText;
             }
             console.log('Zoomed image set - src:', src, 'alt:', zoomedImage.alt); // debug
 
