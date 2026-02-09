@@ -512,6 +512,7 @@
             margin-top: 10px;
             font-size: 14px;
             line-height: 1.4;
+            display: none !important;
         }
 
         .caption-el {
@@ -1016,7 +1017,7 @@
             opacity: 0;
             transition: opacity 0.4s ease;
         }
-        #zoom-caption strong {
+        .zoom-caption strong {
             font-weight: 700;          /* bold styling */
             color: #ffffff;            /* keep white */
             font-size: 1.5em
@@ -2262,126 +2263,103 @@
                             
 
     
-<button width="auto" onclick="gotoDailyDishes()" 
-        class="daily-highlights notebook-bg clickable-panel" 
-        aria-label="Πιάτα Ημέρας – Daily Dishes" 
-        type="button"
-        style="width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box;">
-    
-    <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
-
-    <table class="highlights-table">
-        <tbody>
-            <!-- Meet Dish -->
-            <tr class="highlight-row animate-write">
-                <td class="highlight-icons">
-                    <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
-                    <!--<img src="Logos/patties-logo.png" alt="Patties" class="category-icon">-->
-                    <!--<img src="Logos/onion-logo.png" alt="Onion" class="category-icon">-->
-                    <!--<img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">-->
-                    <!--<img src="Logos/goat-logo.png" alt="Goat" class="category-icon">-->
-                    <!--<img src="Logos/oven-logo.png" alt="Oven" class="category-icon">-->
-                    <!--<img src="Logos/pan-logo.png" alt="Pan" class="category-icon">-->
-                    <img src="Logos/roll-logo.png" alt="Roll" class="category-icon">
-                    <!--<img src="Logos/ozro-logo.png" alt="Ozro" class="category-icon">-->
-                    <!--<img src="Logos/ragout-logo.png" alt="Ragout" class="category-icon">--> 
-                    <!--<img src="Logos/redbeef-logo.png" alt="RedBeef" class="category-icon"> --> 
-
-                
-                </td>
-                <td class="highlight-name lang" 
-                    data-el="Ρολό <br> μοσχαρίσιου <br> κιμά"
-                    data-en="Beef <br> Roll"
-                    Ρολό <br> μοσχαρίσιου <br> κιμά
-                </td>
-            </tr>
-
-    
-
-
-
-            
-            <!-- Fish Dish -->
-            <!--<tr class="highlight-row animate-write">
-                <td class="highlight-icons">    
-                    <img src="Logos/fish-logo.png" alt="fish" class="category-icon">
-                    <img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">
-                </td>
-                <td class="highlight-name lang" 
-                    data-el="Μπακαλιάρος παστός α λα σπετσιώτα"
-                    data-en="Salted Cod Spetsiota"
-                    Μπακαλιάρος παστός α λα σπετσιώτα
-                </td>
-            </tr>-->
-
-
-            <!-- Soup Dish -->
-            <tr class="highlight-row animate-write">
-                <td class="highlight-icons">
-                     <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
-                    <!--<img src="Logos/muschroom-logo.png" alt="Muschroom" class="category-icon">-->
-                    <!--<img src="Logos/fish-logo.png" alt="Fish" class="category-icon">-->
-                    <img src="Logos/chicken-logo.png" alt="Muschroom" class="category-icon">
-                    <img src="Logos/oven-logo.png" alt="Oven" class="category-icon">
-                    <!--<img src="Logos/wine-logo.png" alt="Wine" class="category-icon">-->
-                    <!--<img src="Logos/eggplant-logo.png" alt="Eggplant" class="category-icon">-->
-                    <!--<img src="Logos/shoes-logo.png" alt="Shoes" class="category-icon">-->
-                    <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
-                </td>
-                <td class="highlight-name lang" 
-                    data-el="Κοτόπουλο <br> στο φούρνο"
-                    data-en="Free-Range <br> Roast <br> Chicken"
-                    Κοτόπουλο <br> στο φούρνο
-                </td>
-            </tr>
-
-        
-            
-
-            
-            
-            <!-- Vegie Dish -->
-            <tr class="highlight-row animate-write">
-                <td class="highlight-icons">
-                    
-                    <!--<img src="Logos/legumes-logo.png" alt="Legumes" class="category-icon">-->
-                    
-                    <!--<img src="Logos/peas-logo.png" alt="Peas" class="category-icon">-->
-                    <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
-                    <!--<img src="Logos/muschroom-logo.png" alt="Muschroom" class="category-icon">-->
-                    <!--<img src="Logos/beans-logo.png" alt="Bean" class="category-icon">-->
-                    <img src="Logos/tomatopepper-logo.png" alt="TomatoPepper" class="category-icon">
-                    
-                    <!--<img src="Logos/fish-logo.png" alt="Fish" class="category-icon">-->
-                    <!--<img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">-->
-                    <img src="Logos/stuffed-logo.png" alt="Stuffed" class="category-icon">
-                    <!--<img src="Logos/eggplant-logo.png" alt="Eggplant" class="category-icon">-->
-                    <!--<img src="Logos/briam-logo.png" alt="Briam" class="category-icon">-->
-                    <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
-                    <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
-                    <!--<img src="Logos/spinachrice-logo.png" alt="spinachrice" class="category-icon">-->
-                </td>
-                <td class="highlight-name lang" 
-                    data-el="Γεμιστά  <br> με ρύζι"
-                    data-en="Stuffed   <br> Vegetables <br> with rice"
-                    Γεμιστά  <br> με Superfoods
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</button>
-
-
-
-
-
-
-
-
-
+                            <button width="auto" onclick="gotoDailyDishes()" 
+                                class="daily-highlights notebook-bg clickable-panel" 
+                                aria-label="Πιάτα Ημέρας – Daily Dishes" 
+                                type="button"
+                                style="width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box;">
                             
-                           
+                                <div class="notebook-overlay"></div> <!-- optional semi-transparent overlay if needed -->
 
+                                <table class="highlights-table">
+                                    <tbody>
+                                        <!-- Meet Dish -->
+                                        <tr class="highlight-row animate-write">
+                                            <td class="highlight-icons">
+                                                <img src="Logos/meat-logo.png" alt="Meat" class="category-icon">
+                                                <!--<img src="Logos/patties-logo.png" alt="Patties" class="category-icon">-->
+                                                <!--<img src="Logos/onion-logo.png" alt="Onion" class="category-icon">-->
+                                                <!--<img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">-->
+                                                <!--<img src="Logos/goat-logo.png" alt="Goat" class="category-icon">-->
+                                                <!--<img src="Logos/oven-logo.png" alt="Oven" class="category-icon">-->
+                                                <!--<img src="Logos/pan-logo.png" alt="Pan" class="category-icon">-->
+                                                <img src="Logos/roll-logo.png" alt="Roll" class="category-icon">
+                                                <!--<img src="Logos/ozro-logo.png" alt="Ozro" class="category-icon">-->
+                                                <!--<img src="Logos/ragout-logo.png" alt="Ragout" class="category-icon">--> 
+                                                <!--<img src="Logos/redbeef-logo.png" alt="RedBeef" class="category-icon"> --> 
+
+                                            
+                                            </td>
+                                            <td class="highlight-name lang" 
+                                                data-el="Ρολό <br> μοσχαρίσιου <br> κιμά"
+                                                data-en="Beef <br> Roll"
+                                                Ρολό <br> μοσχαρίσιου <br> κιμά
+                                            </td>
+                                        </tr>
+
+                                        <!-- Fish Dish -->
+                                        <!--<tr class="highlight-row animate-write">
+                                            <td class="highlight-icons">    
+                                                <img src="Logos/fish-logo.png" alt="fish" class="category-icon">
+                                                <img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">
+                                            </td>
+                                            <td class="highlight-name lang" 
+                                                data-el="Μπακαλιάρος παστός α λα σπετσιώτα"
+                                                data-en="Salted Cod Spetsiota"
+                                                Μπακαλιάρος παστός α λα σπετσιώτα
+                                            </td>
+                                        </tr>-->
+
+                                        <!-- Soup Dish -->
+                                        <tr class="highlight-row animate-write">
+                                            <td class="highlight-icons">
+                                                <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
+                                                <!--<img src="Logos/muschroom-logo.png" alt="Muschroom" class="category-icon">-->
+                                                <!--<img src="Logos/fish-logo.png" alt="Fish" class="category-icon">-->
+                                                <img src="Logos/chicken-logo.png" alt="Muschroom" class="category-icon">
+                                                <img src="Logos/oven-logo.png" alt="Oven" class="category-icon">
+                                                <!--<img src="Logos/wine-logo.png" alt="Wine" class="category-icon">-->
+                                                <!--<img src="Logos/eggplant-logo.png" alt="Eggplant" class="category-icon">-->
+                                                <!--<img src="Logos/shoes-logo.png" alt="Shoes" class="category-icon">-->
+                                                <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
+                                            </td>
+                                            <td class="highlight-name lang" 
+                                                data-el="Κοτόπουλο <br> στο φούρνο"
+                                                data-en="Free-Range <br> Roast <br> Chicken"
+                                                Κοτόπουλο <br> στο φούρνο
+                                            </td>
+                                        </tr>
+
+                                        <!-- Vegie Dish -->
+                                        <tr class="highlight-row animate-write">
+                                            <td class="highlight-icons">
+                                                
+                                                <!--<img src="Logos/legumes-logo.png" alt="Legumes" class="category-icon">-->
+                                                
+                                                <!--<img src="Logos/peas-logo.png" alt="Peas" class="category-icon">-->
+                                                <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
+                                                <!--<img src="Logos/muschroom-logo.png" alt="Muschroom" class="category-icon">-->
+                                                <!--<img src="Logos/beans-logo.png" alt="Bean" class="category-icon">-->
+                                                <img src="Logos/tomatopepper-logo.png" alt="TomatoPepper" class="category-icon">
+                                                
+                                                <!--<img src="Logos/fish-logo.png" alt="Fish" class="category-icon">-->
+                                                <!--<img src="Logos/tomato-logo.png" alt="tomato" class="category-icon">-->
+                                                <img src="Logos/stuffed-logo.png" alt="Stuffed" class="category-icon">
+                                                <!--<img src="Logos/eggplant-logo.png" alt="Eggplant" class="category-icon">-->
+                                                <!--<img src="Logos/briam-logo.png" alt="Briam" class="category-icon">-->
+                                                <!--<img src="Logos/soup-logo.png" alt="Soup" class="category-icon">-->
+                                                <!--<img src="Logos/plant-logo.png" alt="Plant" class="category-icon">-->
+                                                <!--<img src="Logos/spinachrice-logo.png" alt="spinachrice" class="category-icon">-->
+                                            </td>
+                                            <td class="highlight-name lang" 
+                                                data-el="Γεμιστά  <br> με ρύζι"
+                                                data-en="Stuffed   <br> Vegetables <br> with rice"
+                                                Γεμιστά  <br> με Superfoods
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </button>
 
                             <p class="lang" 
                                 data-el="🎵 Για μία αφηγηματική μουσική εμπειρία από τη 🌿 Matzourana, κάντε κλικ στις εικόνες των YouTube Short. ✨"
