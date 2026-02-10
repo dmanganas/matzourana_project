@@ -3573,11 +3573,29 @@
         // - Called on every zoom open to ensure the list is fresh (after showMenu shuffles)
         // ---------------------------------------------------------
         function collectZoomableImages() {
-        zoomableImages = Array.from(
-            document.querySelectorAll('.image-panel img[onclick*="zoomImage"][style*="display: block"]')
-        );
-        console.log('Collected visible zoomable images:', zoomableImages.length);
-}
+        const gallerySection = document.querySelector('#gallery');
+        const menuActive = document.querySelector('.menu-content.active') || document.querySelector('.section-container.active #menu');
+
+        if (gallerySection && gallerySection.classList.contains('active')) {
+            // Gallery mode: ONLY gallery images
+            zoomableImages = Array.from(
+                gallerySection.querySelectorAll('img[onclick*="zoomImage"]')
+            );
+            console.log('Gallery mode: Collected ALL gallery images:', zoomableImages.length);
+        } else if (menuActive) {
+            // Menu mode: ONLY visible images from the active .image-panel in menu
+            zoomableImages = Array.from(
+                document.querySelectorAll('.image-panel img[onclick*="zoomImage"][style*="display: block"]')
+            );
+            console.log('Menu mode: Collected visible menu images:', zoomableImages.length);
+        } else {
+            // Fallback: nothing or whole page visible (rare)
+            zoomableImages = Array.from(
+                document.querySelectorAll('img[onclick*="zoomImage"][style*="display: block"], img[onclick*="zoomImage"]:not([style*="display: none"])')
+            );
+            console.log('Fallback mode: Collected visible images from page:', zoomableImages.length);
+        }
+    }
 
         function toggleLanguage(lang) {
             currentLang = lang;
@@ -3792,6 +3810,7 @@
                     imgElement.style.display = 'none';
                 }
             });
+            collectZoomableImages(); // Refresh once after shuffling/showing images
         }
 
         // ---------------------------------------------------------
@@ -3875,8 +3894,8 @@
                     displayText = currentLang === 'el' ? parts[0] : parts[1];
                 } else {
                     displayText = currentLang === 'el' 
-                        ? (altText || "Πιάτο από το Matzourana Eatery Καλλιθέα")
-                        : (altText || "Dish from Matzourana Eatery Kallithea");
+                        ? (altText || "Φωτό Matzourana Eatery Καλλιθέα")
+                        : (altText || "Photo Matzourana Eatery Kallithea");
                 }
 
                 // Step 2: Force line break before brand/location (as before)
