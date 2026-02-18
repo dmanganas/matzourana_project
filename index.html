@@ -940,7 +940,7 @@
           margin-top: 20px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
           filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
-          font-size: 0.95em;
+          font-size: 0.85em;
           color: #4A5D4A;
           animation: fadeIn 2s ease-in forwards;
           border-radius: 8px; /* Optional: slight rounding for harmony */
@@ -948,6 +948,10 @@
           height: auto;
           object-fit: cover;
           margin-bottom: 10px;
+
+          hyphens: auto;                 /* καλύτερη σπάση λέξεων */
+            overflow-wrap: break-word;     /* αποφύγετε overflow λέξεων */
+            -webkit-font-smoothing:antialiased;
        
         }
 
@@ -2182,6 +2186,11 @@
                         <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">-->
                         <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
                         <div class="image-panel-info">
+                                <h2 class="lang"
+                                    data-el="Βρείτε μας στην Καλλιθέα" 
+                                    data-en="Find us in Kallithea">
+                                    <strong>Βρείτε μας στην Καλλιθέα</strong>
+                                </h2>
                            <p class="lang"
                                 data-el="Δημοσθένους 48, Καλλιθέα<br>
                                 Τηλ.: <a href='tel:2109577846' class='phone-link'>
@@ -2292,12 +2301,17 @@
                                     class="yt-thumb">
                                 </a>
                             </div>-->
-
+                            
+                            <h2 class="lang"
+                                data-el="🍷🍽️ Σπιτικά Πιάτα Ημέρας στην Καλλιθέα"
+                                data-en="🍷🍽️ Daily Homemade Specials in Kallithea">
+                                <strong>🍷🍽️ Σπιτικά Πιάτα Ημέρας στην Καλλιθέα</strong>
+                            </h2>
                             
                             <p class="lang" style="font-weight: bold; color: #4A5D4A;"
-                                data-el="🍷🍽️✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: <br><br> 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων"
-                                data-en="🍷🍽️✨ Today’s suggestions from the Matzourana kitchen: <br><br> 👉 Click the image to view the daily dishes menu">
-                                🍷🍽️✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
+                                data-el="✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: <br><br> 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων"
+                                data-en="✨ Today’s suggestions from the Matzourana kitchen: <br><br> 👉 Click the image to view the daily dishes menu">
+                                ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
                             <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
@@ -2458,7 +2472,11 @@
                                 </table>
                             </button>
 
-                            
+                            <h2 class="lang" 
+                                data-el="📽️ Μουσικές Ιστορίες από την Κουζίνα της Matzourana"
+                                data-en="📽️ Musical Stories from Matzourana Kitchen">
+                                <strong>📽️ Μουσικές Ιστορίες από την Κουζίνα μας</strong>
+                            </h2>
                             <p class="lang" 
                                 data-el="🎵 Για μία αφηγηματική μουσική εμπειρία από τη 🌿 Matzourana, αφιερωμένη στον Άγιο Βαλεντίνο και την περίοδο της Αποκριάς, κάντε κλικ στις εικόνες των YouTube Short. ✨"
                                 data-en="🎵 For a narrative musical experience by 🌿 Matzourana, dedicated to Valentine’s Day and the Carnival season, click on the YouTube Short images. ✨">
