@@ -553,6 +553,7 @@
             cursor: pointer;
             margin: 12px 0;                  /* Slightly more vertical breathing room */
             background: rgba(255, 255, 255, 0.8);
+            
             font-size: 1.1em;
             border-radius: 25px;
             text-decoration: none;
@@ -589,6 +590,8 @@
         .call-btn:hover .button-logo {
             filter: brightness(1.15) contrast(1.1);   /* Optional – makes logo slightly more vivid on dark bg */
         }
+
+        
         .hero .image-panel, .about .image-panel, .contact .image-panel, .menu .image-panel, .gallery .image-panel {
             /*background-color: #ecf0f1;*/
             background-color: white;
@@ -1854,22 +1857,33 @@
             }
 
             .call-btn {
-                padding:          10px 18px;     /* smaller horizontal padding → narrower button */
-                font-size:        1em;
-                gap:              8px;
-                min-height:       44px;
-                border-radius:    24px;
-                margin:           12px 0;
+                /* Even smaller & narrower overall */
+                padding:          8px 14px;       /* very compact horizontal + vertical */
+                font-size:        0.80em;         /* smaller text */
+                gap:              6px;            /* minimal space between logo & text */
+                min-height:       40px;           /* still tappable, but compact */
+                border-radius:    22px;
+                margin:           10px 0;
                 
-                /* Key changes for narrower width */
-                max-width:        85%;           /* ← most common & flexible: uses up to 85% of container */
-                width:            auto;          /* let content decide, but cap it */
-                justify-content:  center;        /* keep content centered inside */
+                /* Control width tightly */
+                max-width:        70%;            /* narrower than before – adjust to 70% or 65% if needed */
+                width:            auto;
+                justify-content:  center;
+                box-sizing:       border-box;
             }
 
             .call-btn .button-logo {
-                height:           1.4em;
-                max-height:       36px;
+                /* Logo stays larger relative to the smaller button */
+                height:           1.6em;          /* bigger than text scaling would suggest */
+                max-height:       48px;           /* prevents it from overflowing tiny buttons */
+                min-height:       22px;           /* keeps it visible even on very small text */
+                object-fit:       contain;
+                flex-shrink:      0;
+            }
+
+            /* Optional: make logo feel even more dominant */
+            .call-btn:hover .button-logo {
+                filter: brightness(1.15) contrast(1.1);
             }
 
             .highlights-table {
@@ -2169,7 +2183,7 @@
                         
                         <a href="tel:+302109577846" class="call-btn">
                             <img src="Logos/matzourana-logo.png" alt="Κλήση Matzourana" class="button-logo">
-                            <span class="lang" data-el="Καλέστε Τώρα" data-en="Press to Call">Καλέστε Τώρα</span>
+                            <span class="lang" data-el="Καλέστε <br> Τώρα" data-en="Press <br> to Call">Καλέστε Τώρα</span>
                         </a>
                     </div>
                     <p class="lang" data-el="(Πληρωμή με μετρητά ή IRIS)" data-en="(Payment by Cash or IRIS)">
