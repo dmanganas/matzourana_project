@@ -1853,23 +1853,23 @@
                 background-position: center 20%;    /* optional: shift focus if spiral is at top */
             }
 
-            call-btn {
-                padding:          10px 20px;     /* smaller padding than desktop's 14px 32px */
-                font-size:        1em;           /* reduce from 1.25em → readable but compact */
-                gap:              8px;           /* tighter space between logo & text */
-                min-height:       44px;          /* prevents it from becoming too tiny */
-                border-radius:    24px;          /* slightly smaller radius for harmony */
-                margin:           12px 0;        /* a bit less vertical margin */
+            .call-btn {
+                padding:          10px 18px;     /* smaller horizontal padding → narrower button */
+                font-size:        1em;
+                gap:              8px;
+                min-height:       44px;
+                border-radius:    24px;
+                margin:           12px 0;
+                
+                /* Key changes for narrower width */
+                max-width:        85%;           /* ← most common & flexible: uses up to 85% of container */
+                width:            auto;          /* let content decide, but cap it */
+                justify-content:  center;        /* keep content centered inside */
             }
 
             .call-btn .button-logo {
-                height:           1.4em;         /* smaller logo (was 1.8em on desktop) */
-                max-height:       48px;          /* safety cap for very small screens */
-            }
-
-            /* Optional: make hover still feel good but less dramatic on touch devices */
-            .call-btn:hover {
-                box-shadow:       0 2px 6px rgba(74, 93, 74, 0.25);
+                height:           1.4em;
+                max-height:       36px;
             }
 
             .highlights-table {
