@@ -1397,6 +1397,27 @@
     transform: translateY(-2px);
 }
 
+/* ============================================= */
+/* CENTRALIZED STAR RATING STYLES                */
+/* ============================================= */
+
+.interactive-stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;                    /* good default gap */
+    font-size: 3.6rem;
+    color: #e0e0e0;
+    cursor: pointer;
+    user-select: none;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+}
+
+.star {
+    transition: all 0.2s ease;
+}
+
 
     
 
@@ -1526,6 +1547,10 @@
             .map-btn.lang {
                 font-size: 1.05em !important;
                 padding: 14px 24px !important;
+            }
+            .interactive-stars {
+                gap: 18px;
+                font-size: 3.0rem;
             }
         }
         
@@ -1875,6 +1900,10 @@
                 min-width: 100% !important;   /* stack nicely */
                 font-size: 1.05em !important;
                 padding: 14px 20px !important;
+            }
+            .interactive-stars {
+                gap: 14px;           /* smaller gap */
+                font-size: 2.8rem;
             }
         }
         
@@ -2351,13 +2380,13 @@
                             </p>
 
                             <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
-                            <div class="star-rating-container" style="text-align: center; margin-bottom: 10px;">
-                                <div id="star-rating" style="display: flex; justify-content: center; gap: 2px; font-size: 1rem; color: #e0e0e0; cursor: pointer; user-select: none; padding: 5px 0;">
-                                    <span class="star" data-value="1" style="transition: all 0.2s ease;">★</span>
-                                    <span class="star" data-value="2" style="transition: all 0.2s ease;">★</span>
-                                    <span class="star" data-value="3" style="transition: all 0.2s ease;">★</span>
-                                    <span class="star" data-value="4" style="transition: all 0.2s ease;">★</span>
-                                    <span class="star" data-value="5" style="transition: all 0.2s ease;">★</span>
+                            <div class="star-rating-container" style="text-align: center; margin-bottom: 15px;">
+                                <div id="star-rating" class="interactive-stars">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
                                 </div>
                                 
                                 <!-- Live rating display -->
@@ -2373,7 +2402,7 @@
                             </div>
                             
                             <!-- TWO BUTTONS – exactly your preferred style + .lang -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; max-width: 520px; margin: 0 auto;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 520px; margin: 0 auto;">
                                 
                                 <!-- TripAdvisor Button -->
                                 <button class="map-btn lang" 
