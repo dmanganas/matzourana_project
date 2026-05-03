@@ -1018,7 +1018,7 @@
        
         }
 
-        .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info {
+        .hero .text-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info, .hero .star-rating-container {
             max-width: 100%;
             background-color: white;
             border-radius: 10px;
@@ -1475,7 +1475,7 @@
                 padding: 4px;
                 width: 90%;
             }
-            .hero .text-panel-info, .hero .image-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info {
+            .hero .text-panel-info, .hero .image-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info, .hero .star-rating-container {
                 padding: 10px;
                 font-size: 10px;
             }
@@ -1680,7 +1680,7 @@
             .hero .section-container .text-panel{
                 font-size: 1.2em;
             }
-            .hero .text-panel-info, .hero .image-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info {
+            .hero .text-panel-info, .hero .image-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info, .hero .star-rating-container {
                 padding: 7px;
                 font-size: 12px;
             }
@@ -2116,6 +2116,10 @@
             #rating-display {
                 font-size: 1.1em !important;
             }
+            .interactive-stars {
+                gap: 10px;           /* tight but still comfortable */
+                font-size: 2.4rem;
+            }
         }
     </style>
 </head>
@@ -2358,77 +2362,77 @@
             <div class="text-panel-info">
                 <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
                     
-                            <!-- TripAdvisor Logo -->
-                            <!--<img src="https://www.tripadvisor.com/img/cdsi/img2/branding/TA_logo_primary_green-180x60.png" 
-                                //alt="TripAdvisor" 
-                                style="height: 55px; width: auto; margin-bottom: 15px;">-->
-                            
-                            <!-- Bilingual Heading -->
-                            <h2 class="lang""
-                                data-el="Αξιολόγηση Matzourana Eatery"
-                                data-en="Review Matzourana Eatery"
-                                <strong>Αξιολόγηση Matzourana Eatery</strong>
-                                
-                            </h2>
-                            
-                            
-                            <p class="lang"
-                            data-el="(Επιλέξτε μια βαθμολογία)"
-                            data-en="(Choose a rating)"
-                            style="color: #4A5D4A; font-weight: 500; margin-bottom: 25px; font-size: 1.1em;">
-                                (Επιλέξτε μια βαθμολογία)
-                            </p>
+                <!-- TripAdvisor Logo -->
+                <!--<img src="https://www.tripadvisor.com/img/cdsi/img2/branding/TA_logo_primary_green-180x60.png" 
+                    //alt="TripAdvisor" 
+                    style="height: 55px; width: auto; margin-bottom: 15px;">-->
+                
+                <!-- Bilingual Heading -->
+                <h2 class="lang""
+                    data-el="Αξιολόγηση Matzourana Eatery"
+                    data-en="Review Matzourana Eatery"
+                    <strong>Αξιολόγηση Matzourana Eatery</strong>
+                    
+                </h2>
+                
+                
+                <p class="lang"
+                data-el="(Επιλέξτε μια βαθμολογία)"
+                data-en="(Choose a rating)"
+                
+                    (Επιλέξτε μια βαθμολογία)
+                </p>
 
-                            <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
-                            <div class="star-rating-container" style="text-align: center; margin-bottom: 15px;">
-                                <div id="star-rating" class="interactive-stars">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                
-                                <!-- Live rating display -->
-                                <div id="rating-display" style="margin-top: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.35em; color: #4A5D4A; font-weight: 600; min-height: 32px;">
-                                </div>
-                                
-                                <!-- Thank you message -->
-                                <p id="thank-you-message" class="lang" 
-                                data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"
-                                data-en="Thank you! Your rating has been recorded ❤️"
-                                style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">
-                                </p>
-                            </div>
-                            
-                            <!-- TWO BUTTONS – exactly your preferred style + .lang -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 520px; margin: 0 auto;">
-                                
-                                <!-- TripAdvisor Button -->
-                                <button class="map-btn lang" 
-                                        data-el="Αξιολόγηση στο TripAdvisor" 
-                                        data-en="Review on TripAdvisor"
-                                        onclick="gotoTripAdvisor()">
-                                    Αξιολόγηση στο TripAdvisor
-                                </button>
-                                
-                                <!-- Google Maps Button -->
-                                <button class="map-btn lang" 
-                                        data-el="Αξιολόγηση στο Χάρτη Google" 
-                                        data-en="Review on on Google Maps"
-                                        onclick="gotoGoogleMapsReview()">
-                                    Δείτε στον Χάρτη Google
-                                </button>
-                                
-                            </div>
-                            
-                            <!-- Bilingual bottom message (using your exact lang pattern) -->
-                            <p class="lang"
-                            data-el="Βοηθήστε μας να μεγαλώσουμε την αυθεντική σπιτική κουζίνα μας!<br><strong>Σας ευχαριστούμε θερμά για την εμπιστοσύνη σας ❤️</strong>"
-                            data-en="Help us grow our authentic home-style Greek cuisine!<br><strong>Thank you very much for your trust ❤️</strong>">
-                                Βοηθήστε μας να μεγαλώσουμε την αυθεντική σπιτική κουζίνα μας!<br>
-                                <strong>Σας ευχαριστούμε θερμά για την εμπιστοσύνη σας ❤️</strong>
-                            </p>
+                <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
+                 <!--<div class="star-rating-container">-->
+                    <!-- <div id="star-rating" class="interactive-stars">-->
+                        <!-- <span class="star" data-value="1">★</span>-->
+                        <!-- <span class="star" data-value="2">★</span>-->
+                        <!-- <span class="star" data-value="3">★</span>-->
+                        <!-- <span class="star" data-value="4">★</span>-->
+                        <!-- <span class="star" data-value="5">★</span>-->
+                     <!--</div>-->
+                    
+                    <!-- Live rating display -->
+                     <!--<div id="rating-display" style="margin-top: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.35em; color: #4A5D4A; font-weight: 600; min-height: 32px;">-->
+                     <!--</div>-->
+                    
+                    <!-- Thank you message -->
+                    <!-- <p id="thank-you-message" class="lang" -->
+                     <!--data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"-->
+                     <!--data-en="Thank you! Your rating has been recorded ❤️"-->
+                     <!--style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">-->
+                     <!--</p>-->
+                 <!--</div>-->
+                
+                <!-- TWO BUTTONS – exactly your preferred style + .lang -->
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 520px; margin: 0 auto;">
+                    
+                    <!-- TripAdvisor Button -->
+                    <button class="map-btn lang" 
+                            data-el="Αξιολόγηση στο TripAdvisor" 
+                            data-en="Review on TripAdvisor"
+                            onclick="gotoTripAdvisor()">
+                        Αξιολόγηση στο TripAdvisor
+                    </button>
+                    
+                    <!-- Google Maps Button -->
+                    <button class="map-btn lang" 
+                            data-el="Αξιολόγηση στο Χάρτη Google" 
+                            data-en="Review on on Google Maps"
+                            onclick="gotoGoogleMapsReview()">
+                        Δείτε στον Χάρτη Google
+                    </button>
+                    
+                </div>
+                
+                <!-- Bilingual bottom message (using your exact lang pattern) -->
+                <p class="lang"
+                data-el="Βοηθήστε μας να μεγαλώσουμε <br>την αυθεντική σπιτική κουζίνα μας!<br><strong>Σας ευχαριστούμε θερμά <br>για την εμπιστοσύνη σας ❤️</strong>"
+                data-en="Help us grow <br> our authentic home-style Greek cuisine!<br><strong>Thank you very much <br>for your trust ❤️</strong>">
+                    Βοηθήστε μας να μεγαλώσουμε <br>την αυθεντική σπιτική κουζίνα μας!<br>
+                    <strong>Σας ευχαριστούμε θερμά <br>για την εμπιστοσύνη σας ❤️</strong>
+                </p>
 
             </div>
                 <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
