@@ -2266,6 +2266,84 @@
                             <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
                         </span>
                     </div>
+                    
+                    <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
+                    <div class="brand-panel" style="max-width: 620px; margin: 40px auto; border: 3px solid #4A5D4A; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
+                        <div style="padding: 30px 25px; text-align: center; background: white; border-radius: 12px;">
+                            
+                            <!-- TripAdvisor Logo -->
+                            <!--<img src="https://www.tripadvisor.com/img/cdsi/img2/branding/TA_logo_primary_green-180x60.png" 
+                                //alt="TripAdvisor" 
+                                style="height: 55px; width: auto; margin-bottom: 15px;">-->
+                            
+                            <!-- Bilingual Heading -->
+                            <h3 class="lang" 
+                                data-el="Αξιολόγηση Matzourana Eatery"
+                                data-en="Review Matzourana Eatery"
+                                style="font-family: 'Montserrat', sans-serif; color: #4A5D4A; margin: 10px 0 8px; font-size: 1.65em;">
+                                Αξιολόγηση Matzourana Eatery
+                            </h3>
+                            
+                            <p class="lang"
+                            data-el="(Επιλέξτε μια βαθμολογία)"
+                            data-en="(Choose a rating)"
+                            style="color: #4A5D4A; font-weight: 500; margin-bottom: 25px; font-size: 1.1em;">
+                                (Επιλέξτε μια βαθμολογία)
+                            </p>
+
+                            <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
+                            <div class="star-rating-container" style="text-align: center; margin-bottom: 30px;">
+                                <div id="star-rating" style="display: flex; justify-content: center; gap: 18px; font-size: 3.2rem; color: #e0e0e0; cursor: pointer; user-select: none; padding: 10px 0;">
+                                    <span class="star" data-value="1" style="transition: all 0.2s ease;">★</span>
+                                    <span class="star" data-value="2" style="transition: all 0.2s ease;">★</span>
+                                    <span class="star" data-value="3" style="transition: all 0.2s ease;">★</span>
+                                    <span class="star" data-value="4" style="transition: all 0.2s ease;">★</span>
+                                    <span class="star" data-value="5" style="transition: all 0.2s ease;">★</span>
+                                </div>
+                                
+                                <!-- Live rating display -->
+                                <div id="rating-display" style="margin-top: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.35em; color: #4A5D4A; font-weight: 600; min-height: 32px;">
+                                </div>
+                                
+                                <!-- Thank you message -->
+                                <p id="thank-you-message" class="lang" 
+                                data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"
+                                data-en="Thank you! Your rating has been recorded ❤️"
+                                style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">
+                                </p>
+                            </div>
+                            
+                            <!-- TWO BUTTONS – exactly your preferred style + .lang -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 520px; margin: 0 auto;">
+                                
+                                <!-- TripAdvisor Button -->
+                                <button class="map-btn lang" 
+                                        data-el="Αξιολόγηση στο TripAdvisor" 
+                                        data-en="Review on TripAdvisor"
+                                        onclick="gotoTripAdvisor()">
+                                    Αξιολόγηση στο TripAdvisor
+                                </button>
+                                
+                                <!-- Google Maps Button -->
+                                <button class="map-btn lang" 
+                                        data-el="Αξιολόγηση στο Χάρτη Google" 
+                                        data-en="Review on on Google Maps"
+                                        onclick="gotoGoogleMapsReview()">
+                                    Δείτε στον Χάρτη Google
+                                </button>
+                                
+                            </div>
+                            
+                            <!-- Bilingual bottom message (using your exact lang pattern) -->
+                            <p class="lang"
+                            data-el="Βοηθήστε μας να μεγαλώσουμε την αυθεντική σπιτική κουζίνα μας!<br><strong>Σας ευχαριστούμε θερμά για την εμπιστοσύνη σας ❤️</strong>"
+                            data-en="Help us grow our authentic home-style Greek cuisine!<br><strong>Thank you very much for your trust ❤️</strong>">
+                                Βοηθήστε μας να μεγαλώσουμε την αυθεντική σπιτική κουζίνα μας!<br>
+                                <strong>Σας ευχαριστούμε θερμά για την εμπιστοσύνη σας ❤️</strong>
+                            </p>
+                            
+                        </div>
+                    </div>
                           
             </div>
                 <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
@@ -5272,6 +5350,20 @@
             window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
         }
 
+        function gotoTripAdvisor() {
+            var tripAdvisorURL = "https://www.tripadvisor.com/Restaurant_Review-g262046-d33012087-Reviews-Matzourana-Kallithea_Attica.html";
+            window.open(tripAdvisorURL, "_blank"); // Opens in new tab
+        }
+
+        function gotoGoogleMapsReview() {
+            // Define the specific Google Maps URL (e.g., for a specific location)
+            var googleMapsURL = "https://www.google.com/maps/place/MATZOURANA/@37.9566042,23.7058085,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D";
+    
+            // Redirect to the Google Maps page
+            window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
+        }
+        
+
         document.addEventListener('DOMContentLoaded', () => {
             // --- Navigation menu show on load ---
             const navMenu = document.querySelector('.nav-menu');
@@ -5299,7 +5391,99 @@
                     if (e.key === 'Escape') closeZoom();
                 }
             });
+           
         });
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("⭐ Star rating script loaded");
+
+            let currentRating = 0;
+            let hasRatedThisVisit = false;   // ← Only one rating per visit
+
+            function initStarRating() {
+                const container = document.getElementById('star-rating');
+                if (!container) return;
+
+                const stars = container.querySelectorAll('.star');
+                const ratingDisplay = document.getElementById('rating-display');
+                const thankYouMsg = document.getElementById('thank-you-message');
+
+                console.log(`⭐ Found ${stars.length} stars`);
+
+                // Click handler
+                document.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('star')) return;
+                    
+                    if (hasRatedThisVisit) {
+                        console.log("⭐ Already rated this visit – ignored");
+                        return;
+                    }
+
+                    currentRating = parseInt(e.target.dataset.value);
+                    hasRatedThisVisit = true;
+
+                    console.log(`⭐ Clicked! Rating selected: ${currentRating}/5`);
+
+                    highlightStars(currentRating);
+                    updateRatingDisplay();
+
+                    // Save statistics
+                    let stats = JSON.parse(localStorage.getItem('matzouranaRatingStats') || '{}');
+                    stats[currentRating] = (stats[currentRating] || 0) + 1;
+                    localStorage.setItem('matzouranaRatingStats', JSON.stringify(stats));
+
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'rating_selected', { rating: currentRating });
+                    }
+
+                    thankYouMsg.style.display = 'block';
+                });
+
+                // Hover preview
+                container.addEventListener('mouseover', (e) => {
+                    if (e.target.classList.contains('star') && !hasRatedThisVisit) {
+                        highlightStars(parseInt(e.target.dataset.value));
+                    }
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (!hasRatedThisVisit) highlightStars(currentRating);
+                });
+
+                function highlightStars(rating) {
+                    stars.forEach(star => {
+                        if (parseInt(star.dataset.value) <= rating) {
+                            star.style.color = '#4A5D4A';
+                            star.style.transform = 'scale(1.25)';
+                        } else {
+                            star.style.color = '#e0e0e0';
+                            star.style.transform = 'scale(1)';
+                        }
+                    });
+                }
+
+                function updateRatingDisplay() {
+                    const stats = JSON.parse(localStorage.getItem('matzouranaRatingStats') || '{}');
+                    const total = Object.values(stats).reduce((a, b) => a + b, 0);
+                    
+                    const totalText = currentLang === 'el' 
+                        ? ' βαθμολογίες μέχρι τώρα' 
+                        : ' ratings so far';
+
+                    if (currentRating > 0) {
+                        ratingDisplay.innerHTML = `
+                            <span style="color:#4A5D4A;">${currentRating}/5</span>
+                            <span style="font-size:0.8em; color:#666;">(${total}${totalText})</span>
+                        `;
+                    }
+                }
+
+                updateRatingDisplay();
+                console.log("⭐ Star rating initialized successfully");
+            }
+
+            initStarRating();
+        });
+
     
         // Array of 7 video paths
         const videos = [
