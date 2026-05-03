@@ -1402,7 +1402,7 @@
 /* ============================================= */
 
 .interactive-stars {
-    display: flex;
+    display:flex;
     justify-content: center;
     align-items: center;
     gap: 22px;                    /* good default gap */
@@ -1410,7 +1410,7 @@
     color: #e0e0e0;
     cursor: pointer;
     user-select: none;
-    padding: 12px 0;
+    padding: 1px 0;
     transition: all 0.3s ease;
 }
 
@@ -1530,10 +1530,7 @@
                 padding: 8px 14px;
             }
 
-            #star-rating {
-                font-size: 2.9rem !important;
-                gap: 20px !important;
-            }
+          
             
             .brand-panel {
                 max-width: 560px !important;
@@ -1549,8 +1546,8 @@
                 padding: 14px 24px !important;
             }
             .interactive-stars {
-                gap: 18px;
-                font-size: 3.0rem;
+                gap: 10px;            /* smaller distance between stars */
+                font-size: 2.34rem;    /* smaller stars */
             }
         }
         
@@ -1881,10 +1878,7 @@
                 --flag-size: 24px;
             }
 
-            #star-rating {
-                font-size: 2.6rem !important;
-                gap: 18px !important;
-            }
+            
             
             .brand-panel {
                 max-width: 95% !important;
@@ -1902,8 +1896,8 @@
                 padding: 14px 20px !important;
             }
             .interactive-stars {
-                gap: 14px;           /* smaller gap */
-                font-size: 2.8rem;
+                gap: 5px;            /* smaller distance between stars */
+                font-size: 1.2rem;    /* smaller stars */
             }
         }
         
@@ -2103,10 +2097,7 @@
             .about .left-panel .text-info, .about .right-panel .text-info {
                 margin-top: 10px;
             }
-            #star-rating {
-                font-size: 2.3rem !important;
-                gap: 16px !important;
-            }
+            
             
             .map-btn.lang {
                 padding: 12px 18px !important;
@@ -2117,8 +2108,8 @@
                 font-size: 1.1em !important;
             }
             .interactive-stars {
-                gap: 10px;           /* tight but still comfortable */
-                font-size: 2.4rem;
+                gap: 5px;            /* smaller distance between stars */
+                font-size: 1.2rem;    /* smaller stars */
             }
         }
     </style>
@@ -2358,7 +2349,7 @@
                    
                           
             </div>
-
+            <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
             <div class="text-panel-info">
                 <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
                     
@@ -2369,41 +2360,40 @@
                 
                 <!-- Bilingual Heading -->
                 <h2 class="lang""
-                    data-el="Αξιολόγηση Matzourana Eatery"
-                    data-en="Review Matzourana Eatery"
-                    <strong>Αξιολόγηση Matzourana Eatery</strong>
+                    data-el="Αξιολογήστε την προσπάθειά μας να σας εξυπηρετήσουμε!"
+                    data-en="Please rate our effort to serve you!"
+                    <strong>Αξιολογήστε την προσπάθειά μας να σας εξυπηρετήσουμε</strong>
                     
                 </h2>
                 
                 
                 <p class="lang"
-                data-el="(Επιλέξτε μια βαθμολογία)"
-                data-en="(Choose a rating)"
-                
+                    data-el="(Επιλέξτε μια βαθμολογία)"
+                    data-en="(Choose a rating)"
                     (Επιλέξτε μια βαθμολογία)
                 </p>
 
                 <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
-                 <!--<div class="star-rating-container">-->
-                    <!-- <div id="star-rating" class="interactive-stars">-->
-                        <!-- <span class="star" data-value="1">★</span>-->
-                        <!-- <span class="star" data-value="2">★</span>-->
-                        <!-- <span class="star" data-value="3">★</span>-->
-                        <!-- <span class="star" data-value="4">★</span>-->
-                        <!-- <span class="star" data-value="5">★</span>-->
-                     <!--</div>-->
+                <div class="text-panel-info">
+                    <div id="star-rating" class="interactive-stars">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
                     
                     <!-- Live rating display -->
-                     <!--<div id="rating-display" style="margin-top: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.35em; color: #4A5D4A; font-weight: 600; min-height: 32px;">-->
-                     <!--</div>-->
+                    <div id="rating-display" style="margin-top: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.35em; color: #4A5D4A; font-weight: 600; min-height: 32px;">
+                    </div>
                     
                     <!-- Thank you message -->
-                    <!-- <p id="thank-you-message" class="lang" -->
-                     <!--data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"-->
-                     <!--data-en="Thank you! Your rating has been recorded ❤️"-->
-                     <!--style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">-->
-                     <!--</p>-->
-                 <!--</div>-->
+                    <p id="thank-you-message" class="lang" 
+                    data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"
+                    data-en="Thank you! Your rating has been recorded ❤️"
+                    style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">
+                    </p>
+                </div>
                 
                 <!-- TWO BUTTONS – exactly your preferred style + .lang -->
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 520px; margin: 0 auto;">
@@ -2435,7 +2425,7 @@
                 </p>
 
             </div>
-                <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
+                
             </div>
             
             
