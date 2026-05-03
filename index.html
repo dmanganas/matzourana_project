@@ -4942,6 +4942,9 @@
         <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
     </audio>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <script>
         let currentLang = 'en';
         let isPlaying = false;
@@ -5486,95 +5489,105 @@
            
         });
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("⭐ Star rating script loaded");
+        console.log("⭐ Star rating script loaded");
 
-            let currentRating = 0;
-            let hasRatedThisVisit = false;   // ← Only one rating per visit
+        // ==================== PASTE YOUR FIREBASE CONFIG HERE ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQym9rOl6nX4kD_vs0dR3LyxsrD_aQfKA",
+            authDomain: "matzouranaeatery-ratings.firebaseapp.com",
+            projectId: "matzouranaeatery-ratings",
+            storageBucket: "matzouranaeatery-ratings.firebasestorage.app",
+            messagingSenderId: "396072691292",
+            appId: "1:396072691292:web:39c93ba4db33ff5991e899"
+        };
 
-            function initStarRating() {
-                const container = document.getElementById('star-rating');
-                if (!container) return;
+        // =====================================================================
 
-                const stars = container.querySelectorAll('.star');
-                const ratingDisplay = document.getElementById('rating-display');
-                const thankYouMsg = document.getElementById('thank-you-message');
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const ratingsRef = db.ref('matzourana_ratings');
 
-                console.log(`⭐ Found ${stars.length} stars`);
+        let currentRating = 0;
+        let hasRatedThisVisit = false;
 
-                // Click handler
-                document.addEventListener('click', function(e) {
-                    if (!e.target.classList.contains('star')) return;
-                    
-                    if (hasRatedThisVisit) {
-                        console.log("⭐ Already rated this visit – ignored");
-                        return;
-                    }
+        const container = document.getElementById('star-rating');
+        const stars = container.querySelectorAll('.star');
+        const ratingDisplay = document.getElementById('rating-display');
+        const thankYouMsg = document.getElementById('thank-you-message');
 
-                    currentRating = parseInt(e.target.dataset.value);
-                    hasRatedThisVisit = true;
+        // Load live global statistics
+        function loadGlobalStats() {
+            ratingsRef.once('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                let totalRatings = 0;
+                let sumRatings = 0;
 
-                    console.log(`⭐ Clicked! Rating selected: ${currentRating}/5`);
-
-                    highlightStars(currentRating);
-                    updateRatingDisplay();
-
-                    // Save statistics
-                    let stats = JSON.parse(localStorage.getItem('matzouranaRatingStats') || '{}');
-                    stats[currentRating] = (stats[currentRating] || 0) + 1;
-                    localStorage.setItem('matzouranaRatingStats', JSON.stringify(stats));
-
-                    if (typeof gtag === 'function') {
-                        gtag('event', 'rating_selected', { rating: currentRating });
-                    }
-
-                    thankYouMsg.style.display = 'block';
+                Object.keys(data).forEach(key => {
+                    const count = data[key];
+                    totalRatings += count;
+                    sumRatings += parseInt(key) * count;
                 });
 
-                // Hover preview
-                container.addEventListener('mouseover', (e) => {
-                    if (e.target.classList.contains('star') && !hasRatedThisVisit) {
-                        highlightStars(parseInt(e.target.dataset.value));
-                    }
-                });
+                const average = totalRatings > 0 ? (sumRatings / totalRatings).toFixed(1) : "—";
 
-                container.addEventListener('mouseleave', () => {
-                    if (!hasRatedThisVisit) highlightStars(currentRating);
-                });
+                const totalText = currentLang === 'el' 
+                    ? ` (${totalRatings} βαθμολογίες)` 
+                    : ` (${totalRatings} ratings)`;
 
-                function highlightStars(rating) {
-                    stars.forEach(star => {
-                        if (parseInt(star.dataset.value) <= rating) {
-                            star.style.color = '#4A5D4A';
-                            star.style.transform = 'scale(1.25)';
-                        } else {
-                            star.style.color = '#e0e0e0';
-                            star.style.transform = 'scale(1)';
-                        }
-                    });
-                }
+                ratingDisplay.innerHTML = `
+                    <span style="font-size:1.6em; color:#4A5D4A;">${average}</span>
+                    <span style="font-size:0.65em; vertical-align: super; color:#4A5D4A;">/5</span>
+                    <span style="font-size:0.9em; color:#666; margin-left:10px;">${totalText}</span>
+                `;
+            });
+        }
 
-                function updateRatingDisplay() {
-                    const stats = JSON.parse(localStorage.getItem('matzouranaRatingStats') || '{}');
-                    const total = Object.values(stats).reduce((a, b) => a + b, 0);
-                    
-                    const totalText = currentLang === 'el' 
-                        ? ' βαθμολογίες μέχρι τώρα' 
-                        : ' ratings so far';
+        // Click handler
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('star') || hasRatedThisVisit) return;
 
-                    if (currentRating > 0) {
-                        ratingDisplay.innerHTML = `
-                            <span style="color:#4A5D4A;">${currentRating}/5</span>
-                            <span style="font-size:0.8em; color:#666;">(${total}${totalText})</span>
-                        `;
-                    }
-                }
+            currentRating = parseInt(e.target.dataset.value);
+            hasRatedThisVisit = true;
 
-                updateRatingDisplay();
-                console.log("⭐ Star rating initialized successfully");
-            }
+            // Save rating to Firebase (global)
+            ratingsRef.child(currentRating).transaction((current) => (current || 0) + 1);
 
-            initStarRating();
+            highlightStars(currentRating);
+            thankYouMsg.style.display = 'block';
+
+            // Refresh global stats
+            setTimeout(loadGlobalStats, 700);
         });
+
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                if (parseInt(star.dataset.value) <= rating) {
+                    star.style.color = '#4A5D4A';
+                    star.style.transform = 'scale(1.25)';
+                } else {
+                    star.style.color = '#e0e0e0';
+                    star.style.transform = 'scale(1)';
+                }
+            });
+        }
+
+        // Hover preview
+        container.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains('star') && !hasRatedThisVisit) {
+                highlightStars(parseInt(e.target.dataset.value));
+            }
+        });
+
+        container.addEventListener('mouseleave', () => {
+            if (!hasRatedThisVisit) highlightStars(currentRating);
+        });
+
+        // Initial load of global stats
+        loadGlobalStats();
+
+        console.log("⭐ Firebase live star rating initialized successfully");
+    });
 
     
         // Array of 7 video paths
@@ -5793,6 +5806,10 @@
   ]
 }
 </script>
+
+
+
+
 
 <!-- Complete Menu Schema (JSON-LD) – All Dishes Including Commented/Archived Ones -->
 <!-- Covers every item from the HTML source for maximum coverage in search rich results. -->
