@@ -1508,6 +1508,25 @@
             .music-panel button {
                 padding: 8px 14px;
             }
+
+            #star-rating {
+                font-size: 2.9rem !important;
+                gap: 20px !important;
+            }
+            
+            .brand-panel {
+                max-width: 560px !important;
+                margin: 30px auto !important;
+            }
+            
+            #rating-display {
+                font-size: 1.15em !important;
+            }
+            
+            .map-btn.lang {
+                font-size: 1.05em !important;
+                padding: 14px 24px !important;
+            }
         }
         
         @media (max-width: 768px) {
@@ -1836,6 +1855,27 @@
             :root {
                 --flag-size: 24px;
             }
+
+            #star-rating {
+                font-size: 2.6rem !important;
+                gap: 18px !important;
+            }
+            
+            .brand-panel {
+                max-width: 95% !important;
+                margin: 25px auto !important;
+            }
+            
+            #rating-display {
+                font-size: 1.2em !important;
+            }
+            
+            .map-btn.lang {
+                flex: 1;
+                min-width: 100% !important;   /* stack nicely */
+                font-size: 1.05em !important;
+                padding: 14px 20px !important;
+            }
         }
         
         @media (max-width: 480px) {
@@ -2033,6 +2073,19 @@
             }
             .about .left-panel .text-info, .about .right-panel .text-info {
                 margin-top: 10px;
+            }
+            #star-rating {
+                font-size: 2.3rem !important;
+                gap: 16px !important;
+            }
+            
+            .map-btn.lang {
+                padding: 12px 18px !important;
+                font-size: 1em !important;
+            }
+            
+            #rating-display {
+                font-size: 1.1em !important;
             }
         }
     </style>
@@ -2267,22 +2320,28 @@
                         </span>
                     </div>
                     
-                    <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
-                    <div class="brand-panel" style="max-width: 620px; margin: 40px auto; border: 3px solid #4A5D4A; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
-                        <div style="padding: 30px 25px; text-align: center; background: white; border-radius: 12px;">
+                    
                             
+                   
+                          
+            </div>
+
+            <div class="text-panel-info">
+                <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
+                    
                             <!-- TripAdvisor Logo -->
                             <!--<img src="https://www.tripadvisor.com/img/cdsi/img2/branding/TA_logo_primary_green-180x60.png" 
                                 //alt="TripAdvisor" 
                                 style="height: 55px; width: auto; margin-bottom: 15px;">-->
                             
                             <!-- Bilingual Heading -->
-                            <h3 class="lang" 
+                            <h2 class="lang""
                                 data-el="Αξιολόγηση Matzourana Eatery"
                                 data-en="Review Matzourana Eatery"
-                                style="font-family: 'Montserrat', sans-serif; color: #4A5D4A; margin: 10px 0 8px; font-size: 1.65em;">
-                                Αξιολόγηση Matzourana Eatery
-                            </h3>
+                                <strong>Αξιολόγηση Matzourana Eatery</strong>
+                                
+                            </h2>
+                            
                             
                             <p class="lang"
                             data-el="(Επιλέξτε μια βαθμολογία)"
@@ -2292,8 +2351,8 @@
                             </p>
 
                             <!-- DYNAMIC INTERACTIVE STAR RATING (fixed version) -->
-                            <div class="star-rating-container" style="text-align: center; margin-bottom: 30px;">
-                                <div id="star-rating" style="display: flex; justify-content: center; gap: 18px; font-size: 3.2rem; color: #e0e0e0; cursor: pointer; user-select: none; padding: 10px 0;">
+                            <div class="star-rating-container" style="text-align: center; margin-bottom: 10px;">
+                                <div id="star-rating" style="display: flex; justify-content: center; gap: 2px; font-size: 1rem; color: #e0e0e0; cursor: pointer; user-select: none; padding: 5px 0;">
                                     <span class="star" data-value="1" style="transition: all 0.2s ease;">★</span>
                                     <span class="star" data-value="2" style="transition: all 0.2s ease;">★</span>
                                     <span class="star" data-value="3" style="transition: all 0.2s ease;">★</span>
@@ -2314,7 +2373,7 @@
                             </div>
                             
                             <!-- TWO BUTTONS – exactly your preferred style + .lang -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 520px; margin: 0 auto;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; max-width: 520px; margin: 0 auto;">
                                 
                                 <!-- TripAdvisor Button -->
                                 <button class="map-btn lang" 
@@ -2341,10 +2400,7 @@
                                 Βοηθήστε μας να μεγαλώσουμε την αυθεντική σπιτική κουζίνα μας!<br>
                                 <strong>Σας ευχαριστούμε θερμά για την εμπιστοσύνη σας ❤️</strong>
                             </p>
-                            
-                        </div>
-                    </div>
-                          
+
             </div>
                 <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
             </div>
