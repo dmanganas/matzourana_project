@@ -5491,7 +5491,7 @@
            
         });
         document.addEventListener('DOMContentLoaded', () => {
-        console.log("⭐ Firebase live star rating loaded");
+        console.log("⭐ Firebase script started");
 
         const firebaseConfig = {
             apiKey: "AIzaSyCQym9rOl6nX4kD_vs0dR3LyxsrD_aQfKA",
@@ -5515,30 +5515,32 @@
         const ratingDisplay = document.getElementById('rating-display');
         const thankYouMsg = document.getElementById('thank-you-message');
 
-        // === LIVE LISTENER – updates automatically ===
-        ratingsRef.on('value', (snapshot) => {
-            const data = snapshot.val() || {};
-            let total = 0;
-            let sum = 0;
+        // === SIMPLE & RELIABLE UPDATE FUNCTION ===
+        function updateDisplay() {
+            ratingsRef.once('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                let total = 0;
+                let sum = 0;
 
-            Object.keys(data).forEach(key => {
-                const count = data[key];
-                total += count;
-                sum += parseInt(key) * count;
+                Object.keys(data).forEach(key => {
+                    const count = data[key];
+                    total += count;
+                    sum += parseInt(key) * count;
+                });
+
+                const avg = total > 0 ? (sum / total).toFixed(1) : "—";
+                const text = currentLang === 'el' 
+                    ? ` (${total} βαθμολογίες)` 
+                    : ` (${total} ratings)`;
+
+                ratingDisplay.innerHTML = `
+                    <span style="font-size:1.6em;color:#4A5D4A;">${avg}</span>
+                    <span style="font-size:0.65em;vertical-align:super;color:#4A5D4A;">/5</span>
+                    <span style="font-size:0.9em;color:#666;margin-left:10px;">${text}</span>
+                `;
+                console.log(`✅ Display updated → ${avg}/5 (${total} ratings)`);
             });
-
-            const avg = total > 0 ? (sum / total).toFixed(1) : "—";
-            const text = (currentLang === 'el' || !currentLang) 
-                ? ` (${total} βαθμολογίες)` 
-                : ` (${total} ratings)`;
-
-            ratingDisplay.innerHTML = `
-                <span style="font-size:1.6em;color:#4A5D4A;">${avg}</span>
-                <span style="font-size:0.65em;vertical-align:super;color:#4A5D4A;">/5</span>
-                <span style="font-size:0.9em;color:#666;margin-left:10px;">${text}</span>
-            `;
-            console.log(`✅ Live stats updated → ${avg}/5 (${total} ratings)`);
-        });
+        }
 
         // Click handler
         document.addEventListener('click', (e) => {
@@ -5551,7 +5553,11 @@
 
             highlightStars(currentRating);
             thankYouMsg.style.display = 'block';
-            console.log(`⭐ Rating ${currentRating} saved to Firebase`);
+
+            console.log(`⭐ Rating ${currentRating} saved`);
+
+            // Force update display after saving
+            setTimeout(updateDisplay, 800);
         });
 
         function highlightStars(rating) {
@@ -5566,20 +5572,12 @@
             });
         }
 
-        // Hover preview
-        container.addEventListener('mouseover', (e) => {
-            if (e.target.classList.contains('star') && !hasRatedThisVisit) {
-                highlightStars(parseInt(e.target.dataset.value));
-            }
-        });
-
-        container.addEventListener('mouseleave', () => {
-            if (!hasRatedThisVisit) highlightStars(currentRating);
-        });
+        // Initial load + real-time listener
+        updateDisplay();
+        ratingsRef.on('value', updateDisplay);
 
         console.log("⭐ Live rating system ready");
     });
-    
         // Array of 7 video paths
         const videos = [
             /*"MatzouranaImages/matzourana-winter-december-movie-logo.mp4",
