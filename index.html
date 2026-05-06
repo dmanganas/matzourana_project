@@ -5491,26 +5491,18 @@
            
         });
         document.addEventListener('DOMContentLoaded', () => {
-        console.log("⭐ Star rating script loaded");
+        console.log("⭐ Firebase live star rating loaded");
 
-        // ==================== PASTE YOUR FIREBASE CONFIG HERE ====================
         const firebaseConfig = {
             apiKey: "AIzaSyCQym9rOl6nX4kD_vs0dR3LyxsrD_aQfKA",
             authDomain: "matzouranaeatery-ratings.firebaseapp.com",
             databaseURL: "https://matzouranaeatery-ratings-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "matzouranaeatery-ratings",
-            storageBucket: "matzouranaeatery-ratings.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",     // you can leave this as is
-            appId: "1:YOUR_SENDER_ID:web:YOUR_APP_ID"   // you can leave this as is
-
+            storageBucket: "matzouranaeatery-ratings.firebasestorage.app",
+            messagingSenderId: "396072691292",
+            appId: "1:396072691292:web:39c93ba4db33ff5991e899"
         };
 
-        
-
-
-        // =====================================================================
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const ratingsRef = db.ref('matzourana_ratings');
@@ -5523,32 +5515,30 @@
         const ratingDisplay = document.getElementById('rating-display');
         const thankYouMsg = document.getElementById('thank-you-message');
 
-        // Load live global statistics
-        function loadGlobalStats() {
-            ratingsRef.once('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                let totalRatings = 0;
-                let sumRatings = 0;
+        // === LIVE LISTENER – updates automatically ===
+        ratingsRef.on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            let total = 0;
+            let sum = 0;
 
-                Object.keys(data).forEach(key => {
-                    const count = data[key];
-                    totalRatings += count;
-                    sumRatings += parseInt(key) * count;
-                });
-
-                const average = totalRatings > 0 ? (sumRatings / totalRatings).toFixed(1) : "—";
-
-                const totalText = currentLang === 'el' 
-                    ? ` (${totalRatings} βαθμολογίες)` 
-                    : ` (${totalRatings} ratings)`;
-
-                ratingDisplay.innerHTML = `
-                    <span style="font-size:1.6em; color:#4A5D4A;">${average}</span>
-                    <span style="font-size:0.65em; vertical-align: super; color:#4A5D4A;">/5</span>
-                    <span style="font-size:0.9em; color:#666; margin-left:10px;">${totalText}</span>
-                `;
+            Object.keys(data).forEach(key => {
+                const count = data[key];
+                total += count;
+                sum += parseInt(key) * count;
             });
-        }
+
+            const avg = total > 0 ? (sum / total).toFixed(1) : "—";
+            const text = (currentLang === 'el' || !currentLang) 
+                ? ` (${total} βαθμολογίες)` 
+                : ` (${total} ratings)`;
+
+            ratingDisplay.innerHTML = `
+                <span style="font-size:1.6em;color:#4A5D4A;">${avg}</span>
+                <span style="font-size:0.65em;vertical-align:super;color:#4A5D4A;">/5</span>
+                <span style="font-size:0.9em;color:#666;margin-left:10px;">${text}</span>
+            `;
+            console.log(`✅ Live stats updated → ${avg}/5 (${total} ratings)`);
+        });
 
         // Click handler
         document.addEventListener('click', (e) => {
@@ -5557,14 +5547,11 @@
             currentRating = parseInt(e.target.dataset.value);
             hasRatedThisVisit = true;
 
-            // Save rating to Firebase (global)
-            ratingsRef.child(currentRating).transaction((current) => (current || 0) + 1);
+            ratingsRef.child(currentRating).transaction((c) => (c || 0) + 1);
 
             highlightStars(currentRating);
             thankYouMsg.style.display = 'block';
-
-            // Refresh global stats
-            setTimeout(loadGlobalStats, 700);
+            console.log(`⭐ Rating ${currentRating} saved to Firebase`);
         });
 
         function highlightStars(rating) {
@@ -5590,12 +5577,8 @@
             if (!hasRatedThisVisit) highlightStars(currentRating);
         });
 
-        // Initial load of global stats
-        loadGlobalStats();
-
-        console.log("⭐ Firebase live star rating initialized successfully");
+        console.log("⭐ Live rating system ready");
     });
-
     
         // Array of 7 video paths
         const videos = [
