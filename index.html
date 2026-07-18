@@ -3079,12 +3079,62 @@
                         
                     };
 
+                    // ==================== DISH IMAGE MAP ====================
+                    // Connects catalog keys to actual image files + rich alt texts
+                    const dishImageMap = {
+                        "moschari_kokkinisto": {
+                            file: "greek-dish-1.png",
+                            alt: "Μοσχάρι κοκκινιστό - Τρυφερό μοσχαράκι χτένι (κρέατα Αστακού) με γαρνιτούρα | Beef in Red Sauce - Tender beef shank from Astakou Meats"
+                        },
+                        "lachanontolmades": {
+                            file: "greek-dish-2.png",
+                            alt: "Λαχανοντολμάδες - Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο | Cabbage Rolls - Handmade with creamy egg-lemon sauce and fresh dill"
+                        },
+                        "moussakas": {
+                            file: "greek-dish-3.png",
+                            alt: "Μουσακάς - Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ | Moussaka - With 100% beef mince from Astakou Meats, rich béchamel"
+                        },
+                        "pastitsio": {
+                            file: "greek-dish-4.png",
+                            alt: "Παστίτσιο - Με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι | Pastitsio - With handmade béchamel, 100% beef mince and rigatoni"
+                        },
+                        "giantes": {
+                            file: "greek-dish-6.png",
+                            alt: "Γίγαντες φασόλια - Παραδοσιακοί πλακί, ψημένοι στη γάστρα | Giant Beans Plaki - Traditional, baked in a clay pot"
+                        },
+                        "kokoras_krasatos": {
+                            file: "greek-dish-8.png",
+                            alt: "Κόκορας κρασάτος - Αργομαγειρεμένος, πλούσιος και παραδοσιακός | Rooster in Wine Sauce - Slow-cooked, rich and traditional"
+                        },
+                        "kritharoto_garides": {
+                            file: "greek-dish-18.png",
+                            alt: "Κριθαρώτο με γαρίδες - Αρωματικό και κρεμώδες | Shrimp Orzo - Aromatic and creamy"
+                        },
+                        "briam": {
+                            file: "greek-dish-22.png",
+                            alt: "Μπριάμ - Μελιτζάνες, κολοκυθάκια, πιπεριές, πατάτες και ντομάτα | Briam - Eggplants, courgettes, peppers, potatoes and tomato"
+                        },
+                        "rolo_moscharisio": {
+                            file: "greek-dish-24.png",
+                            alt: "Ρολό μοσχαρίσιου κιμά - Γεμιστό με φέτα ΠΟΠ και ντοματούλα | Beef Roll - Stuffed with PDO goat feta and tomato"
+                        },
+                        "keftedakia_tiganita": {
+                            file: "greek-dish-14.png",
+                            alt: "Κεφτεδάκια τηγανιτά - Μυρωδάτα και τραγανά | Fried Meatballs - Aromatic and crispy"
+                        },
+                        "giouvarlakia": {
+                            file: "greek-dish-16.png",
+                            alt: "Γιουβαρλάκια - Με 100% μοσχαρίσιο κιμά και αυγολέμονο | Giouvarlakia - With 100% beef mince in egg-lemon sauce"
+                        }
+                        // Add more mappings here when you add new photos
+                    };
+
                     // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★
                     const currentDailyMenu = [
                         // Freshly Cooked
-                        "giantes", "papoutsakia", "melitzanes_imam", "gemista_superfoods",
+                        "papoutsakia", "melitzanes_imam", "gemista_superfoods",
                         "moschari_kokkinisto", "moscharaki_lemonato", "bifteki_moscharisia",
-                        "kotopoulo_bouti", "soutzoukakia", "spanakorizo", "fasolakia",
+                        "soutzoukakia", "kolokythakia_gemista", "arakas_lemonatos", "fasolakia",
 
                         //SeaFoods
                         "ksifias_lemonatos",
@@ -3100,47 +3150,60 @@
                         const table = document.getElementById('daily-menu-table');
                         if (!table) return;
 
+                        // Get current language (defaults to Greek)
+                        const currentLang = document.documentElement.lang || 'el';
+
                         let html = `
                             <tr>
                                 <th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th>
                                 <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
                             </tr>
                             <tr>
-                                <th id="daily-dishes-header" colspan="2"></th>
+                                <th class="lang" data-el="" data-en="" id="daily-dishes-header" colspan="2"></th>
                             </tr>
                         `;
 
+                        // Group dishes by category
                         const grouped = {
                             "freshly-cooked": [],
-                            "seafood": [],
                             "soups": [],
                             "legumes": [],
+                            "seafood": [],
                             "sweets": []
                         };
 
                         currentDailyMenu.forEach(key => {
                             const dish = menuCatalog[key];
-                            if (dish) grouped[dish.category].push(dish);
+                            if (dish && grouped[dish.category]) {
+                                grouped[dish.category].push(dish);
+                            }
                         });
 
-                        const labels = {
+                        const categoryLabels = {
                             "freshly-cooked": { el: "Φρεσκομαγειρεμένα", en: "Freshly Cooked" },
-                            "seafood": { el: "Πιάτα Θαλασσινών", en: "Seafood Dishes" },
                             "soups": { el: "Σούπες", en: "Soups" },
                             "legumes": { el: "Όσπρια/Σούπες", en: "Legumes/Soups" },
+                            "seafood": { el: "Πιάτα Θαλασσινών", en: "Seafood Dishes" },
                             "sweets": { el: "Γλυκά", en: "Sweets" }
-                            
                         };
 
+                        // Render categories and dishes
                         Object.keys(grouped).forEach(cat => {
                             if (grouped[cat].length === 0) return;
 
-                            html += `<tr><th>${labels[cat].en}</th><th></th></tr>`;
+                            // Category header (respects current language)
+                            const catLabel = categoryLabels[cat];
+                            html += `<tr><th class="lang" data-el="${catLabel.el}" data-en="${catLabel.en}">${catLabel[currentLang] || catLabel.el}</th><th></th></tr>`;
 
+                            // Dishes
                             grouped[cat].forEach(dish => {
+                                const dishText = currentLang === 'en' ? dish.en : dish.el;
+
                                 html += `
                                     <tr>
-                                        <td class="lang" data-el="${dish.el}" data-en="${dish.en}">${dish.el}</td>
+                                        <td class="lang" data-el="${dish.el}" data-en="${dish.en}">
+                                            ${dishText}
+                                        </td>
                                         <td>${dish.price}</td>
                                     </tr>
                                 `;
@@ -3149,11 +3212,16 @@
 
                         table.innerHTML = html;
 
-                        // Update date
-                        const header = document.getElementById('daily-dishes-header');
-                        if (header) {
-                            const d = new Date();
-                            header.innerHTML = `🍽️ ${d.toLocaleDateString('el-GR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                        // Update date header
+                        const dateHeader = document.getElementById('daily-dishes-header');
+                        if (dateHeader) {
+                            const today = new Date();
+                            const dateStr = today.toLocaleDateString('el-GR', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            dateHeader.innerHTML = `🍽️ ${dateStr}`;
                         }
                     }
 
@@ -3788,45 +3856,54 @@
         //   alt attributes defined in the HTML for SEO and accessibility
         //   (remove any line like imgElement.alt = `Greek Dish ${index + 1}`)
         // ---------------------------------------------------------
-        function showMenu(menuId) {
-            playButtonSound();
-            document.querySelectorAll('.menu-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.querySelectorAll('.menu-buttons button').forEach(button => {
-                button.classList.remove('active');
-            });
+       
+function showMenu(menuId) {
+    playButtonSound();
 
-            const selectedContent = document.querySelector(`#${menuId}`);
-            selectedContent.classList.add('active');
-            const selectedButton = document.querySelector(`button[onclick="showMenu('${menuId}')"]`);
-            selectedButton.classList.add('active');
+    // Hide all menu contents
+    document.querySelectorAll('.menu-content').forEach(content => {
+        content.classList.remove('active');
+    });
 
+    // Deactivate all buttons
+    document.querySelectorAll('.menu-buttons button').forEach(button => {
+        button.classList.remove('active');
+    });
 
-            const tableRows = selectedContent.querySelectorAll('table tr');
-            let menuItemCount = 0;
-            tableRows.forEach(row => {
-                if (!row.querySelector('th')) {
-                    menuItemCount++;
-                }
-            });
+    // Show selected menu
+    const selectedContent = document.querySelector(`#${menuId}`);
+    if (selectedContent) selectedContent.classList.add('active');
 
-            const maxImages = 24;
-            let numImagesToShow = Math.min(menuItemCount, maxImages);
-            //numImagesToShow = Math.floor(numImagesToShow / 2) * 2;
-            numImagesToShow = Math.floor(numImagesToShow) * 2;
-            if (numImagesToShow < 6) numImagesToShow = 10;
+    // Highlight active button
+    const selectedButton = document.querySelector(`button[onclick="showMenu('${menuId}')"]`);
+    if (selectedButton) selectedButton.classList.add('active');
 
-            const imageList = [
-                'DishImages/greek-dish-1.png', 'DishImages/greek-dish-2.png', 'DishImages/greek-dish-3.png', 'DishImages/greek-dish-4.png',
-                'DishImages/greek-dish-5.png', 'DishImages/greek-dish-6.png', 'DishImages/greek-dish-7.png', 'DishImages/greek-dish-8.png',
-                'DishImages/greek-dish-9.png', 'DishImages/greek-dish-10.png', 'DishImages/greek-dish-11.png', 'DishImages/greek-dish-12.png',
-                'DishImages/greek-dish-13.png', 'DishImages/greek-dish-14.png', 'DishImages/greek-dish-15.png', 'DishImages/greek-dish-16.png',
-                'DishImages/greek-dish-17.png', 'DishImages/greek-dish-18.png', 'DishImages/greek-dish-19.png', 'DishImages/greek-dish-20.png',
-                'DishImages/greek-dish-21.png', 'DishImages/greek-dish-22.png', 'DishImages/greek-dish-23.png', 'DishImages/greek-dish-24.png'
-            ];
+    // Count visible menu items (excluding headers)
+    const tableRows = selectedContent.querySelectorAll('table tr');
+    let menuItemCount = 0;
+    tableRows.forEach(row => {
+        if (!row.querySelector('th')) menuItemCount++;
+    });
 
-            const dishAlts = {
+    // Calculate how many images to show
+    let numImagesToShow = Math.min(menuItemCount, 24);
+    numImagesToShow = Math.floor(numImagesToShow / 2) * 2; // keep even
+    if (numImagesToShow < 6) numImagesToShow = 10;
+
+    // === SMART IMAGE SELECTION (Connected to menuCatalog) ===
+    const imageList = [
+        'DishImages/greek-dish-1.png', 'DishImages/greek-dish-2.png', 'DishImages/greek-dish-3.png',
+        'DishImages/greek-dish-4.png', 'DishImages/greek-dish-5.png', 'DishImages/greek-dish-6.png',
+        'DishImages/greek-dish-7.png', 'DishImages/greek-dish-8.png', 'DishImages/greek-dish-9.png',
+        'DishImages/greek-dish-10.png', 'DishImages/greek-dish-11.png', 'DishImages/greek-dish-12.png',
+        'DishImages/greek-dish-13.png', 'DishImages/greek-dish-14.png', 'DishImages/greek-dish-15.png',
+        'DishImages/greek-dish-16.png', 'DishImages/greek-dish-17.png', 'DishImages/greek-dish-18.png',
+        'DishImages/greek-dish-19.png', 'DishImages/greek-dish-20.png', 'DishImages/greek-dish-21.png',
+        'DishImages/greek-dish-22.png', 'DishImages/greek-dish-23.png', 'DishImages/greek-dish-24.png'
+    ];
+    
+
+    const dishAlts = {
                 'DishImages/greek-dish-1.png': "Μοσχάρι κοκκινιστό - (Τρυφερό μοσχαράκι χτένι κρέατα Αστακού με γαρνιτούρα) Matzourana Eatery Καλλιθέα | Beef in Red Sauce Tender - (beef shank from Astakou Meats served with your choice of side) Matzourana Eatery Kallithea",
                 'DishImages/greek-dish-2.png': "Λαχανοντολμάδες  - (Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο) Matzourana Eatery Καλλιθέα | Cabbage Rolls - (Handmade with creamy egg-lemon sauce and fresh dill) Matzourana Eatery Kallithea",
                 'DishImages/greek-dish-3.png': "Μουσακάς - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ, ψητές μελιτζάνες, κολοκύθια, πατάτες και τριμμένο κεφαλοτύρι) Matzourana Eatery Καλλιθέα | Moussaka - (With 100% beef mince from Astakou Meats, rich béchamel, roasted eggplants & courgettes, potatoes and grated kefalotyri) Matzourana Eatery Kallithea",
@@ -3852,40 +3929,52 @@
                 'DishImages/greek-dish-23.png': "Χειροποίητοι κολοκυθοκεφτέδες - (με φρέσκο κολοκύθι, μυρωδικά και φέτα 5 τμχ.) Matzourana Eatery Καλλιθέα | Handmade zucchini fritters - (with fresh zucchini, herbs and feta 5 pcs) Matzourana Eatery Kallithea",
                 'DishImages/greek-dish-24.png': "Ρολό μοσχαρίσιου κιμά - (Γεμιστό με φέτα ΠΟΠ και ντοματούλα, ψητό στο φούρνο) Matzourana Eatery Καλλιθέα | Beef Roll - (Stuffed with PDO goat feta and tomato, oven-baked) Matzourana Eatery Kallithea"
             };
+    
+    // Prioritize images that match dishes currently in the daily menu
+    let prioritizedImages = [];
+    let remainingImages = [...imageList];
 
-            const shuffledImages = imageList.sort(() => Math.random() - 0.5);
-            const selectedImages = shuffledImages.slice(0, numImagesToShow);
-
-            const imageElements = document.querySelectorAll('.menu .image-panel img');
-            imageElements.forEach((imgElement, index) => {
-                if (index < numImagesToShow) {
-                    const imageName = selectedImages[index];
-        
-                    console.log(`showMenu: Setting image #${index + 1} → src: ${imageName}`);  // ← Check src values
-                    
-                    
-        
-                    
-        
-                    // Before overwrite
-                    console.log(`Before setting alt - current alt: "${imgElement.alt}"`);
-        
-                    //imgElement.alt = `Greek Dish ${index + 1}`;  // ← This is the culprit line!
-        
-                    // After overwrite
-                    console.log(`After setting alt - now: "${imgElement.alt}"`);
-
-                    //imgElement.setAttribute('onclick', `zoomImage('${imageName}')`);
-                    imgElement.src = imageName;
-                    imgElement.alt = dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα";  // ← now alt always matches src
-                    imgElement.setAttribute('onclick', `zoomImage('${imageName}', '${(dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα").replace(/'/g, "\\'")}')`);
-                    imgElement.style.display = 'block';
-                } else {
-                    imgElement.style.display = 'none';
+    if (typeof currentDailyMenu !== 'undefined' && typeof dishImageMap !== 'undefined') {
+        currentDailyMenu.forEach(key => {
+            const imgInfo = dishImageMap[key];
+            if (imgInfo) {
+                const fullPath = `DishImages/${imgInfo.file}`;
+                if (imageList.includes(fullPath)) {
+                    prioritizedImages.push(fullPath);
+                    // Remove from remaining so we don't duplicate
+                    remainingImages = remainingImages.filter(img => img !== fullPath);
                 }
-            });
-            collectZoomableImages(); // Refresh once after shuffling/showing images
+            }
+        });
+    }
+
+    // Fill the rest randomly
+    const shuffledRemaining = remainingImages.sort(() => Math.random() - 0.5);
+    const finalImageList = [...prioritizedImages, ...shuffledRemaining].slice(0, numImagesToShow);
+
+    // Update the image elements
+    const imageElements = document.querySelectorAll('.menu .image-panel img');
+
+    imageElements.forEach((imgElement, index) => {
+        if (index < numImagesToShow) {
+            const imageName = finalImageList[index];
+
+            imgElement.src = imageName;
+            imgElement.alt = dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα";
+
+            // Safe onclick with escaped quotes
+            const safeAlt = (dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα").replace(/'/g, "\\'");
+            imgElement.setAttribute('onclick', `zoomImage('${imageName}', '${safeAlt}')`);
+
+            imgElement.style.display = 'block';
+        } else {
+            imgElement.style.display = 'none';
         }
+    });
+
+    collectZoomableImages();
+}
+
 
         // ---------------------------------------------------------
         // Function: getFormattedDate(lang)
@@ -4507,6 +4596,11 @@ const highlightsCatalog = {
         el: "Μπριάμ",
         en: "Briam"
     },
+    "arakas": {
+        icons: ["beans-logo.png", "oliveoil-logo.png"],
+        el: "Αρακάς <br> λεμονάτος",
+        en: "Lemony <br> Peas"
+    },
     "moussakas_nistisimos": {
         icons: ["mousakas-logo.png", "plant-logo.png"],
         el: "Μουσακάς <br> Νηστίσιμος",
@@ -4581,13 +4675,13 @@ const highlightsCatalog = {
 // ★★★★★ Change daily highlights here ★★★★★
 const currentHighlights = [
     "papoutsakia",
-    "moschari_giouvesti",
+    "moschari_kokkinisto",
     "moscharaki_lemonato",
     "bifteki_moscharisia",
-    "kotopoulo_bouti",
-    "spanakorizo",
+    "kotosoupa",
     "gemista_superfoods",
-    "kotosoupa"
+    "melitzanes_imam",
+    "arakas"
 ];
 
 function renderDailyHighlights() {
