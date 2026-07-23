@@ -2982,11 +2982,11 @@
                         "revithia_frikase": { category: "freshly-cooked", el: "Ρεβύθια Φρικασέ <br><br> (Vegan συνταγή, εύκολη και πολύ υγιεινή)", en: "Chickpea Fricassee <br><br> (Vegan recipe, easy and very healthy)", price: "€7.50" },
                         "bifteki_kotopoulo": { category: "freshly-cooked", el: "Μπιφτέκια κοτόπουλο στον φούρνο <br><br> (Πολύ νόστιμο και ελαφρύ)", en: "Baked Chicken Patties <br><br> (Very tasty and light)", price: "€9.50" },
                         "bifteki_moscharisia": { category: "freshly-cooked", el: "Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα 300γρ)", en: "Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties)", price: "€9.80" },
-                        "moscharaki_stifado": { category: "freshly-cooked", el: "Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό)", en: "Beef Stifado <br><br> (Traditional and fragrant)", price: "€11.00" },
+                        "moschari_stifado": { category: "freshly-cooked", el: "Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό)", en: "Beef Stifado <br><br> (Traditional and fragrant)", price: "€11.00" },
                         "moschari_kokkinisto": { category: "freshly-cooked", el: "Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι χτένι από Κρέατα Αστακού)", en: "Beef in Red Sauce <br><br> (Tender beef shank from Astakou Meats)", price: "€10.20" },
                         "moschari_ragout": { category: "freshly-cooked", el: "Μοσχάρι ραγού <br><br> (Τρυφερό μοσχαράκι κοκκινιστό με πατάτες ραγού)", en: "Beef Ragout <br><br> (Tender beef in red sauce with potato ragout)", price: "€10.50" },
                         "moschari_giouvesti": { category: "freshly-cooked", el: "Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα)", en: "Beef Giouvetsi <br><br> (Traditional beef giouvetsi with grated myzithra)", price: "€10.50" },
-                        "moscharaki_lemonato": { category: "freshly-cooked", el: "Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο)", en: "Lemony Beef Stew <br><br> (Tender lemony beef shank)", price: "€10.20" },
+                        "moschari_lemonato": { category: "freshly-cooked", el: "Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο)", en: "Lemony Beef Stew <br><br> (Tender lemony beef shank)", price: "€10.20" },
                         "rolo_moscharisio": { category: "freshly-cooked", el: "Ρολό μοσχαρίσιου κιμά <br><br> (Ρολό 100% μοσχαρίσιου κιμά γεμιστό με φέτα ΠΟΠ)", en: "Beef Roll <br><br> (100% beef roll stuffed with PDO goat feta)", price: "€11.00" },
                         "rolo_kotopoulo": { category: "freshly-cooked", el: "Ρολό κοτόπουλο γεμιστό <br><br> (Με μπέικον, γραβιέρα, πιπεριές και πατάτες φούρνου)", en: "Stuffed Chicken Roll <br><br> (With bacon, graviera, peppers and oven-baked potatoes)", price: "€10.00" },
                         "moscharaki_noua": { category: "freshly-cooked", el: "Μοσχαράκι νουά <br><br> (Ζουμερό μοσχαράκι νουά σιγοψημένο με κολοκύθια και καρότα)", en: "Beef Tenderloin Roast <br><br> (Juicy beef tenderloin slow-roasted with zucchini and carrots)", price: "€12.50" },
@@ -3135,13 +3135,13 @@
 
                         //Meat
                         "moschari_kokkinisto", "papoutsakia", "bifteki_moscharisia",
-                        "lachanontolmades","kolokythakia_gemista",
+                        "moschari_lemonato","keftedakia_tiganita","pastitsio",
                         
                         //Veggy
-                        "giants","spanakorizo","fasolakia", "imam","makaronia_kima", 
+                        "gemista_superfoods","spanakorizo","arakas", "briam","makaronia_kima", 
 
                         //SeaFoods
-                        "ksifias_lemonatos",
+                        
                         
                         // Soups
                         "kotosoupa", "giouvarlakia",
@@ -4844,7 +4844,7 @@ const highlightsCatalog = {
         el: "Μοσχάρι <br> Γιουβέτσι",
         en: "Beef <br> Giouvetsi"
     },
-    "moscharaki_lemonato": {
+    "moschari_lemonato": {
         icons: ["meat-logo.png", "lemonbeef-logo.png"],
         el: "Μοσχαράκι <br> Λεμονάτο",
         en: "Lemony <br> Beef Stew"
@@ -5016,12 +5016,14 @@ const highlightsCatalog = {
 // ★★★★★ Change daily highlights here ★★★★★
 const currentHighlights = [
     "moschari_kokkinisto",
+    "moschari_lemonato",
     "bifteki_moscharisia",
+    "keftedakia_tiganita",
     "papoutsakia",
-    "ksifias_lemonatos",
     "kotosoupa",
-    "melitzanes_imam",
-    "giantes",
+    "gemista_superfoods",
+    "briam",
+    "arakas",
     "spanakorizo"
 ];
 
