@@ -82,6 +82,7 @@
             /*background-image: url('Logos/xmas_decor-logo.png');
             background-image: url('Logos/snow_decor-logo.png');*/
             background-image: url('Logos/heart_decor-logo.png');
+            
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center calc(50% + 170px);
@@ -2630,11 +2631,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                           <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                           <p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>-->
+                            </p>
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -2990,6 +2991,8 @@
                         "rolo_moscharisio": { category: "freshly-cooked", el: "Ρολό μοσχαρίσιου κιμά <br><br> (Ρολό 100% μοσχαρίσιου κιμά γεμιστό με φέτα ΠΟΠ)", en: "Beef Roll <br><br> (100% beef roll stuffed with PDO goat feta)", price: "€11.00" },
                         "rolo_kotopoulo": { category: "freshly-cooked", el: "Ρολό κοτόπουλο γεμιστό <br><br> (Με μπέικον, γραβιέρα, πιπεριές και πατάτες φούρνου)", en: "Stuffed Chicken Roll <br><br> (With bacon, graviera, peppers and oven-baked potatoes)", price: "€10.00" },
                         "moscharaki_noua": { category: "freshly-cooked", el: "Μοσχαράκι νουά <br><br> (Ζουμερό μοσχαράκι νουά σιγοψημένο με κολοκύθια και καρότα)", en: "Beef Tenderloin Roast <br><br> (Juicy beef tenderloin slow-roasted with zucchini and carrots)", price: "€12.50" },
+                        "moscharaki_noua_with_fried_potatoes": { category: "freshly-cooked", el: "Μοσχαράκι νουά με τηγανητές πατάτες <br><br> (Ζουμερό μοσχαράκι νουά σιγοψημένο με τηγανητές πατάτες)", en: "Beef Tenderloin Roast with Fried Potatoes <br><br> (Juicy beef tenderloin slow-roasted with fried potatoes)", price: "€12.50"},
+                        "moscharaki_noua_with_rice": { category: "freshly-cooked", el: "Μοσχαράκι νουά με ρύζι <br><br> (Ζουμερό μοσχαράκι νουά σιγοψημένο με ρύζι)", en: "Beef Tenderloin Roast with Rice <br><br> (Juicy beef tenderloin slow-roasted with rice)", price: "€12.50"},             
                         "choirino_damaskina": { category: "freshly-cooked", el: "Χοιρινό με δαμάσκηνα <br><br> (Ζουμερό χοιρινό με πιπεριές, γλυκοπατάτες και γλυκά δαμάσκηνα)", en: "Pork with Prunes <br><br> (Juicy pork with peppers, sweet potatoes and sweet prunes)", price: "€11.00" },
                         "keftedakia_saltsa": { category: "freshly-cooked", el: "Κεφτεδάκια με σάλτσα <br><br> (Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας)", en: "Meatballs in Tomato Sauce <br><br> (Fragrant fried meatballs slow-cooked in homemade tomato sauce)", price: "€8.00" },
                         "keftedakia_tiganita": { category: "freshly-cooked", el: "Κεφτεδάκια τηγανιτά <br><br> (Τα μυρωδάτα κεφτεδάκια της μαμάς)", en: "Fried Meatballs <br><br> (Mom’s fragrant meatballs, fried fresh upon order)", price: "€8.50" },
@@ -3125,7 +3128,41 @@
                         "giouvarlakia": {
                             file: "greek-dish-16.png",
                             alt: "Γιουβαρλάκια - Με 100% μοσχαρίσιο κιμά και αυγολέμονο | Giouvarlakia - With 100% beef mince in egg-lemon sauce"
-                        }
+                        },
+                        "kotopoulo_bouti": {
+                            file: "greek-dish-15.png",
+                            alt: "Κοτόπουλο μπούτι στο φούρνο με πατάτες - Ζουμερό μπούτι κοτόπουλου ψημένο με πατάτες | Oven-Baked Chicken Leg with Potatoes - Juicy oven-baked chicken leg with potatoes"
+                        },
+                        "melitzanes_imam": {
+                            file: "greek-dish-26.png",
+                            alt: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ - Τσακώνικες μελιτζάνες με σάλτσα ντομάτας και τριμμένη φέτα | Imam Eggplants with PDO Feta - Tsakonian eggplants with tomato sauce and grated PDO feta"
+                        },
+                        "glossa_lemonati": {
+                            file: "greek-dish-27.png",
+                            alt: "Γλώσσα Λεμονάτη με πατάτες - Φιλέτο γλώσσας μαγειρεμένο με φρέσκο λεμόνι, ελαιόλαδο και αρωματικά μυρωδικά | Lemon Sole in Lemon Sauce with Potatoes - Sole fillet cooked with fresh lemon, olive oil, and aromatic herbs"
+                        },
+                        "moscharaki_noua": {
+                            file: "greek-dish-28.png",
+                            alt: "Μοσχαράκι νουά - Ζουμερό μοσχαράκι νουά σιγοψημένο με κολοκύθια και καρότα | Beef Tenderloin Roast - Juicy beef tenderloin slow-roasted with zucchini and carrots"
+                        },
+                        "moschari_lemonato": {
+                            file: "greek-dish-29.png",
+                            alt: "Μοσχαράκι λεμονάτο - Τρυφερό μοσχάρι χτένι λεμονάτο | Lemony Beef Stew - Tender lemony beef shank"
+                        },
+                        "moschari_giouvesti": {
+                            file: "greek-dish-30.png",
+                            alt: "Μοσχάρι Γιουβέτσι - Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα | Beef Giouvetsi - Traditional beef giouvetsi with grated myzithra"
+                        },
+                        "moscharaki_noua_with_fried_potatoes": {
+                            file: "greek-dish-31.png",
+                            alt: "Μοσχαράκι νουά με τηγανητές πατάτες - Ζουμερό μοσχαράκι νουά σιγοψημένο με τηγανητές πατάτες | Beef Tenderloin Roast with Fried Potatoes - Juicy beef tenderloin slow-roasted with fried potatoes"
+                        },
+
+                        "moscharaki_noua_with_rice": {
+                            file: "greek-dish-300.png",
+                            alt: "Μοσχαράκι νουά με ρύζι - Ζουμερό μοσχαράκι νουά σιγοψημένο με ρύζι | Beef Tenderloin Roast with Rice - Juicy beef tenderloin slow-roasted with rice"
+                        },
+                        
                         // Add more mappings here when you add new photos
                     };
 
@@ -3298,6 +3335,15 @@
                             <tr><td class="lang" data-el="Ούζο εμφιαλωμένο 200ml" data-en="Ouzo 200ml">Ouzo 200ml</td><td>€9.00</td></tr>
                         </table>
                     </div>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-30" src="DishImages/greek-dish-30.png"
+                        alt="Μοσχάρι Γιουβέτσι - Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα Ματζουράνα Καλλιθέα | Beef Giouvetsi - Traditional beef giouvetsi with grated myzithra Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-30.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Μοσχάρι Γιουβέτσι</strong> – Με μυζήθρα</span>
+                        <span class="caption-en"><em>Beef Giouvetsi</em> – With myzithra</span>
+                    </figcaption>
                 </div>
                 <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
@@ -3533,6 +3579,62 @@
                         <span class="caption-en"><em>Beef Roll</em> – Stuffed with feta & tomato</span>
                     </figcaption>
                 </div>
+
+                <div class="menu-image-item">
+                    <img id="menu-img-25" src="DishImages/greek-dish-15.png"
+                        alt="Κοτόπουλο μπούτι στο φούρνο με πατάτες - Ζουμερό μπούτι κοτόπουλου ψημένο με πατάτες Ματζουράνα Καλλιθέα | Oven-Baked Chicken Leg with Potatoes - Juicy oven-baked chicken leg with potatoes Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-15.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Κοτόπουλο μπούτι</strong> – Στο φούρνο με πατάτες</span>
+                        <span class="caption-en"><em>Chicken Leg</em> – Oven-baked with potatoes</span>
+                    </figcaption>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-26" src="DishImages/greek-dish-26.png"
+                        alt="Μελιτζάνες ιμάμ με φέτα ΠΟΠ - Τσακώνικες μελιτζάνες με σάλτσα ντομάτας και τριμμένη φέτα Ματζουράνα Καλλιθέα | Imam Eggplants with PDO Feta - Tsakonian eggplants with tomato sauce and grated PDO feta Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-26.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Μελιτζάνες ιμάμ</strong> – Με φέτα ΠΟΠ</span>
+                        <span class="caption-en"><em>Imam Eggplants</em> – With PDO feta</span>
+                    </figcaption>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-27" src="DishImages/greek-dish-27.png"
+                        alt="Γλώσσα Λεμονάτη με πατάτες - Φιλέτο γλώσσας μαγειρεμένο με φρέσκο λεμόνι, ελαιόλαδο και αρωματικά μυρωδικά, σερβιρισμένο με πατάτες Ματζουράνα Καλλιθέα | Lemon Sole in Lemon Sauce with Potatoes - Sole fillet cooked with fresh lemon, olive oil, and aromatic herbs, served with potatoes Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-27.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Γλώσσα Λεμονάτη</strong> – Με πατάτες</span>
+                        <span class="caption-en"><em>Lemon Sole</em> – With potatoes</span>
+                    </figcaption>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-28" src="DishImages/greek-dish-28.png"
+                        alt="Μοσχαράκι νουά - Ζουμερό μοσχαράκι νουά σιγοψημένο με κολοκύθια και καρότα Ματζουράνα Καλλιθέα | Beef Tenderloin Roast - Juicy beef tenderloin slow-roasted with zucchini and carrots Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-28.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Μοσχαράκι νουά</strong> – Σιγοψημένο</span>
+                        <span class="caption-en"><em>Beef Tenderloin</em> – Slow-roasted</span>
+                    </figcaption>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-29" src="DishImages/greek-dish-29.png"
+                        alt="Μοσχαράκι λεμονάτο - Τρυφερό μοσχάρι χτένι λεμονάτο Ματζουράνα Καλλιθέα | Lemony Beef Stew - Tender lemony beef shank Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-29.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Μοσχαράκι λεμονάτο</strong> – Τρυφερό χτένι</span>
+                        <span class="caption-en"><em>Lemony Beef Stew</em> – Tender shank</span>
+                    </figcaption>
+                </div>
+                <div class="menu-image-item">
+                    <img id="menu-img-31" src="DishImages/greek-dish-27.png"
+                        alt="Μοσχαράκι νουά με τηγανητές πατάτες - Ζουμερό μοσχαράκι νουά σιγοψημένο με τηγανητές πατάτες Ματζουράνα Καλλιθέα | Beef Tenderloin Roast with Fried Potatoes - Juicy beef tenderloin slow-roasted with fried potatoes Matzourana Eatery Kallithea"
+                        onclick="zoomImage('DishImages/greek-dish-27.png', this.alt)">
+                    <figcaption class="dish-caption">
+                        <span class="caption-el"><strong>Μοσχαράκι νουά</strong> – Με τηγανητές πατάτες</span>
+                        <span class="caption-en"><em>Beef Tenderloin</em> – With fried potatoes</span>
+                    </figcaption>
+                </div>
+
             </div>
         </div>
     </section>
