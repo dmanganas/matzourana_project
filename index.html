@@ -3262,6 +3262,64 @@
                         // Add more mappings here when you add new photos
                     };
 
+                    const dishVideoCatalog = {
+                    "fasolada": {
+                        src: "Videos/dish-video-1.mp4",
+                        titleEl: "Φασολάδα – Χυλωμένη και ασυναγώνιστη",
+                        titleEn: "Fasolada – Creamy bean soup"
+                    },
+                    "moschari_giouvesti": {
+                        src: "Videos/dish-video-2.mp4",
+                        titleEl: "Μοσχάρι Γιουβέτσι – Με τριμμένη μυζήθρα",
+                        titleEn: "Beef Giouvetsi – With grated myzithra"
+                    },
+                    "giouvarlakia": {
+                        src: "Videos/dish-video-3.mp4",
+                        titleEl: "Γιουβαρλάκια – Με αυγολέμονο",
+                        titleEn: "Giouvarlakia – With egg-lemon sauce"
+                    },
+                    "moschari_stifado": {
+                        src: "Videos/dish-video-4.mp4",
+                        titleEl: "Μοσχάρι στιφάδο",
+                        titleEn: "Beef Stifado"
+                    },
+                    "moussakas": {
+                        src: "Videos/dish-video-5.mp4",
+                        titleEl: "Μουσακάς – Με μοσχαρίσιο κιμά και μπεσαμέλ",
+                        titleEn: "Moussaka – With beef mince and béchamel"
+                    },
+                    "fasolakia": {
+                        src: "Videos/dish-video-6.mp4",
+                        titleEl: "Φρέσκα φασολάκια",
+                        titleEn: "Fresh green beans"
+                    },
+                    "pastitsio": {
+                        src: "Videos/dish-video-7.mp4",
+                        titleEl: "Παστίτσιο – Χειροποίητο με μπεσαμέλ",
+                        titleEn: "Pastitsio – Handmade with béchamel"
+                    },
+                    "moschari_lemonato": {
+                        src: "Videos/dish-video-8.mp4",
+                        titleEl: "Μοσχαράκι λεμονάτο – Τρυφερό χτένι",
+                        titleEn: "Lemony Beef Stew – Tender shank"
+                    },
+                    "sardeles_plaki": {
+                        src: "Videos/dish-video-9.mp4",
+                        titleEl: "Σαρδέλες πλακί / Γαύρος πλακί",
+                        titleEn: "Sardines Plaki / Anchovy Plaki"
+                    },
+                    "papoutsakia": {
+                        src: "Videos/dish-video-10.mp4",
+                        titleEl: "Μελιτζάνες παπουτσάκια",
+                        titleEn: "Stuffed Eggplants (Papoutsakia)"
+                    },
+                    "kolokythakia_gemista": {
+                        src: "Videos/dish-video-11.mp4",
+                        titleEl: "Κολοκυθάκια γεμιστά",
+                        titleEn: "Stuffed Courgettes"
+                    }
+                };
+
                     // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★
                     const currentDailyMenu = [
                         // Freshly Cooked
@@ -4658,181 +4716,210 @@ function showMenu(menuId) {
         document.body.appendChild(lightbox);
     }
 
-    function zoomVideoSequence(startIndex = 0) {
-    const videoList = [
-        {
-            src: "Videos/dish-video-1.mp4",
-            titleEl: "Μοσχάρι κοκκινιστό / Γιουβέτσι – Τρυφερό μοσχαράκι χτένι",
-            titleEn: "Beef in Red Sauce / Giouvetsi – Tender beef shank"
-        },
-        {
-            src: "Videos/dish-video-2.mp4",
-            titleEl: "Μοσχαράκι νουά – Σιγοψημένο με κολοκύθια και καρότα",
-            titleEn: "Beef Tenderloin Roast – Slow-roasted with zucchini and carrots"
-        },
-        {
-            src: "Videos/dish-video-3.mp4",
-            titleEl: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ",
-            titleEn: "Imam Eggplants with PDO Feta"
-        },
-        {
-            src: "Videos/dish-video-4.mp4",
-            titleEl: "Κοτόπουλο μπούτι στο φούρνο με πατάτες",
-            titleEn: "Oven-Baked Chicken Leg with Potatoes"
-        },
-        {
-            src: "Videos/dish-video-5.mp4",
-            titleEl: "Μοσχαράκι λεμονάτο – Τρυφερό χτένι",
-            titleEn: "Lemony Beef Stew – Tender shank"
-        },
-        {
-            src: "Videos/dish-video-6.mp4",
-            titleEl: "Μοσχάρι Γιουβέτσι με τριμμένη μυζήθρα",
-            titleEn: "Beef Giouvetsi with grated myzithra"
-        },
-        {
-            src: "Videos/dish-video-7.mp4",
-            titleEl: "Μπριάμ – Λαδερό με καλοκαιρινά λαχανικά",
-            titleEn: "Briam – Oven-roasted summer vegetables"
-        },
-        {
-            src: "Videos/dish-video-8.mp4",
-            titleEl: "Ρολό μοσχαρίσιου κιμά γεμιστό με φέτα",
-            titleEn: "Beef Roll stuffed with feta"
+    function renderDishVideos() {
+        const container = document.querySelector('.video-panels');
+        if (!container) return;
+
+        // Use whichever list you keep the current daily dishes in
+        const activeKeys = (typeof currentDailyMenu !== 'undefined') 
+            ? currentDailyMenu 
+            : (typeof currentHighlights !== 'undefined' ? currentHighlights : []);
+
+        // Keep only videos that exist in the catalog AND are active today
+        const activeVideos = activeKeys
+            .filter(key => dishVideoCatalog[key])
+            .map(key => ({ key, ...dishVideoCatalog[key] }));
+
+        // Clear previous panels
+        container.innerHTML = '';
+
+        // Show maximum 2 preview panels
+        const previewVideos = activeVideos.slice(0, 2);
+
+        previewVideos.forEach((video, index) => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.onclick = () => zoomVideoSequence(index, activeVideos);
+
+            card.innerHTML = `
+                <video muted autoplay loop playsinline>
+                    <source src="${video.src}" type="video/mp4">
+                </video>
+                <div class="play-overlay">▶</div>
+            `;
+            container.appendChild(card);
+        });
+
+        // Hide the whole exhibition if no videos are active
+        const exhibition = document.querySelector('.dishes-exhibition');
+        if (exhibition) {
+            exhibition.style.display = activeVideos.length > 0 ? 'block' : 'none';
         }
-    ];
+    }
 
-    if (videoList.length === 0) return;
+    function zoomVideoSequence(startIndex = 0, activeVideos = null) {
+        // Build the list of active videos if not provided
+        if (!activeVideos) {
+            const activeKeys = (typeof currentDailyMenu !== 'undefined')
+                ? currentDailyMenu
+                : (typeof currentHighlights !== 'undefined' ? currentHighlights : []);
 
-    let current = startIndex % videoList.length;
-
-    // Remove existing lightbox
-    const existing = document.getElementById('zoom-lightbox');
-    if (existing) existing.remove();
-
-    // Create lightbox
-    const lightbox = document.createElement('div');
-    lightbox.id = 'zoom-lightbox';
-    lightbox.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.95);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 99999;
-        cursor: zoom-out;
-        padding: 16px;
-        box-sizing: border-box;
-    `;
-
-    lightbox.onclick = (e) => {
-        if (e.target === lightbox) {
-            const vid = lightbox.querySelector('video');
-            if (vid) {
-                vid.pause();
-                vid.src = "";
-            }
-            lightbox.remove();
+            activeVideos = activeKeys
+                .filter(key => dishVideoCatalog[key])
+                .map(key => ({ key, ...dishVideoCatalog[key] }));
         }
-    };
 
-    // Title
-    const title = document.createElement('div');
-    title.style.cssText = `
-        color: white;
-        font-size: 1.2rem;
-        margin-bottom: 14px;
-        text-align: center;
-        font-family: 'Montserrat', sans-serif;
-        max-width: 90%;
-        line-height: 1.4;
-    `;
-    lightbox.appendChild(title);
+        if (!activeVideos || activeVideos.length === 0) return;
 
-    // Video
-    const video = document.createElement('video');
-    video.controls = true;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.style.cssText = `
-        max-width: 92%;
-        max-height: 72vh;
-        border-radius: 12px;
-        background: #000;
-        box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-    `;
-    video.onclick = (e) => e.stopPropagation();
-    lightbox.appendChild(video);
+        let current = startIndex % activeVideos.length;
 
-    // Navigation
-    const nav = document.createElement('div');
-    nav.style.cssText = `
-        display: flex;
-        gap: 14px;
-        margin-top: 18px;
-        align-items: center;
-    `;
+        // Remove any existing lightbox
+        const existing = document.getElementById('zoom-lightbox');
+        if (existing) existing.remove();
 
-    const counter = document.createElement('span');
-    counter.style.cssText = `color: #ccc; font-size: 0.95rem; min-width: 60px; text-align: center;`;
-
-    const prevBtn = document.createElement('button');
-    prevBtn.textContent = '‹';
-    prevBtn.style.cssText = navBtnStyle();
-    prevBtn.onclick = (e) => { e.stopPropagation(); playVideo(current - 1); };
-
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = '›';
-    nextBtn.style.cssText = navBtnStyle();
-    nextBtn.onclick = (e) => { e.stopPropagation(); playVideo(current + 1); };
-
-    nav.appendChild(prevBtn);
-    nav.appendChild(counter);
-    nav.appendChild(nextBtn);
-    lightbox.appendChild(nav);
-
-    function navBtnStyle() {
-        return `
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            font-size: 1.7rem;
-            cursor: pointer;
+        // Create lightbox
+        const lightbox = document.createElement('div');
+        lightbox.id = 'zoom-lightbox';
+        lightbox.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            cursor: zoom-out;
+            padding: 16px;
+            box-sizing: border-box;
         `;
+
+        // Close when clicking the background
+        lightbox.onclick = (e) => {
+            if (e.target === lightbox) {
+                const vid = lightbox.querySelector('video');
+                if (vid) {
+                    vid.pause();
+                    vid.src = "";
+                }
+                lightbox.remove();
+            }
+        };
+
+        // Title
+        const title = document.createElement('div');
+        title.style.cssText = `
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            max-width: 90%;
+            line-height: 1.4;
+        `;
+        lightbox.appendChild(title);
+
+        // Video element
+        const video = document.createElement('video');
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.style.cssText = `
+            max-width: 92%;
+            max-height: 72vh;
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        `;
+        video.onclick = (e) => e.stopPropagation();
+        lightbox.appendChild(video);
+
+        // Navigation controls
+        const nav = document.createElement('div');
+        nav.style.cssText = `
+            display: flex;
+            gap: 14px;
+            margin-top: 18px;
+            align-items: center;
+        `;
+
+        const counter = document.createElement('span');
+        counter.style.cssText = `
+            color: #ccc;
+            font-size: 0.95rem;
+            min-width: 60px;
+            text-align: center;
+        `;
+
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = '‹';
+        prevBtn.style.cssText = navBtnStyle();
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            playVideo(current - 1);
+        };
+
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = '›';
+        nextBtn.style.cssText = navBtnStyle();
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            playVideo(current + 1);
+        };
+
+        nav.appendChild(prevBtn);
+        nav.appendChild(counter);
+        nav.appendChild(nextBtn);
+        lightbox.appendChild(nav);
+
+        function navBtnStyle() {
+            return `
+                background: rgba(255,255,255,0.15);
+                border: none;
+                color: white;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                font-size: 1.7rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+        }
+
+        function playVideo(index) {
+            current = (index + activeVideos.length) % activeVideos.length;
+            const item = activeVideos[current];
+
+            // Bilingual title
+            title.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en')
+                ? item.titleEn
+                : item.titleEl;
+
+            counter.textContent = `${current + 1} / ${activeVideos.length}`;
+
+            video.src = item.src;
+            video.load();
+            video.play().catch(() => {});
+        }
+
+        // Automatically go to next video when current one ends
+        video.addEventListener('ended', () => {
+            playVideo(current + 1);
+        });
+
+        // Start playing
+        playVideo(current);
+        document.body.appendChild(lightbox);
     }
 
-    function playVideo(index) {
-        current = (index + videoList.length) % videoList.length;
-        const item = videoList[current];
+        document.addEventListener('DOMContentLoaded', () => {
+        renderDishVideos();
+        });
 
-        // Choose title according to current language
-        title.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en')
-            ? item.titleEn
-            : item.titleEl;
-
-        counter.textContent = `${current + 1} / ${videoList.length}`;
-
-        video.src = item.src;
-        video.load();
-        video.play().catch(() => {});
-    }
-
-    // Auto-advance when video ends
-    video.addEventListener('ended', () => {
-        playVideo(current + 1);
-    });
-
-    playVideo(current);
-    document.body.appendChild(lightbox);
-}
+        // Also re-render when language changes or when you update the daily menu
+        document.addEventListener('languageChange', renderDishVideos);
 
 
         // ---------------------------------------------------------
