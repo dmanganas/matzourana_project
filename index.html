@@ -82,13 +82,14 @@
             /*background-image: url('Logos/xmas_decor-logo.png');
             background-image: url('Logos/snow_decor-logo.png');*/
             background-image: url('Logos/heart_decor-logo.png');
+          
             
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center calc(50% + 170px);
             border-radius: 8px; /* Optional: slight rounding for harmony */
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
-            background-image: opacity 0.1;
+            background-image: opacity 0.4;
             
         
         }
@@ -656,6 +657,101 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: cover;
+        }
+
+
+
+
+        /* ========== Dishes Exhibition (1-2 panels above photos) ========== */
+        .dishes-exhibition {
+            grid-column: 1 / -1;   /* spans both columns */
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .exhibition-header {
+            margin-bottom: 12px;
+        }
+
+        .exhibition-header h3 {
+            font-size: 1.3rem;
+            margin: 0 0 4px;
+            color: #4A5D4A;
+        }
+
+        .exhibition-header p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+        }
+
+        /* Video panels container */
+        .video-panels {
+            display: grid;
+            gap: 8px;
+            margin: 0 auto;
+        }
+
+        /* LARGE SCREENS → 2 video panels */
+        .video-panels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        /* SMALL SCREENS → 1 video panel */
+    
+        @media (max-width: 900px) {
+            .video-panels {
+                grid-template-columns: 1fr;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Individual video card */
+        .video-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;               /* matches your static photos */
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #111;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .video-card:hover video {
+            transform: scale(1.04);
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.4rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+            background: rgba(0,0,0,0.45);
         }
         /* About Section Styles */
         .about .section-container {
@@ -2631,11 +2727,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                           <p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                           <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>
+                            </p>-->
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3130,7 +3226,7 @@
                             alt: "Γιουβαρλάκια - Με 100% μοσχαρίσιο κιμά και αυγολέμονο | Giouvarlakia - With 100% beef mince in egg-lemon sauce"
                         },
                         "kotopoulo_bouti": {
-                            file: "greek-dish-15.png",
+                            file: "greek-dish-25.png",
                             alt: "Κοτόπουλο μπούτι στο φούρνο με πατάτες - Ζουμερό μπούτι κοτόπουλου ψημένο με πατάτες | Oven-Baked Chicken Leg with Potatoes - Juicy oven-baked chicken leg with potatoes"
                         },
                         "melitzanes_imam": {
@@ -3171,23 +3267,23 @@
                         // Freshly Cooked
 
                         //Meat
-                        "moschari_kokkinisto", "moscharaki_noua", "moschari_lemonato",
-                        "soutzoukakia", "bifteki_moscharisia","pastitsio",
+                        "moschari_kokkinisto", "papoutsakia", "moschari_lemonato",
+                        "keftedakia_tiganita", "bifteki_moscharisia","makaronia_kima","kolokythakia_gemista",
                        
                         
                         //Chicken 
-                        "kotopoulo_bouti",
+                       
                         //Veggy
-                        "gemista_superfoods","melitzanes_imam","giants", "briam","spanakorizo", 
+                        "melitzanes_imam","arakas_lemonatos", 
 
                         //SeaFoods
                         
                         
                         // Soups
-                        "giouvarlakia",
+                        "giouvarlakia","kotosoupa",
                         
                         // Legumes
-                        "fakes"
+                        "revithia","fakes"
                     ];
 
                     function renderDailyMenuTable() {
@@ -3338,7 +3434,35 @@
                 </div>
                 <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
             </div>
+            
             <div class="image-panel">
+                <!-- ==================== DISHES EXHIBITION (1-2 panels only) ==================== -->
+               
+                <div class="dishes-exhibition">
+                    <div class="exhibition-header">
+                        <h3 class="lang" data-el="Έκθεση Πιάτων" data-en="Dishes Exhibition">Έκθεση Πιάτων</h3>
+                        <p class="lang" data-el="Αυθεντικές γεύσεις από τη Ματζουράνα" data-en="Authentic tastes from Matzourana">
+                            Αυθεντικές γεύσεις από τη Ματζουράνα
+                        </p>
+                    </div>
+
+                    <div class="video-panels">
+                        <div class="video-card" onclick="zoomVideoSequence(0)">
+                            <video muted autoplay loop playsinline>
+                                <source src="Videos/dish-video-1.mp4" type="video/mp4">
+                            </video>
+                            <div class="play-overlay">▶</div>
+                        </div>
+
+                        <div class="video-card" onclick="zoomVideoSequence(1)">
+                            <video muted autoplay loop playsinline>
+                                <source src="Videos/dish-video-2.mp4" type="video/mp4">
+                            </video>
+                            <div class="play-overlay">▶</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== END DISHES EXHIBITION ==================== -->
                 <div class="menu-image-item">
                     <img id="menu-img-1" src="DishImages/greek-dish-1.png"
                         alt="Μοσχάρι κοκκινιστό - Τρυφερό μοσχαράκι χτένι (κρέατα Αστακού) με γαρνιτούρα \n Matzourana Eatery Καλλιθέα | Beef in Red Sauce - Tender beef shank from Astakou Meats served with your choice of side \n Matzourana Eatery Kallithea"
@@ -4461,85 +4585,254 @@ function showMenu(menuId) {
         }
 
   
-        function zoomMedia(src, alt = '', mapsUrl = null) {
-            // Remove existing lightbox if open
-            const existing = document.getElementById('zoom-lightbox');
-            if (existing) existing.remove();
+        function zoomMedia(src, alt = '', isVideo = false) {
+        // Remove any existing lightbox
+        const existing = document.getElementById('zoom-lightbox');
+        if (existing) existing.remove();
 
-            // Create lightbox background
-            const lightbox = document.createElement('div');
-            lightbox.id = 'zoom-lightbox';
-            lightbox.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.93);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                z-index: 99999;
-                cursor: zoom-out;
-                padding: 20px;
-                box-sizing: border-box;
-            `;
+        // Create lightbox
+        const lightbox = document.createElement('div');
+        lightbox.id = 'zoom-lightbox';
+        lightbox.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.94);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            cursor: zoom-out;
+            padding: 20px;
+            box-sizing: border-box;
+        `;
 
-            // Close when clicking the background
-            lightbox.onclick = function(e) {
-                if (e.target === lightbox) {
-                    lightbox.remove();
+        // Close when clicking the background
+        lightbox.onclick = function (e) {
+            if (e.target === lightbox) {
+                // Stop video if playing
+                const vid = lightbox.querySelector('video');
+                if (vid) {
+                    vid.pause();
+                    vid.currentTime = 0;
                 }
-            };
-
-            // Create image
-            const img = document.createElement('img');
-            img.src = src;
-            img.alt = alt;
-            img.style.cssText = `
-                max-width: 92%;
-                max-height: 78vh;
-                border-radius: 10px;
-                box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-                object-fit: contain;
-                cursor: default;
-            `;
-            img.onclick = (e) => e.stopPropagation(); // prevent closing when clicking the image
-
-            lightbox.appendChild(img);
-
-            // Add "Open in Google Maps" button if a Maps URL is provided
-            if (mapsUrl) {
-                const btn = document.createElement('a');
-                btn.href = mapsUrl;
-                btn.target = '_blank';
-                btn.rel = 'noopener noreferrer';
-                btn.innerHTML = '📍 Open in Google Maps';
-                btn.style.cssText = `
-                    margin-top: 18px;
-                    padding: 12px 24px;
-                    background: #1a73e8;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 50px;
-                    font-size: 15px;
-                    font-weight: 500;
-                    font-family: system-ui, -apple-system, sans-serif;
-                    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.4);
-                    transition: all 0.2s ease;
-                    cursor: pointer;
-                `;
-
-                btn.onmouseover = () => btn.style.background = '#1557b0';
-                btn.onmouseout = () => btn.style.background = '#1a73e8';
-                btn.onclick = (e) => e.stopPropagation();
-
-                lightbox.appendChild(btn);
+                lightbox.remove();
             }
+        };
 
-            document.body.appendChild(lightbox);
+        let media;
+
+        if (isVideo) {
+            // ===== VIDEO =====
+            media = document.createElement('video');
+            media.src = src;
+            media.controls = true;
+            media.autoplay = true;
+            media.muted = false;          // sound on (user can mute)
+            media.playsInline = true;
+            media.style.cssText = `
+                max-width: 92%;
+                max-height: 85vh;
+                border-radius: 12px;
+                box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+                background: #000;
+            `;
+        } else {
+            // ===== IMAGE =====
+            media = document.createElement('img');
+            media.src = src;
+            media.alt = alt;
+            media.style.cssText = `
+                max-width: 92%;
+                max-height: 85vh;
+                border-radius: 12px;
+                box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+                object-fit: contain;
+            `;
         }
+
+        // Prevent closing when clicking the media itself
+        media.onclick = (e) => e.stopPropagation();
+
+        lightbox.appendChild(media);
+        document.body.appendChild(lightbox);
+    }
+
+    function zoomVideoSequence(startIndex = 0) {
+    const videoList = [
+        {
+            src: "Videos/dish-video-1.mp4",
+            titleEl: "Μοσχάρι κοκκινιστό / Γιουβέτσι – Τρυφερό μοσχαράκι χτένι",
+            titleEn: "Beef in Red Sauce / Giouvetsi – Tender beef shank"
+        },
+        {
+            src: "Videos/dish-video-2.mp4",
+            titleEl: "Μοσχαράκι νουά – Σιγοψημένο με κολοκύθια και καρότα",
+            titleEn: "Beef Tenderloin Roast – Slow-roasted with zucchini and carrots"
+        },
+        {
+            src: "Videos/dish-video-3.mp4",
+            titleEl: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ",
+            titleEn: "Imam Eggplants with PDO Feta"
+        },
+        {
+            src: "Videos/dish-video-4.mp4",
+            titleEl: "Κοτόπουλο μπούτι στο φούρνο με πατάτες",
+            titleEn: "Oven-Baked Chicken Leg with Potatoes"
+        },
+        {
+            src: "Videos/dish-video-5.mp4",
+            titleEl: "Μοσχαράκι λεμονάτο – Τρυφερό χτένι",
+            titleEn: "Lemony Beef Stew – Tender shank"
+        },
+        {
+            src: "Videos/dish-video-6.mp4",
+            titleEl: "Μοσχάρι Γιουβέτσι με τριμμένη μυζήθρα",
+            titleEn: "Beef Giouvetsi with grated myzithra"
+        },
+        {
+            src: "Videos/dish-video-7.mp4",
+            titleEl: "Μπριάμ – Λαδερό με καλοκαιρινά λαχανικά",
+            titleEn: "Briam – Oven-roasted summer vegetables"
+        },
+        {
+            src: "Videos/dish-video-8.mp4",
+            titleEl: "Ρολό μοσχαρίσιου κιμά γεμιστό με φέτα",
+            titleEn: "Beef Roll stuffed with feta"
+        }
+    ];
+
+    if (videoList.length === 0) return;
+
+    let current = startIndex % videoList.length;
+
+    // Remove existing lightbox
+    const existing = document.getElementById('zoom-lightbox');
+    if (existing) existing.remove();
+
+    // Create lightbox
+    const lightbox = document.createElement('div');
+    lightbox.id = 'zoom-lightbox';
+    lightbox.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        cursor: zoom-out;
+        padding: 16px;
+        box-sizing: border-box;
+    `;
+
+    lightbox.onclick = (e) => {
+        if (e.target === lightbox) {
+            const vid = lightbox.querySelector('video');
+            if (vid) {
+                vid.pause();
+                vid.src = "";
+            }
+            lightbox.remove();
+        }
+    };
+
+    // Title
+    const title = document.createElement('div');
+    title.style.cssText = `
+        color: white;
+        font-size: 1.2rem;
+        margin-bottom: 14px;
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        max-width: 90%;
+        line-height: 1.4;
+    `;
+    lightbox.appendChild(title);
+
+    // Video
+    const video = document.createElement('video');
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.cssText = `
+        max-width: 92%;
+        max-height: 72vh;
+        border-radius: 12px;
+        background: #000;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    `;
+    video.onclick = (e) => e.stopPropagation();
+    lightbox.appendChild(video);
+
+    // Navigation
+    const nav = document.createElement('div');
+    nav.style.cssText = `
+        display: flex;
+        gap: 14px;
+        margin-top: 18px;
+        align-items: center;
+    `;
+
+    const counter = document.createElement('span');
+    counter.style.cssText = `color: #ccc; font-size: 0.95rem; min-width: 60px; text-align: center;`;
+
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '‹';
+    prevBtn.style.cssText = navBtnStyle();
+    prevBtn.onclick = (e) => { e.stopPropagation(); playVideo(current - 1); };
+
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '›';
+    nextBtn.style.cssText = navBtnStyle();
+    nextBtn.onclick = (e) => { e.stopPropagation(); playVideo(current + 1); };
+
+    nav.appendChild(prevBtn);
+    nav.appendChild(counter);
+    nav.appendChild(nextBtn);
+    lightbox.appendChild(nav);
+
+    function navBtnStyle() {
+        return `
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+    }
+
+    function playVideo(index) {
+        current = (index + videoList.length) % videoList.length;
+        const item = videoList[current];
+
+        // Choose title according to current language
+        title.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en')
+            ? item.titleEn
+            : item.titleEl;
+
+        counter.textContent = `${current + 1} / ${videoList.length}`;
+
+        video.src = item.src;
+        video.load();
+        video.play().catch(() => {});
+    }
+
+    // Auto-advance when video ends
+    video.addEventListener('ended', () => {
+        playVideo(current + 1);
+    });
+
+    playVideo(current);
+    document.body.appendChild(lightbox);
+}
 
 
         // ---------------------------------------------------------
@@ -5138,16 +5431,16 @@ const highlightsCatalog = {
 
 // ★★★★★ Change daily highlights here ★★★★★
 const currentHighlights = [
-    "moscharaki_noua",
+
     "moschari_kokkinisto",
     "moschari_lemonato",
+    "papoutsakia",
     "bifteki_moscharisia",
-    "kotopoulo_bouti",
-    "gemista_superfoods",
-    "briam",
-    "giantes",
+    "keftedakia_tiganita",
+    "kotosoupa",
+    
+    "arakas",
     "melitzanes_imam",
-    "spanakorizo"
 ];
 
 function renderDailyHighlights() {
@@ -5174,6 +5467,72 @@ function renderDailyHighlights() {
     });
 
     tbody.innerHTML = html;
+}
+
+function initDishVideoExhibition() {
+    const slides = document.querySelectorAll('#dishVideoCarousel .video-slide');
+    const dotsContainer = document.getElementById('videoDots');
+    if (!slides.length) return;
+
+    let current = 0;
+    let timer = null;
+    const INTERVAL = 9000; // change video every 9 seconds
+
+    // Create dots
+    slides.forEach((_, i) => {
+        const dot = document.createElement('span');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+    });
+    const dots = dotsContainer.querySelectorAll('span');
+
+    function playCurrent() {
+        slides.forEach((slide, i) => {
+            const video = slide.querySelector('video');
+            if (i === current) {
+                slide.classList.add('active');
+                dots[i].classList.add('active');
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            } else {
+                slide.classList.remove('active');
+                dots[i].classList.remove('active');
+                video.pause();
+            }
+        });
+    }
+
+    function goTo(index) {
+        current = index;
+        playCurrent();
+        resetTimer();
+    }
+
+    function next() {
+        current = (current + 1) % slides.length;
+        playCurrent();
+    }
+
+    function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(next, INTERVAL);
+    }
+
+    // Start
+    playCurrent();
+    resetTimer();
+
+    // Pause when tab is hidden (saves battery)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(timer);
+            slides.forEach(s => s.querySelector('video').pause());
+        } else {
+            playCurrent();
+            resetTimer();
+        }
+    });
 }
 
 // Initialize
