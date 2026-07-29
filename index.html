@@ -3148,6 +3148,7 @@
                         "ksifias_lemonatos": { category: "seafood", el: "Ξιφίας λεμονάτος <br><br> (Τρυφερός ξιφίας μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Swordfish in Lemon Sauce <br><br> (Tender swordfish cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€15.50" },
                         "gavros_lemonatos": { category: "seafood", el: "Γαύρος φρέσκος λεμονάτος <br><br> (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά!)", en: "Fresh Anchovies with Lemon <br><br> (With fresh lemon, olive oil, and herbs)", price: "€9.00" },
                         "perka_plaki": { category: "seafood", el: "Πέρκα πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Baked Perch <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€10.00" },
+                        "perka_lemonati": { category: "seafood", el: "Πέρκα Λεμονάτη <br><br> (Με φρέσκο λεμόνι και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Lemon Perch <br><br> (With fresh lemon and herbs, baked in a clay pot for extra deliciousness)", price: "€12.50" },
                         "glossa_lemonati": { category: "seafood", el: "Γλώσσα Λεμονάτη με πατάτες <br><br> (Φιλέτο γλώσσας μαγειρεμένο με φρέσκο λεμόνι, ελαιόλαδο και αρωματικά μυρωδικά, σερβιρισμένο με πατάτες)", en: "Lemon Sole in Lemon Sauce with Potatoes <br><br> (Sole fillet cooked with fresh lemon, olive oil, and aromatic herbs, served with potatoes)", price: "€9.00" },
                         "peskandritsa_plaki": { category: "seafood", el: "Πεσκανδρίτσα πλακί <br><br> (Φρέσκια πεσκανδρίτσα μαγειρεμένη με ντομάτα, κρεμμύδι και αρωματικά μυρωδικά, ψημένη στη γάστρα για πλούσια γεύση και άρωμα θάλασσας)", en: "Monkfish Plaki <br><br> (Fresh monkfish cooked with tomato, onion and aromatic herbs, baked in a clay pot for rich flavor and a true taste of the sea)", price: "€15.00" },
                     
@@ -3390,16 +3391,18 @@
                         // Freshly Cooked
 
                         //Meat
-                        "moschari_kokkinisto", "papoutsakia", "moschari_lemonato",
-                        "keftedakia_tiganita", "bifteki_moscharisia","makaronia_kima","kolokythakia_gemista",
+                        "moschari_kokkinisto","pastitsio", "moschari_lemonato",
+                        "keftedakia_tiganita", "bifteki_moscharisia","makaronia_kima",,
                        
                         
                         //Chicken 
-                       
-                        //Veggy
-                        "melitzanes_imam","arakas_lemonatos", 
 
                         //SeaFoods
+                        "perka_lemonati",
+                       
+                        //Veggy
+                        "giants","gemista_superfoods","spanakorizo","fasolakia", 
+
                         
                         
                         // Soups
@@ -5577,6 +5580,11 @@ const highlightsCatalog = {
         icons: ["fish-logo.png", "tomato-logo.png"],
         el: "Ξιφίας <br> λεμονάτος",
         en: "Swordfish   <br> in Lemon <br> Sauce"
+    },
+    "perka_lemonati": {
+        icons: ["fish-logo.png", "lemon-logo.png"],
+        el: "Πέρκα <br> λεμονάτη",
+        en: "Perch   <br> in Lemon <br> Sauce"
     }
 
 };
@@ -5586,13 +5594,14 @@ const currentHighlights = [
 
     "moschari_kokkinisto",
     "moschari_lemonato",
-    "papoutsakia",
     "bifteki_moscharisia",
     "keftedakia_tiganita",
+    "perka_lemonati",
     "kotosoupa",
-    
-    "arakas",
-    "melitzanes_imam",
+    "gemista_superfoods",
+    "giantes",
+    "spanakorizo",
+    "fasolakia"
 ];
 
 function renderDailyHighlights() {
