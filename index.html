@@ -3459,25 +3459,23 @@
                         // Freshly Cooked
 
                         //Meat
-                        "moschari_kokkinisto","pastitsio", "moschari_lemonato",
-                        , "bifteki_moscharisia", "soutzoukakia", "lachanontolmades","makaronia_kima",
+                         "moschari_kokkinisto","pastitsio",
+                         "bifteki_moscharisia", "keftedakia_tiganita","makaronia_kima",
                        
-                        
                         //Chicken 
-                       "kotopoulo_bouti",
-                        //SeaFoods
+                        "kotopoulo_bouti",
                         
-                       
-                        //Veggy
-                        "giantes","arakas","briam", 
+                       //SeaFoods
+                        "perka_lemonati",
+                        
+                       //Veggy
+                        "giantes","arakas","melitzanes_imam", "bamies_fournou",
 
-                        
-                        
                         // Soups
-                        "giouvarlakia","kotosoupa",
+                         "giouvarlakia","kotosoupa",
                         
                         // Legumes
-                        "revithia","fakes"
+                         "fakes"
                     ];
 
                     function renderDailyMenuTable() {
@@ -5641,6 +5639,11 @@ const highlightsCatalog = {
         el: "Μουσακάς <br> Νηστίσιμος",
         en: "Vegan <br> Moussaka"
     },
+     "bamies_fournou": {
+        icons: ["okra-logo.png", "okraoven-logo.png"],
+        el: "Μπάμιες <br> στο Φούρνο ",
+        en: "Baked  <br> Okra"
+    },
 
     // ==================== SOUP ====================
     "kotosoupa": {
@@ -5723,12 +5726,14 @@ const highlightsCatalog = {
 const currentHighlights = [
 
     "moschari_kokkinisto",
-    "moschari_lemonato",
     "bifteki_moscharisia",
+    "keftedakia_tiganita",
     "kotopoulo_bouti",
+    "perka_lemonati",
     "kotosoupa",
     "giantes",
-    "briam",
+    "bamies_fournou",
+    "melitzanes_imam",
     "arakas"
 ];
 
@@ -6184,201 +6189,236 @@ document.addEventListener('languageChange', renderDailyHighlights);
     {
       "@type": "VideoObject",
       "name": "Μοσχάρι κοκκινιστό / Γιουβέτσι – Matzourana",
-      "description": "Τρυφερό μοσχαράκι χτένι κοκκινιστό ή γιουβέτσι",
+      "description": "Τρυφερό μοσχαράκι χτένι κοκκινιστό ή γιουβέτσι από τη Ματζουράνα Καλλιθέα",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-1.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-1.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μοσχάρι Γιουβέτσι – Matzourana",
-      "description": "Παραδοσιακό μοσχάρι γιουβέτσι με μυζήθρα",
+      "description": "Παραδοσιακό μοσχάρι γιουβέτσι με τριμμένη μυζήθρα",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-30.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-2.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Γιουβαρλάκια – Matzourana",
-      "description": "Γιουβαρλάκια με αυγολέμονο",
+      "description": "Γιουβαρλάκια με αυγολέμονο από 100% μοσχαρίσιο κιμά",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-16.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-3.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μοσχάρι Στιφάδο – Matzourana",
+      "description": "Παραδοσιακό μοσχάρι στιφάδο",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-1.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-4.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μουσακάς – Matzourana",
+      "description": "Μουσακάς με 100% μοσχαρίσιο κιμά και πλούσια μπεσαμέλ",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-3.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-5.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Φρέσκα Φασολάκια – Matzourana",
+      "description": "Φρέσκα φασολάκια λαδερά",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-22.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-6.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Παστίτσιο – Matzourana",
+      "description": "Παστίτσιο με χειροποίητη μπεσαμέλ και μοσχαρίσιο κιμά",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-4.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-7.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μοσχαράκι Λεμονάτο – Matzourana",
+      "description": "Τρυφερό μοσχαράκι λεμονάτο",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-29.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-8.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Σαρδέλες / Γαύρος Πλακί – Matzourana",
+      "description": "Σαρδέλες ή γαύρος πλακί",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-1.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-9.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μελιτζάνες Παπουτσάκια – Matzourana",
+      "description": "Μελιτζάνες παπουτσάκια με κιμά και μπεσαμέλ",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-26.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-10.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Κολοκυθάκια Γεμιστά – Matzourana",
+      "description": "Κολοκυθάκια γεμιστά",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-22.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-11.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Κόκορας Κρασάτος – Matzourana",
+      "description": "Κόκορας κρασάτος από κοτόπουλα Ναυπάκτου",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-8.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-12.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
-      "name": "Κοτόπουλο Μπούτι / Κοτόπουλο Φούρνου – Matzourana",
+      "name": "Κοτόπουλο Μπούτι στο Φούρνο – Matzourana",
+      "description": "Κοτόπουλο μπούτι στο φούρνο με πατάτες",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-25.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-13.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Κοτόσουπα – Matzourana",
+      "description": "Θρεπτική κοτόσουπα",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-16.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-14.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Γίγαντες Φασόλια – Matzourana",
+      "description": "Γίγαντες πλακί στη γάστρα",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-6.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-15.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μυδοπίλαφο – Matzourana",
+      "description": "Μυδοπίλαφο με φρέσκα μύδια",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-18.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-16.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Χοιρινό Φρικασέ – Matzourana",
+      "description": "Χοιρινό φρικασέ",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-13.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-17.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μοσχάρι Κοκκινιστό – Matzourana",
+      "description": "Τρυφερό μοσχάρι κοκκινιστό",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-1.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-18.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
-      "name": "Γεμιστά / Γεμιστά Superfoods – Matzourana",
+      "name": "Γεμιστά – Matzourana",
+      "description": "Γεμιστά με ρύζι ή superfoods",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-22.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-19.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Μπιφτέκι Φούρνου – Matzourana",
+      "description": "Μπιφτέκι μοσχαρίσιο στο φούρνο",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-14.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-20.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Σουτζουκάκια Σμυρνέικα – Matzourana",
+      "description": "Χειροποίητα σουτζουκάκια Σμυρνέικα",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-14.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-21.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Ψητά – Matzourana",
+      "description": "Ψητά της ώρας",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-13.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-22.mp4",
-      "uploadDate": "2026-07-01"
-    },
-    {
-      "@type": "VideoObject",
-      "name": "Γίγαντες – Matzourana",
-      "contentUrl": "https://www.matzourana.gr/Videos/dish-video-23.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Λαχανοντολμάδες – Matzourana",
+      "description": "Χειροποίητοι λαχανοντολμάδες με αυγολέμονο",
       "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-2.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-24.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Κατσίκι Γάλακτος στο Φούρνο – Matzourana",
+      "description": "Κατσίκι γάλακτος στο φούρνο",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-25.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-25.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
 
-    /* ========== MAKING-OF VIDEOS ========== */
+    /* ========== MAKING-OF ========== */
     {
       "@type": "VideoObject",
       "name": "Making of Soutzoukakia – Matzourana",
-      "description": "Παρασκευή σουτζουκάκια Σμυρνέικα",
+      "description": "Παρασκευή σουτζουκάκια Σμυρνέικα στο μαγειρείο Ματζουράνα",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-14.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-01-making.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Making of Stuffed Courgettes – Matzourana",
       "description": "Παρασκευή κολοκυθιών γεμιστών",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-22.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-02-making.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Making of Oven Patties – Matzourana",
       "description": "Παρασκευή μπιφτεκιών φούρνου",
+      "thumbnailUrl": "https://www.matzourana.gr/DishImages/greek-dish-14.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-03-making.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Meet the Matzourana Artistic Girls",
       "description": "Γνωρίστε τις καλλιτεχνικές κοπέλες της Ματζουράνας",
+      "thumbnailUrl": "https://www.matzourana.gr/MatzouranaImages/matzourana-logo.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-04-making.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     },
     {
       "@type": "VideoObject",
       "name": "Meet the Matzourana Artistic Girls 2",
+      "description": "Γνωρίστε τις καλλιτεχνικές κοπέλες της Ματζουράνας",
+      "thumbnailUrl": "https://www.matzourana.gr/MatzouranaImages/matzourana-logo.png",
       "contentUrl": "https://www.matzourana.gr/Videos/dish-video-05-making.mp4",
-      "uploadDate": "2026-07-01"
+      "uploadDate": "2026-07-01T12:00:00+03:00"
     }
   ]
 }
