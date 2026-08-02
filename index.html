@@ -2746,11 +2746,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                           <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                           <p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>-->
+                            </p>
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3154,6 +3154,7 @@
                         "soupies_spanaki": { category: "seafood", el: "Σουπιές με σπανάκι <br><br> (Τρυφερές σουπιές μαγειρεμένες με φρέσκο σπανάκι, μυρωδικά και λεμόνι. Ένα παραδοσιακό, νηστίσιμο πιάτο γεμάτο γεύση και άρωμα θάλασσας)", en: "Cuttlefish with Spinach <br><br> (Tender cuttlefish cooked with fresh spinach, herbs and a hint of lemon. A traditional seafood dish full of flavor)", price: "€10.00" },
                         "oktapodi_stifado": { category: "seafood", el: "Χταπόδι στιφάδο από φρέσκο χταπόδι <br><br> (Παραδοσιακό και γεμάτο αρώματα! Με φρέσκο χταπόδι, κρεμμυδάκια και σάλτσα ντομάτας)", en: "Octopus Stifado with Fresh Octopus <br><br> (Traditional and full of aromas! With fresh octopus, small onions, and tomato sauce)", price: "€13.00" },
                         "oktapodi_makaroni": { category: "seafood", el: "Χταπόδι με κοφτό μακαρονάκι <br><br> (Τρυφερό φρέσκο χταπόδι μαγειρεμένο αργά με κοφτό μακαρονάκι σε πλούσια σάλτσα ντομάτας, αρωματισμένη με βότανα και ελαιόλαδο)", en: "Octopus with Short Pasta <br><br> (Tender fresh octopus slowly cooked with short pasta in a rich tomato sauce, flavored with herbs and olive oil)", price: "€12.50" },
+                        "oktapodi_giouvetsi": { category: "seafood", el: "Χταπόδι γιουβέτσι από φρέσκο χταπόδι <br><br> (Παραδοσιακό και γεμάτο αρώματα! Με φρέσκο χταπόδι, κριθαράκι και πλούσια σάλτσα ντομάτας)", en: "Octopus Giouvetsi with Fresh Octopus <br><br> (Traditional and full of aromas! With fresh octopus, orzo, and a rich tomato sauce)", price: "€13.00" },
                         "kritharoto_thalassina": { category: "seafood", el: "Κριθαρώτο θαλασσινών <br><br> (Κριθαρότο με γαρίδες, μύδια και μεσογειακά αρώματα. Ένα υπέροχο πιάτο με αρώματα θάλασσας!)", en: "Seafood Orzo <br><br> (Orzo with shrimps, mussels, and Mediterranean aromas. A wonderful dish with sea aromas)", price: "€13.00" },
                         "kritharoto_garidoules": { category: "seafood", el: "Κριθαρότο με γαριδούλες <br><br> (Αρωματικό και κρεμώδες κριθαρότο με γαριδούλες και φυτική κρέμα γάλακτος — ελαφρύ και απολαυστικό)", en: "Shrimp Orzo <br><br> (Aromatic and creamy orzo with small shrimps and plant-based cream — light and delightful)", price: "€9.00" },
                         "kritharoto_garides": { category: "seafood", el: "Κριθαρότο με γαρίδες <br><br> (Αρωματικό και κρεμώδες κριθαρότο με ζουμερές γαρίδες και φυτική κρέμα γάλακτος — ελαφρύ και απολαυστικό)", en: "Shrimp Orzo <br><br> (Aromatic and creamy orzo with juicy shrimps and plant-based cream — light and delightful)", price: "€14.50" },
@@ -3459,17 +3460,20 @@
                         // Freshly Cooked
 
                         //Meat
-                         "moschari_kokkinisto","pastitsio",
-                         "bifteki_moscharisia", "soutzoukakia","makaronia_kima",
-                         "lachanontolmades", "kolokythakia_gemista",
+                         "moschari_kokkinisto", "moschari_lemonato", 
+                         "bifteki_moscharisia", "pastitsio", "soutzoukakia",
+                         "lachanontolmades", "kolokythakia_gemista", "makaronia_kima",
                        
                         //Chicken 
                         "kotopoulo_bouti",
                         
                        //SeaFoods
+                       "oktapodi_giouvetsi",
+                       "mydopilafo",
+                       
                          
                        //Veggy
-                        "gemista_superfoods","briam",
+                        "gemista_superfoods","briam","melitzanes_imam","giantes",
 
                         // Soups
                          "giouvarlakia","kotosoupa",
@@ -5530,6 +5534,12 @@ function showMenu(menuId) {
    ============================================================ */
 
 const highlightsCatalog = {
+
+    "line": {
+        icons:[],
+        el: "<br><br> ",
+        en: "<br><br>"
+    },
     // ==================== MEAT ====================
     "moschari_giouvesti": {
         icons: ["meat-logo.png", "redbeef-logo.png"],
@@ -5688,6 +5698,12 @@ const highlightsCatalog = {
         el: "Χταπόδι <br> Στιφάδο",
         en: "Octopus <br> Stifado"
     },
+    "oktapodi_giouvesti": {
+        icons: ["octapus-logo.png", "ozro-logo.png"],
+        el: "Χταπόδι <br> Γιουβέτσι",
+        en: "Octopus <br> Giouvetsi"
+    },
+
     "soupies_yiahni": {
         icons: ["cuttlefishstew-logo.png", "tomato-logo.png"],
         el: "Φρέσκες <br> Σουπιές <br> γιαχνί",
@@ -5721,16 +5737,21 @@ const highlightsCatalog = {
     }
 
 };
-
 // ★★★★★ Change daily highlights here ★★★★★
 const currentHighlights = [
 
-    "moschari_kokkinisto",
+    "line","moschari_kokkinisto",
+    "moschari_lemonato",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
+    "oktapodi_giouvesti",
+    "mydopilafo",
     "kotosoupa",
     "briam",
-    "gemista_superfoods"
+    "gemista_superfoods",
+    "melitzanes_imam",
+    "fasolakia",
+    "giantes"
 ];
 
 function renderDailyHighlights() {
