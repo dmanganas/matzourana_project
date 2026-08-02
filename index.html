@@ -684,6 +684,16 @@
             color: #666;
             margin: 0;
         }
+        /* SMALL SCREENS → 1 video panel */
+    
+        @media (max-width: 900px) {
+            .exhibition-header h3 {
+              font-size: 0.9rem;
+            }
+            .exhibition-header p {
+              font-size: 0.7rem;
+            }
+        }
 
         /* Video panels container */
         .video-panels {
@@ -771,6 +781,11 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
             letter-spacing: 0.3px;
+        }
+        @media (max-width: 900px) {
+            .panel-label {
+                font-size: 0.7rem;
+            }
         }
         /* About Section Styles */
         .about .section-container {
