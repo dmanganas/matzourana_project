@@ -2761,11 +2761,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                           <p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                           <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>
+                            </p>-->
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3150,7 +3150,7 @@
                         "carbonara": { category: "freshly-cooked", el: "Καρμπονάρα <br><br> (Με αυγά, κρέμα γάλακτος, μπέικον και παρμεζάνα)", en: "Carbonara <br><br> (With eggs, cream, bacon and parmesan)", price: "€8.00" },
 
                         // ==================== ΘΑΛΑΣΣΙΝΑ ====================
-                        "spaghetti_garides_egaio": { category: "seafood", el: "Σπαγγέτι με γαριδούλες Αιγαίου σε σάλτσα ντομάτας <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Aegean Shrimps in Tomato Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€8.50" },
+                        "spaghetti_garides_egaio": { category: "seafood", el: "Σπαγγέτι με γαριδούλες Αιγαίου σε σάλτσα ντομάτας <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Aegean Shrimps in Tomato Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€12.50" },
                         "spaghetti_thalassina": { category: "seafood", el: "Σπαγγέτι με σάλτσα θαλασσινών <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Seafood Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€11.00" },
                         "spaghetti_calamari": { category: "seafood", el: "Σπαγγέτι με καλαμαράκια <br><br> (Τρυφερά καλαμαράκια μαγειρεμένα σε πλούσια σάλτσα ντομάτας με αρωματικά βότανα και ελαιόλαδο)", en: "Spaghetti with Calamari <br><br> (Tender calamari cooked in a rich tomato sauce with aromatic herbs and olive oil)", price: "€9.50" },
                         "bakaliaros_spetsiota": { category: "seafood", el: "Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες <br><br> (Με πατάτες, φρέσκια ντομάτα και ματζουράνα. Ένα ξεχωριστό πιάτο για τους λάτρεις των θαλασσινών)", en: "Salted Cod Spetsiota with Potatoes <br><br> (With potatoes, fresh tomato, and marjoram. A unique dish for seafood lovers)", price: "€12.50" },
@@ -3475,26 +3475,27 @@
                         // Freshly Cooked
 
                         //Meat
-                         "moschari_kokkinisto", "moschari_lemonato", 
-                         "bifteki_moscharisia", "pastitsio", "soutzoukakia",
-                         "lachanontolmades", "kolokythakia_gemista", "makaronia_kima",
+                         "moschari_kokkinisto",
+                         "bifteki_moscharisia", "pastitsio", "makaronia_kima",
                        
                         //Chicken 
                         "kotopoulo_bouti",
                         
                        //SeaFoods
-                       "oktapodi_giouvetsi",
+                       "spaghetti_garides_egaio",
+                       "oktapodi_makaroni",
                        "mydopilafo",
                        
                          
                        //Veggy
-                        "gemista_superfoods","briam","melitzanes_imam","giantes",
+                        "gemista_superfoods","melitzanes_imam","spanakorizo","arakas_lemonatos","fasolakia",
 
                         // Soups
-                         "giouvarlakia","kotosoupa",
+                         "psarosoupa","giouvarlakia",
                         
                         // Legumes
-                         "fakes","revithia"
+                         "fakes",
+                         "revithia"
                     ];
 
                     function renderDailyMenuTable() {
@@ -5703,6 +5704,12 @@ const highlightsCatalog = {
         el: "Γαριδομακαρονάδα",
         en: "Shrimps <br> Spaghetti"
     },
+    "spaghetti_garides_egaio": {
+        icons: ["schrimp-logo.png", "spagetti-logo.png"],
+        el: "Γαριδομακαρονάδα",
+        en: "Shrimps <br> Spaghetti"
+    },
+   
     "kritharoto_garides": {
         icons: ["schrimp-logo.png", "ozro-logo.png"],
         el: "Κριθαρότο <br> με γαρίδες",
@@ -5756,17 +5763,19 @@ const highlightsCatalog = {
 const currentHighlights = [
 
     "line","moschari_kokkinisto",
-    "moschari_lemonato",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
-    "oktapodi_giouvesti",
+    "oktapodi_makaroni",
     "mydopilafo",
+    "spaghetti_garides_egaio",
+    "psarosoupa",
     "kotosoupa",
     "briam",
     "gemista_superfoods",
     "melitzanes_imam",
     "fasolakia",
-    "giantes"
+    "arakas",
+    "spanakorizo"
 ];
 
 function renderDailyHighlights() {
