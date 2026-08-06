@@ -3150,7 +3150,7 @@
                         "carbonara": { category: "freshly-cooked", el: "Καρμπονάρα <br><br> (Με αυγά, κρέμα γάλακτος, μπέικον και παρμεζάνα)", en: "Carbonara <br><br> (With eggs, cream, bacon and parmesan)", price: "€8.00" },
 
                         // ==================== ΘΑΛΑΣΣΙΝΑ ====================
-                        "spaghetti_garides_egaio": { category: "seafood", el: "Σπαγγέτι με γαριδούλες Αιγαίου σε σάλτσα ντομάτας <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Aegean Shrimps in Tomato Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€12.50" },
+                        "spaghetti_garides_egaio": { category: "seafood", el: "Σπαγγέτι με γαριδούλες Αιγαίου σε σάλτσα ντομάτας <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Aegean Shrimps in Tomato Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€9.50" },
                         "spaghetti_thalassina": { category: "seafood", el: "Σπαγγέτι με σάλτσα θαλασσινών <br><br> (Με φρέσκια ντομάτα. Μία γεύση θαλασσινής απόλαυσης)", en: "Spaghetti with Seafood Sauce <br><br> (With fresh tomato. A taste of seaside delight)", price: "€11.00" },
                         "spaghetti_calamari": { category: "seafood", el: "Σπαγγέτι με καλαμαράκια <br><br> (Τρυφερά καλαμαράκια μαγειρεμένα σε πλούσια σάλτσα ντομάτας με αρωματικά βότανα και ελαιόλαδο)", en: "Spaghetti with Calamari <br><br> (Tender calamari cooked in a rich tomato sauce with aromatic herbs and olive oil)", price: "€9.50" },
                         "bakaliaros_spetsiota": { category: "seafood", el: "Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες <br><br> (Με πατάτες, φρέσκια ντομάτα και ματζουράνα. Ένα ξεχωριστό πιάτο για τους λάτρεις των θαλασσινών)", en: "Salted Cod Spetsiota with Potatoes <br><br> (With potatoes, fresh tomato, and marjoram. A unique dish for seafood lovers)", price: "€12.50" },
@@ -3475,26 +3475,27 @@
                         // Freshly Cooked
 
                         //Meat
-                         "moschari_kokkinisto","keftedakia_tiganita",
-                         "bifteki_moscharisia", "pastitsio", "makaronia_kima",
+                         "moschari_kokkinisto", "bifteki_moscharisia", 
+                         "soutzoukakia", "pastitsio", "makaronia_kima",
                        
                         //Chicken 
                         "kotopoulo_bouti",
                         
                        //SeaFoods
+                       "ksifias_lemonatos",
+                       "bakaliaros_spetsiota",
+                       "bakaliarokroketes",
                        "spaghetti_garides_egaio",
-                       "oktapodi_makaroni",
                        "mydopilafo",
                        
                          
                        //Veggy
-                        "gemista_superfoods","melitzanes_imam","spanakorizo","arakas_lemonatos","fasolakia","bamies_fournou",
+                        "gemista_superfoods","melitzanes_imam","spanakorizo",,"fasolakia","briam",
 
                         // Soups
-                         "psarosoupa","giouvarlakia",
+                         "kotosoupa","giouvarlakia",
                         
                         // Legumes
-                         "fakes",
                          "revithia"
                     ];
 
@@ -5737,7 +5738,7 @@ const highlightsCatalog = {
         en: "Mussel <br> Pilaf"
     },
     "bakaliaros_spetsiota": {
-        icons: ["fish-logo.png", "tomato-logo.png"],
+        icons: ["fish-logo.png", "cotoven-logo.png"],
         el: "Μπακαλιάρος <br> α λα σπετσιώτα",
         en: "Salted Cod <br> Spetsiota"
     },
@@ -5764,20 +5765,17 @@ const currentHighlights = [
 
     "line","moschari_kokkinisto",
     "bifteki_moscharisia",
-    "keftedakia_tiganita",
-    "kotopoulo_bouti",
-    "oktapodi_makaroni",
+    "ksifias_lemonatos",
     "mydopilafo",
     "spaghetti_garides_egaio",
-    "psarosoupa",
+    "bakaliaros_spetsiota",
     "kotosoupa",
     "briam",
     "gemista_superfoods",
     "melitzanes_imam",
     "fasolakia",
-    "arakas",
+    "briam",
     "spanakorizo",
-    "bamies_fournou"
 ];
 
 function renderDailyHighlights() {
