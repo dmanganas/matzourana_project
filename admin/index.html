@@ -198,6 +198,7 @@ tr:hover td { background: #fafcfb; }
     <button class="btn-ghost" onclick="applySuggested(false)">Dry run</button>
     <button class="btn-primary" onclick="applySuggested(true)">Εφαρμογή τιμών</button>
     <button class="btn-secondary" onclick="exportAll()">Export</button>
+    <button class="btn-secondary" onclick="downloadAdminHTML()">Λήψη HTML</button>
   </div>
 </div>
 
@@ -933,6 +934,24 @@ function applySuggested(write){
   }
 }
 
+/* Download the current admin page as a local HTML file */
+function downloadAdminHTML() {
+  try {
+    const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = URL.createObjectURL(blob);
+    a.download = "matzourana-admin-" + date + ".html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  } catch (e) {
+    alert("Δεν ήταν δυνατή η λήψη. Δοκιμάστε Save As από τον browser.");
+  }
+}
+
 function exportAll(){
   const payload = {
     date: new Date().toISOString().slice(0,10),
@@ -956,6 +975,7 @@ function recalcAll(){
   if (currentRecipeKey) renderRecipeLines();
   renderRecipeList();
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   loadNationalPrices();
