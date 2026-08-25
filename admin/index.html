@@ -1,1 +1,1078 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matzourana · Professional Costing & Profit Planner</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f3f6f4;
+  --card: #ffffff;
+  --ink: #1c2a22;
+  --muted: #6a7b71;
+  --line: #e3eae5;
+  --green: #3c6b4c;
+  --green-dark: #2b4d38;
+  --green-soft: #e7f2ea;
+  --amber: #c17a16;
+  --amber-soft: #fff5e8;
+  --red: #b42318;
+  --red-soft: #fdeceb;
+  --blue: #1f6feb;
+  --blue-soft: #eaf2ff;
+  --shadow: 0 12px 32px rgba(28,42,34,.07);
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top left, #eaf5ee 0%, transparent 42%),
+    linear-gradient(180deg, #f8fbf9 0%, var(--bg) 100%);
+  color: var(--ink);
+}
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,.88);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 20px;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.brand { display: flex; gap: 12px; align-items: center; }
+.logo {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--green), #6eaa7d);
+  color: #fff; font-weight: 800; display: grid; place-items: center;
+}
+.brand h1 { margin: 0; font-size: 1.05rem; }
+.brand p { margin: 0; color: var(--muted); font-size: .8rem; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button, .btn {
+  border: 0; border-radius: 10px; padding: 10px 14px;
+  font-weight: 650; cursor: pointer; font: inherit;
+}
+.btn-primary { background: var(--green); color: #fff; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-secondary { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+.btn-ghost { background: var(--green-soft); color: var(--green); }
+.btn-danger { background: var(--red-soft); color: var(--red); }
+.wrap { max-width: 1540px; margin: 0 auto; padding: 18px; }
+.tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.tab {
+  background: #fff; border: 1px solid var(--line);
+  padding: 10px 14px; border-radius: 999px; cursor: pointer; font-weight: 650;
+}
+.tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+.panel {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.panel.active { display: block; }
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 14px;
+}
+@media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 640px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi {
+  background: #fff; border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow);
+}
+.kpi .label { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.kpi .value { font-size: 1.55rem; font-weight: 800; margin-top: 4px; }
+.kpi .sub { color: var(--muted); font-size: .82rem; margin-top: 3px; }
+.kpi.good .value { color: var(--green); }
+.kpi.warn .value { color: var(--amber); }
+.kpi.bad .value { color: var(--red); }
+.grid-2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; }
+@media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+.chart-box { height: 280px; position: relative; }
+h2 { margin: 0 0 12px; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.badge {
+  font-size: .72rem; padding: 4px 8px; border-radius: 999px;
+  background: var(--green-soft); color: var(--green); font-weight: 700;
+}
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+input, select, textarea {
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 10px; font: inherit; background: #fff;
+}
+input[type="number"] { width: 100px; }
+.table-wrap { overflow: auto; max-height: 560px; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th {
+  position: sticky; top: 0; background: #f2f7f3; color: var(--green-dark);
+  text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line);
+}
+td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:hover td { background: #fafcfb; }
+.pill {
+  display: inline-flex; padding: 3px 8px; border-radius: 999px;
+  font-size: .74rem; font-weight: 700;
+}
+.pill.up { background: var(--green-soft); color: var(--green); }
+.pill.down { background: var(--red-soft); color: var(--red); }
+.pill.flat { background: #eef1ef; color: var(--muted); }
+.bar { height: 8px; border-radius: 99px; background: #edf1ee; overflow: hidden; min-width: 80px; }
+.bar > span { display: block; height: 100%; }
+.bar.good > span { background: linear-gradient(90deg,#6eaa7d,var(--green)); }
+.bar.warn > span { background: linear-gradient(90deg,#e0b35a,var(--amber)); }
+.bar.bad > span { background: linear-gradient(90deg,#e58a82,var(--red)); }
+.note { color: var(--muted); font-size: .84rem; margin-top: 10px; }
+.ing-grid, .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+.ing, .card-mini {
+  background: #fbfcfb; border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 12px;
+}
+.ing { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ing label { font-size: .82rem; color: var(--muted); }
+.section-title { margin: 0 0 8px; font-size: .92rem; color: var(--green-dark); }
+.channel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) { .channel-grid { grid-template-columns: 1fr; } }
+.channel {
+  border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+  background: linear-gradient(180deg,#fff,#f8fbf9);
+}
+.channel h3 { margin: 0 0 6px; font-size: .98rem; }
+.channel .big { font-size: 1.4rem; font-weight: 800; color: var(--green); }
+.channel.best { border-color: #9fc9ab; box-shadow: 0 0 0 3px rgba(63,107,78,.08); }
+.recipe-editor {
+  display: grid; grid-template-columns: 280px 1fr; gap: 14px;
+}
+@media (max-width: 900px) { .recipe-editor { grid-template-columns: 1fr; } }
+.recipe-list {
+  border: 1px solid var(--line); border-radius: 12px; max-height: 520px; overflow: auto;
+}
+.recipe-list button {
+  width: 100%; text-align: left; background: #fff; border: 0;
+  border-bottom: 1px solid var(--line); border-radius: 0; padding: 10px 12px;
+}
+.recipe-list button.active { background: var(--green-soft); color: var(--green-dark); }
+.recipe-lines { display: grid; gap: 8px; }
+.recipe-line {
+  display: grid; grid-template-columns: 1.4fr .7fr .7fr auto;
+  gap: 8px; align-items: center;
+}
+.targets {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;
+}
+@media (max-width: 900px) { .targets { grid-template-columns: repeat(2,1fr); } }
+.target-card {
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: #fff;
+}
+.target-card .t { font-size: .78rem; color: var(--muted); }
+.target-card .v { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <h1>Matzourana · Costing & Profit Planner</h1>
+      <p>Συνταγές · Εθνικές τιμές · Κανάλια πώλησης · Στόχος €650→€1200/ημέρα</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn-secondary" onclick="loadNationalPrices()">Εθνικές τιμές</button>
+    <button class="btn-secondary" onclick="recalcAll()">Ανανέωση</button>
+    <button class="btn-ghost" onclick="applySuggested(false)">Dry run</button>
+    <button class="btn-primary" onclick="applySuggested(true)">Εφαρμογή τιμών</button>
+    <button class="btn-secondary" onclick="exportAll()">Export</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-tab="overview" onclick="switchTab('overview')">Επισκόπηση</div>
+    <div class="tab" data-tab="ingredients" onclick="switchTab('ingredients')">Υλικά & Τιμές</div>
+    <div class="tab" data-tab="recipes" onclick="switchTab('recipes')">Συνταγές</div>
+    <div class="tab" data-tab="dishes" onclick="switchTab('dishes')">Πιάτα & Food Cost</div>
+    <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
+    <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κανάλια Πώλησης</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="panel active" id="tab-overview">
+    <div class="kpi-grid" id="kpiGrid"></div>
+    <div class="grid-2">
+      <div>
+        <h2>Κατανομή περιθωρίων <span class="badge">Live</span></h2>
+        <div class="chart-box"><canvas id="marginChart"></canvas></div>
+      </div>
+      <div>
+        <h2>Μέσο περιθώριο ανά κατηγορία</h2>
+        <div class="chart-box"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </div>
+    <p class="note">Στόχος food cost 28–35% · μικτό περιθώριο 65–72% · καθαρό ημερήσιο κέρδος από €650 και πάνω.</p>
+  </section>
+
+  <!-- INGREDIENTS -->
+  <section class="panel" id="tab-ingredients">
+    <h2>
+      Υλικά (τιμή € / κιλό ή λίτρο ή τεμάχιο)
+      <span class="badge">Εθνικές μέσες + δικές σας</span>
+    </h2>
+    <div class="filters">
+      <button class="btn-ghost" onclick="loadNationalPrices()">Φόρτωση εθνικών τιμών (χονδρική EL 2026)</button>
+      <input type="search" id="ingSearch" placeholder="Αναζήτηση υλικού..." oninput="renderIngredients()">
+    </div>
+    <div class="ing-grid" id="ingredientGrid"></div>
+    <p class="note">Οι τιμές ξεκινούν από εθνικές ενδεικτικές χονδρικές (Αθήνα/Κεντρική Αγορά + ποιότητα εστιατορίου). Τις αλλάζετε από τα πραγματικά σας τιμολόγια.</p>
+  </section>
+
+  <!-- RECIPES -->
+  <section class="panel" id="tab-recipes">
+    <h2>Συνταγές ανά πιάτο <span class="badge">Επεξεργάσιμες</span></h2>
+    <div class="recipe-editor">
+      <div class="recipe-list" id="recipeList"></div>
+      <div>
+        <div class="filters">
+          <strong id="recipeTitle">Επιλέξτε πιάτο</strong>
+          <button class="btn-secondary" onclick="addRecipeLine()">+ Υλικό</button>
+          <button class="btn-primary" onclick="saveCurrentRecipe()">Αποθήκευση συνταγής</button>
+        </div>
+        <div class="recipe-lines" id="recipeLines"></div>
+        <div class="card-mini" style="margin-top:12px;" id="recipeCostBox">Κόστος μερίδας: —</div>
+        <p class="note">Ποσότητες σε kg / L / τεμ. ανά μερίδα. Αν λείπει συνταγή, χρησιμοποιείται μόνο σταθερό κόστος λοιπών (€0.85).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISHES -->
+  <section class="panel" id="tab-dishes">
+    <h2>
+      Πιάτα · Food cost · Προτεινόμενη τιμή
+      <span class="badge" id="dishCountBadge">0</span>
+    </h2>
+    <div class="filters">
+      <input type="search" id="searchBox" placeholder="Αναζήτηση κλειδιού / ονόματος..." oninput="renderDishTable()">
+      <select id="categoryFilter" onchange="renderDishTable()">
+        <option value="all">Όλες οι κατηγορίες</option>
+        <option value="freshly-cooked">Φρεσκομαγειρεμένα</option>
+        <option value="seafood">Θαλασσινά</option>
+        <option value="soups">Σούπες</option>
+        <option value="legumes">Όσπρια</option>
+        <option value="sweets">Γλυκά</option>
+        <option value="grilled">Ψητά</option>
+        <option value="drinks">Ποτά</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Κλειδί</th>
+            <th>Κατηγορία</th>
+            <th>Όνομα</th>
+            <th>Food cost</th>
+            <th>Τρέχουσα</th>
+            <th>Προτεινόμενη</th>
+            <th>Override</th>
+            <th>Διαφορά</th>
+            <th>Περιθώριο</th>
+            <th>Υγεία</th>
+          </tr>
+        </thead>
+        <tbody id="dishTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PROFIT -->
+  <section class="panel" id="tab-profit">
+    <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
+    <div class="form-grid" style="margin-bottom:12px;">
+      <div class="card-mini">
+        <div class="section-title">Στόχος καθαρού κέρδους / ημέρα (€)</div>
+        <input type="number" id="targetProfit" value="650" step="50" min="0" onchange="renderProfitPlanner()">
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Σταθερά κόστη / ημέρα (€)</div>
+        <input type="number" id="fixedDaily" value="420" step="10" min="0" onchange="renderProfitPlanner()">
+        <div class="note">Ενοίκιο, μισθοί, ρεύμα, ασφάλειες κ.λπ. (κατανομή ημέρας)</div>
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
+        <input type="number" id="avgTicket" value="9.5" step="0.1" min="1" onchange="renderProfitPlanner()">
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Μέσο food cost %</div>
+        <input type="number" id="avgFoodPct" value="32" step="0.5" min="15" max="50" onchange="renderProfitPlanner()">
+      </div>
+    </div>
+    <div class="kpi-grid" id="profitKpis"></div>
+    <div class="targets" id="targetLadder"></div>
+    <p class="note">
+      Απλοποιημένος υπολογισμός: χρειάζεστε συνεισφορά (ticket − food cost) αρκετή για σταθερά κόστη + καθαρό κέρδος.
+      Πιο ακριβής εικόνα βγαίνει όταν ζυγίζετε πραγματικές μερίδες και σπατάλη.
+    </p>
+  </section>
+
+  <!-- CHANNELS -->
+  <section class="panel" id="tab-channels">
+    <h2>Πού συμφέρει να πουλάτε <span class="badge">Local vs Delivery vs efood/Wolt</span></h2>
+    <div class="form-grid" style="margin-bottom:12px;">
+      <div class="card-mini">
+        <div class="section-title">Μέση τιμή πιάτου (€)</div>
+        <input type="number" id="chTicket" value="10.00" step="0.1" onchange="renderChannels()">
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Food cost πιάτου (€)</div>
+        <input type="number" id="chFood" value="3.20" step="0.1" onchange="renderChannels()">
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Προμήθεια efood/Wolt %</div>
+        <input type="number" id="chCommission" value="25" step="1" onchange="renderChannels()">
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Κόστος τοπικής διανομής / παραγγελία (€)</div>
+        <input type="number" id="chLocalDeliv" value="1.20" step="0.1" onchange="renderChannels()">
+      </div>
+    </div>
+    <div class="channel-grid" id="channelCards"></div>
+    <p class="note">
+      Γενικός κανόνας για μαγειρείο: <strong>προτεραιότητα στο κατάστημα</strong>, μετά δική σας διανομή,
+      και platforms μόνο για πληρότητα / νέους πελάτες — με ελαφρώς υψηλότερη τιμή καναλιού αν γίνεται.
+    </p>
+  </section>
+</div>
+
+<script>
+/* =========================================================
+   MATZOURANA PROFESSIONAL COSTING ENGINE
+   ========================================================= */
+
+const OTHER_COST = 0.85; // λοιπά (μπαχαρικά, αέριο κ.λπ.) ανά μερίδα
+
+const categoryRules = {
+  soups:     { min: 5.0, max: 12.0, target: 0.32 },
+  legumes:   { min: 5.0, max: 7.5,  target: 0.32 },
+  vegan:     { min: 5.5, max: 9.0,  target: 0.30 },
+  pasta:     { min: 7.0, max: 9.5,  target: 0.30 },
+  beef:      { min: 9.5, max: 13.5, target: 0.28 },
+  chicken:   { min: 8.0, max: 11.0, target: 0.30 },
+  goat_lamb: { min: 14.0, max: 17.0, target: 0.28 },
+  seafood:   { min: 8.0, max: 17.0, target: 0.30 },
+  grilled:   { min: 7.5, max: 17.0, target: 0.28 },
+  sweets:    { min: 3.5, max: 5.5,  target: 0.35 },
+  drinks:    { min: 1.0, max: 10.0, target: 0.40 },
+  default:   { min: 5.0, max: 14.0, target: 0.30 }
+};
+
+/* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης (EL 2026) */
+const NATIONAL_PRICES = {
+  beef_shank: 14.50, beef_mince: 12.00, pork: 8.20, chicken_leg: 6.20,
+  chicken_whole: 5.40, rooster: 7.20, goat_kid: 16.00, lamb: 15.50,
+  tomato: 1.20, onion: 0.70, potato: 0.70, eggplant: 1.60, zucchini: 1.40,
+  green_beans: 2.60, gigantes: 3.20, lentils: 2.10, chickpeas: 2.30,
+  cabbage: 0.80, carrot: 0.90, lettuce: 1.50, spinach: 2.30, okra: 3.60,
+  pepper: 1.50, mushroom: 3.40, artichoke: 4.00, celery: 1.60,
+  feta_pdo: 10.00, kefalotyri: 12.50, myzithra: 8.50, egg: 0.28,
+  olive_oil: 9.00, rice: 2.10, orzo: 2.40, pasta: 1.90, bulgur: 2.60,
+  wine: 4.50, bread: 1.80, cream: 3.80, bacon: 9.50, parmesan: 14.00,
+  shrimp: 18.00, mussels: 6.50, octopus: 14.00, cod: 12.00, sardines: 7.50,
+  calamari: 11.50, sole: 16.00, monkfish: 19.00, sea_bream: 14.50,
+  grouper: 22.00, swordfish: 20.00, cuttlefish: 12.00, ray: 11.00,
+  cola: 0.55, water: 0.30, beer: 1.10, wine_half: 1.40, tsipouro: 3.50,
+  lemon: 1.40, garlic: 3.80, flour: 0.90, butter: 8.50, milk: 1.30,
+  sugar: 1.10, phyllo: 3.50, trahana: 4.20, tomato_paste: 3.80
+};
+
+const ING_EL = {
+  beef_shank: "Μοσχάρι χτένι (€/kg)",
+  beef_mince: "Κιμάς μοσχαρίσιος (€/kg)",
+  pork: "Χοιρινό (€/kg)",
+  chicken_leg: "Κοτόπουλο μπούτι (€/kg)",
+  chicken_whole: "Κοτόπουλο ολόκληρο (€/kg)",
+  rooster: "Κόκορας (€/kg)",
+  goat_kid: "Κατσίκι (€/kg)",
+  lamb: "Αρνί (€/kg)",
+  tomato: "Ντομάτα (€/kg)",
+  onion: "Κρεμμύδι (€/kg)",
+  potato: "Πατάτα (€/kg)",
+  eggplant: "Μελιτζάνα (€/kg)",
+  zucchini: "Κολοκύθι (€/kg)",
+  green_beans: "Φασολάκια (€/kg)",
+  gigantes: "Γίγαντες (€/kg)",
+  lentils: "Φακές (€/kg)",
+  chickpeas: "Ρεβύθια (€/kg)",
+  cabbage: "Λάχανο (€/kg)",
+  carrot: "Καρότο (€/kg)",
+  lettuce: "Μαρούλι (€/kg)",
+  spinach: "Σπανάκι (€/kg)",
+  okra: "Μπάμιες (€/kg)",
+  pepper: "Πιπεριά (€/kg)",
+  mushroom: "Μανιτάρια (€/kg)",
+  artichoke: "Αγκινάρα (€/kg)",
+  celery: "Σέλινο (€/kg)",
+  feta_pdo: "Φέτα ΠΟΠ (€/kg)",
+  kefalotyri: "Κεφαλοτύρι (€/kg)",
+  myzithra: "Μυζήθρα (€/kg)",
+  egg: "Αυγό (€/τεμ)",
+  olive_oil: "Ελαιόλαδο Εξ.Παρθένο (€/L)",
+  rice: "Ρύζι (€/kg)",
+  orzo: "Κριθαράκι (€/kg)",
+  pasta: "Ζυμαρικά (€/kg)",
+  bulgur: "Πλιγούρι (€/kg)",
+  wine: "Κρασί μαγειρικής (€/L)",
+  bread: "Ψωμί / φρυγανιά (€/kg)",
+  cream: "Κρέμα γάλακτος (€/L)",
+  bacon: "Μπέικον (€/kg)",
+  parmesan: "Παρμεζάνα (€/kg)",
+  shrimp: "Γαρίδες (€/kg)",
+  mussels: "Μύδια (€/kg)",
+  octopus: "Χταπόδι (€/kg)",
+  cod: "Μπακαλιάρος (€/kg)",
+  sardines: "Σαρδέλες (€/kg)",
+  calamari: "Καλαμάρι (€/kg)",
+  sole: "Γλώσσα (€/kg)",
+  monkfish: "Πεσκανδρίτσα (€/kg)",
+  sea_bream: "Τσιπούρα (€/kg)",
+  grouper: "Σφυρίδα (€/kg)",
+  swordfish: "Ξιφίας (€/kg)",
+  cuttlefish: "Σουπιά (€/kg)",
+  ray: "Ράτζα (€/kg)",
+  cola: "Αναψυκτικό μονάδα (€/τεμ)",
+  water: "Νερό (€/τεμ)",
+  beer: "Μπύρα (€/τεμ)",
+  wine_half: "Κρασί 0,5L κόστος (€)",
+  tsipouro: "Τσίπουρο 200ml κόστος (€)",
+  lemon: "Λεμόνι (€/kg)",
+  garlic: "Σκόρδο (€/kg)",
+  flour: "Αλεύρι (€/kg)",
+  butter: "Βούτυρο (€/kg)",
+  milk: "Γάλα (€/L)",
+  sugar: "Ζάχαρη (€/kg)",
+  phyllo: "Φύλλο κρούστας (€/kg)",
+  trahana: "Τραχανάς (€/kg)",
+  tomato_paste: "Πελτές (€/kg)"
+};
+
+let ingredientPrices = { ...NATIONAL_PRICES };
+
+const menuCatalog = {
+  katsikaki_naxou:{category:"freshly-cooked",el:"Κατσικάκι Νάξου",price:"€16.00",type:"goat_lamb"},
+  kokoretsi:{category:"freshly-cooked",el:"Κοκορέτσι",price:"€15.50",type:"goat_lamb"},
+  katsikaki_frikase:{category:"freshly-cooked",el:"Κατσικάκι φρικασέ",price:"€16.00",type:"goat_lamb"},
+  pastitsio:{category:"freshly-cooked",el:"Παστίτσιο",price:"€8.50",type:"pasta"},
+  moussakas:{category:"freshly-cooked",el:"Μουσακάς",price:"€8.50",type:"pasta"},
+  briam:{category:"freshly-cooked",el:"Μπριάμ",price:"€6.00",type:"vegan"},
+  giantes:{category:"freshly-cooked",el:"Γίγαντες",price:"€7.50",type:"legumes"},
+  papoutsakia:{category:"freshly-cooked",el:"Παπουτσάκια",price:"€8.90",type:"beef"},
+  melitzanes_imam:{category:"freshly-cooked",el:"Μελιτζάνες ιμάμ",price:"€7.00",type:"vegan"},
+  gemista:{category:"freshly-cooked",el:"Γεμιστά",price:"€8.00",type:"vegan"},
+  gemista_superfoods:{category:"freshly-cooked",el:"Γεμιστά superfoods",price:"€8.50",type:"vegan"},
+  bifteki_moscharisia:{category:"freshly-cooked",el:"Μπιφτέκια μοσχαρίσια",price:"€9.80",type:"beef"},
+  moschari_stifado:{category:"freshly-cooked",el:"Μοσχάρι στιφάδο",price:"€11.00",type:"beef"},
+  moschari_kokkinisto:{category:"freshly-cooked",el:"Μοσχάρι κοκκινιστό",price:"€10.20",type:"beef"},
+  moschari_giouvesti:{category:"freshly-cooked",el:"Μοσχάρι γιουβέτσι",price:"€10.50",type:"beef"},
+  moschari_lemonato:{category:"freshly-cooked",el:"Μοσχάρι λεμονάτο",price:"€10.20",type:"beef"},
+  rolo_moscharisio:{category:"freshly-cooked",el:"Ρολό μοσχαρίσιο",price:"€11.00",type:"beef"},
+  moscharaki_noua:{category:"freshly-cooked",el:"Μοσχαράκι νουά",price:"€12.50",type:"beef"},
+  keftedakia_tiganita:{category:"freshly-cooked",el:"Κεφτεδάκια τηγανιτά",price:"€8.50",type:"beef"},
+  keftedakia_saltsa:{category:"freshly-cooked",el:"Κεφτεδάκια σάλτσα",price:"€8.00",type:"beef"},
+  kotopoulo_bouti:{category:"freshly-cooked",el:"Κοτόπουλο μπούτι",price:"€9.00",type:"chicken"},
+  kotopoulo_fournou:{category:"freshly-cooked",el:"Κοτόπουλο φούρνου",price:"€9.00",type:"chicken"},
+  kokoras_krasatos:{category:"freshly-cooked",el:"Κόκορας κρασάτος",price:"€9.50",type:"chicken"},
+  soutzoukakia:{category:"freshly-cooked",el:"Σουτζουκάκια",price:"€8.00",type:"beef"},
+  arakas_lemonatos:{category:"freshly-cooked",el:"Αρακάς λεμονάτος",price:"€5.50",type:"vegan"},
+  fasolakia:{category:"freshly-cooked",el:"Φασολάκια",price:"€7.00",type:"vegan"},
+  spanakorizo:{category:"freshly-cooked",el:"Σπανακόρυζο",price:"€6.00",type:"vegan"},
+  lachanontolmades:{category:"freshly-cooked",el:"Λαχανοντολμάδες",price:"€8.50",type:"beef"},
+  kolokythakia_gemista:{category:"freshly-cooked",el:"Κολοκυθάκια γεμιστά",price:"€8.50",type:"beef"},
+  makaronia_kima:{category:"freshly-cooked",el:"Μακαρόνια με κιμά",price:"€8.50",type:"pasta"},
+  carbonara:{category:"freshly-cooked",el:"Καρμπονάρα",price:"€8.00",type:"pasta"},
+  spaghetti_garides_egaio:{category:"seafood",el:"Σπαγγέτι γαρίδες",price:"€9.50",type:"seafood"},
+  kritharoto_garides:{category:"seafood",el:"Κριθαρότο γαρίδες",price:"€14.50",type:"seafood"},
+  mydopilafo:{category:"seafood",el:"Μυδοπίλαφο",price:"€10.00",type:"seafood"},
+  glossa_lemonati:{category:"seafood",el:"Γλώσσα λεμονάτη",price:"€9.00",type:"seafood"},
+  oktapodi_stifado:{category:"seafood",el:"Χταπόδι στιφάδο",price:"€13.00",type:"seafood"},
+  bakaliaros_plaki:{category:"seafood",el:"Μπακαλιάρος πλακί",price:"€12.50",type:"seafood"},
+  sardeles_fileto_plaki:{category:"seafood",el:"Σαρδέλες πλακί",price:"€9.00",type:"seafood"},
+  kotosoupa:{category:"soups",el:"Κοτόσουπα",price:"€7.50",type:"soups"},
+  giouvarlakia:{category:"soups",el:"Γιουβαρλάκια",price:"€8.50",type:"soups"},
+  manitarosoupa:{category:"soups",el:"Μανιταρόσουπα",price:"€8.00",type:"soups"},
+  patsas_vrastos:{category:"soups",el:"Πατσάς",price:"€10.00",type:"soups"},
+  fakes:{category:"legumes",el:"Φακές",price:"€5.50",type:"legumes"},
+  fasolada:{category:"legumes",el:"Φασολάδα",price:"€5.50",type:"legumes"},
+  revithia:{category:"legumes",el:"Ρεβύθια",price:"€6.00",type:"legumes"},
+  fava:{category:"legumes",el:"Φάβα",price:"€5.50",type:"legumes"},
+  haliavas:{category:"sweets",el:"Χαλβάς",price:"€4.00",type:"sweets"},
+  profiterole:{category:"sweets",el:"Προφιτερόλ",price:"€5.00",type:"sweets"},
+  lemonopita:{category:"sweets",el:"Λεμονόπιτα",price:"€4.00",type:"sweets"},
+  fileto_kotopoulo:{category:"grilled",el:"Φιλέτο κοτόπουλο",price:"€9.50",type:"grilled"},
+  bifteki_grilled:{category:"grilled",el:"Μπιφτέκι ψητό",price:"€9.50",type:"grilled"},
+  brizola_hoirini:{category:"grilled",el:"Μπριζόλα χοιρινή",price:"€9.80",type:"grilled"},
+  loukaniko_hoirino:{category:"grilled",el:"Λουκάνικο χωριάτικο",price:"€7.50",type:"grilled"},
+  coca_cola:{category:"drinks",el:"Coca Cola",price:"€2.00",type:"drinks"},
+  beer_alpha:{category:"drinks",el:"Μπύρα Άλφα",price:"€3.00",type:"drinks"},
+  wine_05:{category:"drinks",el:"Κρασί 0,5L",price:"€4.00",type:"drinks"},
+  tsipouro:{category:"drinks",el:"Τσίπουρο",price:"€9.00",type:"drinks"},
+  water_15:{category:"drinks",el:"Νερό 1,5L",price:"€1.20",type:"drinks"}
+};
+
+/* Συνταγές: ποσότητα ανά ΜΕΡΙΔΑ */
+let recipes = {
+  moschari_kokkinisto:{ beef_shank:0.28, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.18 },
+  moschari_giouvesti:{ beef_shank:0.26, orzo:0.08, tomato:0.10, onion:0.05, myzithra:0.03, olive_oil:0.02 },
+  moschari_lemonato:{ beef_shank:0.28, potato:0.20, olive_oil:0.03, onion:0.04, lemon:0.04 },
+  moschari_stifado:{ beef_shank:0.28, onion:0.18, tomato:0.08, olive_oil:0.025, wine:0.05 },
+  moscharaki_noua:{ beef_shank:0.30, zucchini:0.10, carrot:0.08, olive_oil:0.025 },
+  rolo_moscharisio:{ beef_mince:0.22, feta_pdo:0.04, tomato:0.05, potato:0.18, olive_oil:0.02 },
+  soutzoukakia:{ beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.02, garlic:0.01, bread:0.03 },
+  bifteki_moscharisia:{ beef_mince:0.30, potato:0.20, olive_oil:0.02, onion:0.03, bread:0.03 },
+  keftedakia_tiganita:{ beef_mince:0.18, onion:0.03, olive_oil:0.04, bread:0.04, egg:0.5 },
+  keftedakia_saltsa:{ beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.03 },
+  papoutsakia:{ eggplant:0.25, beef_mince:0.10, tomato:0.08, olive_oil:0.025, kefalotyri:0.02 },
+  lachanontolmades:{ cabbage:0.22, beef_mince:0.10, rice:0.04, egg:1, olive_oil:0.02, lemon:0.03 },
+  kolokythakia_gemista:{ zucchini:0.30, beef_mince:0.08, rice:0.04, tomato:0.08, olive_oil:0.025 },
+  giouvarlakia:{ beef_mince:0.14, rice:0.03, egg:1, olive_oil:0.015, lemon:0.03 },
+  pastitsio:{ beef_mince:0.12, pasta:0.10, olive_oil:0.02, kefalotyri:0.025, milk:0.08, butter:0.015, flour:0.02 },
+  moussakas:{ beef_mince:0.12, eggplant:0.18, potato:0.10, olive_oil:0.03, kefalotyri:0.02, milk:0.08, flour:0.02 },
+  makaronia_kima:{ beef_mince:0.12, pasta:0.10, tomato:0.08, onion:0.04, olive_oil:0.02 },
+  carbonara:{ pasta:0.11, egg:1, bacon:0.05, cream:0.04, parmesan:0.02 },
+  kotopoulo_bouti:{ chicken_leg:0.35, potato:0.22, olive_oil:0.025, lemon:0.03, garlic:0.01 },
+  kotopoulo_fournou:{ chicken_whole:0.35, potato:0.22, olive_oil:0.025, lemon:0.03 },
+  kokoras_krasatos:{ rooster:0.32, wine:0.08, onion:0.06, olive_oil:0.02, tomato:0.06 },
+  kotosoupa:{ chicken_whole:0.22, carrot:0.06, onion:0.04, rice:0.03, celery:0.04 },
+  briam:{ eggplant:0.12, zucchini:0.12, potato:0.12, tomato:0.10, olive_oil:0.035, pepper:0.05 },
+  fasolakia:{ green_beans:0.28, tomato:0.10, potato:0.12, onion:0.04, olive_oil:0.03 },
+  gemista:{ tomato:0.28, rice:0.06, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
+  gemista_superfoods:{ tomato:0.25, bulgur:0.06, onion:0.04, potato:0.08, olive_oil:0.03 },
+  spanakorizo:{ spinach:0.22, rice:0.07, onion:0.04, olive_oil:0.03, lemon:0.03 },
+  arakas_lemonatos:{ potato:0.15, carrot:0.08, olive_oil:0.025, lemon:0.03 },
+  giantes:{ gigantes:0.12, tomato:0.10, onion:0.05, olive_oil:0.03, carrot:0.03 },
+  fasolada:{ gigantes:0.10, tomato:0.08, onion:0.05, carrot:0.04, olive_oil:0.03, celery:0.03 },
+  fakes:{ lentils:0.10, onion:0.04, tomato:0.04, olive_oil:0.025, garlic:0.01 },
+  revithia:{ chickpeas:0.12, onion:0.05, olive_oil:0.03, lemon:0.02 },
+  fava:{ chickpeas:0.12, onion:0.04, olive_oil:0.03, lemon:0.03 },
+  melitzanes_imam:{ eggplant:0.28, tomato:0.10, onion:0.05, olive_oil:0.03, feta_pdo:0.04 },
+  mydopilafo:{ mussels:0.35, rice:0.08, onion:0.04, olive_oil:0.02 },
+  kritharoto_garides:{ shrimp:0.18, orzo:0.10, olive_oil:0.02, onion:0.03 },
+  spaghetti_garides_egaio:{ shrimp:0.12, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  glossa_lemonati:{ sole:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
+  oktapodi_stifado:{ octopus:0.30, onion:0.15, tomato:0.08, olive_oil:0.025, wine:0.04 },
+  bakaliaros_plaki:{ cod:0.28, tomato:0.12, onion:0.06, potato:0.15, olive_oil:0.03 },
+  sardeles_fileto_plaki:{ sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
+  manitarosoupa:{ mushroom:0.18, onion:0.04, cream:0.05, olive_oil:0.015, flour:0.01 },
+  patsas_vrastos:{ beef_shank:0.20, lemon:0.05, garlic:0.02, olive_oil:0.01 },
+  katsikaki_naxou:{ goat_kid:0.35, potato:0.25, olive_oil:0.03, lemon:0.04, garlic:0.01 },
+  katsikaki_frikase:{ goat_kid:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
+  kokoretsi:{ lamb:0.30, olive_oil:0.02, lemon:0.03 },
+  haliavas:{ flour:0.08, olive_oil:0.04, sugar:0.05 },
+  lemonopita:{ phyllo:0.08, lemon:0.05, sugar:0.04, egg:1, butter:0.03 },
+  profiterole:{ flour:0.05, egg:1, cream:0.08, sugar:0.03, butter:0.02 },
+  fileto_kotopoulo:{ chicken_leg:0.28, olive_oil:0.015 },
+  bifteki_grilled:{ beef_mince:0.28, onion:0.03, bread:0.03 },
+  brizola_hoirini:{ pork:0.32, olive_oil:0.015 },
+  loukaniko_hoirino:{ pork:0.22, olive_oil:0.01 },
+  coca_cola:{ cola:1 },
+  beer_alpha:{ beer:1 },
+  wine_05:{ wine_half:1 },
+  tsipouro:{ tsipouro:1 },
+  water_15:{ water:1 }
+};
+
+const manualOverrides = {};
+let currentRecipeKey = null;
+let marginChart, categoryChart;
+
+function parseEuro(v){ return parseFloat(String(v).replace("€","").replace(",",".")); }
+function fmt(n){ return "€" + Number(n).toFixed(2); }
+function round10(n){ return Math.round(n*10)/10; }
+function healthClass(pct){ if (pct >= 65) return "good"; if (pct >= 55) return "warn"; return "bad"; }
+
+function foodCost(key){
+  const rec = recipes[key];
+  let cost = OTHER_COST;
+  if (rec) {
+    for (const [ing, qty] of Object.entries(rec)) {
+      const p = ingredientPrices[ing];
+      if (p != null) cost += Number(qty) * p;
+    }
+  }
+  return Number(cost.toFixed(2));
+}
+function suggest(key){
+  const dish = menuCatalog[key];
+  if (!dish) return null;
+  const rules = categoryRules[dish.type] || categoryRules.default;
+  const fc = foodCost(key);
+  let price = fc / rules.target;
+  price = Math.max(rules.min, Math.min(rules.max, price));
+  return { foodCost: fc, suggested: round10(price) };
+}
+function margin(sell, cost){
+  if (!sell || sell <= 0) return null;
+  const profit = sell - cost;
+  return { profit: Number(profit.toFixed(2)), pct: Number(((profit/sell)*100).toFixed(1)) };
+}
+function effectivePrice(key){
+  if (manualOverrides[key] != null) return manualOverrides[key];
+  const s = suggest(key);
+  return s ? s.suggested : parseEuro(menuCatalog[key].price);
+}
+
+function switchTab(id){
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === id));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + id));
+  if (id === "recipes") renderRecipeList();
+  if (id === "profit") renderProfitPlanner();
+  if (id === "channels") renderChannels();
+}
+
+function loadNationalPrices(){
+  ingredientPrices = { ...NATIONAL_PRICES };
+  // fill any missing from ING_EL
+  Object.keys(ING_EL).forEach(k => {
+    if (ingredientPrices[k] == null) ingredientPrices[k] = NATIONAL_PRICES[k] || 1;
+  });
+  recalcAll();
+  alert("Φορτώθηκαν εθνικές ενδεικτικές τιμές (χονδρική/εστίαση 2026). Ενημερώστε από τα τιμολόγιά σας.");
+}
+
+function renderIngredients(){
+  const q = (document.getElementById("ingSearch")?.value || "").toLowerCase();
+  const box = document.getElementById("ingredientGrid");
+  const keys = Object.keys(ingredientPrices).sort((a,b) => (ING_EL[a]||a).localeCompare(ING_EL[b]||b, "el"));
+  box.innerHTML = keys.filter(k => {
+    const label = (ING_EL[k] || k).toLowerCase();
+    return !q || label.includes(q) || k.includes(q);
+  }).map(k => `
+    <div class="ing">
+      <label title="${k}">${ING_EL[k] || k}</label>
+      <input type="number" step="0.05" min="0" value="${ingredientPrices[k]}"
+        onchange="ingredientPrices['${k}']=Number(this.value); recalcAll()">
+    </div>`).join("");
+}
+
+function renderRecipeList(){
+  const list = document.getElementById("recipeList");
+  const keys = Object.keys(menuCatalog).sort((a,b) => menuCatalog[a].el.localeCompare(menuCatalog[b].el, "el"));
+  list.innerHTML = keys.map(k => `
+    <button class="${currentRecipeKey===k?"active":""}" onclick="openRecipe('${k}')">
+      ${menuCatalog[k].el}
+      <div style="font-size:.75rem;color:var(--muted)">${k} · ${fmt(foodCost(k))}</div>
+    </button>`).join("");
+}
+
+function openRecipe(key){
+  currentRecipeKey = key;
+  document.getElementById("recipeTitle").textContent = menuCatalog[key].el + " (" + key + ")";
+  if (!recipes[key]) recipes[key] = {};
+  renderRecipeLines();
+  renderRecipeList();
+}
+
+function renderRecipeLines(){
+  const box = document.getElementById("recipeLines");
+  const rec = recipes[currentRecipeKey] || {};
+  const lines = Object.entries(rec);
+  if (!lines.length) {
+    box.innerHTML = `<div class="note">Δεν υπάρχει συνταγή. Προσθέστε υλικά.</div>`;
+  } else {
+    box.innerHTML = lines.map(([ing, qty], idx) => `
+      <div class="recipe-line">
+        <select onchange="updateRecipeIng(${idx}, this.value)">
+          ${Object.keys(ingredientPrices).map(k => `<option value="${k}" ${k===ing?"selected":""}>${ING_EL[k]||k}</option>`).join("")}
+        </select>
+        <input type="number" step="0.01" min="0" value="${qty}" onchange="updateRecipeQty(${idx}, this.value)">
+        <div style="font-size:.8rem;color:var(--muted)">${fmt((ingredientPrices[ing]||0)*qty)}</div>
+        <button class="btn-danger" onclick="removeRecipeLine(${idx})">×</button>
+      </div>`).join("");
+  }
+  const fc = foodCost(currentRecipeKey);
+  document.getElementById("recipeCostBox").innerHTML =
+    `Κόστος μερίδας: <strong>${fmt(fc)}</strong> · με OTHER €${OTHER_COST.toFixed(2)}`;
+}
+
+function updateRecipeIng(idx, newIng){
+  const rec = recipes[currentRecipeKey];
+  const entries = Object.entries(rec);
+  const qty = entries[idx][1];
+  entries[idx] = [newIng, qty];
+  recipes[currentRecipeKey] = Object.fromEntries(entries);
+  renderRecipeLines();
+}
+function updateRecipeQty(idx, qty){
+  const rec = recipes[currentRecipeKey];
+  const entries = Object.entries(rec);
+  entries[idx][1] = Number(qty);
+  recipes[currentRecipeKey] = Object.fromEntries(entries);
+  renderRecipeLines();
+}
+function removeRecipeLine(idx){
+  const entries = Object.entries(recipes[currentRecipeKey]);
+  entries.splice(idx,1);
+  recipes[currentRecipeKey] = Object.fromEntries(entries);
+  renderRecipeLines();
+}
+function addRecipeLine(){
+  if (!currentRecipeKey) return alert("Επιλέξτε πιάτο");
+  if (!recipes[currentRecipeKey]) recipes[currentRecipeKey] = {};
+  const first = Object.keys(ingredientPrices)[0];
+  recipes[currentRecipeKey][first + "_" + Date.now()] = 0.05;
+  // normalize weird keys - better use first free
+  const clean = {};
+  Object.entries(recipes[currentRecipeKey]).forEach(([k,v]) => {
+    const key = k.includes("_") && !ingredientPrices[k] ? first : k;
+    clean[ingredientPrices[key] != null ? key : first] = v;
+  });
+  // simpler: just add tomato if missing else onion
+  let addKey = "tomato";
+  if (recipes[currentRecipeKey][addKey] != null) addKey = "onion";
+  if (recipes[currentRecipeKey][addKey] != null) addKey = "olive_oil";
+  recipes[currentRecipeKey][addKey] = 0.05;
+  renderRecipeLines();
+}
+function saveCurrentRecipe(){
+  if (!currentRecipeKey) return;
+  // remove zero lines
+  const rec = recipes[currentRecipeKey];
+  Object.keys(rec).forEach(k => { if (!rec[k]) delete rec[k]; });
+  recalcAll();
+  alert("Η συνταγή αποθηκεύτηκε τοπικά σε αυτή τη σελίδα.");
+}
+
+function computeAll(){
+  return Object.keys(menuCatalog).map(key => {
+    const d = menuCatalog[key];
+    const s = suggest(key);
+    const current = parseEuro(d.price);
+    const suggested = s.suggested;
+    const fc = s.foodCost;
+    const mNow = margin(current, fc);
+    const diff = Number((suggested - current).toFixed(2));
+    return { key, d, current, suggested, fc, mNow, diff };
+  });
+}
+
+function renderKPIs(rows){
+  let rise=0,fall=0,same=0,sum=0,n=0,healthy=0,watch=0,risk=0;
+  rows.forEach(r => {
+    if (r.diff>0) rise++; else if (r.diff<0) fall++; else same++;
+    if (r.mNow){ sum += r.mNow.pct; n++; const h=healthClass(r.mNow.pct); if(h==="good")healthy++; else if(h==="warn")watch++; else risk++; }
+  });
+  const avg = n ? sum/n : 0;
+  document.getElementById("kpiGrid").innerHTML = `
+    <div class="kpi ${healthClass(avg)}"><div class="label">Μέσο περιθώριο</div><div class="value">${avg.toFixed(1)}%</div><div class="sub">Στόχος 65–72%</div></div>
+    <div class="kpi good"><div class="label">Υγιή πιάτα</div><div class="value">${healthy}</div><div class="sub">≥ 65% margin</div></div>
+    <div class="kpi warn"><div class="label">Προσοχή</div><div class="value">${watch+risk}</div><div class="sub">${watch} watch · ${risk} risk</div></div>
+    <div class="kpi"><div class="label">Κινήσεις τιμών</div><div class="value" style="color:var(--green)">${rise}↑ ${fall}↓</div><div class="sub">${same} σταθερά</div></div>`;
+}
+
+function renderCharts(rows){
+  const healthy = rows.filter(r => (r.mNow?.pct||0) >= 65).length;
+  const watch = rows.filter(r => {const p=r.mNow?.pct||0; return p>=55 && p<65;}).length;
+  const risk = rows.filter(r => (r.mNow?.pct||0) < 55).length;
+  if (marginChart) marginChart.destroy();
+  marginChart = new Chart(document.getElementById("marginChart"), {
+    type: "doughnut",
+    data: { labels: ["Υγιή ≥65%","Προσοχή 55–64%","Κίνδυνος <55%"],
+      datasets: [{ data:[healthy,watch,risk], backgroundColor:["#3c6b4c","#c17a16","#b42318"], borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom" } } }
+  });
+  const cats = {};
+  rows.forEach(r => {
+    const c = r.d.category;
+    if (!cats[c]) cats[c]={sum:0,n:0};
+    if (r.mNow){ cats[c].sum += r.mNow.pct; cats[c].n++; }
+  });
+  const labels = Object.keys(cats);
+  const values = labels.map(c => cats[c].n ? Number((cats[c].sum/cats[c].n).toFixed(1)) : 0);
+  const colors = values.map(v => v>=65?"#3c6b4c":v>=55?"#c17a16":"#b42318");
+  if (categoryChart) categoryChart.destroy();
+  categoryChart = new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: { labels, datasets:[{ data: values, backgroundColor: colors, borderRadius: 8 }] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      scales:{ y:{ beginAtZero:true, max:100, grid:{ color:"#eef2ef" } }, x:{ grid:{ display:false } } },
+      plugins:{ legend:{ display:false } }
+    }
+  });
+}
+
+function getFilteredKeys(){
+  const q = (document.getElementById("searchBox")?.value || "").toLowerCase();
+  const cat = document.getElementById("categoryFilter")?.value || "all";
+  return Object.keys(menuCatalog).filter(key => {
+    const d = menuCatalog[key];
+    if (cat !== "all" && d.category !== cat) return false;
+    if (!q) return true;
+    return key.toLowerCase().includes(q) || d.el.toLowerCase().includes(q);
+  });
+}
+
+function renderDishTable(){
+  const all = computeAll();
+  const allow = new Set(getFilteredKeys());
+  const rows = all.filter(r => allow.has(r.key));
+  document.getElementById("dishCountBadge").textContent = rows.length + " πιάτα";
+  document.getElementById("dishTable").innerHTML = rows.map(r => {
+    const cls = r.diff>0?"up":r.diff<0?"down":"flat";
+    const pct = r.mNow ? r.mNow.pct : 0;
+    const h = healthClass(pct);
+    const ov = manualOverrides[r.key] != null ? manualOverrides[r.key] : "";
+    return `<tr>
+      <td><code>${r.key}</code></td>
+      <td>${r.d.category}</td>
+      <td>${r.d.el}</td>
+      <td><strong>${fmt(r.fc)}</strong></td>
+      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.suggested)}</td>
+      <td><input type="number" step="0.1" min="0" value="${ov}" onchange="setOverride('${r.key}', this.value)"></td>
+      <td><span class="pill ${cls}">${r.diff>0?"+":""}${r.diff}</span></td>
+      <td>${r.mNow? r.mNow.pct+"%":"—"}</td>
+      <td><div class="bar ${h}"><span style="width:${Math.max(8,Math.min(100,pct))}%"></span></div></td>
+    </tr>`;
+  }).join("");
+}
+
+function setOverride(key, val){
+  if (val==="" || val==null) delete manualOverrides[key];
+  else manualOverrides[key] = Number(val);
+  renderKPIs(computeAll());
+}
+
+function renderProfitPlanner(){
+  const target = Number(document.getElementById("targetProfit").value || 650);
+  const fixed = Number(document.getElementById("fixedDaily").value || 420);
+  const ticket = Number(document.getElementById("avgTicket").value || 9.5);
+  const foodPct = Number(document.getElementById("avgFoodPct").value || 32) / 100;
+  const food = ticket * foodPct;
+  const contribution = ticket - food; // before fixed costs
+  const neededContribution = fixed + target;
+  const portions = contribution > 0 ? Math.ceil(neededContribution / contribution) : 0;
+  const sales = portions * ticket;
+  const foodSpend = portions * food;
+  const gross = sales - foodSpend;
+  const net = gross - fixed;
+
+  document.getElementById("profitKpis").innerHTML = `
+    <div class="kpi"><div class="label">Συνεισφορά / μερίδα</div><div class="value">${fmt(contribution)}</div><div class="sub">Ticket − food cost</div></div>
+    <div class="kpi good"><div class="label">Μερίδες / ημέρα</div><div class="value">${portions}</div><div class="sub">Για στόχο €${target}</div></div>
+    <div class="kpi"><div class="label">Απαιτούμενες πωλήσεις</div><div class="value">${fmt(sales)}</div><div class="sub">Food spend ${fmt(foodSpend)}</div></div>
+    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div><div class="value">${fmt(net)}</div><div class="sub">Μετά σταθερά κόστη</div></div>`;
+
+  const ladder = [650, 800, 1000, 1200];
+  document.getElementById("targetLadder").innerHTML = ladder.map(t => {
+    const need = fixed + t;
+    const p = contribution > 0 ? Math.ceil(need / contribution) : 0;
+    return `<div class="target-card">
+      <div class="t">Στόχος €${t}/ημέρα</div>
+      <div class="v">${p} μερίδες</div>
+      <div class="note">Πωλήσεις ~ ${fmt(p*ticket)}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderChannels(){
+  const ticket = Number(document.getElementById("chTicket").value || 10);
+  const food = Number(document.getElementById("chFood").value || 3.2);
+  const commission = Number(document.getElementById("chCommission").value || 25) / 100;
+  const localDeliv = Number(document.getElementById("chLocalDeliv").value || 1.2);
+
+  const local = ticket - food;
+  const ownDelivery = ticket - food - localDeliv;
+  const platform = ticket * (1 - commission) - food;
+
+  const rows = [
+    { name: "Στο κατάστημα (Matzourana)", net: local, note: "Καλύτερο περιθώριο · χτίζει πιστότητα", id: "local" },
+    { name: "Δική σας διανομή", net: ownDelivery, note: "Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50", id: "own" },
+    { name: "efood / Wolt", net: platform, note: "Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού", id: "plat" }
+  ];
+  const best = Math.max(...rows.map(r => r.net));
+  document.getElementById("channelCards").innerHTML = rows.map(r => `
+    <div class="channel ${r.net===best?"best":""}">
+      <h3>${r.name}</h3>
+      <div class="big">${fmt(r.net)}</div>
+      <div class="note">Καθαρό μετά food${r.id==="plat"?" + προμήθεια": r.id==="own"?" + διανομή":""}</div>
+      <div class="note">${r.note}</div>
+      <div class="note">Για €650 καθαρά (χωρίς σταθερά): ~${r.net>0? Math.ceil(650/r.net): "—"} μερίδες</div>
+    </div>`).join("");
+}
+
+function applySuggested(write){
+  const changes = [];
+  Object.keys(menuCatalog).forEach(key => {
+    const current = parseEuro(menuCatalog[key].price);
+    const next = effectivePrice(key);
+    if (Number(next.toFixed(2)) !== Number(current.toFixed(2))) {
+      changes.push({ key, from: current, to: next });
+      if (write) menuCatalog[key].price = fmt(next);
+    }
+  });
+  if (!write) {
+    console.table(changes);
+    alert("Dry run: " + changes.length + " αλλαγές. Δείτε console.");
+  } else {
+    alert("Εφαρμόστηκαν " + changes.length + " τιμές τοπικά.");
+    recalcAll();
+  }
+}
+
+function exportAll(){
+  const payload = {
+    date: new Date().toISOString().slice(0,10),
+    ingredientPrices,
+    recipes,
+    prices: Object.fromEntries(Object.keys(menuCatalog).map(k => [k, menuCatalog[k].price]))
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "matzourana-costing-export.json";
+  a.click();
+}
+
+function recalcAll(){
+  renderIngredients();
+  const rows = computeAll();
+  renderKPIs(rows);
+  renderCharts(rows);
+  renderDishTable();
+  if (currentRecipeKey) renderRecipeLines();
+  renderRecipeList();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadNationalPrices();
+  recalcAll();
+  renderProfitPlanner();
+  renderChannels();
+});
+</script>
+</body>
+<!-- ========== ADMIN PASSWORD GATE ========== -->
+<style>
+  #admin-gate {
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #1c2a22 0%, #3c6b4c 100%);
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  }
+  #admin-gate .box {
+    width: min(92vw, 380px);
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  }
+  #admin-gate h1 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+    color: #1c2a22;
+  }
+  #admin-gate p {
+    margin: 0 0 16px;
+    color: #6a7b71;
+    font-size: .9rem;
+  }
+  #admin-gate input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e3eae5;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  #admin-gate button {
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: #3c6b4c;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #admin-gate button:hover { background: #2b4d38; }
+  #admin-gate .err {
+    display: none;
+    color: #b42318;
+    font-size: .85rem;
+    margin-bottom: 8px;
+  }
+  body.admin-locked .topbar,
+  body.admin-locked .wrap { visibility: hidden; }
+</style>
+
+<div id="admin-gate">
+  <div class="box">
+    <h1>Matzourana Admin</h1>
+    <p>Κόστος · Συνταγές · Κέρδος / ημέρα</p>
+    <div class="err" id="gate-err">Λάθος κωδικός</div>
+    <input id="gate-pass" type="password" placeholder="Κωδικός πρόσβασης" autocomplete="current-password">
+    <button type="button" id="gate-btn">Είσοδος</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ★ Αλλάξτε μόνο αυτή τη γραμμή
+  const ADMIN_PASSWORD = "0!MV_Matzourana20260!";
+
+  const KEY = "matzourana_admin_ok";
+  const gate = document.getElementById("admin-gate");
+  const input = document.getElementById("gate-pass");
+  const err = document.getElementById("gate-err");
+  const btn = document.getElementById("gate-btn");
+
+  function unlock() {
+    sessionStorage.setItem(KEY, "1");
+    document.body.classList.remove("admin-locked");
+    if (gate) gate.remove();
+  }
+
+  function lock() {
+    document.body.classList.add("admin-locked");
+  }
+
+  function tryLogin() {
+    if (input.value === ADMIN_PASSWORD) {
+      unlock();
+    } else {
+      err.style.display = "block";
+      input.value = "";
+      input.focus();
+    }
+  }
+
+  if (sessionStorage.getItem(KEY) === "1") {
+    unlock();
+  } else {
+    lock();
+    btn.addEventListener("click", tryLogin);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryLogin();
+    });
+    setTimeout(function () { input.focus(); }, 200);
+  }
+})();
+</script>
+<!-- ========== END PASSWORD GATE ========== -->
+</html>
 
