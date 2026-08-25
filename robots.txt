@@ -1,3 +1,5 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Allow: /
+
 Sitemap: https://www.matzourana.gr/sitemap.xml
