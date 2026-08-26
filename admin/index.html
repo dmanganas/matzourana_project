@@ -310,6 +310,7 @@ tr:hover td { background: #fafcfb; }
       <table>
         <thead>
           <tr>
+            <th>Σήμερα</th>
             <th>Κλειδί</th>
             <th>Κατηγορία</th>
             <th>Όνομα</th>
@@ -327,36 +328,64 @@ tr:hover td { background: #fafcfb; }
     </div>
   </section>
 
-  <!-- PROFIT -->
-  <section class="panel" id="tab-profit">
-    <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
-    <div class="form-grid" style="margin-bottom:12px;">
-      <div class="card-mini">
-        <div class="section-title">Στόχος καθαρού κέρδους / ημέρα (€)</div>
-        <input type="number" id="targetProfit" value="650" step="50" min="0" onchange="renderProfitPlanner()">
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Σταθερά κόστη / ημέρα (€)</div>
-        <input type="number" id="fixedDaily" value="420" step="10" min="0" onchange="renderProfitPlanner()">
-        <div class="note">Ενοίκιο, μισθοί, ρεύμα, ασφάλειες κ.λπ. (κατανομή ημέρας)</div>
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
-        <input type="number" id="avgTicket" value="9.5" step="0.1" min="1" onchange="renderProfitPlanner()">
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Μέσο food cost %</div>
-        <input type="number" id="avgFoodPct" value="32" step="0.5" min="15" max="50" onchange="renderProfitPlanner()">
-      </div>
-    </div>
-    <div class="kpi-grid" id="profitKpis"></div>
-    <div class="targets" id="targetLadder"></div>
-    <p class="note">
-      Απλοποιημένος υπολογισμός: χρειάζεστε συνεισφορά (ticket − food cost) αρκετή για σταθερά κόστη + καθαρό κέρδος.
-      Πιο ακριβής εικόνα βγαίνει όταν ζυγίζετε πραγματικές μερίδες και σπατάλη.
-    </p>
-  </section>
+ <!-- PROFIT -->
+<section class="panel" id="tab-profit">
+  <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
 
+  <div class="form-grid" style="margin-bottom:12px;">
+    <div class="card-mini">
+      <div class="section-title">Στόχος καθαρού κέρδους / ημέρα (€)</div>
+      <input type="number" id="targetProfit" value="650" step="50" min="0" onchange="renderProfitPlanner()">
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Σταθερά κόστη / ημέρα (€)</div>
+      <input type="number" id="fixedDaily" value="420" step="10" min="0" onchange="renderProfitPlanner()">
+      <div class="note">Ενοίκιο, μισθοί, ρεύμα, ασφάλειες κ.λπ. (κατανομή ημέρας)</div>
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
+      <input type="number" id="avgTicket" value="9.5" step="0.1" min="1"
+             onchange="renderProfitPlanner(); renderChannels()">
+      <div class="note" id="ticketHint">Μέσο επιλεγμένων πιάτων: —</div>
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Μέσο food cost %</div>
+      <input type="number" id="avgFoodPct" value="32" step="0.5" min="15" max="50"
+             onchange="renderProfitPlanner(); renderChannels()">
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Βάρος καταστήματος %</div>
+      <input type="number" id="wLocal" value="50" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Βάρος δικής σας διανομής %</div>
+      <input type="number" id="wOwn" value="20" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Βάρος efood / Wolt %</div>
+      <input type="number" id="wPlat" value="30" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+    </div>
+  </div>
+
+  <div class="kpi-grid" id="profitKpis"></div>
+  <div class="targets" id="targetLadder"></div>
+
+  <button class="btn-ghost" type="button" onclick="useCatalogAverages()">
+    Γέμισμα μέσων από επιλεγμένα πιάτα
+  </button>
+  <div class="channel-grid" id="profitChannelCards"></div>
+  <div id="portionByDish"></div>
+
+  <p class="note">
+    Ticket = μέση τιμή πιάτου. Συνεισφορά μείγματος =
+    (κατάστημα × (ticket − food)) +
+    (διανομή × (ticket − food − κόστος διανομής)) +
+    (efood/Wolt × (ticket − προμήθεια − food)).
+    Τα τρία βάρη κανονικοποιούνται στο 100%.
+    Φθηνό πιάτο ή μεγαλύτερο μερίδιο platforms → περισσότερες μερίδες για τον ίδιο στόχο.
+  </p>
+</section>
+</section>
   <!-- CHANNELS -->
   <section class="panel" id="tab-channels">
     <h2>Πού συμφέρει να πουλάτε <span class="badge">Local vs Delivery vs efood/Wolt</span></h2>
@@ -1448,12 +1477,16 @@ function renderDishTable(){
   const allow = new Set(getFilteredKeys());
   const rows = all.filter(r => allow.has(r.key));
 
-  const flags = detectOutliers(
-    Object.keys(menuCatalog).map(key => ({
-      key,
-      ...menuCatalog[key],
-      priceNum: parseEuro(menuCatalog[key].price)
-    }))
+  const flags = (typeof detectOutliers === "function")
+    ? detectOutliers(Object.keys(menuCatalog).map(key => ({
+        key,
+        ...menuCatalog[key],
+        priceNum: parseEuro(menuCatalog[key].price)
+      })))
+    : {};
+
+  const checked = new Set(
+    [...document.querySelectorAll(".daily-pick:checked")].map(el => el.dataset.key)
   );
 
   document.getElementById("dishCountBadge").textContent = rows.length + " πιάτα";
@@ -1464,9 +1497,11 @@ function renderDishTable(){
     const ov = manualOverrides[r.key] != null ? manualOverrides[r.key] : "";
     const flag = flags[r.key];
     const warn = flag
-      ? ` <span class="outlier-flag" title="${flag.msg.replace(/"/g, "&quot;")}">⚠</span>`
+      ? ` <span class="outlier-flag" title="${String(flag.msg).replace(/"/g, "&quot;")}">⚠</span>`
       : "";
+    const on = checked.has(r.key) ? "checked" : "";
     return `<tr>
+      <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="renderProfitPlanner()"></td>
       <td><code>${r.key}</code></td>
       <td>${r.d.category}</td>
       <td>${r.d.el}</td>
@@ -1504,87 +1539,202 @@ function avgMenuFoodPct(){
   return n ? (s / n) * 100 : 32;
 }
 
-function renderProfitPlanner(){
-  const targetInp = document.getElementById("targetProfit");
-  const ticketInp = document.getElementById("avgTicket");
-  const foodInp = document.getElementById("avgFoodPct");
+function selectedDailyKeys(){
+  const picks = [...document.querySelectorAll(".daily-pick:checked")]
+    .map(el => el.dataset.key)
+    .filter(k => menuCatalog[k]);
+  if (picks.length) return picks;
+  return Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
+}
 
-  if (!ticketInp.dataset.ready) {
-    ticketInp.value = avgMenuTicket().toFixed(2);
-    foodInp.value = avgMenuFoodPct().toFixed(1);
-    ticketInp.dataset.ready = "1";
-  }
+function useCatalogAverages(){
+  const rows = selectedDailyKeys().map(dishEconomics).filter(r => r.price > 0);
+  if (!rows.length) return;
+  const ticket = rows.reduce((s,r) => s + r.price, 0) / rows.length;
+  const food = rows.reduce((s,r) => s + r.fc, 0) / rows.length;
+  document.getElementById("avgTicket").value = ticket.toFixed(2);
+  document.getElementById("avgFoodPct").value = ((food / ticket) * 100).toFixed(1);
+  renderProfitPlanner();
+}
 
-  const target = Number(targetInp.value || 650);
-  const fixed = Number(document.getElementById("fixedDaily").value || 420);
-  const ticket = Number(ticketInp.value || avgMenuTicket());
-  const foodPct = Number(foodInp.value || 32) / 100;
-  const food = ticket * foodPct;
-  const contrib = ticket - food;
-  const portions = contrib > 0 ? Math.ceil((fixed + target) / contrib) : 0;
-  const sales = portions * ticket;
-  const foodSpend = portions * food;
-  const net = sales - foodSpend - fixed;
+function selectedDailyKeys(){
+  const picks = [...document.querySelectorAll(".daily-pick:checked")]
+    .map(el => el.dataset.key)
+    .filter(k => menuCatalog[k]);
+  if (picks.length) return picks;
+  return Object.keys(menuCatalog).filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks");
+}
 
-  document.getElementById("profitKpis").innerHTML = `
-    <div class="kpi">
-      <div class="label">Ticket / μερίδα</div>
-      <div class="value">${fmt(ticket)}</div>
-      <div class="sub">Μέση τιμή πιάτου (όχι ποτά)</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Συνεισφορά / μερίδα</div>
-      <div class="value">${fmt(contrib)}</div>
-      <div class="sub">Ticket ${fmt(ticket)} − food ${fmt(food)} (${(foodPct*100).toFixed(1)}%)</div>
-    </div>
-    <div class="kpi good">
-      <div class="label">Μερίδες / ημέρα</div>
-      <div class="value">${portions}</div>
-      <div class="sub">Για στόχο €${target} + σταθερά €${fixed}</div>
-    </div>
-    <div class="kpi ${net>=target?"good":"warn"}">
-      <div class="label">Καθαρό αποτέλεσμα</div>
-      <div class="value">${fmt(net)}</div>
-      <div class="sub">Πωλήσεις ${fmt(sales)} · food ${fmt(foodSpend)}</div>
-    </div>`;
+function dishEconomics(key){
+  const d = menuCatalog[key];
+  if (!d) return { key, d: { el: key }, price: 0, fc: 0, contrib: 0 };
+  const price = parseEuro(d.price) || 0;
+  const fc = foodCost(key);
+  return { key, d, price, fc, contrib: price - fc };
+}
 
-  document.getElementById("targetLadder").innerHTML = [650,800,1000,1200].map(t => {
-    const p = contrib > 0 ? Math.ceil((fixed + t) / contrib) : 0;
-    return `<div class="target-card">
-      <div class="t">Στόχος €${t}/ημέρα</div>
-      <div class="v">${p} μερίδες</div>
-      <div class="note">Ticket ${fmt(ticket)} · πωλήσεις ${fmt(p*ticket)}</div>
+function portionsFor(contrib, fixed, target){
+  if (!(contrib > 0.05)) return null;
+  return Math.ceil((fixed + target) / contrib);
+}
+
+function channelWeights(){
+  let local = Number(document.getElementById("wLocal")?.value || 50);
+  let own   = Number(document.getElementById("wOwn")?.value || 20);
+  let plat  = Number(document.getElementById("wPlat")?.value || 30);
+  const sum = local + own + plat || 1;
+  return { local: local / sum, own: own / sum, plat: plat / sum };
+}
+
+function mixedContribution(ticket, food){
+  const commission = Number(document.getElementById("chCommission")?.value || 25) / 100;
+  const deliv = Number(document.getElementById("chLocalDeliv")?.value || 1.2);
+  const w = channelWeights();
+  const cLocal = ticket - food;
+  const cOwn   = ticket - food - deliv;
+  const cPlat  = ticket * (1 - commission) - food;
+  return {
+    w, cLocal, cOwn, cPlat,
+    mixed: w.local * cLocal + w.own * cOwn + w.plat * cPlat
+  };
+}
+
+function useCatalogAverages(){
+  const rows = selectedDailyKeys().map(dishEconomics).filter(r => r.price > 0);
+  if (!rows.length) return;
+  const ticket = rows.reduce((s,r) => s + r.price, 0) / rows.length;
+  const food = rows.reduce((s,r) => s + r.fc, 0) / rows.length;
+  document.getElementById("avgTicket").value = ticket.toFixed(2);
+  document.getElementById("avgFoodPct").value = ((food / ticket) * 100).toFixed(1);
+  renderProfitPlanner();
+}
+
+function renderChannelCards(elId, ticket, food, fixed){
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const commission = Number(document.getElementById("chCommission")?.value || 25) / 100;
+  const deliv = Number(document.getElementById("chLocalDeliv")?.value || 1.2);
+  const rows = [
+    { name:"Στο κατάστημα (Matzourana)", net: ticket-food, extra:"Καθαρό μετά food", note:"Καλύτερο περιθώριο · χτίζει πιστότητα" },
+    { name:"Δική σας διανομή", net: ticket-food-deliv, extra:"Καθαρό μετά food + διανομή", note:"Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50" },
+    { name:"efood / Wolt", net: ticket*(1-commission)-food, extra:"Καθαρό μετά food + προμήθεια", note:"Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού" }
+  ];
+  const best = Math.max(...rows.map(r => r.net));
+  el.innerHTML = rows.map(r => {
+    const need = t => r.net > 0 ? Math.ceil((fixed + t) / r.net) : "—";
+    return `<div class="channel ${r.net===best?"best":""}">
+      <h3>${r.name}</h3>
+      <div class="big">${fmt(r.net)}</div>
+      <div class="note">${r.extra}</div>
+      <div class="note">${r.note}</div>
+      <div class="note">Ticket = μέση τιμή πιάτου ${fmt(ticket)}</div>
+      <div class="note">€650 → ${need(650)} μερίδες · €800 → ${need(800)} · €1000 → ${need(1000)} · €1200 → ${need(1200)}</div>
     </div>`;
   }).join("");
 }
 
 function renderChannels(){
-  const ticket = Number(document.getElementById("chTicket").value || 10);
-  const food = Number(document.getElementById("chFood").value || 3.2);
-  const commission = Number(document.getElementById("chCommission").value || 25) / 100;
-  const localDeliv = Number(document.getElementById("chLocalDeliv").value || 1.2);
+  const ticket = Number(document.getElementById("chTicket")?.value || document.getElementById("avgTicket")?.value || 10);
+  const food = Number(document.getElementById("chFood")?.value || 3.2);
   const fixed = Number(document.getElementById("fixedDaily")?.value || 420);
+  renderChannelCards("channelCards", ticket, food, fixed);
+}
 
-  const rows = [
-    { name: "Στο κατάστημα (Matzourana)", net: ticket - food, note: "Καλύτερο περιθώριο · χτίζει πιστότητα", id: "local" },
-    { name: "Δική σας διανομή", net: ticket - food - localDeliv, note: "Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50", id: "own" },
-    { name: "efood / Wolt", net: ticket * (1 - commission) - food, note: "Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού", id: "plat" }
-  ];
+function renderProfitPlanner(){
+  const target = Number(document.getElementById("targetProfit")?.value || 650);
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || 420);
+  const ticket = Number(document.getElementById("avgTicket")?.value || 10);
+  const foodPct = Number(document.getElementById("avgFoodPct")?.value || 32) / 100;
+  const food = ticket * foodPct;
 
-  const best = Math.max(...rows.map(r => r.net));
+  const rows = selectedDailyKeys().map(dishEconomics).filter(r => r.price > 0)
+    .sort((a,b) => b.contrib - a.contrib);
 
-  document.getElementById("channelCards").innerHTML = rows.map(r => {
-    const need = t => r.net > 0 ? Math.ceil((fixed + t) / r.net) : "—";
-    return `
-      <div class="channel ${r.net === best ? "best" : ""}">
-        <h3>${r.name}</h3>
-        <div class="big">${fmt(r.net)}</div>
-        <div class="note">Καθαρό μετά food${r.id==="plat"?" + προμήθεια": r.id==="own"?" + διανομή":""}</div>
-        <div class="note">${r.note}</div>
-        <div class="note">Ticket = μέση τιμή πιάτου ${fmt(ticket)}</div>
-        <div class="note">€650 → ${need(650)} μερίδες · €800 → ${need(800)} · €1000 → ${need(1000)} · €1200 → ${need(1200)}</div>
-      </div>`;
+  const selAvg = rows.length ? rows.reduce((s,r) => s + r.price, 0) / rows.length : 0;
+  const hint = document.getElementById("ticketHint");
+  if (hint) {
+    hint.textContent = rows.length
+      ? ("Μέσο επιλεγμένων πιάτων: " + fmt(selAvg) + " · " + rows.length + " πιάτα. Αλλάξτε το πεδίο πάνω για δοκιμή.")
+      : "Τσεκάρετε πιάτα στο «Πιάτα & Food Cost» ή πατήστε Γέμισμα μέσων.";
+  }
+
+  const mix = mixedContribution(ticket, food);
+  const contrib = mix.mixed;
+  const p = portionsFor(contrib, fixed, target) || 0;
+  const sales = p * ticket;
+  const foodSpend = p * food;
+  const net = p * contrib - fixed;
+
+  const chTicket = document.getElementById("chTicket");
+  const chFood = document.getElementById("chFood");
+  if (chTicket) chTicket.value = ticket.toFixed(2);
+  if (chFood) chFood.value = food.toFixed(2);
+
+  const kpis = document.getElementById("profitKpis");
+  if (kpis) kpis.innerHTML = `
+    <div class="kpi"><div class="label">Ticket / food (χειροκίνητα)</div>
+      <div class="value">${fmt(ticket)}</div>
+      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div></div>
+    <div class="kpi"><div class="label">Συνεισφορά μείγματος</div>
+      <div class="value">${fmt(contrib)}</div>
+      <div class="sub">Κατάστημα ${fmt(mix.cLocal)} · διανομή ${fmt(mix.cOwn)} · efood ${fmt(mix.cPlat)}</div></div>
+    <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
+      <div class="value">${p}</div>
+      <div class="sub">Κατάστημα ${Math.round(p*mix.w.local)} · διανομή ${Math.round(p*mix.w.own)} · efood ${Math.round(p*mix.w.plat)}</div></div>
+    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div>
+      <div class="value">${fmt(net)}</div>
+      <div class="sub">Πωλήσεις ${fmt(sales)} · food ${fmt(foodSpend)} · ${rows.length} πιάτα σήμερα</div></div>`;
+
+  const ladder = document.getElementById("targetLadder");
+  if (ladder) ladder.innerHTML = [650,800,1000,1200].map(t => {
+    const n = portionsFor(contrib, fixed, t) || 0;
+    return `<div class="target-card">
+      <div class="t">Στόχος €${t}/ημέρα</div>
+      <div class="v">${n} μερίδες</div>
+      <div class="note">Κατάστημα ${Math.round(n*mix.w.local)} · διανομή ${Math.round(n*mix.w.own)} · efood ${Math.round(n*mix.w.plat)}</div>
+      <div class="note">Πωλήσεις ~ ${fmt(n*ticket)}</div>
+    </div>`;
   }).join("");
+
+  renderChannelCards("profitChannelCards", ticket, food, fixed);
+
+  let box = document.getElementById("portionByDish");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "portionByDish";
+    const tab = document.getElementById("tab-profit");
+    if (tab) tab.appendChild(box);
+    else return;
+  }
+
+  box.innerHTML = `
+    <h2>Επιλεγμένα πιάτα ημέρας <span class="badge">${rows.length}</span></h2>
+    <div class="table-wrap"><table>
+      <thead>
+        <tr>
+          <th>Πιάτο</th><th>Τιμή</th><th>Food</th><th>Συνεισφορά</th>
+          <th>Στόχος €${target}</th>
+          <th>€650</th><th>€800</th><th>€1000</th><th>€1200</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `<tr>
+          <td>${r.d.el}</td>
+          <td>${fmt(r.price)}</td>
+          <td>${fmt(r.fc)}</td>
+          <td><strong>${fmt(r.contrib)}</strong></td>
+          <td><strong>${portionsFor(r.contrib, fixed, target) ?? "—"}</strong></td>
+          <td>${portionsFor(r.contrib, fixed, 650) ?? "—"}</td>
+          <td>${portionsFor(r.contrib, fixed, 800) ?? "—"}</td>
+          <td>${portionsFor(r.contrib, fixed, 1000) ?? "—"}</td>
+          <td>${portionsFor(r.contrib, fixed, 1200) ?? "—"}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table></div>
+    <p class="note">
+      Η στήλη «Στόχος €${target}» ακολουθεί το πεδίο καθαρού κέρδους.
+      Ticket και food % δεν αλλάζουν μόνα τους — μόνο αν πατήσετε «Γέμισμα μέσων».
+    </p>`;
 }
 
 function applySuggested(write){
