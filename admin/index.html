@@ -328,7 +328,7 @@ tr:hover td { background: #fafcfb; }
     </div>
   </section>
 
- <!-- PROFIT -->
+<!-- PROFIT -->
 <section class="panel" id="tab-profit">
   <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
 
@@ -339,8 +339,8 @@ tr:hover td { background: #fafcfb; }
     </div>
     <div class="card-mini">
       <div class="section-title">Σταθερά κόστη / ημέρα (€)</div>
-      <input type="number" id="fixedDaily" value="420" step="10" min="0" onchange="renderProfitPlanner()">
-      <div class="note">Ενοίκιο, μισθοί, ρεύμα, ασφάλειες κ.λπ. (κατανομή ημέρας)</div>
+      <input type="number" id="fixedDaily" value="260" step="1" min="0" onchange="renderProfitPlanner()">
+      <div class="note">Άθροισμα πίνακα κάτω · μπορείς και να το γράψεις μόνος</div>
     </div>
     <div class="card-mini">
       <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
@@ -365,6 +365,17 @@ tr:hover td { background: #fafcfb; }
       <div class="section-title">Βάρος efood / Wolt %</div>
       <input type="number" id="wPlat" value="30" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
+  </div>
+
+  <div class="card-mini" style="margin-bottom:16px;">
+    <div class="section-title">Ανάλυση σταθερών / εργάσιμη <span class="badge">override</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Κόστος</th><th>€ / ημέρα</th></tr></thead>
+        <tbody id="fixedCostRows"></tbody>
+      </table>
+    </div>
+    <p class="note" id="fixedCostHint">Άλλαξε κελί → ενημερώνεται το 260. Άδειασε για επαναφορά.</p>
   </div>
 
   <div class="kpi-grid" id="profitKpis"></div>
@@ -1640,9 +1651,75 @@ function renderChannels(){
   renderChannelCards("channelCards", ticket, food, fixed);
 }
 
+const defaultFixedCosts = {
+  noiki:    { el: "Νοίκι",           day: 25.92 },
+  nero:     { el: "Νερό",            day: 1.54 },
+  deh:      { el: "ΔΕΗ",             day: 30.77 },
+  aerio:    { el: "Φυσικό αέριο",    day: 7.69 },
+  tilefono: { el: "Τηλέφωνο",        day: 1.31 },
+  internet: { el: "Internet",        day: 0.88 },
+  rythmisi: { el: "Ρύθμιση",         day: 5.88 },
+  teve:     { el: "ΤΕΒΕ",            day: 38.46 },
+  eforia:   { el: "Εφορία + δήμος",  day: 50.00 },
+  cooking:  { el: "Μαγείρεμα (μισθός)", day: 20.00 },
+  cleaning: { el: "Λάτζα (μισθός)",  day: 29.17 },
+  cutting:  { el: "Πάγκος (μισθός)",  day: 48.00 },
+  extra:    { el: "Extra (προμήθεια)",  day: 150.00 }
+};
+
+let fixedCostOverrides = {};
+
+function dayFixedCost(key){
+  const v = fixedCostOverrides[key];
+  if (v != null && v !== "") return Number(v);
+  return defaultFixedCosts[key].day;
+}
+
+function totalFixedDaily(){
+  return Object.keys(defaultFixedCosts).reduce((s, k) => s + dayFixedCost(k), 0);
+}
+
+function setFixedCost(key, val){
+  if (val === "" || val == null) delete fixedCostOverrides[key];
+  else fixedCostOverrides[key] = Number(val);
+  syncFixedDaily();
+  renderProfitPlanner();
+}
+
+function syncFixedDaily(){
+  const inp = document.getElementById("fixedDaily");
+  if (inp) inp.value = totalFixedDaily().toFixed(2);
+}
+
+function renderFixedCostTable(){
+  const tb = document.getElementById("fixedCostRows");
+  if (!tb) return;
+  const rows = Object.keys(defaultFixedCosts).map(k => {
+    const row = defaultFixedCosts[k];
+    const val = dayFixedCost(k);
+    return `<tr>
+      <td>${row.el}</td>
+      <td><input type="number" step="0.01" min="0" value="${val.toFixed(2)}"
+                 onchange="setFixedCost('${k}', this.value)"></td>
+    </tr>`;
+  }).join("");
+  tb.innerHTML = rows + `<tr>
+    <td><strong>Σύνολο / εργάσιμη</strong></td>
+    <td><strong>${fmt(totalFixedDaily())}</strong></td>
+  </tr>`;
+  const hint = document.getElementById("fixedCostHint");
+  if (hint) {
+    hint.textContent = "Σύνολο " + fmt(totalFixedDaily()) +
+      " → σταθερά κόστη / ημέρα. Άδειασε κελί για επαναφορά στην τιμή του χαρτιού.";
+  }
+}
+
 function renderProfitPlanner(){
+  if (typeof renderFixedCostTable === "function") renderFixedCostTable();
+  if (typeof syncFixedDaily === "function") syncFixedDaily();
+
   const target = Number(document.getElementById("targetProfit")?.value || 650);
-  const fixed  = Number(document.getElementById("fixedDaily")?.value || 420);
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
   const ticket = Number(document.getElementById("avgTicket")?.value || 10);
   const foodPct = Number(document.getElementById("avgFoodPct")?.value || 32) / 100;
   const food = ticket * foodPct;
@@ -1665,34 +1742,62 @@ function renderProfitPlanner(){
   const foodSpend = p * food;
   const net = p * contrib - fixed;
 
+  const selFood = rows.length ? rows.reduce((s,r) => s + r.fc, 0) / rows.length : food;
+  const foodDay = p * selFood;
+  const totalDayCost = fixed + foodDay;
+
   const chTicket = document.getElementById("chTicket");
   const chFood = document.getElementById("chFood");
   if (chTicket) chTicket.value = ticket.toFixed(2);
   if (chFood) chFood.value = food.toFixed(2);
 
-  const kpis = document.getElementById("profitKpis");
+    const kpis = document.getElementById("profitKpis");
   if (kpis) kpis.innerHTML = `
-    <div class="kpi"><div class="label">Ticket / food (χειροκίνητα)</div>
+    <div class="kpi">
+      <div class="label">Σταθερά / ημέρα</div>
+      <div class="value">${fmt(fixed)}</div>
+      <div class="sub">Νοίκι, ΔΕΗ, μισθοί, εφορία</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Food cost / ημέρα</div>
+      <div class="value">${fmt(foodDay)}</div>
+      <div class="sub">${p} μερίδες × ${fmt(selFood)} από επιλεγμένα πιάτα</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Σύνολο κόστους ημέρας</div>
+      <div class="value">${fmt(totalDayCost)}</div>
+      <div class="sub">Σταθερά + food</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Ticket / food %</div>
       <div class="value">${fmt(ticket)}</div>
-      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div></div>
-    <div class="kpi"><div class="label">Συνεισφορά μείγματος</div>
+      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Συνεισφορά μείγματος</div>
       <div class="value">${fmt(contrib)}</div>
-      <div class="sub">Κατάστημα ${fmt(mix.cLocal)} · διανομή ${fmt(mix.cOwn)} · efood ${fmt(mix.cPlat)}</div></div>
-    <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
+      <div class="sub">Κατάστημα ${fmt(mix.cLocal)} · διανομή ${fmt(mix.cOwn)} · efood ${fmt(mix.cPlat)}</div>
+    </div>
+    <div class="kpi good">
+      <div class="label">Μερίδες για στόχο €${target}</div>
       <div class="value">${p}</div>
-      <div class="sub">Κατάστημα ${Math.round(p*mix.w.local)} · διανομή ${Math.round(p*mix.w.own)} · efood ${Math.round(p*mix.w.plat)}</div></div>
-    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div>
+      <div class="sub">Κατάστημα ${Math.round(p*mix.w.local)} · διανομή ${Math.round(p*mix.w.own)} · efood ${Math.round(p*mix.w.plat)}</div>
+    </div>
+    <div class="kpi ${net>=target?"good":"warn"}">
+      <div class="label">Καθαρό αποτέλεσμα</div>
       <div class="value">${fmt(net)}</div>
-      <div class="sub">Πωλήσεις ${fmt(sales)} · food ${fmt(foodSpend)} · ${rows.length} πιάτα σήμερα</div></div>`;
+      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div>
+    </div>`;
 
   const ladder = document.getElementById("targetLadder");
   if (ladder) ladder.innerHTML = [650,800,1000,1200].map(t => {
     const n = portionsFor(contrib, fixed, t) || 0;
+    const foodN = n * selFood;
     return `<div class="target-card">
       <div class="t">Στόχος €${t}/ημέρα</div>
       <div class="v">${n} μερίδες</div>
       <div class="note">Κατάστημα ${Math.round(n*mix.w.local)} · διανομή ${Math.round(n*mix.w.own)} · efood ${Math.round(n*mix.w.plat)}</div>
-      <div class="note">Πωλήσεις ~ ${fmt(n*ticket)}</div>
+      <div class="note">Πωλήσεις ${fmt(n*ticket)} · σταθερά ${fmt(fixed)} · food ${fmt(foodN)}</div>
     </div>`;
   }).join("");
 
@@ -1732,8 +1837,8 @@ function renderProfitPlanner(){
       </tbody>
     </table></div>
     <p class="note">
+      Σταθερά ημέρας ${fmt(fixed)} (πίνακας ανάλυσης, override ανά γραμμή).
       Η στήλη «Στόχος €${target}» ακολουθεί το πεδίο καθαρού κέρδους.
-      Ticket και food % δεν αλλάζουν μόνα τους — μόνο αν πατήσετε «Γέμισμα μέσων».
     </p>`;
 }
 
