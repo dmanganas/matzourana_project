@@ -189,6 +189,20 @@ tr:hover td { background: #fafcfb; }
 }
 .target-card .t { font-size: .78rem; color: var(--muted); }
 .target-card .v { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+
+.maps-modal {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(20,30,24,.45);
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.maps-modal.show { display: flex; }
+.maps-box {
+  width: min(920px, 96vw); max-height: 90vh; overflow: auto;
+  background: #fff; border-radius: 16px; padding: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+.maps-box textarea { width: 100%; min-height: 160px; }
+
 </style>
 </head>
 <body>
@@ -202,6 +216,7 @@ tr:hover td { background: #fafcfb; }
   </div>
   <div class="actions">
     <button class="btn-secondary" onclick="loadNationalPrices()">Εθνικές τιμές</button>
+    <button class="btn-secondary" onclick="openMapsPriceImport()">Τιμές Google Maps</button>
     <button class="btn-secondary" onclick="recalcAll()">Ανανέωση</button>
     <button class="btn-ghost" onclick="applySuggested(false)">Dry run</button>
     <button class="btn-primary" onclick="applySuggested(true)">Εφαρμογή τιμών</button>
@@ -284,7 +299,10 @@ tr:hover td { background: #fafcfb; }
         <option value="legumes">Όσπρια</option>
         <option value="sweets">Γλυκά</option>
         <option value="grilled">Ψητά</option>
+        <option value="appetizers">Ορεκτικά</option>
+        <option value="potatoes">Πατάτες</option>
         <option value="salads">Σαλάτες</option>
+        <option value="sauces">Αλοιφές</option>
         <option value="drinks">Ποτά</option>
       </select>
     </div>
@@ -368,6 +386,30 @@ tr:hover td { background: #fafcfb; }
   </section>
 </div>
 
+<div class="maps-modal" id="mapsModal">
+  <div class="maps-box">
+    <h2>Εισαγωγή τιμών από Google Maps</h2>
+    <p class="note">
+      Το Maps δεν δίνει τιμές απευθείας στη σελίδα admin.
+      Πατήστε «Άνοιγμα Maps», αντιγράψτε το μενού (Ορεκτικά / Ψητά / Φούρνος / Σαλάτες / Μαγειρευτά) και επικολλήστε εδώ.
+    </p>
+    <div class="filters">
+      <button class="btn-primary" onclick="window.open(MAPS_MENU_URL,'_blank')">Άνοιγμα Google Maps</button>
+      <button class="btn-ghost" onclick="parseMapsPaste()">Ανάλυση κειμένου</button>
+      <button class="btn-primary" onclick="applyMapsPrices()">Εφαρμογή ταιριασμένων</button>
+      <button class="btn-secondary" onclick="closeMapsPriceImport()">Κλείσιμο</button>
+    </div>
+    <textarea id="mapsPaste" placeholder="Επικολλήστε εδώ το μενού από Maps..."></textarea>
+    <div id="mapsResult" class="note"></div>
+    <div class="table-wrap" style="margin-top:10px;">
+      <table>
+        <thead><tr><th>Maps όνομα</th><th>Τμήμα</th><th>Τιμή Maps</th><th>Κλειδί</th><th>Τρέχουσα</th><th>Κατάσταση</th></tr></thead>
+        <tbody id="mapsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
 /* =========================================================
    MATZOURANA PROFESSIONAL COSTING ENGINE
@@ -392,34 +434,110 @@ const categoryRules = {
 
 /* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης (EL 2026) */
 const NATIONAL_PRICES = {
-  // κρέατα
-  beef_shank: 14.50, beef_mince: 12.00, pork: 8.20, chicken_leg: 6.20,
-  chicken_whole: 5.40, rooster: 7.20, goat_kid: 16.00, lamb: 15.50,
-  // λαχανικά
-  tomato: 1.20, onion: 0.70, potato: 0.70, eggplant: 1.60, zucchini: 1.40,
-  green_beans: 2.60, cabbage: 0.80, carrot: 0.90, lettuce: 1.50, spinach: 2.30,
-  okra: 3.60, pepper: 1.50, mushroom: 3.40, artichoke: 4.00, celery: 1.60,
-  cucumber: 1.20, beetroot: 1.10, greens: 2.20, apple: 1.40, radish: 1.80,
+  // ==================== ΚΡΕΑΤΑ ====================
+  beef_shank: 14.50,
+  beef_mince: 12.00,
+  pork: 8.20,
+  chicken_leg: 6.20,
+  chicken_whole: 5.40,
+  rooster: 7.20,
+  goat_kid: 16.00,
+  lamb: 15.50,
+  bacon: 9.50,
+
+  // ==================== ΛΑΧΑΝΙΚΑ ====================
+  tomato: 1.20,
+  onion: 0.70,
+  potato: 0.70,
+  eggplant: 1.60,
+  zucchini: 1.40,
+  green_beans: 2.60,
+  cabbage: 0.80,
+  carrot: 0.90,
+  lettuce: 1.50,
+  spinach: 2.30,
+  okra: 3.60,
+  pepper: 1.50,
+  mushroom: 3.40,
+  artichoke: 4.00,
+  celery: 1.60,
+  cucumber: 1.20,
+  beetroot: 1.10,
+  greens: 2.20,
+  broccoli: 2.40,
+  radish: 1.80,
+
+  // ==================== ΦΡΟΥΤΑ / ΣΑΛΑΤΑ ====================
+  lemon: 1.40,
+  apple: 1.40,
   pomegranate: 3.50,
-  // όσπρια
-  gigantes: 3.20, lentils: 2.10, chickpeas: 2.30,
-  // τυριά / αυγά / γαλακτοκομικά
-  feta_pdo: 10.00, kefalotyri: 12.50, myzithra: 8.50, halloumi: 11.50,
-  parmesan: 14.00, egg: 0.28, cream: 3.80, butter: 8.50, milk: 1.30,
-  // λάδια / βασικά
-  olive_oil: 9.00, lemon: 1.40, garlic: 3.80, flour: 0.90, sugar: 1.10,
-  rice: 2.10, orzo: 2.40, pasta: 1.90, bulgur: 2.60, wine: 4.50,
-  bread: 1.80, bacon: 9.50, phyllo: 3.50, trahana: 4.20, tomato_paste: 3.80,
-  // σαλάτες extras
-  figs: 8.00, walnuts: 12.00, cranberries: 9.00, capers: 8.50, sesame: 6.50,
+  grapefruit: 2.20,
+  olives: 6.50,
+  capers: 8.50,
+  figs: 8.00,
+  walnuts: 12.00,
+  almond: 14.00,
+  cranberries: 9.00,
+  sesame: 6.50,
   tuna: 8.50,
-  // θαλασσινά
-  shrimp: 18.00, mussels: 6.50, octopus: 14.00, cod: 12.00, sardines: 7.50,
-  calamari: 11.50, sole: 16.00, monkfish: 19.00, sea_bream: 14.50,
-  grouper: 22.00, swordfish: 20.00, cuttlefish: 12.00, ray: 11.00,
-  // ποτά (κόστος μονάδας)
-  cola: 0.55, water: 0.30, beer: 1.10, wine_half: 1.40, tsipouro: 3.50,
-  ouzo: 3.50, soda: 0.40, sprite: 0.55
+
+  // ==================== ΟΣΠΡΙΑ ====================
+  gigantes: 3.20,
+  lentils: 2.10,
+  chickpeas: 2.30,
+
+  // ==================== ΤΥΡΙΑ / ΑΥΓΑ / ΓΑΛΑΚΤΟΚΟΜΙΚΑ ====================
+  feta_pdo: 10.00,
+  kefalotyri: 12.50,
+  myzithra: 8.50,
+  halloumi: 11.50,
+  parmesan: 14.00,
+  yogurt: 3.20,
+  cream: 3.80,
+  butter: 8.50,
+  milk: 1.30,
+  egg: 0.28,
+
+  // ==================== ΛΑΔΙΑ / ΞΗΡΑ / ΒΑΣΙΚΑ ====================
+  olive_oil: 9.00,
+  garlic: 3.80,
+  flour: 0.90,
+  sugar: 1.10,
+  rice: 2.10,
+  orzo: 2.40,
+  pasta: 1.90,
+  bulgur: 2.60,
+  bread: 1.80,
+  phyllo: 3.50,
+  trahana: 4.20,
+  tomato_paste: 3.80,
+  wine: 4.50,
+  honey: 12.00,
+
+  // ==================== ΘΑΛΑΣΣΙΝΑ ====================
+  shrimp: 18.00,
+  mussels: 6.50,
+  octopus: 14.00,
+  cod: 12.00,
+  sardines: 7.50,
+  calamari: 11.50,
+  sole: 16.00,
+  monkfish: 19.00,
+  sea_bream: 14.50,
+  grouper: 22.00,
+  swordfish: 20.00,
+  cuttlefish: 12.00,
+  ray: 11.00,
+
+  // ==================== ΠΟΤΑ (κόστος μονάδας) ====================
+  cola: 0.55,
+  sprite: 0.55,
+  soda: 0.40,
+  water: 0.30,
+  beer: 1.10,
+  wine_half: 1.40,
+  tsipouro: 3.50,
+  ouzo: 3.50
 };
 
 const ING_EL = {
@@ -505,7 +623,14 @@ const ING_EL = {
   sugar: "Ζάχαρη (€/kg)",
   phyllo: "Φύλλο κρούστας (€/kg)",
   trahana: "Τραχανάς (€/kg)",
-  tomato_paste: "Πελτές (€/kg)"
+  tomato_paste: "Πελτές (€/kg)",
+  yogurt: "Γιαούρτι στραγγιστό (€/kg)",
+  grapefruit: "Γκρέιπφρουτ (€/kg)",
+  almond: "Αμύγδαλο (€/kg)",
+  broccoli: "Μπρόκολο (€/kg)",
+  olives: "Ελιές Καλαμών (€/kg)",
+  honey: "Μέλι (€/kg)",
+  
 };
 
 let ingredientPrices = { ...NATIONAL_PRICES };
@@ -661,6 +786,7 @@ const menuCatalog = {
   gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
   gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
   gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+  giantes:                      { category:"freshly-cooked", type:"legumes", el:"Γίγαντες πλακί", en:"Giant Beans Plaki", price:"€8.00" },
 
   // ==================== ΘΑΛΑΣΣΙΝΑ ====================
   spaghetti_garides_egaio:      { category:"seafood", type:"seafood", el:"Σπαγγέτι με γαριδούλες Αιγαίου", en:"Spaghetti with Aegean Shrimps", price:"€9.50" },
@@ -699,6 +825,8 @@ const menuCatalog = {
   marinara:                    { category:"seafood", type:"seafood", el:"Μαρινάρα με σπαγγέτι", en:"Marinara with Spaghetti", price:"€9.50" },
   garidoma:                    { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα", en:"Shrimp Pasta", price:"€17.00" },
   garidoma_small:              { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα μικρές", en:"Shrimp Pasta (small)", price:"€9.00" },
+  sardeles_fileto_plaki:       { category:"seafood", type:"seafood", el:"Σαρδέλες πλακί", en:"Sardines Plaki", price:"€9.00" },
+  
 
   // ==================== ΣΟΥΠΕΣ ====================
   kotosoupa:                   { category:"soups", type:"soups", el:"Κοτόσουπα", en:"Chicken Soup", price:"€7.50" },
@@ -734,15 +862,48 @@ const menuCatalog = {
   loukaniko_hoirino:           { category:"grilled", type:"grilled", el:"Λουκάνικο Χωριάτικο Χοιρινό", en:"Village Pork Sausage", price:"€7.50" },
   loukaniko_moscharisio:       { category:"grilled", type:"grilled", el:"Λουκάνικο Μοσχαρίσιο Χειροποίητο", en:"Handmade Beef Sausage", price:"€9.50" },
 
+  // ==================== ΠΑΤΑΤΕΣ ====================
+  patates_tiganites:            { category:"potatoes", type:"potatoes", el:"Πατάτες τηγανητές", en:"French Fries", price:"€4.00" },
+  patates_tiganites_kefalotyri: { category:"potatoes", type:"potatoes", el:"Πατάτες τηγανητές με sauce Ματζουράνα και κεφαλοτύρι", en:"French Fries with Matzourana sauce and kefalotyri", price:"€4.50" },
+  patates_tiganites_bolognese:  { category:"potatoes", type:"potatoes", el:"Πατάτες τηγανητές με σάλτσα κιμά", en:"French Fries with homemade beef sauce", price:"€6.50" },
+  patates_fournou:              { category:"potatoes", type:"potatoes", el:"Πατάτες στο φούρνο", en:"Oven-baked Potatoes", price:"€4.50" },
+  patates_saltsa:               { category:"potatoes", type:"potatoes", el:"Πατάτες με σάλτσα", en:"Potatoes with Sauce", price:"€4.00" },
+
+  // ==================== ΑΛΟΙΦΕΣ / SAUCE ====================
+  tzatziki:              { category:"sauces", type:"sauces", el:"Τζατζίκι χειροποίητο", en:"Homemade Tzatziki", price:"€4.00" },
+  tyrokauteri:           { category:"sauces", type:"sauces", el:"Τυροκαυτερή χειροποίητη", en:"Homemade Tyrokafteri", price:"€5.80" },
+  cocktail_sauce:        { category:"sauces", type:"sauces", el:"Cocktail sauce χειροποίητη", en:"Homemade Cocktail Sauce", price:"€3.80" },
+  dip_tzatziki:          { category:"sauces", type:"sauces", el:"Dip τζατζίκι 120 ml", en:"Tzatziki dip 120 ml", price:"€2.50" },
+  dip_tyrokauteri:       { category:"sauces", type:"sauces", el:"Dip τυροκαυτερή 120 ml", en:"Tyrokafteri dip 120 ml", price:"€2.80" },
+  dip_cocktail:          { category:"sauces", type:"sauces", el:"Dip cocktail sauce 120 ml", en:"Cocktail dip 120 ml", price:"€1.90" },
+
   // ==================== ΣΑΛΑΤΕΣ ====================
   matzourana_salad: { category:"salads", type:"salads", el:"Ματζουράνα", en:"Matzourana Salad", price:"€8.00" },
-  halloumi_salad:   { category:"salads", type:"salads", el:"Χαλούμι", en:"Halloumi Salad", price:"€8.00" },
-  dakos:            { category:"salads", type:"salads", el:"Ντάκος", en:"Dakos", price:"€7.80" },
-  choriatiki:       { category:"salads", type:"salads", el:"Χωριάτικη", en:"Greek Village Salad", price:"€7.50" },
+  halloumi_salad:   { category:"salads", type:"salads", el:"Σαλάτα με χαλλούμι", en:"Halloumi Salad", price:"€8.50" },
+  detox_salad:      { category:"salads", type:"salads", el:"Detox με ροζ γκρέιπφρουτ", en:"Detox with Pink Grapefruit", price:"€8.00" },
+  dakos:            { category:"salads", type:"salads", el:"Κρητικός ντάκος", en:"Cretan Dakos", price:"€8.50" },
+  choriatiki:       { category:"salads", type:"salads", el:"Χωριάτικη", en:"Greek Village Salad", price:"€8.50" },
+  elliniki:         { category:"salads", type:"salads", el:"Ελληνική", en:"Greek Salad (no feta)", price:"€6.00" },
   marouli:          { category:"salads", type:"salads", el:"Μαρούλι", en:"Lettuce Salad", price:"€5.00" },
-  lachano_karoto:   { category:"salads", type:"salads", el:"Λαχανό - Καρότο", en:"Cabbage and Carrot Salad", price:"€5.00" },
-  xorta_epoxis:     { category:"salads", type:"salads", el:"Χόρτα Εποχής", en:"Seasonal Greens", price:"€6.00" },
-  pantzaria:        { category:"salads", type:"salads", el:"Παντζάρια", en:"Beetroot Salad", price:"€5.00" },
+  lachano_karoto:   { category:"salads", type:"salads", el:"Λάχανο-καρότο", en:"Cabbage and Carrot", price:"€5.00" },
+  xorta_epoxis:     { category:"salads", type:"salads", el:"Χόρτα εποχής", en:"Seasonal Greens", price:"€6.50" },
+  brokolo:          { category:"salads", type:"salads", el:"Μπρόκολο", en:"Broccoli", price:"€6.00" },
+  kolokythakia_vrasta:{ category:"salads", type:"salads", el:"Κολοκυθάκια βραστά", en:"Boiled Courgettes", price:"€6.50" },
+
+  // ==================== ΟΡΕΚΤΙΚΑ ====================
+  psomi_prozymeno:     { category:"appetizers", type:"appetizers", el:"Ψωμί προζυμένιο με λάδι και ρίγανη", en:"Sourdough Bread with Oil and Oregano", price:"€0.80" },
+  skordalia:           { category:"appetizers", type:"appetizers", el:"Σκορδαλιά μερίδα", en:"Garlic Sauce", price:"€3.50" },
+  kolokythokeftedes:   { category:"appetizers", type:"appetizers", el:"Κολοκυθοκεφτέδες χειροποίητοι", en:"Zucchini Fritters", price:"€6.00" },
+  tyrokroketes:        { category:"appetizers", type:"appetizers", el:"Τυροκροκέτες με 4 τυριά", en:"Four-Cheese Croquettes", price:"€6.80" },
+  piperies_gemistes:   { category:"appetizers", type:"appetizers", el:"Πιπεριές γεμιστές", en:"Stuffed Peppers", price:"€7.50" },
+  feta_ladorigani:     { category:"appetizers", type:"appetizers", el:"Φέτα με ελαιόλαδο και ρίγανη", en:"Feta with Oil and Oregano", price:"€4.00" },
+  bouyourdi:           { category:"appetizers", type:"appetizers", el:"Μπουγιουρντί", en:"Bouyourdi", price:"€6.00" },
+  saganaki:            { category:"appetizers", type:"appetizers", el:"Σαγανάκι κεφαλοτύρι", en:"Kefalotyri Saganaki", price:"€5.30" },
+  halloumi_psito:      { category:"appetizers", type:"appetizers", el:"Χαλούμι ψητό", en:"Grilled Halloumi", price:"€6.00" },
+  halloumi_meli:       { category:"appetizers", type:"appetizers", el:"Χαλούμι ψητό με μέλι και σουσάμι", en:"Grilled Halloumi with Honey and Sesame", price:"€6.90" },
+  fava_orektiko:       { category:"appetizers", type:"appetizers", el:"Φάβα ορεκτικό", en:"Fava appetizer", price:"€5.00" },
+  dolmadakia:          { category:"appetizers", type:"appetizers", el:"Ντολμαδάκια γιαλατζί", en:"Stuffed Vine Leaves", price:"€7.00" },
+  psita_lachanika:     { category:"appetizers", type:"appetizers", el:"Ψητά λαχανικά", en:"Grilled Vegetables", price:"€8.00" },
 
   // ==================== ΠΟΤΑ ====================
   coca_cola:                   { category:"drinks", type:"drinks", el:"Κόκα Κόλα", en:"Coca Cola", price:"€2.00" },
@@ -906,15 +1067,50 @@ let recipes = {
   loukaniko_hoirino:            { pork:0.22, olive_oil:0.01 },
   loukaniko_moscharisio:        { beef_mince:0.22, olive_oil:0.01 },
 
+  // ==================== ΠΑΤΑΤΕΣ ====================
+  patates_tiganites:            { potato:0.30, olive_oil:0.04 },
+  patates_tiganites_kefalotyri: { potato:0.30, olive_oil:0.04, kefalotyri:0.025 },
+  patates_tiganites_bolognese:  { potato:0.28, olive_oil:0.035, beef_mince:0.06, tomato:0.05, feta_pdo:0.02, bacon:0.02 },
+  patates_fournou:              { potato:0.32, olive_oil:0.025, lemon:0.02 },
+  patates_saltsa:               { potato:0.30, olive_oil:0.03, tomato:0.04 },
+
+
+  // ==================== ΑΛΟΙΦΕΣ / SAUCE ====================
+  tzatziki:            { yogurt:0.18, cucumber:0.05, olive_oil:0.015, garlic:0.008 },
+  tyrokauteri:         { feta_pdo:0.10, pepper:0.03, olive_oil:0.015 },
+  cocktail_sauce:      { cream:0.04 },
+  dip_tzatziki:        { yogurt:0.10, cucumber:0.03, olive_oil:0.008, garlic:0.004 },
+  dip_tyrokauteri:     { feta_pdo:0.05, pepper:0.015, olive_oil:0.008 },
+  dip_cocktail:        { cream:0.03 },
+
   // ==================== ΣΑΛΑΤΕΣ ====================
-  matzourana_salad: { lettuce:0.10, tomato:0.08, cucumber:0.06, apple:0.05, radish:0.03, pomegranate:0.03, onion:0.02, parmesan:0.02, olive_oil:0.02 },
-  halloumi_salad:   { lettuce:0.12, halloumi:0.08, tomato:0.05, figs:0.03, walnuts:0.02, cranberries:0.015, olive_oil:0.02 },
-  dakos:            { bread:0.08, tomato:0.12, feta_pdo:0.07, capers:0.01, olive_oil:0.02 },
-  choriatiki:       { tomato:0.18, cucumber:0.10, onion:0.03, feta_pdo:0.08, olive_oil:0.025, pepper:0.04 },
-  marouli:          { lettuce:0.20, olive_oil:0.02, lemon:0.02 },
-  lachano_karoto:   { cabbage:0.16, carrot:0.06, olive_oil:0.02, lemon:0.02 },
-  xorta_epoxis:     { greens:0.22, olive_oil:0.025, lemon:0.02 },
-  pantzaria:        { beetroot:0.22, olive_oil:0.02, garlic:0.005 },
+  matzourana_salad:    { lettuce:0.10, tomato:0.08, cucumber:0.06, apple:0.05, radish:0.03, pomegranate:0.03, onion:0.02, parmesan:0.02, olive_oil:0.02 },
+  halloumi_salad:      { lettuce:0.12, halloumi:0.08, tomato:0.05, figs:0.03, walnuts:0.02, cranberries:0.015, olive_oil:0.02 },
+  detox_salad:         { lettuce:0.12, grapefruit:0.10, almond:0.02, olive_oil:0.02 },
+  dakos:               { bread:0.08, tomato:0.12, feta_pdo:0.07, capers:0.01, olive_oil:0.02 },
+  choriatiki:          { tomato:0.18, cucumber:0.10, onion:0.03, feta_pdo:0.08, olive_oil:0.025, pepper:0.04, olives:0.03 },
+  elliniki:            { tomato:0.16, cucumber:0.10, onion:0.03, olive_oil:0.02, pepper:0.04, olives:0.03 },
+  marouli:             { lettuce:0.20, olive_oil:0.02, lemon:0.02 },
+  lachano_karoto:      { cabbage:0.16, carrot:0.06, olive_oil:0.02, lemon:0.02 },
+  xorta_epoxis:        { greens:0.22, olive_oil:0.025, lemon:0.02 },
+  brokolo:             { broccoli:0.25, olive_oil:0.02, lemon:0.02 },
+  kolokythakia_vrasta: { zucchini:0.28, olive_oil:0.02, lemon:0.02 },
+  
+  // ==================== ΟΡΕΚΤΙΚΑ ==================== 
+  psomi_prozymeno:     { bread:0.06, olive_oil:0.01 },
+  skordalia:           { potato:0.12, garlic:0.015, olive_oil:0.03 },
+  kolokythokeftedes:   { zucchini:0.18, feta_pdo:0.04, flour:0.03, egg:1, olive_oil:0.03 },
+  tyrokroketes:        { feta_pdo:0.04, kefalotyri:0.03, flour:0.03, egg:1, olive_oil:0.03 },
+  piperies_gemistes:   { pepper:0.18, feta_pdo:0.05, tomato:0.04, olive_oil:0.02 },
+  feta_ladorigani:     { feta_pdo:0.12, olive_oil:0.015 },
+  bouyourdi:           { feta_pdo:0.12, tomato:0.05, pepper:0.03, olive_oil:0.015 },
+  saganaki:            { kefalotyri:0.12, olive_oil:0.015 },
+  halloumi_psito:      { halloumi:0.12, olive_oil:0.01 },
+  halloumi_meli:       { halloumi:0.12, honey:0.02, sesame:0.008 },
+  fava_orektiko:       { chickpeas:0.10, onion:0.03, olive_oil:0.02, lemon:0.02 },
+  dolmadakia:          { rice:0.04, onion:0.03, olive_oil:0.02, lemon:0.02 },
+  psita_lachanika:     { zucchini:0.08, eggplant:0.08, pepper:0.06, mushroom:0.05, olive_oil:0.02 },
+
 
   // ==================== ΓΛΥΚΑ ====================
   haliavas:                     { flour:0.08, olive_oil:0.04, sugar:0.05 },
@@ -1291,34 +1487,73 @@ function setOverride(key, val){
   renderKPIs(computeAll());
 }
 
+function avgMenuTicket(){
+  const keys = Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
+  const sum = keys.reduce((s,k) => s + parseEuro(menuCatalog[k].price), 0);
+  return keys.length ? sum / keys.length : 9.5;
+}
+
+function avgMenuFoodPct(){
+  const keys = Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
+  let s = 0, n = 0;
+  keys.forEach(k => {
+    const p = parseEuro(menuCatalog[k].price);
+    const fc = foodCost(k);
+    if (p > 0) { s += fc / p; n++; }
+  });
+  return n ? (s / n) * 100 : 32;
+}
+
 function renderProfitPlanner(){
-  const target = Number(document.getElementById("targetProfit").value || 650);
+  const targetInp = document.getElementById("targetProfit");
+  const ticketInp = document.getElementById("avgTicket");
+  const foodInp = document.getElementById("avgFoodPct");
+
+  if (!ticketInp.dataset.ready) {
+    ticketInp.value = avgMenuTicket().toFixed(2);
+    foodInp.value = avgMenuFoodPct().toFixed(1);
+    ticketInp.dataset.ready = "1";
+  }
+
+  const target = Number(targetInp.value || 650);
   const fixed = Number(document.getElementById("fixedDaily").value || 420);
-  const ticket = Number(document.getElementById("avgTicket").value || 9.5);
-  const foodPct = Number(document.getElementById("avgFoodPct").value || 32) / 100;
+  const ticket = Number(ticketInp.value || avgMenuTicket());
+  const foodPct = Number(foodInp.value || 32) / 100;
   const food = ticket * foodPct;
-  const contribution = ticket - food; // before fixed costs
-  const neededContribution = fixed + target;
-  const portions = contribution > 0 ? Math.ceil(neededContribution / contribution) : 0;
+  const contrib = ticket - food;
+  const portions = contrib > 0 ? Math.ceil((fixed + target) / contrib) : 0;
   const sales = portions * ticket;
   const foodSpend = portions * food;
-  const gross = sales - foodSpend;
-  const net = gross - fixed;
+  const net = sales - foodSpend - fixed;
 
   document.getElementById("profitKpis").innerHTML = `
-    <div class="kpi"><div class="label">Συνεισφορά / μερίδα</div><div class="value">${fmt(contribution)}</div><div class="sub">Ticket − food cost</div></div>
-    <div class="kpi good"><div class="label">Μερίδες / ημέρα</div><div class="value">${portions}</div><div class="sub">Για στόχο €${target}</div></div>
-    <div class="kpi"><div class="label">Απαιτούμενες πωλήσεις</div><div class="value">${fmt(sales)}</div><div class="sub">Food spend ${fmt(foodSpend)}</div></div>
-    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div><div class="value">${fmt(net)}</div><div class="sub">Μετά σταθερά κόστη</div></div>`;
+    <div class="kpi">
+      <div class="label">Ticket / μερίδα</div>
+      <div class="value">${fmt(ticket)}</div>
+      <div class="sub">Μέση τιμή πιάτου (όχι ποτά)</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Συνεισφορά / μερίδα</div>
+      <div class="value">${fmt(contrib)}</div>
+      <div class="sub">Ticket ${fmt(ticket)} − food ${fmt(food)} (${(foodPct*100).toFixed(1)}%)</div>
+    </div>
+    <div class="kpi good">
+      <div class="label">Μερίδες / ημέρα</div>
+      <div class="value">${portions}</div>
+      <div class="sub">Για στόχο €${target} + σταθερά €${fixed}</div>
+    </div>
+    <div class="kpi ${net>=target?"good":"warn"}">
+      <div class="label">Καθαρό αποτέλεσμα</div>
+      <div class="value">${fmt(net)}</div>
+      <div class="sub">Πωλήσεις ${fmt(sales)} · food ${fmt(foodSpend)}</div>
+    </div>`;
 
-  const ladder = [650, 800, 1000, 1200];
-  document.getElementById("targetLadder").innerHTML = ladder.map(t => {
-    const need = fixed + t;
-    const p = contribution > 0 ? Math.ceil(need / contribution) : 0;
+  document.getElementById("targetLadder").innerHTML = [650,800,1000,1200].map(t => {
+    const p = contrib > 0 ? Math.ceil((fixed + t) / contrib) : 0;
     return `<div class="target-card">
       <div class="t">Στόχος €${t}/ημέρα</div>
       <div class="v">${p} μερίδες</div>
-      <div class="note">Πωλήσεις ~ ${fmt(p*ticket)}</div>
+      <div class="note">Ticket ${fmt(ticket)} · πωλήσεις ${fmt(p*ticket)}</div>
     </div>`;
   }).join("");
 }
@@ -1328,25 +1563,28 @@ function renderChannels(){
   const food = Number(document.getElementById("chFood").value || 3.2);
   const commission = Number(document.getElementById("chCommission").value || 25) / 100;
   const localDeliv = Number(document.getElementById("chLocalDeliv").value || 1.2);
-
-  const local = ticket - food;
-  const ownDelivery = ticket - food - localDeliv;
-  const platform = ticket * (1 - commission) - food;
+  const fixed = Number(document.getElementById("fixedDaily")?.value || 420);
 
   const rows = [
-    { name: "Στο κατάστημα (Matzourana)", net: local, note: "Καλύτερο περιθώριο · χτίζει πιστότητα", id: "local" },
-    { name: "Δική σας διανομή", net: ownDelivery, note: "Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50", id: "own" },
-    { name: "efood / Wolt", net: platform, note: "Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού", id: "plat" }
+    { name: "Στο κατάστημα (Matzourana)", net: ticket - food, note: "Καλύτερο περιθώριο · χτίζει πιστότητα", id: "local" },
+    { name: "Δική σας διανομή", net: ticket - food - localDeliv, note: "Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50", id: "own" },
+    { name: "efood / Wolt", net: ticket * (1 - commission) - food, note: "Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού", id: "plat" }
   ];
+
   const best = Math.max(...rows.map(r => r.net));
-  document.getElementById("channelCards").innerHTML = rows.map(r => `
-    <div class="channel ${r.net===best?"best":""}">
-      <h3>${r.name}</h3>
-      <div class="big">${fmt(r.net)}</div>
-      <div class="note">Καθαρό μετά food${r.id==="plat"?" + προμήθεια": r.id==="own"?" + διανομή":""}</div>
-      <div class="note">${r.note}</div>
-      <div class="note">Για €650 καθαρά (χωρίς σταθερά): ~${r.net>0? Math.ceil(650/r.net): "—"} μερίδες</div>
-    </div>`).join("");
+
+  document.getElementById("channelCards").innerHTML = rows.map(r => {
+    const need = t => r.net > 0 ? Math.ceil((fixed + t) / r.net) : "—";
+    return `
+      <div class="channel ${r.net === best ? "best" : ""}">
+        <h3>${r.name}</h3>
+        <div class="big">${fmt(r.net)}</div>
+        <div class="note">Καθαρό μετά food${r.id==="plat"?" + προμήθεια": r.id==="own"?" + διανομή":""}</div>
+        <div class="note">${r.note}</div>
+        <div class="note">Ticket = μέση τιμή πιάτου ${fmt(ticket)}</div>
+        <div class="note">€650 → ${need(650)} μερίδες · €800 → ${need(800)} · €1000 → ${need(1000)} · €1200 → ${need(1200)}</div>
+      </div>`;
+  }).join("");
 }
 
 function applySuggested(write){
@@ -1415,6 +1653,312 @@ function afterAdminUnlock() {
   recalcAll();
   renderProfitPlanner();
   renderChannels();
+}
+
+const MAPS_MENU_URL = "https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7080991,17z/data=!4m7!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e9!16s%2Fg%2F11m5lpfpyp";
+
+const MAPS_SECTIONS = {
+  "appetizers": "appetizers",
+  "ορεκτικά": "appetizers",
+  "ορεκτικα": "appetizers",
+
+  "αλοιφές": "sauces",
+  "αλοιφες": "sauces",
+  "sauce": "sauces",
+  "sauces": "sauces",
+
+  "grill": "grilled",
+  "ψητά": "grilled",
+  "ψητα": "grilled",
+
+  "oven": "freshly-cooked",
+  "φούρνος": "freshly-cooked",
+  "φουρνος": "freshly-cooked",
+  "cooked": "freshly-cooked",
+  "μαγειρευτά": "freshly-cooked",
+  "μαγειρευτα": "freshly-cooked",
+  "daily": "freshly-cooked",
+  "πιάτα ημέρας": "freshly-cooked",
+  "daily dishes pot": "freshly-cooked",
+  "daily dishes oven": "freshly-cooked",
+
+  "salads": "salads",
+  "σαλάτες": "salads",
+  "σαλατες": "salads",
+  "in salads": "salads",
+
+  "πατάτες": "potatoes",
+  "πατατες": "potatoes",
+  "potatoes": "potatoes",
+  "fries": "potatoes"
+};
+
+let mapsMatches = [];
+
+function openMapsPriceImport(){
+  document.getElementById("mapsModal").classList.add("show");
+}
+function closeMapsPriceImport(){
+  document.getElementById("mapsModal").classList.remove("show");
+}
+
+function normName(s){
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[€0-9.,]/g, " ")
+    .replace(/[^a-zα-ωάέήίόύώϊϋΐΰ\s]/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const MAPS_ALIASES = {
+  // φούρνος
+  "παστιτσιο": "pastitsio",
+  "κοτοπουλο στο φουρνο με πατατες": "kotopoulo_fournou",
+  "κοτοπουλο στο φουρνο": "kotopoulo_fournou",
+  "μουσακας": "moussakas",
+  "παπουτσακια": "papoutsakia",
+  "μπιφτεκια μοσχαρισια": "bifteki_moscharisia",
+  "ρολο μοσχαρισιου κιμα": "rolo_moscharisio",
+
+  // κατσαρόλα / μοσχάρι
+  "μοσχαρακι κοκκινιστο": "moschari_kokkinisto",
+  "μοσχαρι κοκκινιστο": "moschari_kokkinisto",
+  "μοσχαρι λεμονατο": "moschari_lemonato",
+  "μοσχαρακι λεμονατο": "moschari_lemonato",
+  "μοσχαρακι γιουβετσι": "moschari_giouvesti",
+  "μοσχαρι γιουβετσι": "moschari_giouvesti",
+  "μοσχαρι στιφαδο": "moschari_stifado",
+  "μοσχαρακι νουα": "moscharaki_noua",
+  "κοκορας κρασατος": "kokoras_krasatos",
+  "κοκορας με χωριατικες χυλοπιτες": "kokoras_hilopites",
+  "γιουβαρλακια αυγολεμονο": "giouvarlakia",
+  "κολοκυθακια αυγολεμονο": "kolokythakia_gemista",
+  "λαχανοντολμαδες": "lachanontolmades",
+  "κεφτεδακια τηγανητα": "keftedakia_tiganita",
+  "κεφτεδακια τηγανητα με σαλτσα ντοματας": "keftedakia_saltsa",
+  "μπολονεζ": "makaronia_kima",
+  "σουτζουκακια σμυρνεικα": "soutzoukakia",
+
+  // λαδερά / όσπρια
+  "γεμιστα με superfoods": "gemista_superfoods",
+  "σπανακορυζο": "spanakorizo",
+  "φασολακια": "fasolakia",
+  "αρακας με πατατες": "arakas_lemonatos",
+  "μπριαμ": "briam",
+  "γιγαντες πλακι": "giantes",
+  "γιγαντες": "giantes",
+  "φακες": "fakes",
+  "φασολαδα": "fasolada",
+  "ρεβυθια σουπα": "revithia",
+  "ρεβυθια": "revithia",
+
+  // σούπες
+  "κοτοσουπα": "kotosoupa",
+  "κρεατοσουπα": "kreatosoupa",
+  "ψαροσουπα": "psarosoupa",
+
+  // θαλασσινά
+  "σαρδελες πλακι": "sardeles_fileto_plaki",
+  "μυδοπιλαφο": "mydopilafo",
+  "μπακαλιαρος αλα σπετσιωτα": "bakaliaros_spetsiota",
+  "χταποδι με κοφτο μακαρονακι": "oktapodi_makaroni",
+  "ξιφιας λεμονατος στο φουρνο": "ksifias_lemonatos",
+  "ξιφιας λεμονατος": "ksifias_lemonatos",
+  
+
+  // ψητά
+  "φιλετο κοτοπουλο": "fileto_kotopoulo",
+  "μπιφτεκι μοσχαρισιο": "bifteki_grilled",
+  "μπιφτεκι κοτοπουλο": "bifteki_kotopoulo",
+  "μπριζολα χοιρινη": "brizola_hoirini",
+
+  // ποτά
+  "coca cola/coca cola zero": "coca_cola",
+  "coca cola coca cola zero": "coca_cola",
+  "sprite/ soda": "sprite",
+  "sprite soda": "sprite",
+  "λουξ πορτοκαλαδα/ λεμοναδα": "loux_orange",
+  "νερο εμφιαλωμενο 0.5 lt": "water_05",
+  "νερο εμφιαλωμενο 1.5 lt": "water_15",
+  "αλφα/ fix/amstel 500 ml": "beer_alpha",
+  "heineken / kaiser": "beer_heineken",
+
+  // ορεκτικά
+  "μεριδα ψωμι προζυμενιο με λαδι και ριγανη": "psomi_prozymeno",
+  "κολοκυθοκεφτεδες χειροποιητοι": "kolokythokeftedes",
+  "τυροκροκετες με 4 τυρια": "tyrokroketes",
+  "πιπεριες γεμιστες": "piperies_gemistes",
+  "φαβα": "fava_orektiko",
+  "φετα κεφαλονιας με ελαιολαδο και ριγανη": "feta_ladorigani",
+  "μπουγιουρντι": "bouyourdi",
+  "σαγανακι κεφαλοτυρι": "saganaki",
+  "χαλουμι ψητο": "halloumi_meli",
+
+  // πατάτες
+  "πατατες τηγανητες": "patates_tiganites",
+  "πατατες τηγανητες με sauce και τριμμενο κεφαλοτυρι": "patates_tiganites_kefalotyri",
+  "πατατες τηγανητες με σαλτσα bolognese": "patates_tiganites_bolognese",
+  "πατατες φουρνου": "patates_fournou",
+
+  // αλοιφές
+  "τζατζικι": "tzatziki",
+  "τυροκαυτερη χειροποιητη": "tyrokauteri",
+  "cocktail sauce χειροποιητη": "cocktail_sauce",
+  "dip τζατζικι 120 ml": "dip_tzatziki",
+  "dip τυροκαυτερη 120 ml": "dip_tyrokauteri",
+  "dip cocktail sauce 120 ml": "dip_cocktail",
+
+  // σαλάτες
+  "ματζουρανα": "matzourana_salad",
+  "σαλατα με χαλλουμι": "halloumi_salad",
+  "detox με ροζ γκρειπφρουτ": "detox_salad",
+  "κρητικος ντακος": "dakos",
+  "χωριατικη": "choriatiki",
+  "ελληνικη": "elliniki",
+  "μαρουλι": "marouli",
+  "λαχανο καροτο": "lachano_karoto",
+  "χορτα εποχης": "xorta_epoxis",
+  "μπροκολο": "brokolo",
+  "κολοκυθακια βραστα": "kolokythakia_vrasta",
+  "γιγαντες πλακι": "giantes",
+  "γιγαντες": "giantes",
+  "φακες": "fakes",
+  "φασολαδα": "fasolada",
+  "δυναμωτικες και νοστιμες": "fakes",
+  "χυλωμενη και ασυναγωνιστη": "fasolada"
+};
+
+function findCatalogKey(name){
+  const n = normName(name);
+  if (!n || n.includes("επιπεδα")) return null;
+  if (MAPS_ALIASES[n]) return MAPS_ALIASES[n];
+
+  // distinctive word → key
+  if (n.includes("κοκκινιστ")) return "moschari_kokkinisto";
+  if (n.includes("λεμονατ") && n.includes("μοσχαρ")) return "moschari_lemonato";
+  if (n.includes("γιουβετσ") && n.includes("μοσχαρ")) return "moschari_giouvesti";
+  if (n.includes("στιφαδ") && n.includes("μοσχαρ")) return "moschari_stifado";
+  if (n.includes("χυλοπιτ")) return "kokoras_hilopites";
+  if (n.includes("μπολονεζ") || n.includes("bolognese") && n.includes("μακαρον")) return "makaronia_kima";
+  if (n.includes("κεφτεδακ") && n.includes("σαλτσ")) return "keftedakia_saltsa";
+  if (n.includes("κεφτεδακ")) return "keftedakia_tiganita";
+  if (n.includes("superfood")) return "gemista_superfoods";
+  if (n.includes("σπανακορυζ")) return "spanakorizo";
+  if (n.includes("φασολακ")) return "fasolakia";
+  if (n.includes("αρακ")) return "arakas_lemonatos";
+  if (n.includes("μπριαμ")) return "briam";
+  if (n.includes("γιγαντ")) return "giantes";
+  if (n.includes("φασολαδ")) return "fasolada";
+  if (n.includes("ρεβυθ")) return "revithia";
+  if (n.includes("μυδοπιλαφ")) return "mydopilafo";
+  if (n.includes("μπακαλιαρ") && n.includes("σπετσι")) return "bakaliaros_spetsiota";
+  if (n.includes("χταποδ") && n.includes("μακαρον")) return "oktapodi_makaroni";
+  if (n.includes("ξιφια")) return "ksifias_lemonatos";
+  if (n === "φακες" || n.startsWith("φακε")) return "fakes";
+  
+  
+ 
+  
+
+  let best = null, score = 0;
+  Object.keys(menuCatalog).forEach(key => {
+    const d = menuCatalog[key];
+    const labels = [d.el, d.en, key].map(normName);
+    labels.forEach(c => {
+      if (!c) return;
+      let s = 0;
+      if (c === n) s = 120;
+      else if (c.startsWith(n) || n.startsWith(c)) s = 90;
+      else if (c.includes(n) || n.includes(c)) s = 70;
+      else {
+        const stem = w => w.replace(/ακι$|ι$|ος$|ες$|ων$/, "");
+        const cw = new Set(c.split(" ").map(stem).filter(w => w.length > 3));
+        const nw = n.split(" ").map(stem).filter(w => w.length > 3);
+        const hit = nw.filter(w => cw.has(w)).length;
+        if (hit) s = 40 + hit * 20;
+      }
+      if (n.includes("πατατ") && !c.includes("πατατ") && !c.includes("fries") && !c.includes("potato")) s -= 40;
+      if (n.includes("τηγαν") && c.includes("noua")) s -= 50;
+      if (s > score) { score = s; best = key; }
+    });
+  });
+  return score >= 60 ? best : null;
+}
+
+function parseMapsPaste(){
+  const raw = document.getElementById("mapsPaste").value || "";
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+  let section = "unknown";
+  const items = [];
+  let pendingName = "";
+
+  const priceRe = /([0-9]+(?:[.,][0-9]{1,2})?)\s*€/;
+
+  function isSection(line){
+    const low = normName(line);
+    return MAPS_SECTIONS[low] || MAPS_SECTIONS[line.toLowerCase()] || null;
+  }
+
+  function looksLikeTitle(line){
+  if (priceRe.test(line.replace(/\u00a0/g, " "))) return false;
+  if (/επιπεδα/i.test(normName(line))) return false;
+  if (line.length > 45) return false;
+  if (line.split(/\s+/).length > 6) return false;
+  if (/[!…]/.test(line)) return false;
+  if (/κρεατα αστακου|ελευθερας βοσκης|συνοδευεται|απλα ακαταμαχητα|δυναμωτικ|χυλωμεν|ασυναγωνιστ|υγιεινα και/i.test(normName(line))) return false;
+  return /[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ]/.test(line);
+}
+
+  lines.forEach(line => {
+    const sec = isSection(line);
+    if (sec) { section = sec; pendingName = ""; return; }
+
+    const pm = line.match(priceRe);
+    if (pm) {
+      const price = parseFloat(pm[1].replace(",", "."));
+      const name = pendingName;
+      pendingName = "";
+      if (!name || !(price > 0)) return;
+      const key = findCatalogKey(name);
+      items.push({
+        name, section, price, key,
+        current: key ? parseEuro(menuCatalog[key].price) : null
+      });
+      return;
+    }
+
+    if (looksLikeTitle(line) && !pendingName) pendingName = line;
+  });
+
+  mapsMatches = items;
+  document.getElementById("mapsResult").textContent =
+    items.length
+      ? ("Βρέθηκαν " + items.length + " τιμές · ταιριάστηκαν " + items.filter(i => i.key).length)
+      : "Δεν βρέθηκαν γραμμές τύπου 9,00 €.";
+
+  document.getElementById("mapsTable").innerHTML = items.map(i => `
+    <tr>
+      <td>${i.name}</td>
+      <td>${i.section}</td>
+      <td>€${i.price.toFixed(2)}</td>
+      <td>${i.key ? "<code>"+i.key+"</code>" : "—"}</td>
+      <td>${i.current != null ? fmt(i.current) : "—"}</td>
+      <td>${i.key ? (Math.abs((i.current||0) - i.price) >= 0.2 ? "αλλαγή" : "ίδια") : "χωρίς ταίρι"}</td>
+    </tr>`).join("");
+}
+
+function applyMapsPrices(){
+  let n = 0;
+  mapsMatches.forEach(i => {
+    if (!i.key || !(i.price > 0)) return;
+    menuCatalog[i.key].price = "€" + i.price.toFixed(2);
+    n++;
+  });
+  recalcAll();
+  alert("Ενημερώθηκαν " + n + " τιμές από το κείμενο Maps.");
 }
 
 
