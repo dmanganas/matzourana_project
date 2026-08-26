@@ -129,6 +129,14 @@ tr:hover td { background: #fafcfb; }
 .bar.good > span { background: linear-gradient(90deg,#6eaa7d,var(--green)); }
 .bar.warn > span { background: linear-gradient(90deg,#e0b35a,var(--amber)); }
 .bar.bad > span { background: linear-gradient(90deg,#e58a82,var(--red)); }
+
+.outlier-flag {
+  margin-left: 6px;
+  color: #b42318;
+  font-weight: 800;
+  cursor: help;
+}
+
 .note { color: var(--muted); font-size: .84rem; margin-top: 10px; }
 .ing-grid, .form-grid {
   display: grid;
@@ -276,6 +284,7 @@ tr:hover td { background: #fafcfb; }
         <option value="legumes">Όσπρια</option>
         <option value="sweets">Γλυκά</option>
         <option value="grilled">Ψητά</option>
+        <option value="salads">Σαλάτες</option>
         <option value="drinks">Ποτά</option>
       </select>
     </div>
@@ -383,21 +392,34 @@ const categoryRules = {
 
 /* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης (EL 2026) */
 const NATIONAL_PRICES = {
+  // κρέατα
   beef_shank: 14.50, beef_mince: 12.00, pork: 8.20, chicken_leg: 6.20,
   chicken_whole: 5.40, rooster: 7.20, goat_kid: 16.00, lamb: 15.50,
+  // λαχανικά
   tomato: 1.20, onion: 0.70, potato: 0.70, eggplant: 1.60, zucchini: 1.40,
-  green_beans: 2.60, gigantes: 3.20, lentils: 2.10, chickpeas: 2.30,
-  cabbage: 0.80, carrot: 0.90, lettuce: 1.50, spinach: 2.30, okra: 3.60,
-  pepper: 1.50, mushroom: 3.40, artichoke: 4.00, celery: 1.60,
-  feta_pdo: 10.00, kefalotyri: 12.50, myzithra: 8.50, egg: 0.28,
-  olive_oil: 9.00, rice: 2.10, orzo: 2.40, pasta: 1.90, bulgur: 2.60,
-  wine: 4.50, bread: 1.80, cream: 3.80, bacon: 9.50, parmesan: 14.00,
+  green_beans: 2.60, cabbage: 0.80, carrot: 0.90, lettuce: 1.50, spinach: 2.30,
+  okra: 3.60, pepper: 1.50, mushroom: 3.40, artichoke: 4.00, celery: 1.60,
+  cucumber: 1.20, beetroot: 1.10, greens: 2.20, apple: 1.40, radish: 1.80,
+  pomegranate: 3.50,
+  // όσπρια
+  gigantes: 3.20, lentils: 2.10, chickpeas: 2.30,
+  // τυριά / αυγά / γαλακτοκομικά
+  feta_pdo: 10.00, kefalotyri: 12.50, myzithra: 8.50, halloumi: 11.50,
+  parmesan: 14.00, egg: 0.28, cream: 3.80, butter: 8.50, milk: 1.30,
+  // λάδια / βασικά
+  olive_oil: 9.00, lemon: 1.40, garlic: 3.80, flour: 0.90, sugar: 1.10,
+  rice: 2.10, orzo: 2.40, pasta: 1.90, bulgur: 2.60, wine: 4.50,
+  bread: 1.80, bacon: 9.50, phyllo: 3.50, trahana: 4.20, tomato_paste: 3.80,
+  // σαλάτες extras
+  figs: 8.00, walnuts: 12.00, cranberries: 9.00, capers: 8.50, sesame: 6.50,
+  tuna: 8.50,
+  // θαλασσινά
   shrimp: 18.00, mussels: 6.50, octopus: 14.00, cod: 12.00, sardines: 7.50,
   calamari: 11.50, sole: 16.00, monkfish: 19.00, sea_bream: 14.50,
   grouper: 22.00, swordfish: 20.00, cuttlefish: 12.00, ray: 11.00,
+  // ποτά (κόστος μονάδας)
   cola: 0.55, water: 0.30, beer: 1.10, wine_half: 1.40, tsipouro: 3.50,
-  lemon: 1.40, garlic: 3.80, flour: 0.90, butter: 8.50, milk: 1.30,
-  sugar: 1.10, phyllo: 3.50, trahana: 4.20, tomato_paste: 3.80
+  ouzo: 3.50, soda: 0.40, sprite: 0.55
 };
 
 const ING_EL = {
@@ -420,16 +442,24 @@ const ING_EL = {
   chickpeas: "Ρεβύθια (€/kg)",
   cabbage: "Λάχανο (€/kg)",
   carrot: "Καρότο (€/kg)",
-  lettuce: "Μαρούλι (€/kg)",
+  lettuce: "Μαρούλι / ρόκα / λόλα (€/kg)",
   spinach: "Σπανάκι (€/kg)",
   okra: "Μπάμιες (€/kg)",
   pepper: "Πιπεριά (€/kg)",
   mushroom: "Μανιτάρια (€/kg)",
   artichoke: "Αγκινάρα (€/kg)",
   celery: "Σέλινο (€/kg)",
+  cucumber: "Αγγούρι (€/kg)",
+  beetroot: "Παντζάρι (€/kg)",
+  greens: "Χόρτα εποχής (€/kg)",
+  apple: "Πράσινο μήλο (€/kg)",
+  radish: "Ραπανάκι (€/kg)",
+  pomegranate: "Ρόδι (€/kg)",
   feta_pdo: "Φέτα ΠΟΠ (€/kg)",
   kefalotyri: "Κεφαλοτύρι (€/kg)",
   myzithra: "Μυζήθρα (€/kg)",
+  halloumi: "Χαλούμι (€/kg)",
+  parmesan: "Παρμεζάνα (€/kg)",
   egg: "Αυγό (€/τεμ)",
   olive_oil: "Ελαιόλαδο Εξ.Παρθένο (€/L)",
   rice: "Ρύζι (€/kg)",
@@ -437,28 +467,36 @@ const ING_EL = {
   pasta: "Ζυμαρικά (€/kg)",
   bulgur: "Πλιγούρι (€/kg)",
   wine: "Κρασί μαγειρικής (€/L)",
-  bread: "Ψωμί / φρυγανιά (€/kg)",
+  bread: "Ψωμί / παξιμάδι (€/kg)",
   cream: "Κρέμα γάλακτος (€/L)",
   bacon: "Μπέικον (€/kg)",
-  parmesan: "Παρμεζάνα (€/kg)",
   shrimp: "Γαρίδες (€/kg)",
   mussels: "Μύδια (€/kg)",
   octopus: "Χταπόδι (€/kg)",
   cod: "Μπακαλιάρος (€/kg)",
-  sardines: "Σαρδέλες (€/kg)",
+  sardines: "Σαρδέλες / γαύρος (€/kg)",
   calamari: "Καλαμάρι (€/kg)",
   sole: "Γλώσσα (€/kg)",
   monkfish: "Πεσκανδρίτσα (€/kg)",
-  sea_bream: "Τσιπούρα (€/kg)",
+  sea_bream: "Τσιπούρα / λαβράκι (€/kg)",
   grouper: "Σφυρίδα (€/kg)",
   swordfish: "Ξιφίας (€/kg)",
   cuttlefish: "Σουπιά (€/kg)",
   ray: "Ράτζα (€/kg)",
+  figs: "Αποξηραμένα σύκα (€/kg)",
+  walnuts: "Καρύδια (€/kg)",
+  cranberries: "Cranberries (€/kg)",
+  capers: "Κάπαρη (€/kg)",
+  sesame: "Σουσάμι (€/kg)",
+  tuna: "Τόνος (€/kg)",
   cola: "Αναψυκτικό μονάδα (€/τεμ)",
   water: "Νερό (€/τεμ)",
   beer: "Μπύρα (€/τεμ)",
   wine_half: "Κρασί 0,5L κόστος (€)",
   tsipouro: "Τσίπουρο 200ml κόστος (€)",
+  ouzo: "Ούζο 200ml κόστος (€)",
+  soda: "Σόδα (€/τεμ)",
+  sprite: "Sprite (€/τεμ)",
   lemon: "Λεμόνι (€/kg)",
   garlic: "Σκόρδο (€/kg)",
   flour: "Αλεύρι (€/kg)",
@@ -471,128 +509,420 @@ const ING_EL = {
 };
 
 let ingredientPrices = { ...NATIONAL_PRICES };
-
 const menuCatalog = {
-  katsikaki_naxou:{category:"freshly-cooked",el:"Κατσικάκι Νάξου",price:"€16.00",type:"goat_lamb"},
-  kokoretsi:{category:"freshly-cooked",el:"Κοκορέτσι",price:"€15.50",type:"goat_lamb"},
-  katsikaki_frikase:{category:"freshly-cooked",el:"Κατσικάκι φρικασέ",price:"€16.00",type:"goat_lamb"},
-  pastitsio:{category:"freshly-cooked",el:"Παστίτσιο",price:"€8.50",type:"pasta"},
-  moussakas:{category:"freshly-cooked",el:"Μουσακάς",price:"€8.50",type:"pasta"},
-  briam:{category:"freshly-cooked",el:"Μπριάμ",price:"€6.00",type:"vegan"},
-  giantes:{category:"freshly-cooked",el:"Γίγαντες",price:"€7.50",type:"legumes"},
-  papoutsakia:{category:"freshly-cooked",el:"Παπουτσάκια",price:"€8.90",type:"beef"},
-  melitzanes_imam:{category:"freshly-cooked",el:"Μελιτζάνες ιμάμ",price:"€7.00",type:"vegan"},
-  gemista:{category:"freshly-cooked",el:"Γεμιστά",price:"€8.00",type:"vegan"},
-  gemista_superfoods:{category:"freshly-cooked",el:"Γεμιστά superfoods",price:"€8.50",type:"vegan"},
-  bifteki_moscharisia:{category:"freshly-cooked",el:"Μπιφτέκια μοσχαρίσια",price:"€9.80",type:"beef"},
-  moschari_stifado:{category:"freshly-cooked",el:"Μοσχάρι στιφάδο",price:"€11.00",type:"beef"},
-  moschari_kokkinisto:{category:"freshly-cooked",el:"Μοσχάρι κοκκινιστό",price:"€10.20",type:"beef"},
-  moschari_giouvesti:{category:"freshly-cooked",el:"Μοσχάρι γιουβέτσι",price:"€10.50",type:"beef"},
-  moschari_lemonato:{category:"freshly-cooked",el:"Μοσχάρι λεμονάτο",price:"€10.20",type:"beef"},
-  rolo_moscharisio:{category:"freshly-cooked",el:"Ρολό μοσχαρίσιο",price:"€11.00",type:"beef"},
-  moscharaki_noua:{category:"freshly-cooked",el:"Μοσχαράκι νουά",price:"€12.50",type:"beef"},
-  keftedakia_tiganita:{category:"freshly-cooked",el:"Κεφτεδάκια τηγανιτά",price:"€8.50",type:"beef"},
-  keftedakia_saltsa:{category:"freshly-cooked",el:"Κεφτεδάκια σάλτσα",price:"€8.00",type:"beef"},
-  kotopoulo_bouti:{category:"freshly-cooked",el:"Κοτόπουλο μπούτι",price:"€9.00",type:"chicken"},
-  kotopoulo_fournou:{category:"freshly-cooked",el:"Κοτόπουλο φούρνου",price:"€9.00",type:"chicken"},
-  kokoras_krasatos:{category:"freshly-cooked",el:"Κόκορας κρασάτος",price:"€9.50",type:"chicken"},
-  soutzoukakia:{category:"freshly-cooked",el:"Σουτζουκάκια",price:"€8.00",type:"beef"},
-  arakas_lemonatos:{category:"freshly-cooked",el:"Αρακάς λεμονάτος",price:"€5.50",type:"vegan"},
-  fasolakia:{category:"freshly-cooked",el:"Φασολάκια",price:"€7.00",type:"vegan"},
-  spanakorizo:{category:"freshly-cooked",el:"Σπανακόρυζο",price:"€6.00",type:"vegan"},
-  lachanontolmades:{category:"freshly-cooked",el:"Λαχανοντολμάδες",price:"€8.50",type:"beef"},
-  kolokythakia_gemista:{category:"freshly-cooked",el:"Κολοκυθάκια γεμιστά",price:"€8.50",type:"beef"},
-  makaronia_kima:{category:"freshly-cooked",el:"Μακαρόνια με κιμά",price:"€8.50",type:"pasta"},
-  carbonara:{category:"freshly-cooked",el:"Καρμπονάρα",price:"€8.00",type:"pasta"},
-  spaghetti_garides_egaio:{category:"seafood",el:"Σπαγγέτι γαρίδες",price:"€9.50",type:"seafood"},
-  kritharoto_garides:{category:"seafood",el:"Κριθαρότο γαρίδες",price:"€14.50",type:"seafood"},
-  mydopilafo:{category:"seafood",el:"Μυδοπίλαφο",price:"€10.00",type:"seafood"},
-  glossa_lemonati:{category:"seafood",el:"Γλώσσα λεμονάτη",price:"€9.00",type:"seafood"},
-  oktapodi_stifado:{category:"seafood",el:"Χταπόδι στιφάδο",price:"€13.00",type:"seafood"},
-  bakaliaros_plaki:{category:"seafood",el:"Μπακαλιάρος πλακί",price:"€12.50",type:"seafood"},
-  sardeles_fileto_plaki:{category:"seafood",el:"Σαρδέλες πλακί",price:"€9.00",type:"seafood"},
-  kotosoupa:{category:"soups",el:"Κοτόσουπα",price:"€7.50",type:"soups"},
-  giouvarlakia:{category:"soups",el:"Γιουβαρλάκια",price:"€8.50",type:"soups"},
-  manitarosoupa:{category:"soups",el:"Μανιταρόσουπα",price:"€8.00",type:"soups"},
-  patsas_vrastos:{category:"soups",el:"Πατσάς",price:"€10.00",type:"soups"},
-  fakes:{category:"legumes",el:"Φακές",price:"€5.50",type:"legumes"},
-  fasolada:{category:"legumes",el:"Φασολάδα",price:"€5.50",type:"legumes"},
-  revithia:{category:"legumes",el:"Ρεβύθια",price:"€6.00",type:"legumes"},
-  fava:{category:"legumes",el:"Φάβα",price:"€5.50",type:"legumes"},
-  haliavas:{category:"sweets",el:"Χαλβάς",price:"€4.00",type:"sweets"},
-  profiterole:{category:"sweets",el:"Προφιτερόλ",price:"€5.00",type:"sweets"},
-  lemonopita:{category:"sweets",el:"Λεμονόπιτα",price:"€4.00",type:"sweets"},
-  fileto_kotopoulo:{category:"grilled",el:"Φιλέτο κοτόπουλο",price:"€9.50",type:"grilled"},
-  bifteki_grilled:{category:"grilled",el:"Μπιφτέκι ψητό",price:"€9.50",type:"grilled"},
-  brizola_hoirini:{category:"grilled",el:"Μπριζόλα χοιρινή",price:"€9.80",type:"grilled"},
-  loukaniko_hoirino:{category:"grilled",el:"Λουκάνικο χωριάτικο",price:"€7.50",type:"grilled"},
-  coca_cola:{category:"drinks",el:"Coca Cola",price:"€2.00",type:"drinks"},
-  beer_alpha:{category:"drinks",el:"Μπύρα Άλφα",price:"€3.00",type:"drinks"},
-  wine_05:{category:"drinks",el:"Κρασί 0,5L",price:"€4.00",type:"drinks"},
-  tsipouro:{category:"drinks",el:"Τσίπουρο",price:"€9.00",type:"drinks"},
-  water_15:{category:"drinks",el:"Νερό 1,5L",price:"€1.20",type:"drinks"}
+
+  // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ ====================
+  katsikaki_naxou:              { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι (Νάξου) στο φούρνο", en:"Roast Kid Goat (from Naxos)", price:"€16.00" },
+  katsikaki_frikase:            { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι φρικασέ", en:"Kid Goat Fricassee", price:"€16.00" },
+  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat (Oven)", price:"€16.00" },
+  kokoretsi:                    { category:"freshly-cooked", type:"goat_lamb", el:"Κοκορέτσι χειροποίητο", en:"Handmade Kokoretsi", price:"€15.50" },
+  arni_kotsi_frikase:           { category:"freshly-cooked", type:"goat_lamb", el:"Αρνί κότσι φρικασέ", en:"Lamb Shank Fricassee", price:"€16.00" },
+  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος μακαρονάδα", en:"Milk-Fed Lamb with Pasta", price:"€16.00" },
+  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
+  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο στη λαδόκολλα", en:"Kleftiko in Parchment", price:"€9.00" },
+
+  moschari_kokkinisto:          { category:"freshly-cooked", type:"beef", el:"Μοσχάρι κοκκινιστό", en:"Beef in Red Sauce", price:"€10.20" },
+  moschari_giouvesti:           { category:"freshly-cooked", type:"beef", el:"Μοσχάρι Γιουβέτσι", en:"Beef Giouvetsi", price:"€10.50" },
+  moschari_lemonato:            { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι λεμονάτο", en:"Lemony Beef Stew", price:"€10.20" },
+  moschari_stifado:             { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι Στιφάδο", en:"Beef Stifado", price:"€11.00" },
+  moschari_ragout:              { category:"freshly-cooked", type:"beef", el:"Μοσχάρι ραγού", en:"Beef Ragout", price:"€10.50" },
+  moscharaki_noua:              { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά", en:"Beef Tenderloin Roast", price:"€12.50" },
+  moscharaki_noua_with_fried_potatoes: { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με τηγανητές πατάτες", en:"Beef Tenderloin with Fried Potatoes", price:"€12.50" },
+  moscharaki_noua_with_rice:    { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με ρύζι", en:"Beef Tenderloin with Rice", price:"€12.50" },
+  rolo_moscharisio:             { category:"freshly-cooked", type:"beef", el:"Ρολό μοσχαρίσιου κιμά", en:"Beef Roll", price:"€11.00" },
+  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι στην λαδόκολλα", en:"Gioulbasi in Parchment", price:"€12.00" },
+  bifteki_moscharisia:          { category:"freshly-cooked", type:"beef", el:"Μπιφτέκια Μοσχαρίσια", en:"Oven Beef Patties", price:"€9.80" },
+  keftedakia_tiganita:          { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια τηγανιτά", en:"Fried Meatballs", price:"€8.50" },
+  keftedakia_saltsa:            { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια με σάλτσα", en:"Meatballs in Sauce", price:"€8.00" },
+  soutzoukakia:                 { category:"freshly-cooked", type:"beef", el:"Σουτζουκάκια Σμυρνέικα", en:"Smyrna-Style Soutzoukakia", price:"€8.00" },
+  papoutsakia:                  { category:"freshly-cooked", type:"beef", el:"Μελιτζάνες παπουτσάκια", en:"Stuffed Eggplants (Papoutsakia)", price:"€8.90" },
+  lachanontolmades:             { category:"freshly-cooked", type:"beef", el:"Λαχανοντολμάδες", en:"Cabbage Rolls", price:"€8.50" },
+  kolokythakia_gemista:         { category:"freshly-cooked", type:"beef", el:"Κολοκυθάκια γεμιστά", en:"Stuffed Courgettes", price:"€8.50" },
+  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+
+  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με Σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
+  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
+
+  kotopoulo_bouti:              { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο μπούτι στο φούρνο", en:"Oven-Baked Chicken Leg", price:"€9.00" },
+  kotopoulo_fournou:            { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο στο φούρνο", en:"Roast Chicken", price:"€9.00" },
+  kotopoulo_kokkinisto:         { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο κοκκινιστό", en:"Chicken in Red Sauce", price:"€9.00" },
+  bifteki_kotopoulo:            { category:"freshly-cooked", type:"chicken", el:"Μπιφτέκια κοτόπουλο στον φούρνο", en:"Oven Chicken Patties", price:"€9.50" },
+  rolo_kotopoulo:               { category:"freshly-cooked", type:"chicken", el:"Ρολό κοτόπουλο γεμιστό", en:"Stuffed Chicken Roll", price:"€10.00" },
+  kokoras_krasatos:             { category:"freshly-cooked", type:"chicken", el:"Κόκορας κρασάτος", en:"Rooster in Wine Sauce", price:"€9.50" },
+  kokoras_hilopites:            { category:"freshly-cooked", type:"chicken", el:"Κόκορας με χυλοπίτες", en:"Rooster with Hilopites", price:"€9.50" },
+  kokoras_stifado:              { category:"freshly-cooked", type:"chicken", el:"Κόκορας Στιφάδο", en:"Rooster Stifado", price:"€10.00" },
+
+  pastitsio:                    { category:"freshly-cooked", type:"pasta", el:"Παστίτσιο", en:"Pastitsio", price:"€8.50" },
+  moussakas:                    { category:"freshly-cooked", type:"pasta", el:"Μουσακάς", en:"Moussaka", price:"€8.50" },
+  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς Νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
+  makaronia_kima:               { category:"freshly-cooked", type:"pasta", el:"Μακαρόνια με κιμά", en:"Spaghetti with Mince", price:"€8.50" },
+  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
+  carbonara:                    { category:"freshly-cooked", type:"pasta", el:"Καρμπονάρα", en:"Carbonara", price:"€8.00" },
+  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
+  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά και μπεσαμέλ", en:"Crepes with Mince and Béchamel", price:"€8.00" },
+  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
+
+  briam:                        { category:"freshly-cooked", type:"vegan", el:"Μπριάμ", en:"Briam", price:"€6.00" },
+  fasolakia:                    { category:"freshly-cooked", type:"vegan", el:"Φρέσκα Φασολάκια", en:"Fresh Green Beans", price:"€7.00" },
+  gemista:                      { category:"freshly-cooked", type:"vegan", el:"Γεμιστά", en:"Stuffed Vegetables", price:"€8.00" },
+  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
+  gemista_superfoods:           { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με superfoods", en:"Stuffed Vegetables with Superfoods", price:"€8.50" },
+  spanakorizo:                  { category:"freshly-cooked", type:"vegan", el:"Σπανακόρυζο", en:"Spinach Rice", price:"€6.00" },
+  arakas_lemonatos:             { category:"freshly-cooked", type:"vegan", el:"Αρακάς λεμονάτος", en:"Lemon Peas", price:"€5.50" },
+  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο Φούρνο", en:"Oven Okra", price:"€7.50" },
+  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες Γιαχνί", en:"Okra Yiahni", price:"€7.50" },
+  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι Γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
+  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες και πατάτες Γιαχνί", en:"Eggplant and Potato Yiahni", price:"€6.00" },
+  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες Γιαχνί", en:"Potato Yiahni", price:"€5.50" },
+  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγγινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
+  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
+  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
+  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια Φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
+  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με Σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
+  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
+  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
+  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
+  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
+  arni_kotsi_frikase:           { category:"freshly-cooked", type:"goat_lamb", el:"Αρνί κότσι φρικασέ", en:"Lamb Shank Fricassee", price:"€16.00" },
+  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος", en:"Milk-Fed Lamb", price:"€16.00" },
+  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat", price:"€16.00" },
+  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
+  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
+  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
+  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
+  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
+  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
+  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
+  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
+  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
+  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
+  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
+  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
+  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
+  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
+  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
+  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά", en:"Crepes with Mince", price:"€8.00" },
+  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
+  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
+  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
+  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
+  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
+  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
+  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
+  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
+  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
+  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
+  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
+  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
+  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
+  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος", en:"Milk-Fed Lamb", price:"€16.00" },
+  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat", price:"€16.00" },
+  kokoras_hilopites:            { category:"freshly-cooked", type:"chicken", el:"Κόκορας με χυλοπίτες", en:"Rooster with Hilopites", price:"€9.50" },
+  kokoras_stifado:              { category:"freshly-cooked", type:"chicken", el:"Κόκορας στιφάδο", en:"Rooster Stifado", price:"€10.00" },
+  rolo_kotopoulo:               { category:"freshly-cooked", type:"chicken", el:"Ρολό κοτόπουλο", en:"Chicken Roll", price:"€10.00" },
+  bifteki_kotopoulo:            { category:"freshly-cooked", type:"chicken", el:"Μπιφτέκια κοτόπουλο", en:"Chicken Patties", price:"€9.50" },
+  kotopoulo_kokkinisto:         { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο κοκκινιστό", en:"Chicken in Red Sauce", price:"€9.00" },
+  moscharaki_noua_with_fried_potatoes: { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με τηγανητές πατάτες", en:"Beef Tenderloin with Fried Potatoes", price:"€12.50" },
+  moscharaki_noua_with_rice:    { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με ρύζι", en:"Beef Tenderloin with Rice", price:"€12.50" },
+  moschari_ragout:              { category:"freshly-cooked", type:"beef", el:"Μοσχάρι ραγού", en:"Beef Ragout", price:"€10.50" },
+  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά", en:"Crepes with Mince", price:"€8.00" },
+  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
+  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
+  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
+  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
+  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
+  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
+  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
+  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
+  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
+  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
+  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
+  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
+  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
+  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
+  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
+  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
+  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
+  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+
+  // ==================== ΘΑΛΑΣΣΙΝΑ ====================
+  spaghetti_garides_egaio:      { category:"seafood", type:"seafood", el:"Σπαγγέτι με γαριδούλες Αιγαίου", en:"Spaghetti with Aegean Shrimps", price:"€9.50" },
+  spaghetti_thalassina:         { category:"seafood", type:"seafood", el:"Σπαγγέτι με σάλτσα θαλασσινών", en:"Spaghetti with Seafood Sauce", price:"€11.00" },
+  spaghetti_calamari:           { category:"seafood", type:"seafood", el:"Σπαγγέτι με καλαμαράκια", en:"Spaghetti with Calamari", price:"€9.50" },
+  spaghetti_calamari_sauce:     { category:"seafood", type:"seafood", el:"Σπαγγέτι με σάλτσα καλαμαριών", en:"Spaghetti with Calamari Sauce", price:"€8.00" },
+  spaghetti_garida:             { category:"seafood", type:"seafood", el:"Σπαγγέτι με σάλτσα γαρίδας", en:"Spaghetti with Shrimp Sauce", price:"€9.50" },
+  marinara:                    { category:"seafood", type:"seafood", el:"Μαρινάρα με σπαγγέτι", en:"Marinara with Spaghetti", price:"€9.50" },
+  garidoma:                    { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα", en:"Shrimp Pasta", price:"€17.00" },
+  garidoma_small:              { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα (μικρές)", en:"Shrimp Pasta (small)", price:"€9.00" },
+  kritharoto_garides:          { category:"seafood", type:"seafood", el:"Κριθαρότο με γαρίδες", en:"Shrimp Orzo", price:"€14.50" },
+  kritharoto_garidoules:       { category:"seafood", type:"seafood", el:"Κριθαρότο με γαριδούλες", en:"Small Shrimp Orzo", price:"€9.00" },
+  kritharoto_thalassina:       { category:"seafood", type:"seafood", el:"Κριθαρώτο θαλασσινών", en:"Seafood Orzo", price:"€13.00" },
+  mydopilafo:                  { category:"seafood", type:"seafood", el:"Μυδοπίλαφο", en:"Mussel Pilaf", price:"€10.00" },
+  bakaliaros_plaki:            { category:"seafood", type:"seafood", el:"Μπακαλιάρος πλακί", en:"Cod Plaki", price:"€12.50" },
+  bakaliaros_lemonatos:        { category:"seafood", type:"seafood", el:"Μπακαλιάρος λεμονάτος", en:"Lemon Cod", price:"€12.50" },
+  bakaliaros_spetsiota:        { category:"seafood", type:"seafood", el:"Μπακαλιάρος α λα σπετσιώτα", en:"Cod Spetsiota", price:"€12.50" },
+  bakaliaros_skordalia:        { category:"seafood", type:"seafood", el:"Μπακαλιάρος με σκορδαλιά", en:"Cod with Skordalia", price:"€12.80" },
+  bakaliarokroketes:           { category:"seafood", type:"seafood", el:"Μπακαλιαροκροκέτες", en:"Cod Croquettes", price:"€9.50" },
+  glossa_lemonati:             { category:"seafood", type:"seafood", el:"Γλώσσα λεμονάτη με πατάτες", en:"Lemon Sole with Potatoes", price:"€9.00" },
+  peskandritsa_plaki:          { category:"seafood", type:"seafood", el:"Πεσκανδρίτσα πλακί", en:"Monkfish Plaki", price:"€15.00" },
+  perka_plaki:                 { category:"seafood", type:"seafood", el:"Πέρκα πλακί", en:"Perch Plaki", price:"€10.00" },
+  perka_lemonati:              { category:"seafood", type:"seafood", el:"Πέρκα λεμονάτη", en:"Lemon Perch", price:"€12.50" },
+  lavraki_fileto:              { category:"seafood", type:"seafood", el:"Λαβράκι φιλέτο στο φούρνο", en:"Baked Sea Bass Fillet", price:"€13.00" },
+  tsipoures_pelagisies:        { category:"seafood", type:"seafood", el:"Πελαγίσιες τσιπούρες", en:"Sea Bream", price:"€13.00" },
+  sfirida_spetsiota:           { category:"seafood", type:"seafood", el:"Σφυρίδα α λα σπετσιώτα", en:"Grouper Spetsiota", price:"€16.00" },
+  ksifias_lemonatos:           { category:"seafood", type:"seafood", el:"Ξιφίας λεμονάτος", en:"Lemon Swordfish", price:"€15.50" },
+  gavros_plaki:                { category:"seafood", type:"seafood", el:"Γαύρος πλακί", en:"Anchovy Plaki", price:"€9.00" },
+  gavros_lemonatos:            { category:"seafood", type:"seafood", el:"Γαύρος λεμονάτος", en:"Lemon Anchovy", price:"€9.00" },
+  ratza_katsarola:             { category:"seafood", type:"seafood", el:"Ράτζα στην κατσαρόλα", en:"Ray in the Pot", price:"€12.50" },
+  oktapodi_makaroni:           { category:"seafood", type:"seafood", el:"Χταπόδι με κοφτό μακαρονάκι", en:"Octopus with Short Pasta", price:"€12.50" },
+  oktapodi_giouvetsi:          { category:"seafood", type:"seafood", el:"Χταπόδι γιουβέτσι", en:"Octopus Giouvetsi", price:"€13.00" },
+  soupies_yiahni:              { category:"seafood", type:"seafood", el:"Σουπιές γιαχνί", en:"Cuttlefish Yiahni", price:"€10.00" },
+  soupies_krasates:            { category:"seafood", type:"seafood", el:"Σουπιές κρασάτες", en:"Cuttlefish in Wine", price:"€10.00" },
+  soupies_spanaki:             { category:"seafood", type:"seafood", el:"Σουπιές με σπανάκι", en:"Cuttlefish with Spinach", price:"€10.00" },
+  marinara:                    { category:"seafood", type:"seafood", el:"Μαρινάρα με σπαγγέτι", en:"Marinara with Spaghetti", price:"€9.50" },
+  garidoma:                    { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα", en:"Shrimp Pasta", price:"€17.00" },
+  garidoma_small:              { category:"seafood", type:"seafood", el:"Γαριδομακαρονάδα μικρές", en:"Shrimp Pasta (small)", price:"€9.00" },
+
+  // ==================== ΣΟΥΠΕΣ ====================
+  kotosoupa:                   { category:"soups", type:"soups", el:"Κοτόσουπα", en:"Chicken Soup", price:"€7.50" },
+  giouvarlakia:                { category:"soups", type:"soups", el:"Γιουβαρλάκια", en:"Meatball Egg-Lemon Soup", price:"€8.50" },
+  manitarosoupa:               { category:"soups", type:"soups", el:"Μανιταρόσουπα", en:"Mushroom Soup", price:"€8.00" },
+  patsas_vrastos:              { category:"soups", type:"soups", el:"Πατσάς βραστός", en:"Boiled Tripe Soup", price:"€10.00" },
+  patsas_anamiktos:            { category:"soups", type:"soups", el:"Πατσάς ανάμικτος", en:"Mixed Tripe Soup", price:"€10.00" },
+  kreatosoupa:                 { category:"soups", type:"soups", el:"Κρεατόσουπα", en:"Meat Soup", price:"€12.00" },
+  psarosoupa:                  { category:"soups", type:"soups", el:"Ψαρόσουπα", en:"Fish Soup", price:"€9.00" },
+  hortosoupa_trahanas:         { category:"soups", type:"soups", el:"Χορτόσουπα με τραχανά", en:"Vegetable Soup with Trahana", price:"€5.50" },
+  magiritsa:                   { category:"soups", type:"soups", el:"Μαγειρίτσα", en:"Magiritsa", price:"€10.00" },
+  borscht:                     { category:"soups", type:"soups", el:"Σούπα Μπορς", en:"Borscht", price:"€8.00" },
+
+  // ==================== ΟΣΠΡΙΑ ====================
+  fakes:                       { category:"legumes", type:"legumes", el:"Φακές", en:"Lentil Soup", price:"€5.50" },
+  fasolada:                    { category:"legumes", type:"legumes", el:"Φασολάδα", en:"Fasolada (Bean Soup)", price:"€5.50" },
+  revithia:                    { category:"legumes", type:"legumes", el:"Ρεβύθια", en:"Chickpea Stew", price:"€6.00" },
+  fava:                        { category:"legumes", type:"legumes", el:"Φάβα", en:"Fava", price:"€5.50" },
+
+  // ==================== ΓΛΥΚΑ ====================
+  haliavas:                    { category:"sweets", type:"sweets", el:"Χαλβάς", en:"Halvas", price:"€4.00" },
+  halvas:                      { category:"sweets", type:"sweets", el:"Χαλβάς", en:"Halvas", price:"€4.00" },
+  cheesecake:                  { category:"sweets", type:"sweets", el:"Cheese Cake", en:"Cheese Cake", price:"€4.50" },
+  sokolatopita:                { category:"sweets", type:"sweets", el:"Σοκολατόπιτα", en:"Chocolate Pie", price:"€4.00" },
+  lemonopita:                  { category:"sweets", type:"sweets", el:"Λεμονόπιτα", en:"Lemon Pie", price:"€4.00" },
+  profiterole:                 { category:"sweets", type:"sweets", el:"Προφιτερόλ", en:"Profiterole", price:"€5.00" },
+
+  // ==================== ΨΗΤΑ ====================
+  fileto_kotopoulo:            { category:"grilled", type:"grilled", el:"Φιλέτο Κοτόπουλο", en:"Chicken Fillet", price:"€9.50" },
+  bifteki_grilled:             { category:"grilled", type:"grilled", el:"Μπιφτέκι Μοσχαρίσιο Χειροποίητο", en:"Homemade Beef Patty", price:"€9.50" },
+  brizola_hoirini:             { category:"grilled", type:"grilled", el:"Μπριζόλα Χοιρινή", en:"Pork Chop", price:"€9.80" },
+  brizolakia:                  { category:"grilled", type:"grilled", el:"Μπριζολάκια Χοιρινά χωρίς κόκαλο", en:"Boneless Pork Chops", price:"€9.00" },
+  loukaniko_hoirino:           { category:"grilled", type:"grilled", el:"Λουκάνικο Χωριάτικο Χοιρινό", en:"Village Pork Sausage", price:"€7.50" },
+  loukaniko_moscharisio:       { category:"grilled", type:"grilled", el:"Λουκάνικο Μοσχαρίσιο Χειροποίητο", en:"Handmade Beef Sausage", price:"€9.50" },
+
+  // ==================== ΣΑΛΑΤΕΣ ====================
+  matzourana_salad: { category:"salads", type:"salads", el:"Ματζουράνα", en:"Matzourana Salad", price:"€8.00" },
+  halloumi_salad:   { category:"salads", type:"salads", el:"Χαλούμι", en:"Halloumi Salad", price:"€8.00" },
+  dakos:            { category:"salads", type:"salads", el:"Ντάκος", en:"Dakos", price:"€7.80" },
+  choriatiki:       { category:"salads", type:"salads", el:"Χωριάτικη", en:"Greek Village Salad", price:"€7.50" },
+  marouli:          { category:"salads", type:"salads", el:"Μαρούλι", en:"Lettuce Salad", price:"€5.00" },
+  lachano_karoto:   { category:"salads", type:"salads", el:"Λαχανό - Καρότο", en:"Cabbage and Carrot Salad", price:"€5.00" },
+  xorta_epoxis:     { category:"salads", type:"salads", el:"Χόρτα Εποχής", en:"Seasonal Greens", price:"€6.00" },
+  pantzaria:        { category:"salads", type:"salads", el:"Παντζάρια", en:"Beetroot Salad", price:"€5.00" },
+
+  // ==================== ΠΟΤΑ ====================
+  coca_cola:                   { category:"drinks", type:"drinks", el:"Κόκα Κόλα", en:"Coca Cola", price:"€2.00" },
+  coca_cola_zero:              { category:"drinks", type:"drinks", el:"Κόκα Κόλα zero", en:"Coca Cola zero", price:"€2.00" },
+  soda:                        { category:"drinks", type:"drinks", el:"Σόδα", en:"Soda", price:"€2.00" },
+  sprite:                      { category:"drinks", type:"drinks", el:"Sprite", en:"Sprite", price:"€2.00" },
+  loux_orange:                 { category:"drinks", type:"drinks", el:"Λουξ Πορτοκαλάδα", en:"Loux Orange", price:"€2.00" },
+  loux_lemon:                  { category:"drinks", type:"drinks", el:"Λουξ Λεμονάδα", en:"Loux Lemon", price:"€2.00" },
+  water_15:                    { category:"drinks", type:"drinks", el:"Εμφιαλωμένο νερό 1,5lt", en:"Table Water 1.5lt", price:"€1.20" },
+  beer_alpha:                  { category:"drinks", type:"drinks", el:"Άλφα", en:"Alpha", price:"€3.00" },
+  beer_fix:                    { category:"drinks", type:"drinks", el:"Fix", en:"Fix", price:"€3.00" },
+  beer_amstel:                 { category:"drinks", type:"drinks", el:"Amstel", en:"Amstel", price:"€3.00" },
+  beer_heineken:               { category:"drinks", type:"drinks", el:"Heineken", en:"Heineken", price:"€4.00" },
+  beer_kaiser:                 { category:"drinks", type:"drinks", el:"Kaiser", en:"Kaiser", price:"€4.00" },
+  wine_05:                     { category:"drinks", type:"drinks", el:"Μοσχοφίλερο 0,5lt", en:"Moschofilero 0.5lt", price:"€4.00" },
+  wine_10:                     { category:"drinks", type:"drinks", el:"Μοσχοφίλερο 1,0lt", en:"Moschofilero 1.0lt", price:"€8.00" },
+  tsipouro:                    { category:"drinks", type:"drinks", el:"Τσίπουρο 200ml", en:"Tsipouro 200ml", price:"€9.00" },
+  ouzo:                        { category:"drinks", type:"drinks", el:"Ούζο 200ml", en:"Ouzo 200ml", price:"€9.00" }
 };
 
 /* Συνταγές: ποσότητα ανά ΜΕΡΙΔΑ */
 let recipes = {
-  moschari_kokkinisto:{ beef_shank:0.28, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.18 },
-  moschari_giouvesti:{ beef_shank:0.26, orzo:0.08, tomato:0.10, onion:0.05, myzithra:0.03, olive_oil:0.02 },
-  moschari_lemonato:{ beef_shank:0.28, potato:0.20, olive_oil:0.03, onion:0.04, lemon:0.04 },
-  moschari_stifado:{ beef_shank:0.28, onion:0.18, tomato:0.08, olive_oil:0.025, wine:0.05 },
-  moscharaki_noua:{ beef_shank:0.30, zucchini:0.10, carrot:0.08, olive_oil:0.025 },
-  rolo_moscharisio:{ beef_mince:0.22, feta_pdo:0.04, tomato:0.05, potato:0.18, olive_oil:0.02 },
-  soutzoukakia:{ beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.02, garlic:0.01, bread:0.03 },
-  bifteki_moscharisia:{ beef_mince:0.30, potato:0.20, olive_oil:0.02, onion:0.03, bread:0.03 },
-  keftedakia_tiganita:{ beef_mince:0.18, onion:0.03, olive_oil:0.04, bread:0.04, egg:0.5 },
-  keftedakia_saltsa:{ beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.03 },
-  papoutsakia:{ eggplant:0.25, beef_mince:0.10, tomato:0.08, olive_oil:0.025, kefalotyri:0.02 },
-  lachanontolmades:{ cabbage:0.22, beef_mince:0.10, rice:0.04, egg:1, olive_oil:0.02, lemon:0.03 },
-  kolokythakia_gemista:{ zucchini:0.30, beef_mince:0.08, rice:0.04, tomato:0.08, olive_oil:0.025 },
-  giouvarlakia:{ beef_mince:0.14, rice:0.03, egg:1, olive_oil:0.015, lemon:0.03 },
-  pastitsio:{ beef_mince:0.12, pasta:0.10, olive_oil:0.02, kefalotyri:0.025, milk:0.08, butter:0.015, flour:0.02 },
-  moussakas:{ beef_mince:0.12, eggplant:0.18, potato:0.10, olive_oil:0.03, kefalotyri:0.02, milk:0.08, flour:0.02 },
-  makaronia_kima:{ beef_mince:0.12, pasta:0.10, tomato:0.08, onion:0.04, olive_oil:0.02 },
-  carbonara:{ pasta:0.11, egg:1, bacon:0.05, cream:0.04, parmesan:0.02 },
-  kotopoulo_bouti:{ chicken_leg:0.35, potato:0.22, olive_oil:0.025, lemon:0.03, garlic:0.01 },
-  kotopoulo_fournou:{ chicken_whole:0.35, potato:0.22, olive_oil:0.025, lemon:0.03 },
-  kokoras_krasatos:{ rooster:0.32, wine:0.08, onion:0.06, olive_oil:0.02, tomato:0.06 },
-  kotosoupa:{ chicken_whole:0.22, carrot:0.06, onion:0.04, rice:0.03, celery:0.04 },
-  briam:{ eggplant:0.12, zucchini:0.12, potato:0.12, tomato:0.10, olive_oil:0.035, pepper:0.05 },
-  fasolakia:{ green_beans:0.28, tomato:0.10, potato:0.12, onion:0.04, olive_oil:0.03 },
-  gemista:{ tomato:0.28, rice:0.06, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
-  gemista_superfoods:{ tomato:0.25, bulgur:0.06, onion:0.04, potato:0.08, olive_oil:0.03 },
-  spanakorizo:{ spinach:0.22, rice:0.07, onion:0.04, olive_oil:0.03, lemon:0.03 },
-  arakas_lemonatos:{ potato:0.15, carrot:0.08, olive_oil:0.025, lemon:0.03 },
-  giantes:{ gigantes:0.12, tomato:0.10, onion:0.05, olive_oil:0.03, carrot:0.03 },
-  fasolada:{ gigantes:0.10, tomato:0.08, onion:0.05, carrot:0.04, olive_oil:0.03, celery:0.03 },
-  fakes:{ lentils:0.10, onion:0.04, tomato:0.04, olive_oil:0.025, garlic:0.01 },
-  revithia:{ chickpeas:0.12, onion:0.05, olive_oil:0.03, lemon:0.02 },
-  fava:{ chickpeas:0.12, onion:0.04, olive_oil:0.03, lemon:0.03 },
-  melitzanes_imam:{ eggplant:0.28, tomato:0.10, onion:0.05, olive_oil:0.03, feta_pdo:0.04 },
-  mydopilafo:{ mussels:0.35, rice:0.08, onion:0.04, olive_oil:0.02 },
-  kritharoto_garides:{ shrimp:0.18, orzo:0.10, olive_oil:0.02, onion:0.03 },
-  spaghetti_garides_egaio:{ shrimp:0.12, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  glossa_lemonati:{ sole:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
-  oktapodi_stifado:{ octopus:0.30, onion:0.15, tomato:0.08, olive_oil:0.025, wine:0.04 },
-  bakaliaros_plaki:{ cod:0.28, tomato:0.12, onion:0.06, potato:0.15, olive_oil:0.03 },
-  sardeles_fileto_plaki:{ sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
-  manitarosoupa:{ mushroom:0.18, onion:0.04, cream:0.05, olive_oil:0.015, flour:0.01 },
-  patsas_vrastos:{ beef_shank:0.20, lemon:0.05, garlic:0.02, olive_oil:0.01 },
-  katsikaki_naxou:{ goat_kid:0.35, potato:0.25, olive_oil:0.03, lemon:0.04, garlic:0.01 },
-  katsikaki_frikase:{ goat_kid:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
-  kokoretsi:{ lamb:0.30, olive_oil:0.02, lemon:0.03 },
-  haliavas:{ flour:0.08, olive_oil:0.04, sugar:0.05 },
-  lemonopita:{ phyllo:0.08, lemon:0.05, sugar:0.04, egg:1, butter:0.03 },
-  profiterole:{ flour:0.05, egg:1, cream:0.08, sugar:0.03, butter:0.02 },
-  fileto_kotopoulo:{ chicken_leg:0.28, olive_oil:0.015 },
-  bifteki_grilled:{ beef_mince:0.28, onion:0.03, bread:0.03 },
-  brizola_hoirini:{ pork:0.32, olive_oil:0.015 },
-  loukaniko_hoirino:{ pork:0.22, olive_oil:0.01 },
-  coca_cola:{ cola:1 },
-  beer_alpha:{ beer:1 },
-  wine_05:{ wine_half:1 },
-  tsipouro:{ tsipouro:1 },
-  water_15:{ water:1 }
+
+  // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ / ΚΡΕΑΣ ====================
+  katsikaki_naxou:              { goat_kid:0.35, potato:0.25, olive_oil:0.03, lemon:0.04, garlic:0.01 },
+  katsikaki_frikase:            { goat_kid:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
+  kokoretsi:                    { lamb:0.30, olive_oil:0.02, lemon:0.03 },
+  arni_kotsi_frikase:           { lamb:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
+  arnaki_galaktos:              { lamb:0.30, pasta:0.10, olive_oil:0.025, tomato:0.08, kefalotyri:0.02 },
+  gida_vrasti:                  { goat_kid:0.30, lemon:0.04, olive_oil:0.02, garlic:0.01 },
+  kleftiko:                     { lamb:0.28, potato:0.18, olive_oil:0.025, feta_pdo:0.03, tomato:0.05 },
+  gioulmpasi:                   { beef_shank:0.28, olive_oil:0.025, tomato:0.06, onion:0.05 },
+
+  moschari_kokkinisto:          { beef_shank:0.28, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.18 },
+  moschari_giouvesti:           { beef_shank:0.26, orzo:0.08, tomato:0.10, onion:0.05, myzithra:0.03, olive_oil:0.02 },
+  moschari_lemonato:            { beef_shank:0.28, potato:0.20, olive_oil:0.03, onion:0.04, lemon:0.04 },
+  moschari_stifado:             { beef_shank:0.28, onion:0.18, tomato:0.08, olive_oil:0.025, wine:0.05 },
+  moschari_ragout:              { beef_shank:0.26, potato:0.18, tomato:0.10, onion:0.05, olive_oil:0.025 },
+  moscharaki_noua:              { beef_shank:0.30, zucchini:0.10, carrot:0.08, olive_oil:0.025 },
+  moscharaki_noua_with_fried_potatoes: { beef_shank:0.30, potato:0.20, olive_oil:0.04 },
+  moscharaki_noua_with_rice:    { beef_shank:0.30, rice:0.08, olive_oil:0.025 },
+  rolo_moscharisio:             { beef_mince:0.22, feta_pdo:0.04, tomato:0.05, potato:0.18, olive_oil:0.02 },
+  soutzoukakia:                 { beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.02, garlic:0.01, bread:0.03 },
+  bifteki_moscharisia:          { beef_mince:0.30, potato:0.20, olive_oil:0.02, onion:0.03, bread:0.03 },
+  keftedakia_tiganita:          { beef_mince:0.18, onion:0.03, olive_oil:0.04, bread:0.04, egg:0.5 },
+  keftedakia_saltsa:            { beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.03 },
+  papoutsakia:                  { eggplant:0.25, beef_mince:0.10, tomato:0.08, olive_oil:0.025, kefalotyri:0.02 },
+  lachanontolmades:             { cabbage:0.22, beef_mince:0.10, rice:0.04, egg:1, olive_oil:0.02, lemon:0.03 },
+  kolokythakia_gemista:         { zucchini:0.30, beef_mince:0.08, rice:0.04, tomato:0.08, olive_oil:0.025 },
+  gemista_kima:                 { tomato:0.25, pepper:0.08, beef_mince:0.08, rice:0.05, onion:0.04, olive_oil:0.025 },
+
+  choirino_selino:              { pork:0.28, celery:0.12, onion:0.05, olive_oil:0.025, lemon:0.03 },
+  choirino_damaskina:           { pork:0.28, onion:0.06, olive_oil:0.025, wine:0.04 },
+  choirines_brizoles:           { pork:0.32, potato:0.20, olive_oil:0.025 },
+  spetzofai:                    { pork:0.18, pepper:0.15, tomato:0.10, onion:0.05, olive_oil:0.025 },
+
+  // ==================== ΚΟΤΟΠΟΥΛΟ / ΚΟΚΟΡΑΣ ====================
+  kotopoulo_bouti:              { chicken_leg:0.35, potato:0.22, olive_oil:0.025, lemon:0.03, garlic:0.01 },
+  kotopoulo_fournou:            { chicken_whole:0.35, potato:0.22, olive_oil:0.025, lemon:0.03 },
+  kotopoulo_kokkinisto:         { chicken_whole:0.32, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.15 },
+  bifteki_kotopoulo:            { chicken_leg:0.28, potato:0.18, onion:0.03, olive_oil:0.02, bread:0.03 },
+  rolo_kotopoulo:               { chicken_leg:0.28, feta_pdo:0.03, tomato:0.04, olive_oil:0.02 },
+  kokoras_krasatos:             { rooster:0.32, wine:0.08, onion:0.06, olive_oil:0.02, tomato:0.06 },
+  kokoras_hilopites:            { rooster:0.30, pasta:0.10, onion:0.05, tomato:0.08, olive_oil:0.02, kefalotyri:0.02 },
+  kokoras_stifado:              { rooster:0.32, onion:0.16, tomato:0.08, olive_oil:0.025, wine:0.05 },
+
+  // ==================== ΖΥΜΑΡΙΚΑ / ΦΟΥΡΝΟΥ ====================
+  pastitsio:                    { beef_mince:0.12, pasta:0.10, olive_oil:0.02, kefalotyri:0.025, milk:0.08, butter:0.015, flour:0.02 },
+  moussakas:                    { beef_mince:0.12, eggplant:0.18, potato:0.10, olive_oil:0.03, kefalotyri:0.02, milk:0.08, flour:0.02 },
+  moussakas_nistisimos:         { eggplant:0.20, potato:0.12, tomato:0.10, olive_oil:0.035, flour:0.02, milk:0.00 },
+  makaronia_kima:               { beef_mince:0.12, pasta:0.10, tomato:0.08, onion:0.04, olive_oil:0.02 },
+  makaronia_vegan:              { pasta:0.11, tomato:0.10, onion:0.05, olive_oil:0.025 },
+  carbonara:                    { pasta:0.11, egg:1, bacon:0.05, cream:0.04, parmesan:0.02 },
+  kanelonia:                    { beef_mince:0.12, pasta:0.10, tomato:0.08, kefalotyri:0.02, milk:0.06, olive_oil:0.02 },
+  krepes_kima:                  { flour:0.06, milk:0.08, egg:1, beef_mince:0.10, tomato:0.05, olive_oil:0.015 },
+  krepes_zampon_tyri:           { flour:0.06, milk:0.08, egg:1, bacon:0.04, kefalotyri:0.03, butter:0.015 },
+
+  // ==================== ΛΑΧΑΝΙΚΑ / VEGAN ΦΟΥΡΝΟΥ ====================
+  briam:                        { eggplant:0.12, zucchini:0.12, potato:0.12, tomato:0.10, olive_oil:0.035, pepper:0.05 },
+  fasolakia:                    { green_beans:0.28, tomato:0.10, potato:0.12, onion:0.04, olive_oil:0.03 },
+  gemista:                      { tomato:0.28, rice:0.06, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
+  gemista_rice:                 { tomato:0.25, rice:0.08, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
+  gemista_superfoods:           { tomato:0.25, bulgur:0.06, onion:0.04, potato:0.08, olive_oil:0.03 },
+  spanakorizo:                  { spinach:0.22, rice:0.07, onion:0.04, olive_oil:0.03, lemon:0.03 },
+  arakas_lemonatos:             { potato:0.15, carrot:0.08, olive_oil:0.025, lemon:0.03 },
+  bamies_fournou:               { okra:0.28, tomato:0.12, onion:0.05, olive_oil:0.03, potato:0.08 },
+  bamies_yiahni:                { okra:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
+  kounoupidi_yiahni:            { potato:0.10, tomato:0.12, onion:0.05, olive_oil:0.03 },
+  melitzanes_yiahni:            { eggplant:0.22, potato:0.12, tomato:0.10, onion:0.05, olive_oil:0.03 },
+  patates_yiahni:               { potato:0.35, tomato:0.10, onion:0.05, olive_oil:0.03 },
+  melitzanes_imam:              { eggplant:0.28, tomato:0.10, onion:0.05, olive_oil:0.03, feta_pdo:0.04 },
+  anginares_polita:             { artichoke:0.25, potato:0.12, carrot:0.08, onion:0.05, olive_oil:0.03, lemon:0.03 },
+  manitaria_frikase:            { mushroom:0.22, lettuce:0.08, olive_oil:0.025, egg:1, lemon:0.03 },
+  manitaria_stifado:            { mushroom:0.25, onion:0.14, tomato:0.08, olive_oil:0.025, wine:0.04 },
+  revithia_frikase:             { chickpeas:0.12, lettuce:0.10, olive_oil:0.025, lemon:0.03, egg:1 },
+
+  // ==================== ΟΣΠΡΙΑ ====================
+  giantes:                      { gigantes:0.12, tomato:0.10, onion:0.05, olive_oil:0.03, carrot:0.03 },
+  fasolada:                     { gigantes:0.10, tomato:0.08, onion:0.05, carrot:0.04, olive_oil:0.03, celery:0.03 },
+  fakes:                        { lentils:0.10, onion:0.04, tomato:0.04, olive_oil:0.025, garlic:0.01 },
+  revithia:                     { chickpeas:0.12, onion:0.05, olive_oil:0.03, lemon:0.02 },
+  fava:                         { chickpeas:0.12, onion:0.04, olive_oil:0.03, lemon:0.03 },
+
+  // ==================== ΣΟΥΠΕΣ ====================
+  kotosoupa:                    { chicken_whole:0.22, carrot:0.06, onion:0.04, rice:0.03, celery:0.04 },
+  giouvarlakia:                 { beef_mince:0.14, rice:0.03, egg:1, olive_oil:0.015, lemon:0.03 },
+  manitarosoupa:                { mushroom:0.18, onion:0.04, cream:0.05, olive_oil:0.015, flour:0.01 },
+  patsas_vrastos:               { beef_shank:0.20, lemon:0.05, garlic:0.02, olive_oil:0.01 },
+  patsas_anamiktos:             { beef_shank:0.12, lamb:0.10, lemon:0.05, garlic:0.02, olive_oil:0.01 },
+  kreatosoupa:                  { beef_shank:0.22, carrot:0.06, onion:0.04, celery:0.04, potato:0.10 },
+  psarosoupa:                   { cod:0.18, potato:0.12, carrot:0.05, onion:0.04, olive_oil:0.02, lemon:0.03 },
+  hortosoupa_trahanas:          { trahana:0.06, carrot:0.05, onion:0.04, celery:0.03, olive_oil:0.02 },
+  magiritsa:                    { lamb:0.18, lettuce:0.10, egg:1, lemon:0.04, olive_oil:0.02, rice:0.03 },
+  borscht:                      { beef_shank:0.12, cabbage:0.10, carrot:0.05, onion:0.04, potato:0.08, olive_oil:0.02 },
+
+  // ==================== ΘΑΛΑΣΣΙΝΑ / ΨΑΡΙΑ ====================
+  spaghetti_garides_egaio:      { shrimp:0.12, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  spaghetti_garida:             { shrimp:0.14, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  spaghetti_thalassina:         { shrimp:0.08, mussels:0.12, calamari:0.08, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  spaghetti_calamari:           { calamari:0.18, pasta:0.10, tomato:0.10, olive_oil:0.025 },
+  spaghetti_calamari_sauce:     { calamari:0.16, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  marinara:                     { mussels:0.12, calamari:0.08, shrimp:0.06, pasta:0.10, tomato:0.10, olive_oil:0.02 },
+  garidoma:                     { shrimp:0.22, pasta:0.11, tomato:0.10, olive_oil:0.025 },
+  garidoma_small:               { shrimp:0.12, pasta:0.10, tomato:0.08, olive_oil:0.02 },
+  kritharoto_garides:           { shrimp:0.18, orzo:0.10, olive_oil:0.02, onion:0.03 },
+  kritharoto_garidoules:        { shrimp:0.12, orzo:0.10, olive_oil:0.02, onion:0.03 },
+  kritharoto_thalassina:        { shrimp:0.08, mussels:0.12, calamari:0.08, orzo:0.10, olive_oil:0.02 },
+  mydopilafo:                   { mussels:0.35, rice:0.08, onion:0.04, olive_oil:0.02 },
+
+  bakaliaros_plaki:             { cod:0.28, tomato:0.12, onion:0.06, potato:0.15, olive_oil:0.03 },
+  bakaliaros_lemonatos:         { cod:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
+  bakaliaros_spetsiota:         { cod:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
+  bakaliaros_skordalia:         { cod:0.28, potato:0.15, garlic:0.02, olive_oil:0.04 },
+  bakaliarokroketes:            { cod:0.18, potato:0.12, flour:0.03, egg:1, olive_oil:0.04 },
+  glossa_lemonati:              { sole:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
+  peskandritsa_plaki:           { monkfish:0.28, tomato:0.12, onion:0.06, olive_oil:0.03 },
+  perka_plaki:                  { sea_bream:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
+  perka_lemonati:               { sea_bream:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
+  lavraki_fileto:               { sea_bream:0.28, olive_oil:0.025, lemon:0.03 },
+  tsipoures_pelagisies:         { sea_bream:0.35, olive_oil:0.025, lemon:0.03 },
+  sfirida_spetsiota:            { grouper:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
+  ksifias_lemonatos:            { swordfish:0.28, potato:0.15, olive_oil:0.03, lemon:0.04 },
+  sardeles_fileto_plaki:        { sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
+  gavros_plaki:                 { sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
+  gavros_lemonatos:             { sardines:0.28, potato:0.15, olive_oil:0.025, lemon:0.04 },
+  ratza_katsarola:              { ray:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
+
+  oktapodi_stifado:             { octopus:0.30, onion:0.15, tomato:0.08, olive_oil:0.025, wine:0.04 },
+  oktapodi_makaroni:            { octopus:0.28, pasta:0.10, tomato:0.08, onion:0.05, olive_oil:0.025 },
+  oktapodi_giouvetsi:           { octopus:0.28, orzo:0.08, tomato:0.08, onion:0.05, olive_oil:0.025 },
+  soupies_yiahni:               { cuttlefish:0.28, tomato:0.12, onion:0.06, olive_oil:0.025 },
+  soupies_krasates:             { cuttlefish:0.28, wine:0.08, onion:0.06, olive_oil:0.025 },
+  soupies_spanaki:              { cuttlefish:0.26, spinach:0.12, onion:0.05, olive_oil:0.025 },
+  lachanontolmades_thalassina:  { cabbage:0.20, shrimp:0.08, rice:0.04, onion:0.03, olive_oil:0.02 },
+
+  // ==================== ΨΗΤΑ ====================
+  fileto_kotopoulo:             { chicken_leg:0.28, olive_oil:0.015 },
+  bifteki_grilled:              { beef_mince:0.28, onion:0.03, bread:0.03 },
+  brizola_hoirini:              { pork:0.32, olive_oil:0.015 },
+  brizolakia:                   { pork:0.28, olive_oil:0.015 },
+  loukaniko_hoirino:            { pork:0.22, olive_oil:0.01 },
+  loukaniko_moscharisio:        { beef_mince:0.22, olive_oil:0.01 },
+
+  // ==================== ΣΑΛΑΤΕΣ ====================
+  matzourana_salad: { lettuce:0.10, tomato:0.08, cucumber:0.06, apple:0.05, radish:0.03, pomegranate:0.03, onion:0.02, parmesan:0.02, olive_oil:0.02 },
+  halloumi_salad:   { lettuce:0.12, halloumi:0.08, tomato:0.05, figs:0.03, walnuts:0.02, cranberries:0.015, olive_oil:0.02 },
+  dakos:            { bread:0.08, tomato:0.12, feta_pdo:0.07, capers:0.01, olive_oil:0.02 },
+  choriatiki:       { tomato:0.18, cucumber:0.10, onion:0.03, feta_pdo:0.08, olive_oil:0.025, pepper:0.04 },
+  marouli:          { lettuce:0.20, olive_oil:0.02, lemon:0.02 },
+  lachano_karoto:   { cabbage:0.16, carrot:0.06, olive_oil:0.02, lemon:0.02 },
+  xorta_epoxis:     { greens:0.22, olive_oil:0.025, lemon:0.02 },
+  pantzaria:        { beetroot:0.22, olive_oil:0.02, garlic:0.005 },
+
+  // ==================== ΓΛΥΚΑ ====================
+  haliavas:                     { flour:0.08, olive_oil:0.04, sugar:0.05 },
+  halvas:                       { flour:0.08, olive_oil:0.04, sugar:0.05 },
+  lemonopita:                   { phyllo:0.08, lemon:0.05, sugar:0.04, egg:1, butter:0.03 },
+  sokolatopita:                 { flour:0.07, sugar:0.05, egg:1, butter:0.04, milk:0.04 },
+  profiterole:                  { flour:0.05, egg:1, cream:0.08, sugar:0.03, butter:0.02 },
+  cheesecake:                   { cream:0.10, sugar:0.04, egg:1, butter:0.03 }
 };
 
 const manualOverrides = {};
@@ -643,14 +973,105 @@ function switchTab(id){
   if (id === "channels") renderChannels();
 }
 
-function loadNationalPrices(){
-  ingredientPrices = { ...NATIONAL_PRICES };
-  // fill any missing from ING_EL
-  Object.keys(ING_EL).forEach(k => {
-    if (ingredientPrices[k] == null) ingredientPrices[k] = NATIONAL_PRICES[k] || 1;
+
+/* =========================================================
+   POPULARITY  (1 = χαμηλή, 5 = bestseller)
+   Ενημερώνετε από e-food / Wolt κάθε 1–2 εβδομάδες
+   ========================================================= */
+const dishPopularity = {
+  // υψηλή ζήτηση (παράδειγμα — αλλάξτε από τα πραγματικά stats)
+  moussakas: 5, pastitsio: 5, moschari_kokkinisto: 5, moschari_giouvesti: 4,
+  moschari_lemonato: 4, moschari_stifado: 4, lachanontolmades: 5,
+  kotopoulo_fournou: 5, kotopoulo_bouti: 4, gemista: 4, fasolada: 4,
+  fakes: 4, giantes: 4, choriatiki: 5, dakos: 5, matzourana_salad: 4,
+  halloumi_salad: 4, soutzoukakia: 4, papoutsakia: 3, briam: 3,
+  fileto_kotopoulo: 4, bifteki_grilled: 4, brizola_hoirini: 3,
+  // default αν λείπει το κλειδί = 3
+};
+
+const EFOOD_URL = "https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385";
+const WOLT_URL  = "https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens";
+
+function popularityOf(key) {
+  const p = dishPopularity[key];
+  return (typeof p === "number" && p >= 1 && p <= 5) ? p : 3;
+}
+
+/* Δημοφιλή πιάτα: μικρό premium. Αδύναμα: μικρή έκπτωση. */
+function popularityAdjust(basePrice, key) {
+  const p = popularityOf(key);
+  const factor = 1 + (p - 3) * 0.03; // 1→-6%, 3→0%, 5→+6%
+  return +(basePrice * factor).toFixed(2);
+}
+
+/* =========================================================
+   OUTLIER: πιάτο εκτός ομάδας (π.χ. γιουβέτσι 15€, άλλα μοσχάρια ~12€)
+   ========================================================= */
+function parseEuro(v) {
+  if (typeof v === "number") return v;
+  return parseFloat(String(v).replace("€", "").replace(",", ".")) || 0;
+}
+
+function groupKey(dish) {
+  return dish.type || dish.category || "default";
+}
+
+function detectOutliers(rows) {
+  const groups = {};
+  rows.forEach(r => {
+    const g = groupKey(r);
+    (groups[g] = groups[g] || []).push(r);
   });
-  recalcAll();
-  alert("Φορτώθηκαν εθνικές ενδεικτικές τιμές (χονδρική/εστίαση 2026). Ενημερώστε από τα τιμολόγιά σας.");
+  const flags = {};
+  Object.keys(groups).forEach(g => {
+    const list = groups[g].filter(x => x.priceNum > 0);
+    if (list.length < 3) return;
+    const prices = list.map(x => x.priceNum).sort((a, b) => a - b);
+    const mid = Math.floor(prices.length / 2);
+    const median = prices.length % 2 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
+    list.forEach(x => {
+      const diff = x.priceNum - median;
+      const pct = median ? diff / median : 0;
+      if (Math.abs(pct) >= 0.18 && Math.abs(diff) >= 1.5) {
+        flags[x.key] = {
+          outlier: true,
+          group: g,
+          median: +median.toFixed(2),
+          price: x.priceNum,
+          diff: +diff.toFixed(2),
+          pct: +(pct * 100).toFixed(1),
+          msg: pct > 0
+            ? `Ακριβό για την ομάδα (${g}): ${x.priceNum.toFixed(2)}€ vs διάμεσος ${median.toFixed(2)}€`
+            : `Φθηνό για την ομάδα (${g}): ${x.priceNum.toFixed(2)}€ vs διάμεσος ${median.toFixed(2)}€`
+        };
+      }
+    });
+  });
+  return flags;
+}
+
+function suggestPrice(key) {
+  const dish = menuCatalog[key];
+  if (!dish) return 0;
+  const rules = categoryRules[dish.type] || categoryRules[dish.category] || categoryRules.default;
+  const cost = (typeof foodCost === "function") ? foodCost(key) : 0;
+  let raw = cost > 0 ? cost / (1 - rules.target) : parseEuro(dish.price);
+  raw = popularityAdjust(raw, key);
+  raw = Math.max(rules.min, Math.min(rules.max, raw));
+  return Math.round(raw * 2) / 2; // 0.50 βήμα
+}
+
+function loadNationalPrices() {
+  if (typeof ingredientPrices !== "undefined") {
+    Object.keys(NATIONAL_PRICES).forEach(k => {
+      ingredientPrices[k] = NATIONAL_PRICES[k];
+    });
+  } else {
+    window.ingredientPrices = Object.assign({}, NATIONAL_PRICES);
+  }
+  if (typeof recalcAll === "function") recalcAll();
+  else if (typeof renderDashboard === "function") renderDashboard();
+  else if (typeof computeAll === "function") computeAll();
 }
 
 function renderIngredients(){
@@ -830,18 +1251,31 @@ function renderDishTable(){
   const all = computeAll();
   const allow = new Set(getFilteredKeys());
   const rows = all.filter(r => allow.has(r.key));
+
+  const flags = detectOutliers(
+    Object.keys(menuCatalog).map(key => ({
+      key,
+      ...menuCatalog[key],
+      priceNum: parseEuro(menuCatalog[key].price)
+    }))
+  );
+
   document.getElementById("dishCountBadge").textContent = rows.length + " πιάτα";
   document.getElementById("dishTable").innerHTML = rows.map(r => {
     const cls = r.diff>0?"up":r.diff<0?"down":"flat";
     const pct = r.mNow ? r.mNow.pct : 0;
     const h = healthClass(pct);
     const ov = manualOverrides[r.key] != null ? manualOverrides[r.key] : "";
+    const flag = flags[r.key];
+    const warn = flag
+      ? ` <span class="outlier-flag" title="${flag.msg.replace(/"/g, "&quot;")}">⚠</span>`
+      : "";
     return `<tr>
       <td><code>${r.key}</code></td>
       <td>${r.d.category}</td>
       <td>${r.d.el}</td>
       <td><strong>${fmt(r.fc)}</strong></td>
-      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.current)}${warn}</td>
       <td>${fmt(r.suggested)}</td>
       <td><input type="number" step="0.1" min="0" value="${ov}" onchange="setOverride('${r.key}', this.value)"></td>
       <td><span class="pill ${cls}">${r.diff>0?"+":""}${r.diff}</span></td>
@@ -976,6 +1410,13 @@ function recalcAll(){
   renderRecipeList();
 }
 
+function afterAdminUnlock() {
+  loadNationalPrices();
+  recalcAll();
+  renderProfitPlanner();
+  renderChannels();
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   loadNationalPrices();
@@ -1065,6 +1506,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.setItem(KEY, "1");
     document.body.classList.remove("admin-locked");
     if (gate) gate.remove();
+    afterAdminUnlock();
   }
 
   function lock() {
