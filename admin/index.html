@@ -1511,8 +1511,12 @@ function renderDishTable(){
       ? ` <span class="outlier-flag" title="${String(flag.msg).replace(/"/g, "&quot;")}">⚠</span>`
       : "";
     const on = checked.has(r.key) ? "checked" : "";
+    const qty = (typeof portionsOf === "function") ? portionsOf(r.key) : 0;
     return `<tr>
       <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="renderProfitPlanner()"></td>
+      <td><input type="number" min="0" step="1" value="${qty || ""}"
+                 placeholder="0" style="width:4.2rem"
+                 onchange="setPortions('${r.key}', this.value)"></td>
       <td><code>${r.key}</code></td>
       <td>${r.d.category}</td>
       <td>${r.d.el}</td>
@@ -1714,6 +1718,39 @@ function renderFixedCostTable(){
   }
 }
 
+let dishPortions = JSON.parse(localStorage.getItem("mz_portions") || "{}");
+
+function portionsOf(key){
+  const n = Number(dishPortions[key] || 0);
+  return n > 0 ? n : 0;
+}
+
+function setPortions(key, val){
+  const n = Number(val);
+  if (!n || n < 0) delete dishPortions[key];
+  else dishPortions[key] = n;
+  localStorage.setItem("mz_portions", JSON.stringify(dishPortions));
+  if (typeof renderDishTable === "function") renderDishTable();
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+}
+
+function dishesWithSales(){
+  return Object.keys(menuCatalog)
+    .filter(k => portionsOf(k) > 0)
+    .map(k => {
+      const e = dishEconomics(k);
+      const q = portionsOf(k);
+      return {
+        ...e,
+        qty: q,
+        foodDay: e.fc * q,
+        salesDay: e.price * q,
+        contribDay: e.contrib * q
+      };
+    })
+    .sort((a,b) => b.qty - a.qty);
+}
+
 function renderProfitPlanner(){
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof syncFixedDaily === "function") syncFixedDaily();
@@ -1738,20 +1775,28 @@ function renderProfitPlanner(){
   const mix = mixedContribution(ticket, food);
   const contrib = mix.mixed;
   const p = portionsFor(contrib, fixed, target) || 0;
-  const sales = p * ticket;
-  const foodSpend = p * food;
-  const net = p * contrib - fixed;
 
   const selFood = rows.length ? rows.reduce((s,r) => s + r.fc, 0) / rows.length : food;
-  const foodDay = p * selFood;
+
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const useSold = sold.length > 0;
+  const planRows = useSold ? sold : rows;
+  const soldQty = sold.reduce((s,r) => s + r.qty, 0);
+  const soldFood = sold.reduce((s,r) => s + r.foodDay, 0);
+  const soldSales = sold.reduce((s,r) => s + r.salesDay, 0);
+  const favorite = sold[0] || null;
+
+  const foodDay = useSold ? soldFood : (p * selFood);
+  const sales = useSold ? soldSales : (p * ticket);
   const totalDayCost = fixed + foodDay;
+  const net = sales - totalDayCost;
 
   const chTicket = document.getElementById("chTicket");
   const chFood = document.getElementById("chFood");
   if (chTicket) chTicket.value = ticket.toFixed(2);
   if (chFood) chFood.value = food.toFixed(2);
 
-    const kpis = document.getElementById("profitKpis");
+  const kpis = document.getElementById("profitKpis");
   if (kpis) kpis.innerHTML = `
     <div class="kpi">
       <div class="label">Σταθερά / ημέρα</div>
@@ -1761,7 +1806,9 @@ function renderProfitPlanner(){
     <div class="kpi">
       <div class="label">Food cost / ημέρα</div>
       <div class="value">${fmt(foodDay)}</div>
-      <div class="sub">${p} μερίδες × ${fmt(selFood)} από επιλεγμένα πιάτα</div>
+      <div class="sub">${useSold
+        ? (soldQty + " μετρημένες μερίδες")
+        : (p + " μερίδες στόχου × " + fmt(selFood))}</div>
     </div>
     <div class="kpi">
       <div class="label">Σύνολο κόστους ημέρας</div>
@@ -1782,6 +1829,13 @@ function renderProfitPlanner(){
       <div class="label">Μερίδες για στόχο €${target}</div>
       <div class="value">${p}</div>
       <div class="sub">Κατάστημα ${Math.round(p*mix.w.local)} · διανομή ${Math.round(p*mix.w.own)} · efood ${Math.round(p*mix.w.plat)}</div>
+    </div>
+    <div class="kpi good">
+      <div class="label">Αγαπημένο σήμερα</div>
+      <div class="value">${favorite ? favorite.qty : "—"}</div>
+      <div class="sub">${favorite
+        ? favorite.d.el + " · food " + fmt(favorite.foodDay)
+        : "Γράψε μερίδες στον πίνακα πιάτων"}</div>
     </div>
     <div class="kpi ${net>=target?"good":"warn"}">
       <div class="label">Καθαρό αποτέλεσμα</div>
@@ -1812,35 +1866,49 @@ function renderProfitPlanner(){
     else return;
   }
 
-  box.innerHTML = `
-    <h2>Επιλεγμένα πιάτα ημέρας <span class="badge">${rows.length}</span></h2>
+    box.innerHTML = `
+    <h2>Επιλεγμένα πιάτα ημέρας <span class="badge">${useSold ? soldQty + " μερίδες" : rows.length + " πιάτα"}</span></h2>
     <div class="table-wrap"><table>
       <thead>
         <tr>
-          <th>Πιάτο</th><th>Τιμή</th><th>Food</th><th>Συνεισφορά</th>
+          <th>Πιάτο</th>
+          <th>Μερίδες σήμερα</th>
+          <th>Τιμή</th>
+          <th>Food / μερίδα</th>
+          <th>Food / ημέρα</th>
+          <th>Τζίρος</th>
+          <th>Συνεισφορά</th>
           <th>Στόχος €${target}</th>
           <th>€650</th><th>€800</th><th>€1000</th><th>€1200</th>
         </tr>
       </thead>
       <tbody>
-        ${rows.map(r => `<tr>
-          <td>${r.d.el}</td>
-          <td>${fmt(r.price)}</td>
-          <td>${fmt(r.fc)}</td>
-          <td><strong>${fmt(r.contrib)}</strong></td>
-          <td><strong>${portionsFor(r.contrib, fixed, target) ?? "—"}</strong></td>
-          <td>${portionsFor(r.contrib, fixed, 650) ?? "—"}</td>
-          <td>${portionsFor(r.contrib, fixed, 800) ?? "—"}</td>
-          <td>${portionsFor(r.contrib, fixed, 1000) ?? "—"}</td>
-          <td>${portionsFor(r.contrib, fixed, 1200) ?? "—"}</td>
-        </tr>`).join("")}
+        ${rows.map(r => {
+          const q = (typeof portionsOf === "function") ? portionsOf(r.key) : 0;
+          const star = favorite && r.key === favorite.key ? " ★" : "";
+          return `<tr>
+            <td>${r.d.el}${star}</td>
+            <td><strong>${q || "—"}</strong></td>
+            <td>${fmt(r.price)}</td>
+            <td>${fmt(r.fc)}</td>
+            <td>${q ? fmt(r.fc * q) : "—"}</td>
+            <td>${q ? fmt(r.price * q) : "—"}</td>
+            <td><strong>${fmt(r.contrib)}</strong></td>
+            <td><strong>${portionsFor(r.contrib, fixed, target) ?? "—"}</strong></td>
+            <td>${portionsFor(r.contrib, fixed, 650) ?? "—"}</td>
+            <td>${portionsFor(r.contrib, fixed, 800) ?? "—"}</td>
+            <td>${portionsFor(r.contrib, fixed, 1000) ?? "—"}</td>
+            <td>${portionsFor(r.contrib, fixed, 1200) ?? "—"}</td>
+          </tr>`;
+        }).join("")}
       </tbody>
     </table></div>
     <p class="note">
-      Σταθερά ημέρας ${fmt(fixed)} (πίνακας ανάλυσης, override ανά γραμμή).
-      Η στήλη «Στόχος €${target}» ακολουθεί το πεδίο καθαρού κέρδους.
+      «Μερίδες σήμερα» = ό,τι έγραψες στον πίνακα πιάτων.
+      Οι στήλες €650–€1200 = πόσες μερίδες θα χρειαζόσουν αν πουλούσες μόνο αυτό το πιάτο.
+      Σταθερά ημέρας ${fmt(fixed)}.
     </p>`;
-}
+  }
 
 function applySuggested(write){
   const changes = [];
