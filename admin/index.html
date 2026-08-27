@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matzourana · Professional Costing & Profit Planner</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<title>Matzourana · Professional Costing & Profit Planner</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCQym9rOl6nX4kD_vs0dR3LyxsrD_aQfKA",
+    authDomain: "matzouranaeatery-ratings.firebaseapp.com",
+    databaseURL: "https://matzouranaeatery-ratings-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "matzouranaeatery-ratings",
+    storageBucket: "matzouranaeatery-ratings.firebasestorage.app",
+    messagingSenderId: "396072691292",
+    appId: "1:396072691292:web:39c93ba4db33ff5991e899"
+  };
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  window.rtdb = firebase.database();
+</script>
 <style>
 :root {
   --bg: #f3f6f4;
@@ -332,6 +351,12 @@ tr:hover td { background: #fafcfb; }
 <section class="panel" id="tab-profit">
   <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
 
+  <p>
+    <button type="button" class="btn-ghost" onclick="pushToFirebase()">
+      Αποθήκευση ημέρας στο Firebase
+    </button>
+  </p>
+  <div id="fbProfitChart"></div>
   <div class="form-grid" style="margin-bottom:12px;">
     <div class="card-mini">
       <div class="section-title">Στόχος καθαρού κέρδους / ημέρα (€)</div>
@@ -384,6 +409,10 @@ tr:hover td { background: #fafcfb; }
   <button class="btn-ghost" type="button" onclick="useCatalogAverages()">
     Γέμισμα μέσων από επιλεγμένα πιάτα
   </button>
+  <button class="btn-ghost" type="button" onclick="pushToFirebase()">
+    Αποθήκευση ημέρας στο Firebase
+  </button>
+  <div id="fbProfitChart" style="margin:16px 0;"></div>
   <div class="channel-grid" id="profitChannelCards"></div>
   <div id="portionByDish"></div>
 
@@ -1205,7 +1234,10 @@ function switchTab(id){
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === id));
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + id));
   if (id === "recipes") renderRecipeList();
-  if (id === "profit") renderProfitPlanner();
+  if (id === "profit") {
+    renderProfitPlanner();
+    if (typeof loadProfitChart === "function") loadProfitChart();
+  }
   if (id === "channels") renderChannels();
 }
 
@@ -1749,6 +1781,91 @@ function dishesWithSales(){
       };
     })
     .sort((a,b) => b.qty - a.qty);
+}
+
+function getDb(){
+  if (window.rtdb) return window.rtdb;
+  if (typeof firebase !== "undefined" && firebase.apps && firebase.apps.length) {
+    window.rtdb = firebase.database();
+    return window.rtdb;
+  }
+  return null;
+}
+
+async function pushToFirebase(){
+  const db = getDb();
+  if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
+
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const date = new Date().toISOString().slice(0,10);
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
+  const ticket = Number(document.getElementById("avgTicket")?.value || 0);
+  const foodPct = Number(document.getElementById("avgFoodPct")?.value || 0);
+  const target = Number(document.getElementById("targetProfit")?.value || 650);
+  const sales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
+  const foodDay = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
+
+  const dishes = {};
+  sold.forEach(r => {
+    dishes[r.key] = {
+      name: r.d.el, qty: r.qty, price: r.price,
+      foodUnit: r.fc, foodDay: r.foodDay,
+      salesDay: r.salesDay, contribDay: r.contribDay
+    };
+  });
+
+  try {
+    await db.ref("matzourana_days/" + date).set({
+      date, ticket, foodPct, fixed, target,
+      portions: sold.reduce((s,r) => s + (r.qty || 0), 0),
+      sales, foodDay,
+      net: sales - foodDay - fixed,
+      wLocal: Number(document.getElementById("wLocal")?.value || 50),
+      wOwn: Number(document.getElementById("wOwn")?.value || 20),
+      wPlat: Number(document.getElementById("wPlat")?.value || 30),
+      favorite: sold[0] ? sold[0].d.el : "",
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
+      dishes
+    });
+    await loadProfitChart();
+    alert("Ημέρα " + date + " αποθηκεύτηκε.");
+  } catch (err) {
+    alert("Firebase: " + err.message);
+  }
+}
+
+let profitChartObj = null;
+
+async function loadProfitChart(){
+  const db = getDb();
+  if (!db) return;
+  const snap = await db.ref("matzourana_days").orderByKey().limitToLast(30).once("value");
+  const val = snap.val() || {};
+  const rows = Object.keys(val).sort().map(k => val[k]);
+
+  const canvas = document.getElementById("fbProfitCanvas");
+  if (canvas && typeof Chart !== "undefined") {
+    if (profitChartObj) profitChartObj.destroy();
+    profitChartObj = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: rows.map(r => r.date),
+        datasets: [
+          { label: "Πωλήσεις", data: rows.map(r => r.sales || 0), backgroundColor: "#3c6b4c" },
+          { label: "Food", data: rows.map(r => r.foodDay || 0), backgroundColor: "#c17a16" },
+          { label: "Καθαρό", data: rows.map(r => r.net || 0), backgroundColor: "#1f6feb" }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: "Ημέρες στο Firebase" } }
+      }
+    });
+  }
+
+  const box = document.getElementById("fbProfitChart");
+  if (box && !rows.length) box.innerHTML = "<p class='note'>Αποθήκευσε μία ημέρα για να γεμίσει το γράφημα.</p>";
+  else if (box) box.innerHTML = "";
 }
 
 function renderProfitPlanner(){
