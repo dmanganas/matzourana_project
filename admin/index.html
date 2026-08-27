@@ -412,6 +412,7 @@ tr:hover td { background: #fafcfb; }
   <button class="btn-ghost" type="button" onclick="pushToFirebase()">
     Αποθήκευση ημέρας στο Firebase
   </button>
+  <button type="button" onclick="closeMonth()">Κλείσιμο μήνα</button>
   <canvas id="fbProfitCanvas" style="width:100%;max-height:280px;"></canvas>
   <div id="fbProfitChart" style="margin:16px 0;"></div>
   <div class="channel-grid" id="profitChannelCards"></div>
@@ -1867,6 +1868,58 @@ async function loadProfitChart(){
   const box = document.getElementById("fbProfitChart");
   if (box && !rows.length) box.innerHTML = "<p class='note'>Αποθήκευσε μία ημέρα για να γεμίσει το γράφημα.</p>";
   else if (box) box.innerHTML = "";
+}
+
+async function closeMonth(ym){
+  ym = ym || new Date().toISOString().slice(0,7);
+  let box = document.getElementById("monthClose");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "monthClose";
+    const tab = document.getElementById("tab-profit");
+    if (tab) tab.insertBefore(box, tab.querySelector("#portionByDish"));
+    else return alert("Λείπει το tab κέρδους");
+  }
+
+  const db = typeof getDb === "function" ? getDb() : null;
+  if (!db) {
+    box.innerHTML = "<p class='note'>Δεν συνδέθηκε το Firebase.</p>";
+    return;
+  }
+
+  try {
+    const snap = await db.ref("matzourana_days").once("value");
+    const all = snap.val() || {};
+    const days = Object.values(all).filter(d => String(d.date || "").startsWith(ym));
+    if (!days.length) {
+      box.innerHTML = "<p class='note'>Δεν υπάρχουν αποθηκευμένες ημέρες για " + ym + ". Πρώτα Αποθήκευση ημέρας.</p>";
+      return;
+    }
+
+    const sales = days.reduce((s,d) => s + Number(d.sales||0), 0);
+    const food  = days.reduce((s,d) => s + Number(d.foodDay||0), 0);
+    const netOp = days.reduce((s,d) => s + Number(d.net||0), 0);
+    const vatRate = 0.13;
+    const salesNet = sales * 100 / 113;
+    const vatOnSales = sales - salesNet;
+    const vatOnFood = food * vatRate / (1 + vatRate);
+    const vatDue = Math.max(0, vatOnSales - vatOnFood);
+
+    box.innerHTML = `
+      <h2>Κλείσιμο μήνα ${ym}</h2>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">Ημέρες στο Firebase</div><div class="value">${days.length}</div></div>
+        <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div><div class="value">${fmt(sales)}</div></div>
+        <div class="kpi"><div class="label">Πωλήσεις χωρίς ΦΠΑ</div><div class="value">${fmt(salesNet)}</div></div>
+        <div class="kpi"><div class="label">Food μήνα</div><div class="value">${fmt(food)}</div></div>
+        <div class="kpi"><div class="label">ΦΠΑ εκτίμηση</div><div class="value">${fmt(vatDue)}</div>
+          <div class="sub">ΦΠΑ πωλήσεων ${fmt(vatOnSales)} − ΦΠΑ αγορών ${fmt(vatOnFood)}</div></div>
+        <div class="kpi"><div class="label">Λειτουργικό καθαρό</div><div class="value">${fmt(netOp)}</div>
+          <div class="sub">ΤΕΒΕ/εφορία ήδη μέσα στα σταθερά αν σώθηκαν εργάσιμες</div></div>
+      </div>`;
+  } catch (err) {
+    box.innerHTML = "<p class='note'>closeMonth: " + err.message + "</p>";
+  }
 }
 
 function renderProfitPlanner(){
