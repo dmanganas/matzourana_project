@@ -3482,9 +3482,7 @@
 
                         
                        //SeaFoods
-                       
-                       
-                         
+                        
                        //Veggy
                         "gemista_superfoods","arakas_lemonatos","giantes","spanakorizo",,"bamies_fournou","melitzanes_imam",
 
@@ -3496,6 +3494,14 @@
                          "fakes",
                          "revithia"
                     ];
+
+                    
+                    if (location.hash === "#publish-daily" && firebase.apps.length) {
+                        firebase.database().ref("matzourana_daily").set({
+                            updatedAt: new Date().toISOString(),
+                            keys: currentDailyMenu.filter(Boolean)
+                        });
+                    }
 
                     function renderDailyMenuTable() {
                         const table = document.getElementById('daily-menu-table');
