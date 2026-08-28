@@ -1565,7 +1565,8 @@ function renderDishTable(){
     const on = checked.has(r.key) ? "checked" : "";
     const qty = (typeof portionsOf === "function") ? portionsOf(r.key) : 0;
     return `<tr>
-      <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="renderProfitPlanner()"></td>
+      
+      <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="onDailyPickChange()"></td>
       <td><input type="number" min="0" step="1" value="${qty || ""}"
                  placeholder="0" style="width:4.2rem"
                  onchange="setPortions('${r.key}', this.value)"></td>
@@ -1604,6 +1605,41 @@ function avgMenuFoodPct(){
     if (p > 0) { s += fc / p; n++; }
   });
   return n ? (s / n) * 100 : 32;
+}
+
+let dailySaveTimer = null;
+function onDailyPickChange(){
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  clearTimeout(dailySaveTimer);
+  dailySaveTimer = setTimeout(() => {
+    if (typeof saveDailyMenuToFirebase === "function") saveDailyMenuToFirebase();
+  }, 400);
+}
+
+function applyDailyPicks(keys){
+  const set = new Set((keys || []).filter(k => menuCatalog[k]));
+  document.querySelectorAll(".daily-pick").forEach(el => {
+    el.checked = set.has(el.dataset.key);
+  });
+}
+
+async function loadDailyMenuFromFirebase(){
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (!db) return [];
+  const snap = await db.ref("matzourana_daily").once("value");
+  const data = snap.val();
+  const keys = (data && data.keys) || data;
+  return Array.isArray(keys) ? keys.filter(Boolean) : [];
+}
+
+async function saveDailyMenuToFirebase(keys){
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  const list = keys || [...document.querySelectorAll(".daily-pick:checked")].map(el => el.dataset.key);
+  if (!db) { alert("Firebase off"); return; }
+  await db.ref("matzourana_daily").set({
+    updatedAt: new Date().toISOString(),
+    keys: list.filter(k => menuCatalog[k])
+  });
 }
 
 function selectedDailyKeys(){
@@ -2178,6 +2214,8 @@ async function afterAdminUnlock() {
   loadNationalPrices();
   await loadKitchenBook();
   recalcAll();
+  const dailyKeys = await loadDailyMenuFromFirebase();
+  if (dailyKeys.length) applyDailyPicks(dailyKeys);
   renderProfitPlanner();
   renderChannels();
 }
