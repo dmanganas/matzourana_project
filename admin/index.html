@@ -268,8 +268,8 @@ tr:hover td { background: #fafcfb; }
 
   <div class="sources-bar">
     <h2>Πηγές <span class="badge" id="kitchenStamp">—</span></h2>
-    <button class="btn-primary" onclick="saveKitchenBook('live')">Αποθήκευση στο Firebase</button>
-    <button class="btn-primary" onclick="loadKitchenBook()">Φόρτωση από Firebase</button>
+    <button class="btn-primary" onclick="saveKitchenBook('live')">Αποθήκευση στην  Matzourana-Database</button>
+    <button class="btn-primary" onclick="loadKitchenBook()">Φόρτωση από την Matzourana-Database</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -371,7 +371,7 @@ tr:hover td { background: #fafcfb; }
 
   <p>
     <button type="button" class="btn-ghost" onclick="pushToFirebase()">
-      Αποθήκευση ημέρας στο Firebase
+      Αποθήκευση ημέρας στην Matzourana-Database
     </button>
   </p>
   <div id="fbProfitChart"></div>
@@ -428,7 +428,7 @@ tr:hover td { background: #fafcfb; }
     Γέμισμα μέσων από επιλεγμένα πιάτα
   </button>
   <button class="btn-ghost" type="button" onclick="pushToFirebase()">
-    Αποθήκευση ημέρας στο Firebase
+    Αποθήκευση ημέρας στην Matzourana-Database
   </button>
   <button type="button" onclick="closeMonth()">Κλείσιμο μήνα</button>
   <canvas id="fbProfitCanvas" style="width:100%;max-height:280px;"></canvas>
@@ -1885,7 +1885,7 @@ async function loadProfitChart(){
       },
       options: {
         responsive: true,
-        plugins: { title: { display: true, text: "Ημέρες στο Firebase" } }
+        plugins: { title: { display: true, text: "Ημέρες στην Matzourana-Database" } }
       }
     });
   }
@@ -1933,7 +1933,7 @@ async function closeMonth(ym){
     box.innerHTML = `
       <h2>Κλείσιμο μήνα ${ym}</h2>
       <div class="kpi-grid">
-        <div class="kpi"><div class="label">Ημέρες στο Firebase</div><div class="value">${days.length}</div></div>
+        <div class="kpi"><div class="label">Ημέρες στην Matzourana-Database</div><div class="value">${days.length}</div></div>
         <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div><div class="value">${fmt(sales)}</div></div>
         <div class="kpi"><div class="label">Πωλήσεις χωρίς ΦΠΑ</div><div class="value">${fmt(salesNet)}</div></div>
         <div class="kpi"><div class="label">Food μήνα</div><div class="value">${fmt(food)}</div></div>
