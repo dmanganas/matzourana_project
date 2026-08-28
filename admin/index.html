@@ -97,6 +97,18 @@ button, .btn {
   margin-bottom: 16px;
 }
 .panel.active { display: block; }
+
+.sources-bar {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.sources-bar h2 { margin-bottom: 10px; }
+.sources-bar button { margin: 4px 6px 0 0; }
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -252,6 +264,12 @@ tr:hover td { background: #fafcfb; }
     <div class="tab" data-tab="dishes" onclick="switchTab('dishes')">Πιάτα & Food Cost</div>
     <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
     <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κανάλια Πώλησης</div>
+  </div>
+
+  <div class="sources-bar">
+    <h2>Πηγές <span class="badge" id="kitchenStamp">—</span></h2>
+    <button class="btn-primary" onclick="saveKitchenBook('live')">Αποθήκευση στο Firebase</button>
+    <button class="btn-primary" onclick="loadKitchenBook()">Φόρτωση από Firebase</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -1705,6 +1723,13 @@ const defaultFixedCosts = {
   extra:    { el: "Extra (προμήθεια)",  day: 150.00 }
 };
 
+const HTML_DEFAULTS = {
+  dishes: Object.fromEntries(Object.keys(menuCatalog).map(k => [k, menuCatalog[k].price])),
+  recipes: JSON.parse(JSON.stringify(recipes)),
+  ingredients: { ...NATIONAL_PRICES },
+  fixed: JSON.parse(JSON.stringify(defaultFixedCosts))
+};
+
 let fixedCostOverrides = {};
 
 function dayFixedCost(key){
@@ -2142,8 +2167,16 @@ function recalcAll(){
   renderRecipeList();
 }
 
-function afterAdminUnlock() {
+//function afterAdminUnlock() {
+  //loadNationalPrices();
+  //recalcAll();
+  //renderProfitPlanner();
+  //renderChannels();
+//}
+
+async function afterAdminUnlock() {
   loadNationalPrices();
+  await loadKitchenBook();
   recalcAll();
   renderProfitPlanner();
   renderChannels();
@@ -2456,12 +2489,148 @@ function applyMapsPrices(){
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadNationalPrices();
+const KITCHEN_DB = "matzourana_kitchenbook";
+
+function currentFixedMap(){
+  const out = {};
+  Object.keys(defaultFixedCosts).forEach(k => {
+    out[k] = {
+      el: defaultFixedCosts[k].el,
+      day: (typeof dayFixedCost === "function") ? dayFixedCost(k) : defaultFixedCosts[k].day
+    };
+  });
+  return out;
+}
+
+function kitchenSnapshot(source){
+  return {
+    updatedAt: new Date().toISOString(),
+    source: source || "manual",
+    dishes: Object.fromEntries(Object.keys(menuCatalog).map(k => [k, menuCatalog[k].price])),
+    ingredients: { ...ingredientPrices },
+    recipes: JSON.parse(JSON.stringify(recipes)),
+    fixed: currentFixedMap(),
+    overrides: { ...(typeof manualOverrides !== "undefined" ? manualOverrides : {}) }
+  };
+}
+
+function applyKitchenBook(book, parts){
+  if (!book) return;
+  parts = parts || { dishes:true, ingredients:true, recipes:true, fixed:true };
+  if (parts.dishes && book.dishes) {
+    Object.keys(book.dishes).forEach(k => {
+      if (menuCatalog[k]) menuCatalog[k].price = book.dishes[k];
+    });
+  }
+  if (parts.ingredients && book.ingredients) {
+    Object.keys(book.ingredients).forEach(k => {
+      ingredientPrices[k] = Number(book.ingredients[k]);
+    });
+  }
+  if (parts.recipes && book.recipes) {
+    Object.keys(book.recipes).forEach(k => { recipes[k] = book.recipes[k]; });
+  }
+  if (parts.fixed && book.fixed) {
+    Object.keys(book.fixed).forEach(k => {
+      if (!defaultFixedCosts[k]) return;
+      const day = Number(book.fixed[k].day ?? book.fixed[k]);
+      if (typeof fixedCostOverrides !== "undefined") fixedCostOverrides[k] = day;
+      else defaultFixedCosts[k].day = day;
+    });
+    if (typeof syncFixedDaily === "function") syncFixedDaily();
+  }
+  if (book.overrides && typeof manualOverrides !== "undefined") {
+    Object.assign(manualOverrides, book.overrides);
+  }
+}
+
+function stampKitchen(book){
+  const el = document.getElementById("kitchenStamp");
+  if (!el) return;
+  el.textContent = book && book.updatedAt
+    ? ("Firebase " + book.updatedAt.replace("T"," ").slice(0,19) + " · " + (book.source||""))
+    : "Δεν υπάρχει βιβλίο Firebase — ισχύουν HTML / εθνικές";
+}
+
+async function saveKitchenBook(source){
+  const book = kitchenSnapshot(source || "save");
+  localStorage.setItem("mz_kitchenbook", JSON.stringify(book));
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (!db) { stampKitchen(book); alert("Firebase off. Κρατήθηκε μόνο local."); return; }
+  await db.ref(KITCHEN_DB).set(book);
+  stampKitchen(book);
+  alert("Αποθηκεύτηκε στο Firebase.");
+}
+
+async function loadKitchenBook(parts){
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  let book = null;
+  try { if (db) book = (await db.ref(KITCHEN_DB).once("value")).val(); } catch(e){}
+  if (!book) {
+    try { book = JSON.parse(localStorage.getItem("mz_kitchenbook") || "null"); } catch(e){}
+  }
+  if (!book) { stampKitchen(null); return null; }
+  applyKitchenBook(book, parts);
+  stampKitchen(book);
+  if (typeof recalcAll === "function") recalcAll();
+  if (typeof renderFixedCostTable === "function") renderFixedCostTable();
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  return book;
+}
+
+function resetIngredientsNational(){
+  Object.keys(NATIONAL_PRICES).forEach(k => { ingredientPrices[k] = NATIONAL_PRICES[k]; });
+  recalcAll();
+}
+function resetDishesHtml(){
+  Object.keys(HTML_DEFAULTS.dishes).forEach(k => {
+    if (menuCatalog[k]) menuCatalog[k].price = HTML_DEFAULTS.dishes[k];
+  });
+  recalcAll();
+}
+function resetRecipesHtml(){
+  Object.keys(HTML_DEFAULTS.recipes).forEach(k => {
+    recipes[k] = JSON.parse(JSON.stringify(HTML_DEFAULTS.recipes[k]));
+  });
+  recalcAll();
+}
+function resetFixedHtml(){
+  Object.keys(HTML_DEFAULTS.fixed).forEach(k => {
+    defaultFixedCosts[k].day = HTML_DEFAULTS.fixed[k].day;
+    if (typeof fixedCostOverrides !== "undefined") delete fixedCostOverrides[k];
+  });
+  if (typeof syncFixedDaily === "function") syncFixedDaily();
+  if (typeof renderFixedCostTable === "function") renderFixedCostTable();
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+}
+
+function downloadKitchenBook(){
+  const book = kitchenSnapshot("file");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(book,null,2)],{type:"application/json"}));
+  a.download = "matzourana-kitchenbook-" + book.updatedAt.slice(0,10) + ".json";
+  a.click();
+}
+function importKitchenFile(file){
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = async () => {
+    applyKitchenBook(JSON.parse(r.result));
+    await saveKitchenBook("file-upload");
+    recalcAll();
+  };
+  r.readAsText(file);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  loadNationalPrices();          // βάση HTML / εθνικές
+  await loadKitchenBook();       // από πάνω το Firebase (αν υπάρχει)
   recalcAll();
   renderProfitPlanner();
   renderChannels();
 });
+
+
 </script>
 </body>
 <!-- ========== ADMIN PASSWORD GATE ========== -->
