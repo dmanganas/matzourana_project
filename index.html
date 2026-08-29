@@ -3174,7 +3174,7 @@
                         "kritharoto_garidoules": { category: "seafood", el: "Κριθαρότο με γαριδούλες <br><br> (Αρωματικό και κρεμώδες κριθαρότο με γαριδούλες και φυτική κρέμα γάλακτος — ελαφρύ και απολαυστικό)", en: "Shrimp Orzo <br><br> (Aromatic and creamy orzo with small shrimps and plant-based cream — light and delightful)", price: "€9.00" },
                         "kritharoto_garides": { category: "seafood", el: "Κριθαρότο με γαρίδες <br><br> (Αρωματικό και κρεμώδες κριθαρότο με ζουμερές γαρίδες και φυτική κρέμα γάλακτος — ελαφρύ και απολαυστικό)", en: "Shrimp Orzo <br><br> (Aromatic and creamy orzo with juicy shrimps and plant-based cream — light and delightful)", price: "€14.50" },
                         "garidoma": { category: "seafood", el: "Γαριδομακαρονάδα <br><br> (Με φρέσκια ντομάτα και ζουμερές γαρίδες σε σπιτική κόκκινη σάλτσα. Ένα ακαταμάχητος συνδυασμός με γεύση θάλασσας!)", en: "Shrimps Spaghetti <br><br> (With fresh tomato and juicy shrimps in homemade red sauce. An irresistible combination with a taste of the sea)", price: "€17.00" },
-                        "garidoma_small": { category: "seafood", el: "Γαριδομακαρονάδα <br><br> (Με φρέσκια ντομάτα και ζουμερές γαρίδούλες σε σπιτική κόκκινη σάλτσα. Ένα ακαταμάχητος συνδυασμός με γεύση θάλασσας!)", en: "Shrimps Spaghetti (Baby shrimps) <br><br> (With fresh tomato and juicy baby shrimps in homemade red sauce. An irresistible combination with a taste of the sea)", price: "€9.00" },
+                        "garidoma_small": { category: "seafood", el: "Γαριδομακαρονάδα <br><br> (Με φρέσκια ντομάτα και ζουμερές γαρίδούλες σε σπιτική κόκκινη σάλτσα. Ένα ακαταμάχητος συνδυασμός με γεύση θάλασσας!)", en: "Shrimps Spaghetti (Baby shrimps) <br><br> (With fresh tomato and juicy baby shrimps in homemade red sauce. An irresistible combination with a taste of the sea)", price: "€10.50" },
                         "lavraki_fileto": { category: "seafood", el: "Λαβρακι φιλέτο στο φούρνο <br><br> (Φιλέτο από φρέσκο λαβράκι, ψημένο στο φούρνο με πατάτες και λεμόνι, γεμάτο με μεσογειακή γεύση!)", en: "Oven-Baked Sea Bass Fillet <br><br> (Fillet of fresh sea bass, oven-baked with potatoes and lemon, bursting with Mediterranean flavor)", price: "€13.00" },
                         "mydopilafo": { category: "seafood", el: "Μυδοπίλαφο <br><br> (Με φρέσκα μύδια και υπέροχη γεύση, όλος ο χρόνος μοιάζει καλοκαίρι!)", en: "Mussel Pilaf <br><br> (With fresh mussels and a wonderful taste, every season feels like summer)", price: "€10.00" },
                         "marinara": { category: "seafood", el: "Μαρινάρα με Σπαγγέτι <br><br> (Ένα πιάτο θαλασσινών που αιχμαλωτίζει τη φρεσκάδα του καλοκαιριού και την αίσθηση της θάλασσας)", en: "Marinara Spaghetti <br><br> (A seafood dish that captures the freshness of summer and the feeling of the sea)", price: "€9.50" },
@@ -3475,16 +3475,17 @@
                         // Freshly Cooked
 
                         //Meat
-                         "moschari_kokkinisto", "moschari_lemonato", "bifteki_moscharisia", "keftedakia_tiganita", "pastitsio", "makaronia_kima",
+                         "moschari_kokkinisto", "moschari_lemonato", "bifteki_moscharisia", "keftedakia_tiganita", "papoutsakia", "makaronia_kima","lachanontolmades","kolokythakia_gemista",
                     
                         //Chicken 
                         "kotopoulo_bouti",
 
                         
                        //SeaFoods
+                       "garidoma_small",
                         
                        //Veggy
-                        "gemista_superfoods","arakas_lemonatos","giantes","spanakorizo",,"bamies_fournou","melitzanes_imam",
+                        "gemista_superfoods","fasolakia","giantes","spanakorizo","melitzanes_imam",
 
                         // Soups
                          "kotosoupa",
@@ -3492,15 +3493,23 @@
                         
                         // Legumes
                          "fakes",
-                         "revithia"
                     ];
 
+
                     
-                    if (location.hash === "#publish-daily" && firebase.apps.length) {
+                    function publishDailyMenuToFirebase(){
+                        if (typeof firebase === "undefined" || !firebase.apps.length) return false;
+                        const keys = (currentDailyMenu || []).filter(Boolean);
                         firebase.database().ref("matzourana_daily").set({
                             updatedAt: new Date().toISOString(),
-                            keys: currentDailyMenu.filter(Boolean)
+                            keys
                         });
+                        console.log("matzourana_daily", keys.length, keys);
+                        return true;
+                    }
+
+                    if (!publishDailyMenuToFirebase()) {
+                       window.addEventListener("load", publishDailyMenuToFirebase);
                     }
 
                     function renderDailyMenuTable() {
@@ -5712,12 +5721,12 @@ const highlightsCatalog = {
     // ==================== FISH / SEAFOOD ====================
     "garidoma": {
         icons: ["schrimp-logo.png", "spagetti-logo.png"],
-        el: "Γαριδομακαρονάδα",
+        el: "Γαριδο- <br> μακαρονάδα",
         en: "Shrimps <br> Spaghetti"
     },
     "spaghetti_garides_egaio": {
         icons: ["schrimp-logo.png", "spagetti-logo.png"],
-        el: "Γαριδομακαρονάδα",
+        el: "Γαριδο- <br> μακαρονάδα",
         en: "Shrimps <br> Spaghetti"
     },
    
@@ -5785,14 +5794,14 @@ const currentHighlights = [
 
     "line",
     "moschari_kokkinisto",
-    "moschari_lemonato",
+    "papoutsakia",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "kotosoupa",
+    "garidoma",
     "gemista_superfoods",
-    "arakas",
+    "fasolakia",
     "giantes",
-    "bamies_fournou",
     "spanakorizo",
     "melitzanes_imam"
 
