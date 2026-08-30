@@ -129,6 +129,35 @@ button, .btn {
 .grid-2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; }
 @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
 .chart-box { height: 280px; position: relative; }
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+.chart-grid canvas {
+  width: 100% !important;
+  height: 240px !important;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  cursor: crosshair;
+}
+#chartTip {
+  position: fixed;
+  z-index: 80;
+  display: none;
+  pointer-events: none;
+  background: #1b2b1b;
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+@media (max-width: 800px) {
+  .chart-grid { grid-template-columns: 1fr; }
+}
 h2 { margin: 0 0 12px; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .badge {
   font-size: .72rem; padding: 4px 8px; border-radius: 999px;
@@ -181,6 +210,7 @@ tr:hover td { background: #fafcfb; }
 .ing { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .ing label { font-size: .82rem; color: var(--muted); }
 .section-title { margin: 0 0 8px; font-size: .92rem; color: var(--green-dark); }
+
 .channel-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -234,6 +264,22 @@ tr:hover td { background: #fafcfb; }
 }
 .maps-box textarea { width: 100%; min-height: 160px; }
 
+#tab-channels .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+#tab-channels canvas {
+  width: 100% !important;
+  height: 220px !important;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+@media (max-width: 800px) {
+  #tab-channels .form-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -263,7 +309,7 @@ tr:hover td { background: #fafcfb; }
     <div class="tab" data-tab="recipes" onclick="switchTab('recipes')">Συνταγές</div>
     <div class="tab" data-tab="dishes" onclick="switchTab('dishes')">Πιάτα & Food Cost</div>
     <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
-    <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κανάλια Πώλησης</div>
+    <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κέρδος / Μήνας / Χρόνος</div>
   </div>
 
   <div class="sources-bar">
@@ -348,6 +394,9 @@ tr:hover td { background: #fafcfb; }
         <thead>
           <tr>
             <th>Σήμερα</th>
+            <th>Κατάστημα</th>
+            <th>e-food</th>
+            <th>Wolt</th>
             <th>Κλειδί</th>
             <th>Κατηγορία</th>
             <th>Όνομα</th>
@@ -373,11 +422,19 @@ tr:hover td { background: #fafcfb; }
     <button type="button" class="btn-ghost" onclick="pushToFirebase()">
       Αποθήκευση ημέρας στην Matzourana-Database
     </button>
+    <button type="button" class="btn-ghost" onclick="closeMonth()">Κλείσιμο μήνα</button>
+    <button type="button" class="btn-ghost" onclick="useCatalogAverages()">
+      Γέμισμα μέσων από επιλεγμένα πιάτα
+    </button>
   </p>
-  <div id="fbProfitChart"></div>
+
   <div class="form-grid" style="margin-bottom:12px;">
     <div class="card-mini">
-      <div class="section-title">Στόχος καθαρού κέρδους / ημέρα (€)</div>
+      <div class="section-title">Ημέρα</div>
+      <input type="date" id="planDay" onchange="renderProfitPlanner()">
+    </div>
+    <div class="card-mini">
+      <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
       <input type="number" id="targetProfit" value="650" step="50" min="0" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
@@ -387,26 +444,24 @@ tr:hover td { background: #fafcfb; }
     </div>
     <div class="card-mini">
       <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
-      <input type="number" id="avgTicket" value="9.5" step="0.1" min="1"
-             onchange="renderProfitPlanner(); renderChannels()">
+      <input type="number" id="avgTicket" value="9.5" step="0.1" min="1" onchange="renderProfitPlanner()">
       <div class="note" id="ticketHint">Μέσο επιλεγμένων πιάτων: —</div>
     </div>
     <div class="card-mini">
       <div class="section-title">Μέσο food cost %</div>
-      <input type="number" id="avgFoodPct" value="32" step="0.5" min="15" max="50"
-             onchange="renderProfitPlanner(); renderChannels()">
+      <input type="number" id="avgFoodPct" value="35" step="0.5" min="15" max="50" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
-      <div class="section-title">Βάρος καταστήματος %</div>
-      <input type="number" id="wLocal" value="50" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+      <div class="section-title">% Κατάστημα (0 = αγνόησε)</div>
+      <input type="number" id="wLocal" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
-      <div class="section-title">Βάρος δικής σας διανομής %</div>
-      <input type="number" id="wOwn" value="20" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+      <div class="section-title">% e-food · προμήθεια 34%</div>
+      <input type="number" id="wEfood" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
-      <div class="section-title">Βάρος efood / Wolt %</div>
-      <input type="number" id="wPlat" value="30" min="0" max="100" step="5" onchange="renderProfitPlanner()">
+      <div class="section-title">% Wolt · προμήθεια 37%</div>
+      <input type="number" id="wWolt" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
   </div>
 
@@ -418,86 +473,69 @@ tr:hover td { background: #fafcfb; }
         <tbody id="fixedCostRows"></tbody>
       </table>
     </div>
-    <p class="note" id="fixedCostHint">Άλλαξε κελί → ενημερώνεται το 260. Άδειασε για επαναφορά.</p>
+    <p class="note" id="fixedCostHint">Άλλαξε κελί → ενημερώνεται το σταθερό. Άδειασε για επαναφορά.</p>
   </div>
 
   <div class="kpi-grid" id="profitKpis"></div>
   <div class="targets" id="targetLadder"></div>
 
-  <button class="btn-ghost" type="button" onclick="useCatalogAverages()">
-    Γέμισμα μέσων από επιλεγμένα πιάτα
-  </button>
-  <button class="btn-ghost" type="button" onclick="pushToFirebase()">
-    Αποθήκευση ημέρας στην Matzourana-Database
-  </button>
-  <button type="button" onclick="closeMonth()">Κλείσιμο μήνα</button>
-  <canvas id="fbProfitCanvas" style="width:100%;max-height:280px;"></canvas>
-  <div id="fbProfitChart" style="margin:16px 0;"></div>
-  <div class="channel-grid" id="profitChannelCards"></div>
+  <div class="card-mini" style="margin:16px 0;">
+    <div class="section-title">Τρέχων μήνας <span class="badge" id="profitMonthBadge">—</span></div>
+    <div class="kpi-grid" id="profitMonthKpis"></div>
+    <div class="chart-grid">
+      <canvas id="pSales"></canvas>
+      <canvas id="pFood"></canvas>
+      <canvas id="pFixed"></canvas>
+      <canvas id="pProfit"></canvas>
+    </div>
+  </div>
   <div id="portionByDish"></div>
 
   <p class="note">
-    Ticket = μέση τιμή πιάτου. Συνεισφορά μείγματος =
-    (κατάστημα × (ticket − food)) +
-    (διανομή × (ticket − food − κόστος διανομής)) +
-    (efood/Wolt × (ticket − προμήθεια − food)).
-    Τα τρία βάρη κανονικοποιούνται στο 100%.
-    Φθηνό πιάτο ή μεγαλύτερο μερίδιο platforms → περισσότερες μερίδες για τον ίδιο στόχο.
+    Μερίδες ανά κανάλι στον πίνακα πιάτων. Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
+    το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −34%, Wolt −37%, κατάστημα χωρίς προμήθεια.
   </p>
 </section>
 </section>
   <!-- CHANNELS -->
   <section class="panel" id="tab-channels">
-    <h2>Πού συμφέρει να πουλάτε <span class="badge">Local vs Delivery vs efood/Wolt</span></h2>
-    <div class="form-grid" style="margin-bottom:12px;">
-      <div class="card-mini">
-        <div class="section-title">Μέση τιμή πιάτου (€)</div>
-        <input type="number" id="chTicket" value="10.00" step="0.1" onchange="renderChannels()">
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Food cost πιάτου (€)</div>
-        <input type="number" id="chFood" value="3.20" step="0.1" onchange="renderChannels()">
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Προμήθεια efood/Wolt %</div>
-        <input type="number" id="chCommission" value="25" step="1" onchange="renderChannels()">
-      </div>
-      <div class="card-mini">
-        <div class="section-title">Κόστος τοπικής διανομής / παραγγελία (€)</div>
-        <input type="number" id="chLocalDeliv" value="1.20" step="0.1" onchange="renderChannels()">
-      </div>
-    </div>
-    <div class="channel-grid" id="channelCards"></div>
-    <p class="note">
-      Γενικός κανόνας για μαγειρείο: <strong>προτεραιότητα στο κατάστημα</strong>, μετά δική σας διανομή,
-      και platforms μόνο για πληρότητα / νέους πελάτες — με ελαφρώς υψηλότερη τιμή καναλιού αν γίνεται.
-    </p>
-  </section>
-</div>
+  <h2>Αναφορά μήνα &amp; έτους</h2>
+  <p>
+    <label>Μήνας
+      <input type="month" id="reportMonth">
+    </label>
+    <button type="button" class="btn-ghost" onclick="showChannelDays()">Φόρτωση ημερών μήνα</button>
+    <button type="button" class="btn-ghost" onclick="showChannelMonths()">Προβολή μηνών έτους</button>
+    <button type="button" class="btn-ghost" onclick="closeMonth()">Κλείσιμο μήνα</button>
+    <button type="button" class="btn-ghost" onclick="closeYear()">Κλείσιμο έτους</button>
+  </p>
+  <div id="monthClose"></div>
+  <div id="yearClose"></div>
 
-<div class="maps-modal" id="mapsModal">
-  <div class="maps-box">
-    <h2>Εισαγωγή τιμών από Google Maps</h2>
-    <p class="note">
-      Το Maps δεν δίνει τιμές απευθείας στη σελίδα admin.
-      Πατήστε «Άνοιγμα Maps», αντιγράψτε το μενού (Ορεκτικά / Ψητά / Φούρνος / Σαλάτες / Μαγειρευτά) και επικολλήστε εδώ.
-    </p>
-    <div class="filters">
-      <button class="btn-primary" onclick="window.open(MAPS_MENU_URL,'_blank')">Άνοιγμα Google Maps</button>
-      <button class="btn-ghost" onclick="parseMapsPaste()">Ανάλυση κειμένου</button>
-      <button class="btn-primary" onclick="applyMapsPrices()">Εφαρμογή ταιριασμένων</button>
-      <button class="btn-secondary" onclick="closeMapsPriceImport()">Κλείσιμο</button>
-    </div>
-    <textarea id="mapsPaste" placeholder="Επικολλήστε εδώ το μενού από Maps..."></textarea>
-    <div id="mapsResult" class="note"></div>
-    <div class="table-wrap" style="margin-top:10px;">
-      <table>
-        <thead><tr><th>Maps όνομα</th><th>Τμήμα</th><th>Τιμή Maps</th><th>Κλειδί</th><th>Τρέχουσα</th><th>Κατάσταση</th></tr></thead>
-        <tbody id="mapsTable"></tbody>
-      </table>
+  <div id="channelDaysView" style="display:none;">
+    <h3>Ημέρες μήνα <span class="badge" id="monthBadge">—</span></h3>
+    <div class="kpi-grid" id="monthKpis"></div>
+    <div class="chart-grid">
+      <canvas id="dSales"></canvas>
+      <canvas id="dFood"></canvas>
+      <canvas id="dFixed"></canvas>
+      <canvas id="dProfit"></canvas>
     </div>
   </div>
-</div>
+
+  <div id="channelMonthsView">
+    <h3>Μήνες έτους <span class="badge" id="yearMonthsBadge">—</span></h3>
+    <div class="chart-grid">
+      <canvas id="mSales"></canvas>
+      <canvas id="mFood"></canvas>
+      <canvas id="mFixed"></canvas>
+      <canvas id="mProfit"></canvas>
+    </div>
+    <h3 style="margin-top:28px;">Έτος <span class="badge" id="yearBadge">—</span></h3>
+    <div class="kpi-grid" id="yearKpis"></div>
+  </div>
+</section>
+<div id="chartTip"></div>
 
 <script>
 /* =========================================================
@@ -726,156 +764,77 @@ let ingredientPrices = { ...NATIONAL_PRICES };
 const menuCatalog = {
 
   // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ ====================
-  katsikaki_naxou:              { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι (Νάξου) στο φούρνο", en:"Roast Kid Goat (from Naxos)", price:"€16.00" },
-  katsikaki_frikase:            { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι φρικασέ", en:"Kid Goat Fricassee", price:"€16.00" },
-  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat (Oven)", price:"€16.00" },
-  kokoretsi:                    { category:"freshly-cooked", type:"goat_lamb", el:"Κοκορέτσι χειροποίητο", en:"Handmade Kokoretsi", price:"€15.50" },
-  arni_kotsi_frikase:           { category:"freshly-cooked", type:"goat_lamb", el:"Αρνί κότσι φρικασέ", en:"Lamb Shank Fricassee", price:"€16.00" },
-  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος μακαρονάδα", en:"Milk-Fed Lamb with Pasta", price:"€16.00" },
-  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
-  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο στη λαδόκολλα", en:"Kleftiko in Parchment", price:"€9.00" },
+  katsikaki_naxou:     { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι (Νάξου) στο φούρνο", en:"Roast Kid Goat (from Naxos)", price:"€16.00" },
+  katsikaki_frikase:   { category:"freshly-cooked", type:"goat_lamb", el:"Κατσικάκι φρικασέ", en:"Kid Goat Fricassee", price:"€16.00" },
+  katsiki_galaktos:    { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat (Oven)", price:"€16.00" },
+  kokoretsi:           { category:"freshly-cooked", type:"goat_lamb", el:"Κοκορέτσι χειροποίητο", en:"Handmade Kokoretsi", price:"€15.50" },
+  arni_kotsi_frikase:  { category:"freshly-cooked", type:"goat_lamb", el:"Αρνί κότσι φρικασέ", en:"Lamb Shank Fricassee", price:"€16.00" },
+  arnaki_galaktos:     { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος μακαρονάδα", en:"Milk-Fed Lamb with Pasta", price:"€16.00" },
+  gida_vrasti:         { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
+  kleftiko:            { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο στη λαδόκολλα", en:"Kleftiko in Parchment", price:"€9.00" },
 
-  moschari_kokkinisto:          { category:"freshly-cooked", type:"beef", el:"Μοσχάρι κοκκινιστό", en:"Beef in Red Sauce", price:"€10.20" },
-  moschari_giouvesti:           { category:"freshly-cooked", type:"beef", el:"Μοσχάρι Γιουβέτσι", en:"Beef Giouvetsi", price:"€10.50" },
-  moschari_lemonato:            { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι λεμονάτο", en:"Lemony Beef Stew", price:"€10.20" },
-  moschari_stifado:             { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι Στιφάδο", en:"Beef Stifado", price:"€11.00" },
-  moschari_ragout:              { category:"freshly-cooked", type:"beef", el:"Μοσχάρι ραγού", en:"Beef Ragout", price:"€10.50" },
-  moscharaki_noua:              { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά", en:"Beef Tenderloin Roast", price:"€12.50" },
+  moschari_kokkinisto: { category:"freshly-cooked", type:"beef", el:"Μοσχάρι κοκκινιστό", en:"Beef in Red Sauce", price:"€12.00" },
+  moschari_giouvesti:  { category:"freshly-cooked", type:"beef", el:"Μοσχάρι Γιουβέτσι", en:"Beef Giouvetsi", price:"€12.50" },
+  moschari_lemonato:   { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι λεμονάτο", en:"Lemony Beef Stew", price:"€12.00" },
+  moschari_stifado:    { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι Στιφάδο", en:"Beef Stifado", price:"€11.00" },
+  moschari_ragout:     { category:"freshly-cooked", type:"beef", el:"Μοσχάρι ραγού", en:"Beef Ragout", price:"€10.50" },
+  moscharaki_noua:     { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά", en:"Beef Tenderloin Roast", price:"€12.50" },
   moscharaki_noua_with_fried_potatoes: { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με τηγανητές πατάτες", en:"Beef Tenderloin with Fried Potatoes", price:"€12.50" },
-  moscharaki_noua_with_rice:    { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με ρύζι", en:"Beef Tenderloin with Rice", price:"€12.50" },
-  rolo_moscharisio:             { category:"freshly-cooked", type:"beef", el:"Ρολό μοσχαρίσιου κιμά", en:"Beef Roll", price:"€11.00" },
-  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι στην λαδόκολλα", en:"Gioulbasi in Parchment", price:"€12.00" },
-  bifteki_moscharisia:          { category:"freshly-cooked", type:"beef", el:"Μπιφτέκια Μοσχαρίσια", en:"Oven Beef Patties", price:"€9.80" },
-  keftedakia_tiganita:          { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια τηγανιτά", en:"Fried Meatballs", price:"€8.50" },
-  keftedakia_saltsa:            { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια με σάλτσα", en:"Meatballs in Sauce", price:"€8.00" },
-  soutzoukakia:                 { category:"freshly-cooked", type:"beef", el:"Σουτζουκάκια Σμυρνέικα", en:"Smyrna-Style Soutzoukakia", price:"€8.00" },
-  papoutsakia:                  { category:"freshly-cooked", type:"beef", el:"Μελιτζάνες παπουτσάκια", en:"Stuffed Eggplants (Papoutsakia)", price:"€8.90" },
-  lachanontolmades:             { category:"freshly-cooked", type:"beef", el:"Λαχανοντολμάδες", en:"Cabbage Rolls", price:"€8.50" },
-  kolokythakia_gemista:         { category:"freshly-cooked", type:"beef", el:"Κολοκυθάκια γεμιστά", en:"Stuffed Courgettes", price:"€8.50" },
-  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
+  moscharaki_noua_with_rice: { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με ρύζι", en:"Beef Tenderloin with Rice", price:"€12.50" },
+  rolo_moscharisio:    { category:"freshly-cooked", type:"beef", el:"Ρολό μοσχαρίσιου κιμά", en:"Beef Roll", price:"€11.00" },
+  gioulmpasi:          { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι στην λαδόκολλα", en:"Gioulbasi in Parchment", price:"€12.00" },
+  bifteki_moscharisia: { category:"freshly-cooked", type:"beef", el:"Μπιφτέκια Μοσχαρίσια", en:"Oven Beef Patties", price:"€10.00" },
+  keftedakia_tiganita: { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια τηγανιτά", en:"Fried Meatballs", price:"€9.00" },
+  keftedakia_saltsa:   { category:"freshly-cooked", type:"beef", el:"Κεφτεδάκια με σάλτσα", en:"Meatballs in Sauce", price:"€9.00" },
+  soutzoukakia:        { category:"freshly-cooked", type:"beef", el:"Σουτζουκάκια Σμυρνέικα", en:"Smyrna-Style Soutzoukakia", price:"€9.00" },
+  papoutsakia:         { category:"freshly-cooked", type:"beef", el:"Μελιτζάνες παπουτσάκια", en:"Stuffed Eggplants (Papoutsakia)", price:"€8.90" },
+  lachanontolmades:    { category:"freshly-cooked", type:"beef", el:"Λαχανοντολμάδες", en:"Cabbage Rolls", price:"€9.00" },
+  kolokythakia_gemista:{ category:"freshly-cooked", type:"beef", el:"Κολοκυθάκια γεμιστά", en:"Stuffed Courgettes", price:"€9.00" },
+  gemista_kima:        { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
 
-  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με Σέλινο", en:"Pork with Celery", price:"€10.00" },
-  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
-  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
-  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
-  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
+  choirino_selino:     { category:"freshly-cooked", type:"default", el:"Χοιρινό με Σέλινο", en:"Pork with Celery", price:"€10.00" },
+  choirino_damaskina:  { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
+  choirines_brizoles:  { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
+  choirino_frikase:    { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
+  spetzofai:           { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
 
-  kotopoulo_bouti:              { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο μπούτι στο φούρνο", en:"Oven-Baked Chicken Leg", price:"€9.00" },
-  kotopoulo_fournou:            { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο στο φούρνο", en:"Roast Chicken", price:"€9.00" },
-  kotopoulo_kokkinisto:         { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο κοκκινιστό", en:"Chicken in Red Sauce", price:"€9.00" },
-  bifteki_kotopoulo:            { category:"freshly-cooked", type:"chicken", el:"Μπιφτέκια κοτόπουλο στον φούρνο", en:"Oven Chicken Patties", price:"€9.50" },
-  rolo_kotopoulo:               { category:"freshly-cooked", type:"chicken", el:"Ρολό κοτόπουλο γεμιστό", en:"Stuffed Chicken Roll", price:"€10.00" },
-  kokoras_krasatos:             { category:"freshly-cooked", type:"chicken", el:"Κόκορας κρασάτος", en:"Rooster in Wine Sauce", price:"€9.50" },
-  kokoras_hilopites:            { category:"freshly-cooked", type:"chicken", el:"Κόκορας με χυλοπίτες", en:"Rooster with Hilopites", price:"€9.50" },
-  kokoras_stifado:              { category:"freshly-cooked", type:"chicken", el:"Κόκορας Στιφάδο", en:"Rooster Stifado", price:"€10.00" },
+  kotopoulo_bouti:     { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο μπούτι στο φούρνο", en:"Oven-Baked Chicken Leg", price:"€10.00" },
+  kotopoulo_fournou:   { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο στο φούρνο", en:"Roast Chicken", price:"€9.00" },
+  kotopoulo_kokkinisto:{ category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο κοκκινιστό", en:"Chicken in Red Sauce", price:"€9.00" },
+  bifteki_kotopoulo:   { category:"freshly-cooked", type:"chicken", el:"Μπιφτέκια κοτόπουλο στον φούρνο", en:"Oven Chicken Patties", price:"€9.50" },
+  rolo_kotopoulo:      { category:"freshly-cooked", type:"chicken", el:"Ρολό κοτόπουλο γεμιστό", en:"Stuffed Chicken Roll", price:"€10.00" },
+  kokoras_krasatos:    { category:"freshly-cooked", type:"chicken", el:"Κόκορας κρασάτος", en:"Rooster in Wine Sauce", price:"€9.50" },
+  kokoras_hilopites:   { category:"freshly-cooked", type:"chicken", el:"Κόκορας με χυλοπίτες", en:"Rooster with Hilopites", price:"€9.50" },
+  kokoras_stifado:     { category:"freshly-cooked", type:"chicken", el:"Κόκορας Στιφάδο", en:"Rooster Stifado", price:"€10.00" },
 
-  pastitsio:                    { category:"freshly-cooked", type:"pasta", el:"Παστίτσιο", en:"Pastitsio", price:"€8.50" },
-  moussakas:                    { category:"freshly-cooked", type:"pasta", el:"Μουσακάς", en:"Moussaka", price:"€8.50" },
-  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς Νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
-  makaronia_kima:               { category:"freshly-cooked", type:"pasta", el:"Μακαρόνια με κιμά", en:"Spaghetti with Mince", price:"€8.50" },
-  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
-  carbonara:                    { category:"freshly-cooked", type:"pasta", el:"Καρμπονάρα", en:"Carbonara", price:"€8.00" },
-  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
-  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά και μπεσαμέλ", en:"Crepes with Mince and Béchamel", price:"€8.00" },
-  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
+  pastitsio:           { category:"freshly-cooked", type:"pasta", el:"Παστίτσιο", en:"Pastitsio", price:"€8.50" },
+  moussakas:           { category:"freshly-cooked", type:"pasta", el:"Μουσακάς", en:"Moussaka", price:"€8.50" },
+  moussakas_nistisimos:{ category:"freshly-cooked", type:"vegan", el:"Μουσακάς Νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
+  makaronia_kima:      { category:"freshly-cooked", type:"pasta", el:"Μακαρόνια με κιμά", en:"Spaghetti with Mince", price:"€8.50" },
+  makaronia_vegan:     { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
+  carbonara:           { category:"freshly-cooked", type:"pasta", el:"Καρμπονάρα", en:"Carbonara", price:"€8.00" },
+  kanelonia:           { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
+  krepes_kima:         { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά και μπεσαμέλ", en:"Crepes with Mince and Béchamel", price:"€8.00" },
+  krepes_zampon_tyri:  { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
 
-  briam:                        { category:"freshly-cooked", type:"vegan", el:"Μπριάμ", en:"Briam", price:"€6.00" },
-  fasolakia:                    { category:"freshly-cooked", type:"vegan", el:"Φρέσκα Φασολάκια", en:"Fresh Green Beans", price:"€7.00" },
-  gemista:                      { category:"freshly-cooked", type:"vegan", el:"Γεμιστά", en:"Stuffed Vegetables", price:"€8.00" },
-  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
-  gemista_superfoods:           { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με superfoods", en:"Stuffed Vegetables with Superfoods", price:"€8.50" },
-  spanakorizo:                  { category:"freshly-cooked", type:"vegan", el:"Σπανακόρυζο", en:"Spinach Rice", price:"€6.00" },
-  arakas_lemonatos:             { category:"freshly-cooked", type:"vegan", el:"Αρακάς λεμονάτος", en:"Lemon Peas", price:"€5.50" },
-  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο Φούρνο", en:"Oven Okra", price:"€7.50" },
-  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες Γιαχνί", en:"Okra Yiahni", price:"€7.50" },
-  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι Γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
-  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες και πατάτες Γιαχνί", en:"Eggplant and Potato Yiahni", price:"€6.00" },
-  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες Γιαχνί", en:"Potato Yiahni", price:"€5.50" },
-  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγγινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
-  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
-  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
-  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια Φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
-  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με Σέλινο", en:"Pork with Celery", price:"€10.00" },
-  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
-  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
-  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
-  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
-  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
-  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
-  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
-  arni_kotsi_frikase:           { category:"freshly-cooked", type:"goat_lamb", el:"Αρνί κότσι φρικασέ", en:"Lamb Shank Fricassee", price:"€16.00" },
-  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος", en:"Milk-Fed Lamb", price:"€16.00" },
-  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat", price:"€16.00" },
-  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
-  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
-  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
-  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
-  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
-  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
-  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
-  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
-  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
-  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
-  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
-  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
-  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
-  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
-  spetzofai:                    { category:"freshly-cooked", type:"default", el:"Σπετζοφάϊ", en:"Spetzofai", price:"€8.00" },
-  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
-  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
-  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
-  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
-  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά", en:"Crepes with Mince", price:"€8.00" },
-  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
-  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
-  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
-  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
-  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
-  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
-  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
-  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
-  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
-  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
-  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
-  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
-  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
-  revithia_frikase:             { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
-  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
-  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
-  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
-  arnaki_galaktos:              { category:"freshly-cooked", type:"goat_lamb", el:"Αρνάκι γάλακτος", en:"Milk-Fed Lamb", price:"€16.00" },
-  katsiki_galaktos:             { category:"freshly-cooked", type:"goat_lamb", el:"Κατσίκι γάλακτος στο φούρνο", en:"Milk-Fed Kid Goat", price:"€16.00" },
-  kokoras_hilopites:            { category:"freshly-cooked", type:"chicken", el:"Κόκορας με χυλοπίτες", en:"Rooster with Hilopites", price:"€9.50" },
-  kokoras_stifado:              { category:"freshly-cooked", type:"chicken", el:"Κόκορας στιφάδο", en:"Rooster Stifado", price:"€10.00" },
-  rolo_kotopoulo:               { category:"freshly-cooked", type:"chicken", el:"Ρολό κοτόπουλο", en:"Chicken Roll", price:"€10.00" },
-  bifteki_kotopoulo:            { category:"freshly-cooked", type:"chicken", el:"Μπιφτέκια κοτόπουλο", en:"Chicken Patties", price:"€9.50" },
-  kotopoulo_kokkinisto:         { category:"freshly-cooked", type:"chicken", el:"Κοτόπουλο κοκκινιστό", en:"Chicken in Red Sauce", price:"€9.00" },
-  moscharaki_noua_with_fried_potatoes: { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με τηγανητές πατάτες", en:"Beef Tenderloin with Fried Potatoes", price:"€12.50" },
-  moscharaki_noua_with_rice:    { category:"freshly-cooked", type:"beef", el:"Μοσχαράκι νουά με ρύζι", en:"Beef Tenderloin with Rice", price:"€12.50" },
-  moschari_ragout:              { category:"freshly-cooked", type:"beef", el:"Μοσχάρι ραγού", en:"Beef Ragout", price:"€10.50" },
-  krepes_kima:                  { category:"freshly-cooked", type:"beef", el:"Κρέπες με κιμά", en:"Crepes with Mince", price:"€8.00" },
-  krepes_zampon_tyri:           { category:"freshly-cooked", type:"default", el:"Κρέπες ζαμπόν-τυρί", en:"Ham and Cheese Crepes", price:"€7.50" },
-  moussakas_nistisimos:         { category:"freshly-cooked", type:"vegan", el:"Μουσακάς νηστίσιμος", en:"Lenten Moussaka", price:"€8.50" },
-  makaronia_vegan:              { category:"freshly-cooked", type:"vegan", el:"Μακαρόνια vegan", en:"Vegan Spaghetti", price:"€8.00" },
-  kanelonia:                    { category:"freshly-cooked", type:"pasta", el:"Κανελόνια με κιμά", en:"Cannelloni with Mince", price:"€8.00" },
-  bamies_fournou:               { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο φούρνο", en:"Oven Okra", price:"€7.50" },
-  bamies_yiahni:                { category:"freshly-cooked", type:"vegan", el:"Μπάμιες γιαχνί", en:"Okra Yiahni", price:"€7.50" },
-  kounoupidi_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
-  melitzanes_yiahni:            { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες γιαχνί", en:"Eggplant Yiahni", price:"€6.00" },
-  patates_yiahni:               { category:"freshly-cooked", type:"vegan", el:"Πατάτες γιαχνί", en:"Potato Yiahni", price:"€5.50" },
-  anginares_polita:             { category:"freshly-cooked", type:"vegan", el:"Αγκινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
-  manitaria_frikase:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
-  manitaria_stifado:            { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
-  choirino_selino:              { category:"freshly-cooked", type:"default", el:"Χοιρινό με σέλινο", en:"Pork with Celery", price:"€10.00" },
-  choirino_damaskina:           { category:"freshly-cooked", type:"default", el:"Χοιρινό με δαμάσκηνα", en:"Pork with Prunes", price:"€11.00" },
-  choirines_brizoles:           { category:"freshly-cooked", type:"grilled", el:"Χοιρινές μπριζόλες με πατάτες", en:"Pork Chops with Potatoes", price:"€10.20" },
-  choirino_frikase:             { category:"freshly-cooked", type:"default", el:"Χοιρινό φρικασέ", en:"Pork Fricassee", price:"€10.00" },
-  kleftiko:                     { category:"freshly-cooked", type:"goat_lamb", el:"Κλέφτικο", en:"Kleftiko", price:"€9.00" },
-  gioulmpasi:                   { category:"freshly-cooked", type:"beef", el:"Γιούλμπασι", en:"Gioulbasi", price:"€12.00" },
-  gida_vrasti:                  { category:"freshly-cooked", type:"goat_lamb", el:"Γίδα βραστή", en:"Boiled Goat", price:"€9.00" },
-  gemista_rice:                 { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
-  gemista_kima:                 { category:"freshly-cooked", type:"beef", el:"Γεμιστά με κιμά", en:"Stuffed Vegetables with Mince", price:"€8.00" },
-  giantes:                      { category:"freshly-cooked", type:"legumes", el:"Γίγαντες πλακί", en:"Giant Beans Plaki", price:"€8.00" },
+  briam:               { category:"freshly-cooked", type:"vegan", el:"Μπριάμ", en:"Briam", price:"€6.50" },
+  fasolakia:           { category:"freshly-cooked", type:"vegan", el:"Φρέσκα Φασολάκια", en:"Fresh Green Beans", price:"€7.00" },
+  gemista:             { category:"freshly-cooked", type:"vegan", el:"Γεμιστά", en:"Stuffed Vegetables", price:"€8.00" },
+  gemista_rice:        { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με ρύζι", en:"Stuffed Vegetables with Rice", price:"€7.50" },
+  gemista_superfoods:  { category:"freshly-cooked", type:"vegan", el:"Γεμιστά με superfoods", en:"Stuffed Vegetables with Superfoods", price:"€8.50" },
+  spanakorizo:         { category:"freshly-cooked", type:"vegan", el:"Σπανακόρυζο", en:"Spinach Rice", price:"€6.00" },
+  arakas_lemonatos:    { category:"freshly-cooked", type:"vegan", el:"Αρακάς λεμονάτος", en:"Lemon Peas", price:"€6.50" },
+  bamies_fournou:      { category:"freshly-cooked", type:"vegan", el:"Μπάμιες στο Φούρνο", en:"Oven Okra", price:"€7.50" },
+  bamies_yiahni:       { category:"freshly-cooked", type:"vegan", el:"Μπάμιες Γιαχνί", en:"Okra Yiahni", price:"€7.50" },
+  kounoupidi_yiahni:   { category:"freshly-cooked", type:"vegan", el:"Κουνουπίδι Γιαχνί", en:"Cauliflower Yiahni", price:"€6.00" },
+  melitzanes_yiahni:   { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες και πατάτες Γιαχνί", en:"Eggplant and Potato Yiahni", price:"€6.00" },
+  melitzanes_imam:     { category:"freshly-cooked", type:"vegan", el:"Μελιτζάνες ιμάμ με φέτα ΠΟΠ", en:"Imam Eggplants with PDO Feta", price:"€7.50" },
+  patates_yiahni:      { category:"freshly-cooked", type:"vegan", el:"Πατάτες Γιαχνί", en:"Potato Yiahni", price:"€5.50" },
+  anginares_polita:    { category:"freshly-cooked", type:"vegan", el:"Αγγινάρες αλά πολίτα", en:"Artichokes a la Polita", price:"€9.00" },
+  manitaria_frikase:   { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Φρικασέ", en:"Mushroom Fricassee", price:"€7.50" },
+  manitaria_stifado:   { category:"freshly-cooked", type:"vegan", el:"Μανιτάρια Στιφάδο", en:"Mushroom Stifado", price:"€8.50" },
+  revithia_frikase:    { category:"freshly-cooked", type:"vegan", el:"Ρεβύθια Φρικασέ", en:"Chickpea Fricassee", price:"€7.50" },
+  giantes:             { category:"freshly-cooked", type:"legumes", el:"Γίγαντες πλακί", en:"Giant Beans Plaki", price:"€8.00" },
 
   // ==================== ΘΑΛΑΣΣΙΝΑ ====================
   spaghetti_garides_egaio:      { category:"seafood", type:"seafood", el:"Σπαγγέτι με γαριδούλες Αιγαίου", en:"Spaghetti with Aegean Shrimps", price:"€9.50" },
@@ -1255,10 +1214,14 @@ function switchTab(id){
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + id));
   if (id === "recipes") renderRecipeList();
   if (id === "profit") {
-    renderProfitPlanner();
-    if (typeof loadProfitChart === "function") loadProfitChart();
-  }
-  if (id === "channels") renderChannels();
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  if (typeof renderProfitMonthCharts === "function") renderProfitMonthCharts();
+}
+if (id === "channels") {
+  const rm = document.getElementById("reportMonth");
+  if (rm && !rm.value) rm.value = currentYm();
+  loadMonthFromFirebase();
+}
 }
 
 
@@ -1563,13 +1526,15 @@ function renderDishTable(){
       ? ` <span class="outlier-flag" title="${String(flag.msg).replace(/"/g, "&quot;")}">⚠</span>`
       : "";
     const on = checked.has(r.key) ? "checked" : "";
-    const qty = (typeof portionsOf === "function") ? portionsOf(r.key) : 0;
+    const c = (typeof chOf === "function") ? chOf(r.key) : { local:0, efood:0, wolt:0 };
     return `<tr>
-      
       <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="onDailyPickChange()"></td>
-      <td><input type="number" min="0" step="1" value="${qty || ""}"
-                 placeholder="0" style="width:4.2rem"
-                 onchange="setPortions('${r.key}', this.value)"></td>
+      <td><input type="number" min="0" step="1" value="${c.local||""}" placeholder="0" style="width:3.4rem"
+                 onchange="setCh('${r.key}','local',this.value)"></td>
+      <td><input type="number" min="0" step="1" value="${c.efood||""}" placeholder="0" style="width:3.4rem"
+                 onchange="setCh('${r.key}','efood',this.value)"></td>
+      <td><input type="number" min="0" step="1" value="${c.wolt||""}" placeholder="0" style="width:3.4rem"
+                 onchange="setCh('${r.key}','wolt',this.value)"></td>
       <td><code>${r.key}</code></td>
       <td>${r.d.category}</td>
       <td>${r.d.el}</td>
@@ -1813,38 +1778,152 @@ function renderFixedCostTable(){
   }
 }
 
-let dishPortions = JSON.parse(localStorage.getItem("mz_portions") || "{}");
 
-function portionsOf(key){
-  const n = Number(dishPortions[key] || 0);
-  return n > 0 ? n : 0;
+const CH_COMM = { local: 0, efood: 0.34, wolt: 0.37 };
+const CH_KEYS = ["local", "efood", "wolt"];
+const CH_EL   = { local: "Κατάστημα", efood: "e-food", wolt: "Wolt" };
+
+let portionChannels = JSON.parse(localStorage.getItem("mz_ch") || "{}");
+let dayLedger = JSON.parse(localStorage.getItem("mz_days") || "{}");
+
+function chOf(key){
+  const p = portionChannels[key] || {};
+  return {
+    local: Number(p.local || 0),
+    efood: Number(p.efood || 0),
+    wolt:  Number(p.wolt  || 0)
+  };
+}
+function totalPortions(key){
+  const c = chOf(key);
+  return c.local + c.efood + c.wolt;
+}
+function portionsOf(key){ return totalPortions(key); }
+
+function setCh(key, ch, val){
+  const n = Number(val);
+  if (!portionChannels[key]) portionChannels[key] = { local:0, efood:0, wolt:0 };
+  portionChannels[key][ch] = (!n || n < 0) ? 0 : n;
+  if (totalPortions(key) === 0) delete portionChannels[key];
+  localStorage.setItem("mz_ch", JSON.stringify(portionChannels));
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+}
+function setPortions(key, val){ setCh(key, "local", val); }
+
+function mixOverride(){
+  const eEl = document.getElementById("wEfood");
+  const wEl = document.getElementById("wWolt");
+  if (!eEl && !wEl) return null;
+  const l = Number(document.getElementById("wLocal")?.value || 0);
+  const e = Number(eEl?.value || 0);
+  const w = Number(wEl?.value || 0);
+  if (e === 0 && w === 0) return null;
+  const s = l + e + w;
+  if (s <= 0) return null;
+  return { local: l/s, efood: e/s, wolt: w/s };
 }
 
-function setPortions(key, val){
-  const n = Number(val);
-  if (!n || n < 0) delete dishPortions[key];
-  else dishPortions[key] = n;
-  localStorage.setItem("mz_portions", JSON.stringify(dishPortions));
-  if (typeof renderDishTable === "function") renderDishTable();
-  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+function todayISO(){
+  return new Date().toISOString().slice(0, 10);
+}
+function monthISO(d){
+  return (d || todayISO()).slice(0, 7);
+}
+
+function dishDayEconomics(key){
+  const d = menuCatalog[key];
+  const price = parseEuro(d.price);
+  const fc = foodCost(key);
+  const raw = chOf(key);
+  const tot = raw.local + raw.efood + raw.wolt;
+  const mix = mixOverride();
+  const qty = (mix && tot > 0)
+    ? { local: tot*mix.local, efood: tot*mix.efood, wolt: tot*mix.wolt }
+    : { ...raw };
+  const line = ch => {
+    const n = qty[ch] || 0;
+    const sales = n * price;
+    const comm  = sales * CH_COMM[ch];
+    const food  = n * fc;
+    return { n, sales, comm, food, net: sales - comm - food };
+  };
+  const local = line("local"), efood = line("efood"), wolt = line("wolt");
+  return {
+    key, d, price, fc, qty,
+    n: local.n + efood.n + wolt.n,
+    sales: local.sales + efood.sales + wolt.sales,
+    comm:  local.comm  + efood.comm  + wolt.comm,
+    food:  local.food  + efood.food  + wolt.food,
+    net:   local.net   + efood.net   + wolt.net,
+    local, efood, wolt
+  };
+}
+
+function dishDayEconomics(key){
+  const d = menuCatalog[key];
+  const price = parseEuro(d.price);
+  const fc = foodCost(key);
+  const raw = chOf(key);
+  let qty = { ...raw };
+  const tot = raw.local + raw.efood + raw.wolt;
+  const mix = mixOverride();
+  if (mix && tot > 0) {
+    qty = {
+      local: tot * mix.local,
+      efood: tot * mix.efood,
+      wolt:  tot * mix.wolt
+    };
+  }
+  const line = ch => {
+    const n = qty[ch] || 0;
+    const sales = n * price;
+    const comm  = sales * CH_COMM[ch];
+    const food  = n * fc;
+    return { n, sales, comm, food, net: sales - comm - food };
+  };
+  const local = line("local"), efood = line("efood"), wolt = line("wolt");
+  return {
+    key, d, price, fc, qty,
+    n: local.n + efood.n + wolt.n,
+    sales: local.sales + efood.sales + wolt.sales,
+    comm:  local.comm  + efood.comm  + wolt.comm,
+    food:  local.food  + efood.food  + wolt.food,
+    net:   local.net   + efood.net   + wolt.net,
+    local, efood, wolt
+  };
+}
+
+function dayTotals(keys){
+  const rows = keys.map(dishDayEconomics).filter(r => r.n > 0);
+  const sum = (f) => rows.reduce((s,r) => s + r[f], 0);
+  const fixed = Number(document.getElementById("fixedDaily")?.value || 260);
+  return {
+    rows,
+    portions: sum("n"),
+    sales: sum("sales"),
+    food:  sum("food"),
+    comm:  sum("comm"),
+    contrib: sum("net"),
+    fixed,
+    profit: sum("net") - fixed
+  };
 }
 
 function dishesWithSales(){
   return Object.keys(menuCatalog)
     .filter(k => portionsOf(k) > 0)
     .map(k => {
-      const e = dishEconomics(k);
-      const q = portionsOf(k);
+      const e = dishDayEconomics(k);
       return {
-        ...e,
-        qty: q,
-        foodDay: e.fc * q,
-        salesDay: e.price * q,
-        contribDay: e.contrib * q
+        key: k, d: e.d, price: e.price, fc: e.fc,
+        contrib: e.price - e.fc,
+        qty: e.n, foodDay: e.food, salesDay: e.sales,
+        contribDay: e.net, commDay: e.comm
       };
     })
     .sort((a,b) => b.qty - a.qty);
 }
+
 
 function getDb(){
   if (window.rtdb) return window.rtdb;
@@ -1855,47 +1934,6 @@ function getDb(){
   return null;
 }
 
-async function pushToFirebase(){
-  const db = getDb();
-  if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
-
-  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
-  const date = new Date().toISOString().slice(0,10);
-  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
-  const ticket = Number(document.getElementById("avgTicket")?.value || 0);
-  const foodPct = Number(document.getElementById("avgFoodPct")?.value || 0);
-  const target = Number(document.getElementById("targetProfit")?.value || 650);
-  const sales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
-  const foodDay = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
-
-  const dishes = {};
-  sold.forEach(r => {
-    dishes[r.key] = {
-      name: r.d.el, qty: r.qty, price: r.price,
-      foodUnit: r.fc, foodDay: r.foodDay,
-      salesDay: r.salesDay, contribDay: r.contribDay
-    };
-  });
-
-  try {
-    await db.ref("matzourana_days/" + date).set({
-      date, ticket, foodPct, fixed, target,
-      portions: sold.reduce((s,r) => s + (r.qty || 0), 0),
-      sales, foodDay,
-      net: sales - foodDay - fixed,
-      wLocal: Number(document.getElementById("wLocal")?.value || 50),
-      wOwn: Number(document.getElementById("wOwn")?.value || 20),
-      wPlat: Number(document.getElementById("wPlat")?.value || 30),
-      favorite: sold[0] ? sold[0].d.el : "",
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-      dishes
-    });
-    await loadProfitChart();
-    alert("Ημέρα " + date + " αποθηκεύτηκε.");
-  } catch (err) {
-    alert("Firebase: " + err.message);
-  }
-}
 
 let profitChartObj = null;
 
@@ -1914,9 +1952,10 @@ async function loadProfitChart(){
       data: {
         labels: rows.map(r => r.date),
         datasets: [
-          { label: "Πωλήσεις", data: rows.map(r => r.sales || 0), backgroundColor: "#3c6b4c" },
-          { label: "Food", data: rows.map(r => r.foodDay || 0), backgroundColor: "#c17a16" },
-          { label: "Καθαρό", data: rows.map(r => r.net || 0), backgroundColor: "#1f6feb" }
+          { label: "Πωλήσεις",    data: rows.map(r => r.sales || 0),   backgroundColor: "#3c6b4c" },
+          { label: "Food",        data: rows.map(r => r.foodDay || 0), backgroundColor: "#c17a16" },
+          { label: "Προμήθειες",  data: rows.map(r => r.comm || 0),    backgroundColor: "#8e24aa" },
+          { label: "Καθαρό",      data: rows.map(r => r.net || 0),     backgroundColor: "#1f6feb" }
         ]
       },
       options: {
@@ -1931,67 +1970,400 @@ async function loadProfitChart(){
   else if (box) box.innerHTML = "";
 }
 
-async function closeMonth(ym){
-  ym = ym || new Date().toISOString().slice(0,7);
-  let box = document.getElementById("monthClose");
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "monthClose";
-    const tab = document.getElementById("tab-profit");
-    if (tab) tab.insertBefore(box, tab.querySelector("#portionByDish"));
-    else return alert("Λείπει το tab κέρδους");
-  }
+const CHART_HITS = {};
+const VAT_RATE = 0.13;
 
-  const db = typeof getDb === "function" ? getDb() : null;
-  if (!db) {
-    box.innerHTML = "<p class='note'>Δεν συνδέθηκε το Firebase.</p>";
+function ymNow(){
+  return (document.getElementById("reportMonth")?.value
+    || document.getElementById("planDay")?.value
+    || new Date().toISOString().slice(0,10)).slice(0,7);
+}
+function currentYm(){ return new Date().toISOString().slice(0,7); }
+function yNow(){ return ymNow().slice(0,4); }
+
+function vatPack(sales, food){
+  const salesNet   = sales / (1 + VAT_RATE);
+  const vatOnSales = sales - salesNet;
+  const vatOnFood  = food * VAT_RATE / (1 + VAT_RATE);
+  const vatDue     = Math.max(0, vatOnSales - vatOnFood);
+  return { salesNet, vatOnSales, vatOnFood, vatDue };
+}
+
+function vatReportHtml(title, rec){
+  return `
+    <h3>${title}</h3>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div>
+        <div class="value">${fmt(rec.sales)}</div>
+        <div class="sub">καθαρή αξία ${fmt(rec.salesNet)}</div></div>
+      <div class="kpi"><div class="label">ΦΠΑ εκροών (13%)</div>
+        <div class="value">${fmt(rec.vatOnSales)}</div>
+        <div class="sub">πάνω στις πωλήσεις</div></div>
+      <div class="kpi"><div class="label">ΦΠΑ εισροών</div>
+        <div class="value">${fmt(rec.vatOnFood)}</div>
+        <div class="sub">εκτίμηση στο food</div></div>
+      <div class="kpi"><div class="label">Απόδοση ΦΠΑ</div>
+        <div class="value">${fmt(rec.vatDue)}</div>
+        <div class="sub">εκροές − εισροές</div></div>
+      <div class="kpi"><div class="label">Κόστος πιάτων</div>
+        <div class="value">${fmt(rec.food)}</div></div>
+      <div class="kpi"><div class="label">Προμήθειες</div>
+        <div class="value">${fmt(rec.comm)}</div></div>
+      <div class="kpi"><div class="label">Σταθερά</div>
+        <div class="value">${fmt(rec.fixed)}</div></div>
+      <div class="kpi good"><div class="label">Κέρδος</div>
+        <div class="value">${fmt(rec.net)}</div>
+        <div class="sub">${rec.days || rec.months || 0} εγγραφές · ${fmt(rec.portions||0).replace("€","")} μερίδες</div></div>
+    </div>`;
+}
+
+function fieldOf(d, kind){
+  if (kind === "sales")  return Number(d.sales || 0);
+  if (kind === "food")   return Number(d.foodDay || d.food || 0);
+  if (kind === "fixed")  return Number(d.fixed || 0);
+  if (kind === "profit") return Number(d.net || d.profit || 0);
+  return 0;
+}
+
+function drawBars(canvasId, items, kind, color, title, labelFn){
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  const ctx = c.getContext("2d");
+  const w = c.width  = Math.max(260, Math.floor(c.clientWidth || c.parentElement?.clientWidth || 400));
+  const h = c.height = 240;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = "#333"; ctx.font = "13px sans-serif";
+  ctx.fillText(title + (items && items.length ? " · " + items.length : ""), 10, 18);
+  CHART_HITS[canvasId] = [];
+  if (!items || !items.length) {
+    ctx.fillStyle = "#999"; ctx.fillText("Χωρίς δεδομένα", 10, 48);
     return;
   }
-
-  try {
-    const snap = await db.ref("matzourana_days").once("value");
-    const all = snap.val() || {};
-    const days = Object.values(all).filter(d => String(d.date || "").startsWith(ym));
-    if (!days.length) {
-      box.innerHTML = "<p class='note'>Δεν υπάρχουν αποθηκευμένες ημέρες για " + ym + ". Πρώτα Αποθήκευση ημέρας.</p>";
-      return;
-    }
-
-    const sales = days.reduce((s,d) => s + Number(d.sales||0), 0);
-    const food  = days.reduce((s,d) => s + Number(d.foodDay||0), 0);
-    const netOp = days.reduce((s,d) => s + Number(d.net||0), 0);
-    const vatRate = 0.13;
-    const salesNet = sales * 100 / 113;
-    const vatOnSales = sales - salesNet;
-    const vatOnFood = food * vatRate / (1 + vatRate);
-    const vatDue = Math.max(0, vatOnSales - vatOnFood);
-
-    box.innerHTML = `
-      <h2>Κλείσιμο μήνα ${ym}</h2>
-      <div class="kpi-grid">
-        <div class="kpi"><div class="label">Ημέρες στην Matzourana-Database</div><div class="value">${days.length}</div></div>
-        <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div><div class="value">${fmt(sales)}</div></div>
-        <div class="kpi"><div class="label">Πωλήσεις χωρίς ΦΠΑ</div><div class="value">${fmt(salesNet)}</div></div>
-        <div class="kpi"><div class="label">Food μήνα</div><div class="value">${fmt(food)}</div></div>
-        <div class="kpi"><div class="label">ΦΠΑ εκτίμηση</div><div class="value">${fmt(vatDue)}</div>
-          <div class="sub">ΦΠΑ πωλήσεων ${fmt(vatOnSales)} − ΦΠΑ αγορών ${fmt(vatOnFood)}</div></div>
-        <div class="kpi"><div class="label">Λειτουργικό καθαρό</div><div class="value">${fmt(netOp)}</div>
-          <div class="sub">ΤΕΒΕ/εφορία ήδη μέσα στα σταθερά αν σώθηκαν εργάσιμες</div></div>
-      </div>`;
-  } catch (err) {
-    box.innerHTML = "<p class='note'>closeMonth: " + err.message + "</p>";
+  const vals = items.map(d => fieldOf(d, kind));
+  const max = Math.max(...vals.map(Math.abs), 1);
+  const x0 = 44, y0 = 32, x1 = w - 14, y1 = h - 30;
+  ctx.strokeStyle = "#eee";
+  ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x1,y1); ctx.stroke();
+  const n = items.length;
+  const gap = (x1 - x0) / n;
+  const bw = Math.max(6, Math.min(42, gap * 0.62));
+  vals.forEach((v,i) => {
+    const cx = x0 + (i + 0.5) * gap;
+    const bh = Math.max(3, (Math.abs(v) / max) * (y1 - y0));
+    const top = y1 - bh;
+    ctx.fillStyle = color;
+    ctx.fillRect(cx - bw/2, top, bw, bh);
+    CHART_HITS[canvasId].push({
+      x0: x0 + i * gap, x1: x0 + (i + 1) * gap,
+      label: labelFn(items[i], i),
+      value: fmt(v)
+    });
+  });
+  if (!c._tipBound) {
+    c._tipBound = true;
+    c.addEventListener("mousemove", ev => showChartTip(ev, canvasId));
+    c.addEventListener("mouseleave", hideChartTip);
   }
 }
+
+
+
+let channelMode = "months";
+
+function monthLabel(ym){
+  const [y,m] = String(ym).split("-");
+  const names = ["","Ιαν","Φεβ","Μαρ","Απρ","Μαϊ","Ιουν","Ιουλ","Αυγ","Σεπ","Οκτ","Νοε","Δεκ"];
+  return (names[Number(m)] || ym) + " " + y;
+}
+
+async function showChannelMonths(){
+  channelMode = "months";
+  const d = document.getElementById("channelDaysView");
+  const m = document.getElementById("channelMonthsView");
+  if (d) d.style.display = "none";
+  if (m) m.style.display = "block";
+  await renderYearSection();
+}
+
+async function showChannelDays(){
+  channelMode = "days";
+  const rm = document.getElementById("reportMonth");
+  if (rm && !rm.value) rm.value = currentYm();
+  const d = document.getElementById("channelDaysView");
+  const m = document.getElementById("channelMonthsView");
+  if (d) d.style.display = "block";
+  if (m) m.style.display = "none";
+  await loadMonthFromFirebase();
+  renderMonthPanel();
+}
+
+function drawMonthSet(months){
+  const lab = mo => monthLabel(mo.month || "");
+  drawBars("mSales",  months, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
+  drawBars("mFood",   months, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
+  drawBars("mFixed",  months, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
+  drawBars("mProfit", months, "profit", "#1565c0", "Κέρδος / μήνα", lab);
+}
+
+function drawDaySet(prefix, days){
+  const lab = d => d.date || "";
+  drawBars(prefix+"Sales",  days, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
+  drawBars(prefix+"Food",   days, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
+  drawBars(prefix+"Fixed",  days, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
+  drawBars(prefix+"Profit", days, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
+}
+
+function showChartTip(ev, id){
+  const tip = document.getElementById("chartTip");
+  const c = ev.currentTarget;
+  if (!tip || !c) return;
+  const rect = c.getBoundingClientRect();
+  const x = (ev.clientX - rect.left) * (c.width / Math.max(1, rect.width));
+  const hit = (CHART_HITS[id] || []).find(b => x >= b.x0 && x < b.x1);
+  if (!hit) { tip.style.display = "none"; c.title = ""; return; }
+  const text = hit.label + " · " + hit.value;
+  c.title = text;
+  tip.textContent = text;
+  tip.style.display = "block";
+  tip.style.left = (ev.clientX + 12) + "px";
+  tip.style.top  = (ev.clientY + 12) + "px";
+}
+
+
+function hideChartTip(){
+  const tip = document.getElementById("chartTip");
+  if (tip) tip.style.display = "none";
+}
+
+
+function daysFor(ym){
+  ym = String(ym || ymNow()).slice(0,7);
+  const src = (typeof dayLedger !== "undefined" && dayLedger) ? dayLedger : {};
+  const map = {};
+  Object.keys(src).forEach(k => {
+    const d = src[k];
+    if (!d || typeof d !== "object") return;
+    const date = String(d.date || k).slice(0,10);
+    if (date.length >= 7 && date.slice(0,7) === ym) {
+      map[date] = { ...d, date };
+    }
+  });
+  return Object.values(map).sort((a,b) => a.date.localeCompare(b.date));
+}
+
+function summarizeDays(days, ym){
+  const sales    = days.reduce((s,d) => s + fieldOf(d,"sales"), 0);
+  const food     = days.reduce((s,d) => s + fieldOf(d,"food"), 0);
+  const comm     = days.reduce((s,d) => s + Number(d.comm || 0), 0);
+  const fixed    = days.reduce((s,d) => s + fieldOf(d,"fixed"), 0);
+  const portions = days.reduce((s,d) => s + Number(d.portions || 0), 0);
+  const net      = days.reduce((s,d) => s + fieldOf(d,"profit"), 0);
+  return { month: ym, year: (ym||"").slice(0,4), days: days.length,
+    portions, sales, food, comm, fixed, net, profit: net, ...vatPack(sales, food) };
+}
+
+function drawDaySet(prefix, days){
+  const lab = d => d.date || "";
+  drawBars(prefix+"Sales",  days, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
+  drawBars(prefix+"Food",   days, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
+  drawBars(prefix+"Fixed",  days, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
+  drawBars(prefix+"Profit", days, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
+}
+function drawMonthSet(months){
+  const lab = m => m.month || "";
+  drawBars("mSales",  months, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
+  drawBars("mFood",   months, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
+  drawBars("mFixed",  months, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
+  drawBars("mProfit", months, "profit", "#1565c0", "Κέρδος / μήνα", lab);
+}
+
+function fillKpis(id, rec){
+  const el = document.getElementById(id);
+  if (!el || !rec) return;
+  el.innerHTML = `
+    <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div><div class="value">${fmt(rec.sales)}</div>
+      <div class="sub">καθαρή αξία ${fmt(rec.salesNet||0)}</div></div>
+    <div class="kpi"><div class="label">Απόδοση ΦΠΑ</div><div class="value">${fmt(rec.vatDue||0)}</div>
+      <div class="sub">εκροές ${fmt(rec.vatOnSales||0)} − εισροές ${fmt(rec.vatOnFood||0)}</div></div>
+    <div class="kpi"><div class="label">Κόστος + προμήθειες</div><div class="value">${fmt((rec.food||0)+(rec.comm||0))}</div>
+      <div class="sub">food ${fmt(rec.food||0)} · comm ${fmt(rec.comm||0)}</div></div>
+    <div class="kpi good"><div class="label">Κέρδος</div><div class="value">${fmt(rec.net||0)}</div>
+      <div class="sub">σταθερά ${fmt(rec.fixed||0)}</div></div>`;
+}
+
+function renderProfitMonthCharts(){
+  const ym = currentYm();
+  const days = daysFor(ym);
+  const rec = summarizeDays(days, ym);
+  const b = document.getElementById("profitMonthBadge");
+  if (b) b.textContent = ym + " · " + days.length + " ημέρες";
+  fillKpis("profitMonthKpis", rec);
+  drawDaySet("p", days);
+}
+
+function renderMonthPanel(){
+  const ym = ymNow();
+  const days = daysFor(ym);
+  const rec = summarizeDays(days, ym);
+  const b = document.getElementById("monthBadge");
+  if (b) b.textContent = ym + " · " + days.length + " ημέρες";
+  fillKpis("monthKpis", rec);
+  drawDaySet("d", days);
+  renderProfitMonthCharts();
+
+  const box = document.getElementById("monthClose");
+  if (box && days.length) {
+    box.insertAdjacentHTML("beforeend",
+      `<p class="note">Ημέρες στη βάση για ${ym}: ${days.map(d => d.date.slice(8)).join(", ")}</p>`);
+  }
+}
+
+async function monthsOfYear(y){
+  const local = [];
+  for (let i = 1; i <= 12; i++) {
+    const ym = y + "-" + String(i).padStart(2,"0");
+    const raw = localStorage.getItem("mz_month_" + ym);
+    if (raw) try { local.push(JSON.parse(raw)); } catch(e){}
+  }
+  const db = typeof getDb === "function" ? getDb() : null;
+  let fromFb = [];
+  if (db) {
+    try {
+      const snap = await db.ref("matzourana_months").once("value");
+      fromFb = Object.values(snap.val() || {})
+        .filter(m => String(m.month || "").startsWith(y));
+    } catch (e) { console.warn(e); }
+  }
+  const map = {};
+  [...local, ...fromFb].forEach(m => { if (m.month) map[m.month] = m; });
+  return Object.values(map).sort((a,b) => String(a.month).localeCompare(String(b.month)));
+}
+
+async function closeMonth(ym){
+  ym = ym || ymNow();
+  const box = document.getElementById("monthClose");
+  const db = typeof getDb === "function" ? getDb() : null;
+  if (db) {
+    try {
+      const snap = await db.ref("matzourana_days").once("value");
+      if (typeof dayLedger !== "undefined") {
+        dayLedger = { ...dayLedger, ...(snap.val() || {}) };
+        localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+      }
+    } catch (e) { console.warn(e); }
+  }
+  const days = daysFor(ym);
+  if (!days.length) {
+    if (box) box.innerHTML = "<p class='note'>Δεν υπάρχουν ημέρες για " + ym + ".</p>";
+    return;
+  }
+  const rec = { ...summarizeDays(days, ym), closedAt: Date.now() };
+  localStorage.setItem("mz_month_" + ym, JSON.stringify(rec));
+  if (db) {
+    try { await db.ref("matzourana_months/" + ym).set(rec); }
+    catch (e) {
+      if (box) box.innerHTML = vatReportHtml("Κλείσιμο μήνα " + ym + " (τοπικά)", rec) +
+        "<p class='note'>Firebase μήνα: " + e.message + "</p>";
+      renderMonthPanel();
+      return;
+    }
+  }
+  if (box) box.innerHTML = vatReportHtml("Κλείσιμο μήνα " + ym, rec);
+  renderMonthPanel();
+  await renderYearSection();
+}
+
+async function closeYear(y){
+  y = y || yNow();
+  const box = document.getElementById("yearClose") || document.getElementById("monthClose");
+  const months = await monthsOfYear(y);
+  if (months.length < 12) {
+    if (box) box.innerHTML = "<p class='note'>Κλείσιμο έτους " + y +
+      " μόνο με 12 μήνες. Έχετε " + months.length + ".</p>";
+    await renderYearSection();
+    return;
+  }
+  const sales    = months.reduce((s,m) => s + Number(m.sales||0), 0);
+  const food     = months.reduce((s,m) => s + Number(m.food||0), 0);
+  const comm     = months.reduce((s,m) => s + Number(m.comm||0), 0);
+  const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
+  const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
+  const portions = months.reduce((s,m) => s + Number(m.portions||0), 0);
+  const nDays    = months.reduce((s,m) => s + Number(m.days||0), 0);
+  const rec = {
+    year: y, months: 12, days: nDays, portions, sales, food, comm, fixed,
+    net, profit: net, closedAt: Date.now(), ...vatPack(sales, food)
+  };
+  const db = typeof getDb === "function" ? getDb() : null;
+  if (db) {
+    try { await db.ref("matzourana_years/" + y).set(rec); }
+    catch (e) { rec._err = e.message; }
+  }
+  localStorage.setItem("mz_year_" + y, JSON.stringify(rec));
+  if (box) box.innerHTML = vatReportHtml("Κλείσιμο έτους " + y, rec) +
+    (rec._err ? "<p class='note'>Firebase έτους: " + rec._err + "</p>" : "");
+  await renderYearSection();
+}
+
+async function renderYearSection(){
+  const y = yNow();
+  const months = await monthsOfYear(y);
+  const b1 = document.getElementById("yearMonthsBadge");
+  if (b1) b1.textContent = y + " · " + months.length + "/12 μήνες";
+  drawMonthSet(months);
+  const closed = months.length === 12;
+  const sales    = months.reduce((s,m) => s + Number(m.sales||0), 0);
+  const food     = months.reduce((s,m) => s + Number(m.food||0), 0);
+  const comm     = months.reduce((s,m) => s + Number(m.comm||0), 0);
+  const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
+  const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
+  const rec = { year: y, months: months.length, sales, food, comm, fixed, net, ...vatPack(sales, food) };
+  const b2 = document.getElementById("yearBadge");
+  if (b2) b2.textContent = closed ? y + " κλεισμένο" : y + " · εκκρεμεί κλείσιμο";
+  const yk = document.getElementById("yearKpis");
+  if (yk) fillKpis("yearKpis", rec);
+}
+
+async function loadMonthFromFirebase(){
+  const db = typeof getDb === "function" ? getDb() : null;
+  if (db) {
+    try {
+      const snap = await db.ref("matzourana_days").once("value");
+      const all = snap.val() || {};
+      if (typeof dayLedger === "undefined") window.dayLedger = {};
+      Object.keys(all).forEach(k => {
+        const d = all[k];
+        if (!d || typeof d !== "object") return;
+        const date = String(d.date || k).slice(0,10);
+        dayLedger[date] = { ...d, date };
+      });
+      localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+    } catch (e) { console.warn("load days", e); }
+  }
+  const rm = document.getElementById("reportMonth");
+  if (rm && !rm.value) rm.value = currentYm();
+  renderMonthPanel();
+  if (typeof renderYearSection === "function") await renderYearSection();
+}
+
+async function loadReportMonth(){
+  renderMonthPanel();
+  await renderYearSection();
+}
+
+  
+
+
 
 function renderProfitPlanner(){
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof syncFixedDaily === "function") syncFixedDaily();
 
-  const target = Number(document.getElementById("targetProfit")?.value || 650);
-  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
-  const ticket = Number(document.getElementById("avgTicket")?.value || 10);
+  const target  = Number(document.getElementById("targetProfit")?.value || 650);
+  const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
+  const ticket  = Number(document.getElementById("avgTicket")?.value || 10);
   const foodPct = Number(document.getElementById("avgFoodPct")?.value || 32) / 100;
-  const food = ticket * foodPct;
+  const food    = ticket * foodPct;
 
   const rows = selectedDailyKeys().map(dishEconomics).filter(r => r.price > 0)
     .sort((a,b) => b.contrib - a.contrib);
@@ -2000,94 +2372,63 @@ function renderProfitPlanner(){
   const hint = document.getElementById("ticketHint");
   if (hint) {
     hint.textContent = rows.length
-      ? ("Μέσο επιλεγμένων πιάτων: " + fmt(selAvg) + " · " + rows.length + " πιάτα. Αλλάξτε το πεδίο πάνω για δοκιμή.")
-      : "Τσεκάρετε πιάτα στο «Πιάτα & Food Cost» ή πατήστε Γέμισμα μέσων.";
+      ? ("Μέσο επιλεγμένων πιάτων: " + fmt(selAvg) + " · " + rows.length + " πιάτα.")
+      : "Τσεκάρετε πιάτα ή γράψτε μερίδες Κατάστημα / e-food / Wolt.";
   }
 
-  const mix = mixedContribution(ticket, food);
-  const contrib = mix.mixed;
-  const p = portionsFor(contrib, fixed, target) || 0;
-
   const selFood = rows.length ? rows.reduce((s,r) => s + r.fc, 0) / rows.length : food;
+  const p = portionsFor(ticket - food, fixed, target) || 0;
 
   const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
   const useSold = sold.length > 0;
-  const planRows = useSold ? sold : rows;
-  const soldQty = sold.reduce((s,r) => s + r.qty, 0);
-  const soldFood = sold.reduce((s,r) => s + r.foodDay, 0);
-  const soldSales = sold.reduce((s,r) => s + r.salesDay, 0);
-  const favorite = sold[0] || null;
+  const soldQty   = sold.reduce((s,r) => s + (r.qty || 0), 0);
+  const soldFood  = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
+  const soldSales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
+  const commDay   = sold.reduce((s,r) => s + (r.commDay || 0), 0);
+  const favorite  = sold[0] || null;
 
   const foodDay = useSold ? soldFood : (p * selFood);
-  const sales = useSold ? soldSales : (p * ticket);
-  const totalDayCost = fixed + foodDay;
+  const sales   = useSold ? soldSales : (p * ticket);
+  const totalDayCost = fixed + foodDay + commDay;
   const net = sales - totalDayCost;
 
-  const chTicket = document.getElementById("chTicket");
-  const chFood = document.getElementById("chFood");
-  if (chTicket) chTicket.value = ticket.toFixed(2);
-  if (chFood) chFood.value = food.toFixed(2);
+  const mix = (typeof mixOverride === "function") ? mixOverride() : null;
+  const mixTxt = mix
+    ? Math.round(mix.local*100) + "/" + Math.round(mix.efood*100) + "/" + Math.round(mix.wolt*100)
+    : "μερίδες πίνακα";
 
   const kpis = document.getElementById("profitKpis");
   if (kpis) kpis.innerHTML = `
-    <div class="kpi">
-      <div class="label">Σταθερά / ημέρα</div>
-      <div class="value">${fmt(fixed)}</div>
-      <div class="sub">Νοίκι, ΔΕΗ, μισθοί, εφορία</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Food cost / ημέρα</div>
+    <div class="kpi"><div class="label">Σταθερά / ημέρα</div>
+      <div class="value">${fmt(fixed)}</div><div class="sub">Νοίκι, ΔΕΗ, μισθοί, εφορία</div></div>
+    <div class="kpi"><div class="label">Food cost / ημέρα</div>
       <div class="value">${fmt(foodDay)}</div>
-      <div class="sub">${useSold
-        ? (soldQty + " μετρημένες μερίδες")
-        : (p + " μερίδες στόχου × " + fmt(selFood))}</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Σύνολο κόστους ημέρας</div>
-      <div class="value">${fmt(totalDayCost)}</div>
-      <div class="sub">Σταθερά + food</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Ticket / food %</div>
+      <div class="sub">${useSold ? (soldQty + " μετρημένες μερίδες") : (p + " × " + fmt(selFood))}</div></div>
+    <div class="kpi"><div class="label">Προμήθειες e-food + Wolt</div>
+      <div class="value">${fmt(commDay)}</div><div class="sub">34% / 37% · ${mixTxt}</div></div>
+    <div class="kpi"><div class="label">Σύνολο κόστους ημέρας</div>
+      <div class="value">${fmt(totalDayCost)}</div><div class="sub">Σταθερά + food + προμήθειες</div></div>
+    <div class="kpi"><div class="label">Ticket / food %</div>
       <div class="value">${fmt(ticket)}</div>
-      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Συνεισφορά μείγματος</div>
-      <div class="value">${fmt(contrib)}</div>
-      <div class="sub">Κατάστημα ${fmt(mix.cLocal)} · διανομή ${fmt(mix.cOwn)} · efood ${fmt(mix.cPlat)}</div>
-    </div>
-    <div class="kpi good">
-      <div class="label">Μερίδες για στόχο €${target}</div>
-      <div class="value">${p}</div>
-      <div class="sub">Κατάστημα ${Math.round(p*mix.w.local)} · διανομή ${Math.round(p*mix.w.own)} · efood ${Math.round(p*mix.w.plat)}</div>
-    </div>
-    <div class="kpi good">
-      <div class="label">Αγαπημένο σήμερα</div>
+      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div></div>
+    <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
+      <div class="value">${p}</div><div class="sub">με μέσο ticket (χωρίς προμήθεια)</div></div>
+    <div class="kpi good"><div class="label">Αγαπημένο σήμερα</div>
       <div class="value">${favorite ? favorite.qty : "—"}</div>
-      <div class="sub">${favorite
-        ? favorite.d.el + " · food " + fmt(favorite.foodDay)
-        : "Γράψε μερίδες στον πίνακα πιάτων"}</div>
-    </div>
-    <div class="kpi ${net>=target?"good":"warn"}">
-      <div class="label">Καθαρό αποτέλεσμα</div>
+      <div class="sub">${favorite ? favorite.d.el : "Γράψε μερίδες στα 3 κανάλια"}</div></div>
+    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div>
       <div class="value">${fmt(net)}</div>
-      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div>
-    </div>`;
+      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div></div>`;
 
   const ladder = document.getElementById("targetLadder");
-  if (ladder) ladder.innerHTML = [650,800,1000,1200].map(t => {
-    const n = portionsFor(contrib, fixed, t) || 0;
-    const foodN = n * selFood;
+  if (ladder) ladder.innerHTML = [650,800,1000,1200].map(tg => {
+    const n = portionsFor(ticket - food, fixed, tg) || 0;
     return `<div class="target-card">
-      <div class="t">Στόχος €${t}/ημέρα</div>
-      <div class="v">${n} μερίδες</div>
-      <div class="note">Κατάστημα ${Math.round(n*mix.w.local)} · διανομή ${Math.round(n*mix.w.own)} · efood ${Math.round(n*mix.w.plat)}</div>
-      <div class="note">Πωλήσεις ${fmt(n*ticket)} · σταθερά ${fmt(fixed)} · food ${fmt(foodN)}</div>
+      <div class="t">Στόχος €${tg}/ημέρα</div>
+      <div class="v">${n} μερίδες μέσου ticket</div>
+      <div class="note">Πωλήσεις ${fmt(n*ticket)} · σταθερά ${fmt(fixed)} · food ${fmt(n*selFood)}</div>
     </div>`;
   }).join("");
-
-  renderChannelCards("profitChannelCards", ticket, food, fixed);
 
   let box = document.getElementById("portionByDish");
   if (!box) {
@@ -2098,34 +2439,32 @@ function renderProfitPlanner(){
     else return;
   }
 
-    box.innerHTML = `
-    <h2>Επιλεγμένα πιάτα ημέρας <span class="badge">${useSold ? soldQty + " μερίδες" : rows.length + " πιάτα"}</span></h2>
+  box.innerHTML = `
+    <h2>Επιλεγμένα πιάτα ημέρας
+      <span class="badge">${useSold ? soldQty + " μερίδες" : rows.length + " πιάτα"}</span>
+    </h2>
     <div class="table-wrap"><table>
-      <thead>
-        <tr>
-          <th>Πιάτο</th>
-          <th>Μερίδες σήμερα</th>
-          <th>Τιμή</th>
-          <th>Food / μερίδα</th>
-          <th>Food / ημέρα</th>
-          <th>Τζίρος</th>
-          <th>Συνεισφορά</th>
-          <th>Στόχος €${target}</th>
-          <th>€650</th><th>€800</th><th>€1000</th><th>€1200</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>Πιάτο</th><th>Κατάστημα</th><th>e-food</th><th>Wolt</th>
+        <th>Τιμή</th><th>Food</th><th>Τζίρος</th><th>Προμήθεια</th><th>Καθαρό</th>
+        <th>Στόχος €${target}</th><th>€650</th><th>€800</th><th>€1000</th><th>€1200</th>
+      </tr></thead>
       <tbody>
         ${rows.map(r => {
-          const q = (typeof portionsOf === "function") ? portionsOf(r.key) : 0;
+          const e = (typeof dishDayEconomics === "function")
+            ? dishDayEconomics(r.key)
+            : { qty:{local:0,efood:0,wolt:0}, n:0, sales:0, comm:0, net:0 };
           const star = favorite && r.key === favorite.key ? " ★" : "";
           return `<tr>
             <td>${r.d.el}${star}</td>
-            <td><strong>${q || "—"}</strong></td>
+            <td>${e.qty.local || "—"}</td>
+            <td>${e.qty.efood || "—"}</td>
+            <td>${e.qty.wolt || "—"}</td>
             <td>${fmt(r.price)}</td>
             <td>${fmt(r.fc)}</td>
-            <td>${q ? fmt(r.fc * q) : "—"}</td>
-            <td>${q ? fmt(r.price * q) : "—"}</td>
-            <td><strong>${fmt(r.contrib)}</strong></td>
+            <td>${e.n ? fmt(e.sales) : "—"}</td>
+            <td>${e.n ? fmt(e.comm) : "—"}</td>
+            <td><strong>${e.n ? fmt(e.net) : "—"}</strong></td>
             <td><strong>${portionsFor(r.contrib, fixed, target) ?? "—"}</strong></td>
             <td>${portionsFor(r.contrib, fixed, 650) ?? "—"}</td>
             <td>${portionsFor(r.contrib, fixed, 800) ?? "—"}</td>
@@ -2136,11 +2475,196 @@ function renderProfitPlanner(){
       </tbody>
     </table></div>
     <p class="note">
-      «Μερίδες σήμερα» = ό,τι έγραψες στον πίνακα πιάτων.
-      Οι στήλες €650–€1200 = πόσες μερίδες θα χρειαζόσουν αν πουλούσες μόνο αυτό το πιάτο.
+      Κατάστημα 0% · e-food −34% · Wolt −37%.
+      % πάνω = 0 → μετρούν οι 3 στήλες. 80/10/10 → σπάνε το σύνολο μερίδων του πιάτου.
       Σταθερά ημέρας ${fmt(fixed)}.
     </p>`;
+}
+
+async function pushToFirebase(){
+  const db = getDb();
+  if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
+
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  if (!sold.length) {
+    alert("Δεν υπάρχουν μερίδες. Γράψε Κατάστημα / e-food / Wolt στον πίνακα πιάτων.");
+    return;
   }
+
+  const date    = (document.getElementById("planDay")?.value) || new Date().toISOString().slice(0,10);
+  const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
+  const ticket  = Number(document.getElementById("avgTicket")?.value || 0);
+  const foodPct = Number(document.getElementById("avgFoodPct")?.value || 0);
+  const target  = Number(document.getElementById("targetProfit")?.value || 650);
+  const sales   = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
+  const foodDay = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
+  const comm    = sold.reduce((s,r) => s + (r.commDay || 0), 0);
+  const portions = sold.reduce((s,r) => s + (r.qty || 0), 0);
+  const net = sales - foodDay - comm - fixed;
+
+  const dishes = {};
+  sold.forEach(r => {
+    const c = (typeof chOf === "function") ? chOf(r.key) : { local:r.qty, efood:0, wolt:0 };
+    dishes[r.key] = {
+      name: r.d.el, qty: r.qty, price: r.price,
+      foodUnit: r.fc, foodDay: r.foodDay,
+      salesDay: r.salesDay, contribDay: r.contribDay,
+      commDay: r.commDay || 0,
+      local: c.local, efood: c.efood, wolt: c.wolt
+    };
+  });
+
+  const rec = {
+    date,
+    month: date.slice(0,7),
+    ticket, foodPct, fixed, target,
+    portions, sales,
+    foodDay, food: foodDay,
+    comm,
+    net, profit: net,
+    wLocal: Number(document.getElementById("wLocal")?.value || 0),
+    wEfood: Number(document.getElementById("wEfood")?.value || 0),
+    wWolt:  Number(document.getElementById("wWolt")?.value || 0),
+    channels: (typeof portionChannels !== "undefined") ? JSON.parse(JSON.stringify(portionChannels)) : {},
+    keys: sold.map(r => r.key),
+    favorite: sold[0] ? sold[0].d.el : "",
+    createdAt: Date.now(),
+    dishes
+  };
+
+  try {
+    await db.ref("matzourana_days/" + date).set({
+      ...rec,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    if (typeof dayLedger !== "undefined") {
+      dayLedger[date] = rec;
+      localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+    }
+    if (typeof buildMonth === "function") buildMonth(date.slice(0,7));
+    if (typeof renderMonthPanel === "function") renderMonthPanel();
+    if (typeof loadProfitChart === "function") await loadProfitChart();
+    if (typeof closeMonth === "function") await closeMonth(date.slice(0,7));
+    alert("Ημέρα " + date + " αποθηκεύτηκε.");
+  } catch (err) {
+    alert("Firebase: " + err.message);
+  }
+}
+
+function commitDay(){
+  return pushToFirebase();
+}
+
+async function loadDayFromLedger(){
+  const date = document.getElementById("planDay").value;
+  let rec = dayLedger[date];
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (!rec && db) {
+    const snap = await db.ref("matzourana_days/" + date).once("value");
+    rec = snap.val();
+    if (rec) dayLedger[date] = rec;
+  }
+  if (!rec) { renderProfitPlanner(); return; }
+  portionChannels = rec.channels || {};
+  if (rec.keys) applyDailyPicks(rec.keys);
+  renderDishTable();
+  renderProfitPlanner();
+}
+
+function monthRows(ym){
+  return Object.values(dayLedger)
+    .filter(r => r.month === ym)
+    .sort((a,b) => a.date.localeCompare(b.date));
+}
+
+function buildMonth(ym){
+  ym = ym || monthISO(document.getElementById("planDay")?.value);
+  const days = monthRows(ym);
+  const sum = f => days.reduce((s,r) => s + Number(r[f] || 0), 0);
+  const rec = {
+    month: ym, days: days.length,
+    sales: sum("sales"), food: sum("food"), comm: sum("comm"),
+    fixed: sum("fixed"), profit: sum("profit"), portions: sum("portions")
+  };
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (db) db.ref("matzourana_months/" + ym).set(rec);
+  return rec;
+}
+
+function renderMonthPanel(){
+  const ym = monthISO(document.getElementById("planDay")?.value);
+  const days = monthRows(ym);
+  const m = buildMonth(ym);
+  const el = document.getElementById("monthKpis");
+  const badge = document.getElementById("monthBadge");
+  if (badge) badge.textContent = ym + " · " + days.length + " ημέρες";
+  if (el) el.innerHTML = `
+    <div class="kpi"><div class="label">Πωλήσεις μήνα</div><div class="value">${fmt(m.sales)}</div></div>
+    <div class="kpi"><div class="label">Κόστος πιάτων</div><div class="value">${fmt(m.food)}</div></div>
+    <div class="kpi"><div class="label">Προμήθειες</div><div class="value">${fmt(m.comm)}</div></div>
+    <div class="kpi"><div class="label">Σταθερά μήνα</div><div class="value">${fmt(m.fixed)}</div></div>
+    <div class="kpi good"><div class="label">Καθαρό μήνα</div><div class="value">${fmt(m.profit)}</div></div>`;
+  drawFourCharts(days);
+}
+
+function drawFourCharts(days){
+  const specs = [
+    ["gSales",  "sales",  "#2e7d32", "Πωλήσεις"],
+    ["gFood",   d => Number(d.foodDay || d.food || 0), "#c62828", "Κόστος πιάτων"],
+    ["gFixed",  "fixed",  "#ef6c00", "Σταθερά"],
+    ["gProfit", d => Number(d.net || d.profit || 0), "#1565c0", "Καθαρό"]
+  ];
+  specs.forEach(([id, field, color, title]) => {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const parentW = c.parentElement ? c.parentElement.clientWidth : 400;
+    const ctx = c.getContext("2d");
+    const w = c.width  = Math.max(280, parentW || 400);
+    const h = c.height = 220;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = "#333";
+    ctx.font = "13px sans-serif";
+    ctx.fillText(title, 10, 18);
+    if (!days.length) {
+      ctx.fillStyle = "#999";
+      ctx.fillText("Χωρίς ημέρες", 10, 48);
+      return;
+    }
+    const val = d => typeof field === "function" ? field(d) : Number(d[field] || 0);
+    const vals = days.map(val);
+    let acc = 0;
+    const pts = vals.map(v => (acc += v, acc));
+    const max = Math.max(...pts.map(Math.abs), 1);
+    const x0 = 44, y0 = 32, x1 = w - 16, y1 = h - 28;
+    ctx.strokeStyle = "#e6e6e6";
+    ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x1,y1); ctx.stroke();
+
+    const n = pts.length;
+    const gap = (x1 - x0) / Math.max(n, 1);
+    const bw = Math.max(10, Math.min(36, gap * 0.55));
+    pts.forEach((v,i) => {
+      const x = x0 + (i + 0.5) * gap;
+      const bh = (v / max) * (y1 - y0);
+      ctx.fillStyle = color;
+      ctx.fillRect(x - bw/2, y1 - bh, bw, Math.max(bh, 3));
+    });
+    ctx.fillStyle = "#666";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(fmt(acc), x0, y0);
+    if (n === 1) ctx.fillText(days[0].date || "", x0 + 8, y1 + 16);
+  });
+}
+
+async function loadMonthFromFirebase(){
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (!db) return;
+  const snap = await db.ref("matzourana_days").once("value");
+  const all = snap.val() || {};
+  dayLedger = { ...dayLedger, ...all };
+  localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+  renderMonthPanel();
+}
 
 function applySuggested(write){
   const changes = [];
@@ -2670,6 +3194,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 </script>
+
+<div id="chartTip"></div>
+
 </body>
 <!-- ========== ADMIN PASSWORD GATE ========== -->
 <style>
