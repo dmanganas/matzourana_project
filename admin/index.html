@@ -310,6 +310,7 @@ tr:hover td { background: #fafcfb; }
     <div class="tab" data-tab="dishes" onclick="switchTab('dishes')">Πιάτα & Food Cost</div>
     <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
     <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κέρδος / Μήνας / Χρόνος</div>
+    <div class="tab" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
   </div>
 
   <div class="sources-bar">
@@ -491,25 +492,7 @@ tr:hover td { background: #fafcfb; }
   </div>
   <div id="portionByDish"></div>
 
-  <section class="panel" id="profitOpt">
-  <h2>Βελτιστοποίηση κερδών</h2>
-  <div class="kpi-grid" id="optKpis"></div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Πιάτο</th>
-          <th>Συνεισφορά κατ/μα</th>
-          <th>Συνεισφορά e-food</th>
-          <th>Συνεισφορά Wolt</th>
-          <th>Σύσταση</th>
-        </tr>
-      </thead>
-      <tbody id="optBody"></tbody>
-    </table>
-  </div>
-  <p class="note" id="optNote"></p>
-</section>
+
 
   <p class="note">
     Μερίδες ανά κανάλι στον πίνακα πιάτων. Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
@@ -555,6 +538,14 @@ tr:hover td { background: #fafcfb; }
       <div class="kpi-grid" id="yearKpis"></div>
     </div>
   </section>
+
+  <!-- ANALYSIS -->
+  <section class="panel" id="tab-opt">
+    <h2>Daily Menu Analysis / Optimization</h2>
+    <p class="note">Μερίδες ημέρας × συνταγή × κανάλι. Γράψε πρώτα παραγγελίες στην καρτέλα Κέρδος / Ημέρα.</p>
+    <div id="profitOpt"></div>
+    <div id="menuAudit"></div>
+ </section>
 </div>
 
 <div class="maps-modal" id="mapsModal">
@@ -580,6 +571,8 @@ tr:hover td { background: #fafcfb; }
     </div>
   </div>
 </div>
+
+
 
 
 <script>
@@ -1261,12 +1254,16 @@ function switchTab(id){
   if (id === "profit") {
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
   if (typeof renderProfitMonthCharts === "function") renderProfitMonthCharts();
-}
-if (id === "channels") {
-  const rm = document.getElementById("reportMonth");
-  if (rm && !rm.value) rm.value = currentYm();
-  loadMonthFromFirebase();
-}
+  }
+  if (id === "channels") {
+    const rm = document.getElementById("reportMonth");
+    if (rm && !rm.value) rm.value = currentYm();
+    loadMonthFromFirebase();
+  }
+  if (id === "opt") {
+    renderProfitOpt();
+    renderMenuAudit();
+  }
 }
 
 
@@ -2503,49 +2500,56 @@ async function loadReportMonth(){
 }
 
   
-function renderProfitOpt(){
-  let wrap = document.getElementById("profitOpt");
-  if (!wrap) {
-    wrap = document.createElement("section");
-    wrap.id = "profitOpt";
-    wrap.className = "panel";
-    const tab = document.getElementById("tab-profit");
-    const table = document.getElementById("portionByDish");
-    if (table && table.parentNode) table.parentNode.insertBefore(wrap, table);
-    else if (tab) tab.appendChild(wrap);
-    else return;
+function ensureOptBoxes(){
+  let tab = document.getElementById("tab-opt");
+  if (!tab) {
+    tab = document.createElement("section");
+    tab.id = "tab-opt";
+    tab.className = "panel";
+    document.body.appendChild(tab);
   }
+  if (!document.getElementById("profitOpt")) {
+    const a = document.createElement("div");
+    a.id = "profitOpt";
+    tab.appendChild(a);
+  }
+  if (!document.getElementById("menuAudit")) {
+    const b = document.createElement("div");
+    b.id = "menuAudit";
+    tab.appendChild(b);
+  }
+  return {
+    opt: document.getElementById("profitOpt"),
+    audit: document.getElementById("menuAudit")
+  };
+}
 
-  wrap.innerHTML = `
-    <h2>Βελτιστοποίηση κερδών</h2>
-    <div class="kpi-grid" id="optKpis"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Πιάτο</th>
-            <th>Συνεισφορά κατ/μα</th>
-            <th>Συνεισφορά e-food</th>
-            <th>Συνεισφορά Wolt</th>
-            <th>Σύσταση</th>
-          </tr>
-        </thead>
-        <tbody id="optBody"></tbody>
-      </table>
-    </div>
-    <p class="note" id="optNote"></p>`;
+function isDrinkDish(d){
+  return !d || d.category === "drinks" || d.type === "drinks";
+}
+
+function red(val, on){
+  return on
+    ? `<strong style="color:#b42318">${val}</strong>`
+    : val;
+}
+
+function renderProfitOpt(){
+  const { opt } = ensureOptBoxes();
+  if (!opt) return;
 
   const target = Number(document.getElementById("targetProfit")?.value || 650);
   const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
   const sold   = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
-  const keys   = sold.length ? sold.map(r => r.key) : selectedDailyKeys();
-  const rows   = keys.map(k => {
-    const r = (typeof dishEconomics === "function") ? dishEconomics(k) : null;
-    if (!r || !(r.price > 0)) return null;
-    const local = r.price - r.fc;
-    const efood = r.price * 0.66 - r.fc;
-    const wolt  = r.price * 0.63 - r.fc;
-    return { ...r, local, efood, wolt };
+  const keys   = sold.length
+    ? sold.map(r => r.key)
+    : (typeof selectedDailyKeys === "function" ? selectedDailyKeys() : []);
+
+  const rows = keys.map(k => {
+    if (typeof dishEconomics !== "function") return null;
+    const r = dishEconomics(k);
+    if (!r || !(r.price > 0) || isDrinkDish(r.d)) return null;
+    return { ...r, local: r.price - r.fc };
   }).filter(Boolean).sort((a,b) => b.local - a.local);
 
   const sales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
@@ -2556,40 +2560,123 @@ function renderProfitOpt(){
   const avgC  = rows.length ? rows.reduce((s,r) => s + r.local, 0) / rows.length : 0;
   const extra = (gap > 0 && avgC > 0.05) ? Math.ceil(gap / avgC) : 0;
   const star  = rows[0];
+  const hasSold = sold.length > 0;
 
-  document.getElementById("optKpis").innerHTML = `
-    <div class="kpi ${net>=target?"good":"warn"}">
-      <div class="label">Απόσταση από στόχο</div>
-      <div class="value">${fmt(gap)}</div>
-      <div class="sub">${!sold.length ? "γράψε μερίδες για πραγματικό κενό" : (gap<=0 ? "στόχος πιάστηκε" : extra + " μερίδες καταστήματος ακόμα")}</div>
-    </div>
-    <div class="kpi good">
-      <div class="label">Καλύτερο πιάτο</div>
-      <div class="value">${star ? fmt(star.local) : "—"}</div>
-      <div class="sub">${star ? star.d.el : "επίλεξε πιάτα"} · προτίμησε κατάστημα</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Κανάλι</div>
-      <div class="value">Κατάστημα</div>
-      <div class="sub">Μετά e-food · τελευταίο το Wolt (−37%)</div>
+  opt.innerHTML = `
+    <h2>Στόχος ημέρας <span class="badge">${fmt(target)}</span></h2>
+    <div class="kpi-grid">
+      <div class="kpi good">
+        <div class="label">Στόχος καθαρού / ημέρα</div>
+        <div class="value">${fmt(target)}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Σταθερά / ημέρα</div>
+        <div class="value">${fmt(fixed)}</div>
+      </div>
+      <div class="kpi ${!hasSold ? "" : (net >= target ? "good" : "warn")}">
+        <div class="label">${hasSold ? "Σήμερα" : "Μερίδες"}</div>
+        <div class="value">${hasSold ? fmt(net) : "—"}</div>
+        <div class="sub">${!hasSold
+          ? "γράψε μερίδες στο Κέρδος / Ημέρα"
+          : (gap <= 0 ? "στόχος πιάστηκε" : "λείπουν " + fmt(gap) + " · ~" + extra + " μερίδες κατ/μα")}</div>
+      </div>
+      <div class="kpi good">
+        <div class="label">Καλύτερη συνεισφορά</div>
+        <div class="value">${star ? fmt(star.local) : "—"}</div>
+        <div class="sub">${star ? star.d.el : ""}</div>
+      </div>
     </div>`;
+}
 
-  document.getElementById("optBody").innerHTML = rows.map(r => {
-    let tip = "Κράτα το στο κατάστημα";
-    if (r.local < 2) tip = "Ακριβό food · λιγότερες μερίδες ή +0,50€";
-    else if (r.wolt < 1 && r.efood < 1.5) tip = "Μην το βάζεις σε platform χωρίς +τιμή";
-    else if (r.local > 6) tip = "Σπρώξ’ το σήμερα · υψηλή συνεισφορά";
-    return `<tr>
-      <td>${r.d.el}</td>
-      <td><strong>${fmt(r.local)}</strong></td>
-      <td>${fmt(r.efood)}</td>
-      <td>${fmt(r.wolt)}</td>
-      <td>${tip}</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="5">Τσεκάρετε πιάτα ημέρας στον κατάλογο.</td></tr>`;
+function renderMenuAudit(){
+  const { audit } = ensureOptBoxes();
+  if (!audit) return;
 
-  document.getElementById("optNote").textContent =
-    "Βελτιστοποίηση: περισσότερες μερίδες στα πιάτα με μεγάλη συνεισφορά καταστήματος. Platforms μόνο για όγκο, εκτός αν σηκώσεις τιμή καναλιού.";
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const prices = (typeof ingredientPrices !== "undefined") ? ingredientPrices : {};
+  const recs   = (typeof recipes !== "undefined") ? recipes : {};
+  const keys   = sold.length
+    ? sold.map(r => r.key)
+    : (typeof selectedDailyKeys === "function" ? selectedDailyKeys() : []);
+
+  const ingSpend = {};
+  const lines = keys.map(key => {
+    const r = (typeof dishEconomics === "function") ? dishEconomics(key) : null;
+    if (!r || !(r.price > 0) || isDrinkDish(r.d)) return null;
+    const rec = recs[key] || {};
+    const parts = Object.keys(rec).map(ing => {
+      const qty = Number(rec[ing] || 0);
+      const p   = Number(prices[ing] || 0);
+      const cost = qty * p;
+      if (!(ing in ingSpend)) ingSpend[ing] = { cost:0, dishes:{} };
+      ingSpend[ing].cost += cost * (r.qty || 1);
+      ingSpend[ing].dishes[key] = true;
+      return { ing, cost };
+    }).sort((a,b) => b.cost - a.cost);
+
+    const recipeCost = parts.reduce((s,x) => s + x.cost, 0);
+    const fc = r.fc != null ? r.fc : recipeCost;
+    const fcPct = r.price ? fc / r.price : 0;
+    const top = parts[0];
+    const topShare = (recipeCost && top) ? top.cost / recipeCost : 0;
+    const shop = r.price - fc;
+    const efood = r.price * 0.66 - fc;
+    const wolt = r.price * 0.63 - fc;
+    const noRec = !Object.keys(rec).length;
+
+    let tip = "Κατάστημα";
+    if (noRec) tip = "Γράψε συνταγή";
+    else if (fcPct > 0.40) tip = "Μείωσε μερίδα ή +τιμή";
+    else if (wolt < 1.5 && efood < 2) tip = "Platform μόνο με +τιμή";
+    else if (shop > 6) tip = "Σπρώξ’ το";
+
+    return { r, fc, fcPct, shop, efood, wolt, top, topShare, noRec, tip };
+  }).filter(Boolean).sort((a,b) => a.shop - b.shop);
+
+  const heavy = Object.keys(ingSpend).map(ing => ({
+    ing, cost: ingSpend[ing].cost
+  })).sort((a,b) => b.cost - a.cost)[0];
+
+  audit.innerHTML = `
+    <h2>Πιάτα ημέρας</h2>
+    <p class="note">
+      Κόκκινο = πρόβλημα. Food &gt; 40% · Wolt &lt; €1,50 · χωρίς συνταγή.
+      ${heavy ? "Κόστος ημέρας σηκώνει: " + ((typeof ING_EL !== "undefined" && ING_EL[heavy.ing]) || heavy.ing) + " " + fmt(heavy.cost) + "." : ""}
+    </p>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Πιάτο</th>
+        <th>Τιμή</th>
+        <th>Food %</th>
+        <th>Κύριο υλικό</th>
+        <th>Κατ/μα</th>
+        <th>e-food</th>
+        <th>Wolt</th>
+        <th>Ενέργεια</th>
+      </tr></thead>
+      <tbody>
+        ${lines.length ? lines.map(x => {
+          const name = x.noRec ? red(x.r.d.el, true) : x.r.d.el;
+          const foodCell = red(Math.round(x.fcPct * 100) + "%", x.fcPct > 0.40);
+          const ingName = x.top
+            ? ((typeof ING_EL !== "undefined" && ING_EL[x.top.ing]) || x.top.ing)
+            : "—";
+          const ingCell = x.noRec
+            ? red("χωρίς συνταγή", true)
+            : red(ingName, x.topShare > 0.55 && x.fcPct > 0.38);
+          return `<tr>
+            <td>${name}</td>
+            <td>${fmt(x.r.price)}</td>
+            <td>${foodCell}</td>
+            <td>${ingCell}</td>
+            <td>${fmt(x.shop)}</td>
+            <td>${red(fmt(x.efood), x.efood < 2)}</td>
+            <td>${red(fmt(x.wolt), x.wolt < 1.5)}</td>
+            <td>${red(x.tip, x.fcPct > 0.40 || x.wolt < 1.5 || x.noRec)}</td>
+          </tr>`;
+        }).join("") : `<tr><td colspan="8">Τσεκάρετε πιάτα ημέρας.</td></tr>`}
+      </tbody>
+    </table></div>`;
 }
 
 
@@ -2697,7 +2784,7 @@ function renderProfitPlanner(){
     box.id = "portionByDish";
     const tab = document.getElementById("tab-profit");
     if (tab) tab.appendChild(box);
-    else return;
+    
   }
 
   box.innerHTML = `
@@ -2741,8 +2828,13 @@ function renderProfitPlanner(){
       Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
 
-    if (typeof renderProfitOpt === "function") renderProfitOpt();
-}
+    const optOn = document.getElementById("tab-opt")?.classList.contains("active");
+    if (optOn) {
+      if (typeof renderProfitOpt === "function") renderProfitOpt();
+      if (typeof renderMenuAudit === "function") renderMenuAudit();
+    }
+  }
+
 
 async function pushToFirebase(){
   const db = getDb();
