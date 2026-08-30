@@ -1959,6 +1959,25 @@ function getDb(){
   return null;
 }
 
+function num(v){
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function dishCostFromDb(row){
+  if (!row) return { qty:0, sales:0, food:0, comm:0, unit:0 };
+  const qty   = num(row.qty);
+  const sales = num(row.salesDay != null ? row.salesDay : row.sales);
+  const food  = num(row.foodDay  != null ? row.foodDay  : row.food);
+  const comm  = num(row.commDay  != null ? row.commDay  : row.comm);
+  const unit  = num(row.foodUnit != null ? row.foodUnit : (qty ? food / qty : 0));
+  return { qty, sales, food, comm, unit };
+}
+
+function foodOfDay(d){
+  return num(d && (d.food != null ? d.food : d.foodDay));
+}
+
 
 let profitChartObj = null;
 
@@ -2006,47 +2025,120 @@ function ymNow(){
 function currentYm(){ return new Date().toISOString().slice(0,7); }
 function yNow(){ return ymNow().slice(0,4); }
 
+
 function vatPack(sales, food){
+  sales = Number(sales) || 0;
+  food  = Number(food)  || 0;
   const salesNet   = sales / (1 + VAT_RATE);
+  const foodNet    = food  / (1 + VAT_RATE);
   const vatOnSales = sales - salesNet;
-  const vatOnFood  = food * VAT_RATE / (1 + VAT_RATE);
+  const vatOnFood  = food  - foodNet;
   const vatDue     = Math.max(0, vatOnSales - vatOnFood);
-  return { salesNet, vatOnSales, vatOnFood, vatDue };
+  return { salesNet, foodNet, vatOnSales, vatOnFood, vatDue };
+}
+
+function withVatProfit(rec){
+  const v = vatPack(rec.sales, rec.food);
+  const before = Number(rec.sales||0) - Number(rec.food||0)
+               - Number(rec.comm||0) - Number(rec.fixed||0);
+  return { ...rec, ...v, profitBefore: before, profitAfter: before - v.vatDue, net: before, profit: before };
+}
+
+function profitPair(rec){
+  const before = Number(rec.profitBefore != null ? rec.profitBefore : (rec.net || rec.profit || 0));
+  const vatDue = Number(rec.vatDue || 0);
+  const after  = rec.profitAfter != null ? Number(rec.profitAfter) : (before - vatDue);
+  return { before, after };
 }
 
 function vatReportHtml(title, rec){
+  const p = profitPair(rec);
   return `
     <h3>${title}</h3>
     <div class="kpi-grid">
-      <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div>
+      <div class="kpi">
+        <div class="label">Πωλήσεις με ΦΠΑ</div>
         <div class="value">${fmt(rec.sales)}</div>
-        <div class="sub">καθαρή αξία ${fmt(rec.salesNet)}</div></div>
-      <div class="kpi"><div class="label">ΦΠΑ εκροών (13%)</div>
+        <div class="sub">καθαρή αξία ${fmt(rec.salesNet)}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">ΦΠΑ εκροών (13%)</div>
         <div class="value">${fmt(rec.vatOnSales)}</div>
-        <div class="sub">πάνω στις πωλήσεις</div></div>
-      <div class="kpi"><div class="label">ΦΠΑ εισροών</div>
+        <div class="sub">πάνω στις πωλήσεις</div>
+      </div>
+      <div class="kpi">
+        <div class="label">ΦΠΑ εισροών</div>
         <div class="value">${fmt(rec.vatOnFood)}</div>
-        <div class="sub">εκτίμηση στο food</div></div>
-      <div class="kpi"><div class="label">Απόδοση ΦΠΑ</div>
+        <div class="sub">εκτίμηση στο food</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Απόδοση ΦΠΑ</div>
         <div class="value">${fmt(rec.vatDue)}</div>
-        <div class="sub">εκροές − εισροές</div></div>
-      <div class="kpi"><div class="label">Κόστος πιάτων</div>
-        <div class="value">${fmt(rec.food)}</div></div>
-      <div class="kpi"><div class="label">Προμήθειες</div>
-        <div class="value">${fmt(rec.comm)}</div></div>
-      <div class="kpi"><div class="label">Σταθερά</div>
-        <div class="value">${fmt(rec.fixed)}</div></div>
-      <div class="kpi good"><div class="label">Κέρδος</div>
-        <div class="value">${fmt(rec.net)}</div>
-        <div class="sub">${rec.days || rec.months || 0} εγγραφές · ${fmt(rec.portions||0).replace("€","")} μερίδες</div></div>
+        <div class="sub">εκροές − εισροές</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Κέρδος προ ΦΠΑ</div>
+        <div class="value">${fmt(p.before)}</div>
+        <div class="sub">πωλήσεις − food − προμήθειες − σταθερά</div>
+      </div>
+      <div class="kpi good">
+        <div class="label">Καθαρό μετά ΦΠΑ</div>
+        <div class="value">${fmt(p.after)}</div>
+        <div class="sub">κέρδος − απόδοση ΦΠΑ</div>
+      </div>
+    </div>`;
+}
+
+function fillKpis(id, rec){
+  const el = document.getElementById(id);
+  if (!el || !rec) return;
+  const p = profitPair(rec);
+  el.innerHTML = `
+    <div class="kpi">
+      <div class="label">Πωλήσεις με ΦΠΑ</div>
+      <div class="value">${fmt(rec.sales)}</div>
+      <div class="sub">καθαρή αξία ${fmt(rec.salesNet || 0)}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Απόδοση ΦΠΑ</div>
+      <div class="value">${fmt(rec.vatDue || 0)}</div>
+      <div class="sub">εκροές ${fmt(rec.vatOnSales || 0)} − εισροές ${fmt(rec.vatOnFood || 0)}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Κέρδος προ ΦΠΑ</div>
+      <div class="value">${fmt(p.before)}</div>
+      <div class="sub">food ${fmt(rec.food || 0)} · comm ${fmt(rec.comm || 0)} · σταθερά ${fmt(rec.fixed || 0)}</div>
+    </div>
+    <div class="kpi good">
+      <div class="label">Καθαρό μετά ΦΠΑ</div>
+      <div class="value">${fmt(p.after)}</div>
+      <div class="sub">μετά την απόδοση στην εφορία</div>
     </div>`;
 }
 
 function fieldOf(d, kind){
-  if (kind === "sales")  return Number(d.sales || 0);
-  if (kind === "food")   return Number(d.foodDay || d.food || 0);
-  if (kind === "fixed")  return Number(d.fixed || 0);
-  if (kind === "profit") return Number(d.net || d.profit || 0);
+  if (!d) return 0;
+
+  if (d.foodUnit != null || d.salesDay != null || d.foodDay != null || d.name) {
+    const x = dishCostFromDb(d);
+    if (kind === "sales")  return x.sales;
+    if (kind === "food")   return x.food;
+    if (kind === "profit") return x.sales - x.food - x.comm;
+    if (kind === "fixed")  return 0;
+    if (kind === "unit")   return x.unit;
+    return 0;
+  }
+
+  const x = withVatProfit({
+    sales: Number(d.sales || 0),
+    food:  Number(d.food != null ? d.food : d.foodDay || 0),
+    comm:  Number(d.comm || 0),
+    fixed: Number(d.fixed != null ? d.fixed : d.fixedDaily || 0)
+  });
+  if (kind === "sales")  return Number.isFinite(x.sales) ? x.sales : 0;
+  if (kind === "food")   return Number.isFinite(x.food)  ? x.food  : 0;
+  if (kind === "fixed")  return Number.isFinite(x.fixed) ? x.fixed : 0;
+  if (kind === "profit") return Number.isFinite(x.profitAfter) ? x.profitAfter : 0;
   return 0;
 }
 
@@ -2121,20 +2213,34 @@ async function showChannelDays(){
   renderMonthPanel();
 }
 
+function asLedgerRow(d){
+  const x = d && d.rec ? d.rec : d;
+  return {
+    date:  x.date  || d.date  || "",
+    month: x.month || d.month || "",
+    sales: Number(x.sales || 0),
+    food:  Number(x.food != null ? x.food : x.foodDay || 0),
+    comm:  Number(x.comm || 0),
+    fixed: Number(x.fixed != null ? x.fixed : x.fixedDaily || 0)
+  };
+}
+
 function drawMonthSet(months){
+  const rows = (months || []).map(asLedgerRow);
   const lab = mo => monthLabel(mo.month || "");
-  drawBars("mSales",  months, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
-  drawBars("mFood",   months, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
-  drawBars("mFixed",  months, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
-  drawBars("mProfit", months, "profit", "#1565c0", "Κέρδος / μήνα", lab);
+  drawBars("mSales",  rows, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
+  drawBars("mFood",   rows, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
+  drawBars("mFixed",  rows, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
+  drawBars("mProfit", rows, "profit", "#1565c0", "Κέρδος / μήνα", lab);
 }
 
 function drawDaySet(prefix, days){
+  const rows = (days || []).map(asLedgerRow);
   const lab = d => d.date || "";
-  drawBars(prefix+"Sales",  days, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
-  drawBars(prefix+"Food",   days, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
-  drawBars(prefix+"Fixed",  days, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
-  drawBars(prefix+"Profit", days, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
+  drawBars(prefix+"Sales",  rows, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
+  drawBars(prefix+"Food",   rows, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
+  drawBars(prefix+"Fixed",  rows, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
+  drawBars(prefix+"Profit", rows, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
 }
 
 function showChartTip(ev, id){
@@ -2173,31 +2279,44 @@ function daysFor(ym){
   return Object.values(map).sort((a,b) => a.date.localeCompare(b.date));
 }
 
-function summarizeDays(days, ym){
-  const sales    = days.reduce((s,d) => s + fieldOf(d,"sales"), 0);
-  const food     = days.reduce((s,d) => s + fieldOf(d,"food"), 0);
-  const comm     = days.reduce((s,d) => s + Number(d.comm || 0), 0);
-  const fixed    = days.reduce((s,d) => s + fieldOf(d,"fixed"), 0);
-  const portions = days.reduce((s,d) => s + Number(d.portions || 0), 0);
-  const net      = days.reduce((s,d) => s + fieldOf(d,"profit"), 0);
-  return { month: ym, year: (ym||"").slice(0,4), days: days.length,
-    portions, sales, food, comm, fixed, net, profit: net, ...vatPack(sales, food) };
+function summarizeDays(days, label){
+  const rec = {
+    label,
+    days: (days || []).length,
+    sales:0, food:0, comm:0, fixed:0, qty:0,
+    vatOnSales:0, vatOnFood:0, vatDue:0,
+    profitBefore:0, profitAfter:0
+  };
+
+  (days || []).forEach(d => {
+    const x = withVatProfit({
+      sales: Number(d.sales || 0),
+      food:  Number(d.food != null ? d.food : d.foodDay || 0),
+      comm:  Number(d.comm || 0),
+      fixed: Number(d.fixed != null ? d.fixed : d.fixedDaily || 0),
+      qty:   Number(d.qty != null ? d.qty : d.portions || 0)
+    });
+    rec.sales += x.sales;
+    rec.food  += x.food;
+    rec.comm  += x.comm;
+    rec.fixed += x.fixed;
+    rec.qty   += x.qty;
+    rec.vatOnSales += x.vatOnSales;
+    rec.vatOnFood  += x.vatOnFood;
+    rec.vatDue     += x.vatDue;
+    rec.profitBefore += x.profitBefore;
+    rec.profitAfter  += x.profitAfter;
+  });
+
+  rec.net = rec.profitBefore;
+  rec.profit = rec.profitBefore;
+  rec.salesNet = rec.sales / (1 + VAT_RATE);
+  rec.foodNet  = rec.food  / (1 + VAT_RATE);
+  return rec;
 }
 
 
-function fillKpis(id, rec){
-  const el = document.getElementById(id);
-  if (!el || !rec) return;
-  el.innerHTML = `
-    <div class="kpi"><div class="label">Πωλήσεις με ΦΠΑ</div><div class="value">${fmt(rec.sales)}</div>
-      <div class="sub">καθαρή αξία ${fmt(rec.salesNet||0)}</div></div>
-    <div class="kpi"><div class="label">Απόδοση ΦΠΑ</div><div class="value">${fmt(rec.vatDue||0)}</div>
-      <div class="sub">εκροές ${fmt(rec.vatOnSales||0)} − εισροές ${fmt(rec.vatOnFood||0)}</div></div>
-    <div class="kpi"><div class="label">Κόστος + προμήθειες</div><div class="value">${fmt((rec.food||0)+(rec.comm||0))}</div>
-      <div class="sub">food ${fmt(rec.food||0)} · comm ${fmt(rec.comm||0)}</div></div>
-    <div class="kpi good"><div class="label">Κέρδος</div><div class="value">${fmt(rec.net||0)}</div>
-      <div class="sub">σταθερά ${fmt(rec.fixed||0)}</div></div>`;
-}
+
 
 function renderProfitMonthCharts(){
   const ym = currentYm();
@@ -2296,12 +2415,16 @@ async function closeYear(y){
   const comm     = months.reduce((s,m) => s + Number(m.comm||0), 0);
   const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
   const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
-  const portions = months.reduce((s,m) => s + Number(m.portions||0), 0);
-  const nDays    = months.reduce((s,m) => s + Number(m.days||0), 0);
-  const rec = {
-    year: y, months: 12, days: nDays, portions, sales, food, comm, fixed,
-    net, profit: net, closedAt: Date.now(), ...vatPack(sales, food)
-  };
+  const portions = months.reduce((s,m) => s + Number(m.qty || m.portions || 0), 0);
+  const nDays    = months.reduce((s,m) => s + Number(m.days || 0), 0);
+  const rec = withVatProfit({
+    year: y, months: 12, days: nDays, portions, qty: portions,
+    sales: months.reduce((s,m) => s + Number(m.sales||0), 0),
+    food:  months.reduce((s,m) => s + Number(m.food||0), 0),
+    comm:  months.reduce((s,m) => s + Number(m.comm||0), 0),
+    fixed: months.reduce((s,m) => s + Number(m.fixed||0), 0)
+  });
+  rec.closedAt = Date.now();
   const db = typeof getDb === "function" ? getDb() : null;
   if (db) {
     try { await db.ref("matzourana_years/" + y).set(rec); }
@@ -2398,7 +2521,13 @@ function renderProfitPlanner(){
   const foodDay = useSold ? soldFood : (p * selFood);
   const sales   = useSold ? soldSales : (p * ticket);
   const totalDayCost = fixed + foodDay + commDay;
-  const net = sales - totalDayCost;
+  const netBefore = sales - totalDayCost;
+
+  const rate = (typeof VAT_RATE !== "undefined") ? VAT_RATE : 0.13;
+  const vatSales = sales - sales / (1 + rate);
+  const vatFood  = foodDay - foodDay / (1 + rate);
+  const vatDue   = Math.max(0, vatSales - vatFood);
+  const netAfter = netBefore - vatDue;
 
   const mix = (typeof mixOverride === "function") ? mixOverride() : null;
   const mixTxt = mix
@@ -2414,19 +2543,37 @@ function renderProfitPlanner(){
       <div class="sub">${useSold ? (soldQty + " μετρημένες μερίδες") : (p + " × " + fmt(selFood))}</div></div>
     <div class="kpi"><div class="label">Προμήθειες e-food + Wolt</div>
       <div class="value">${fmt(commDay)}</div><div class="sub">34% / 37% · ${mixTxt}</div></div>
-    <div class="kpi"><div class="label">Σύνολο κόστους ημέρας</div>
-      <div class="value">${fmt(totalDayCost)}</div><div class="sub">Σταθερά + food + προμήθειες</div></div>
-    <div class="kpi"><div class="label">Ticket / food %</div>
+    <div class="kpi">
+      <div class="label">Πωλήσεις με ΦΠΑ</div>
+      <div class="value">${fmt(sales)}</div>
+      <div class="sub">καθαρή αξία ${fmt(sales / (1 + rate))}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Σύνολο κόστους ημέρας</div>
+      <div class="value">${fmt(totalDayCost)}</div>
+      <div class="sub">σταθερά ${fmt(fixed)} + food ${fmt(foodDay)} + προμήθειες ${fmt(commDay)}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Ticket / μερίδα</div>
       <div class="value">${fmt(ticket)}</div>
+      <div class="sub">food ${fmt(food)} · ${(foodPct * 100).toFixed(1)}% · καθαρό ticket ${fmt(ticket / (1 + rate))}</div>
+    </div>
       <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div></div>
     <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
       <div class="value">${p}</div><div class="sub">με μέσο ticket (χωρίς προμήθεια)</div></div>
     <div class="kpi good"><div class="label">Αγαπημένο σήμερα</div>
       <div class="value">${favorite ? favorite.qty : "—"}</div>
       <div class="sub">${favorite ? favorite.d.el : "Γράψε μερίδες στα 3 κανάλια"}</div></div>
-    <div class="kpi ${net>=target?"good":"warn"}"><div class="label">Καθαρό αποτέλεσμα</div>
-      <div class="value">${fmt(net)}</div>
-      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div></div>`;
+    <div class="kpi ${netBefore>=target?"good":"warn"}">
+      <div class="label">Κέρδος προ ΦΠΑ</div>
+      <div class="value">${fmt(netBefore)}</div>
+      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div>
+    </div>
+    <div class="kpi ${netAfter>=target?"good":"warn"}">
+      <div class="label">Καθαρό μετά ΦΠΑ</div>
+      <div class="value">${fmt(netAfter)}</div>
+      <div class="sub">απόδοση ${fmt(vatDue)} · εκροές ${fmt(vatSales)} − εισροές ${fmt(vatFood)}</div>
+    </div>`;
 
   const ladder = document.getElementById("targetLadder");
   if (ladder) ladder.innerHTML = [650,800,1000,1200].map(tg => {
@@ -2484,8 +2631,8 @@ function renderProfitPlanner(){
     </table></div>
     <p class="note">
       Κατάστημα 0% · e-food −34% · Wolt −37%.
-      % πάνω = 0 → μετρούν οι 3 στήλες. 80/10/10 → σπάνε το σύνολο μερίδων του πιάτου.
-      Σταθερά ημέρας ${fmt(fixed)}.
+      Κέρδος προ ΦΠΑ = πωλήσεις − σταθερά − food − προμήθειες.
+      Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
 }
 
@@ -2522,11 +2669,12 @@ async function pushToFirebase(){
     };
   });
 
-  const rec = {
+  const rec = withVatProfit({
     date,
     month: date.slice(0,7),
     ticket, foodPct, fixed, target,
-    portions, sales,
+    portions, qty: portions,
+    sales,
     foodDay, food: foodDay,
     comm,
     net, profit: net,
@@ -2538,7 +2686,7 @@ async function pushToFirebase(){
     favorite: sold[0] ? sold[0].d.el : "",
     createdAt: Date.now(),
     dishes
-  };
+  });
 
   try {
     await db.ref("matzourana_days/" + date).set({
