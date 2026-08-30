@@ -66,10 +66,12 @@
             padding: 0;
             background: linear-gradient(135deg, #f9f9f9 0%, #e8e1c8 100%);
             color: #333;
-            font-size: 32px;
+            
+            font-size: 1.05rem;          /* ~17px, όχι 32px */
             overflow-x: hidden;
         }
         header {
+            
             background-color: hsl(120, 10%, 21%);
             color: white;
             padding: var(--header-padding);
@@ -237,8 +239,8 @@
         .leaf:nth-child(3n+3) {
             /*background-image: url('Logos/autumn-leaf2.png');
             background-image: url('Logos/winter-bal3.png');
-            background-image: url('Logos/heart-logo3.png');*/
-            background-image: url('Logos/egg-logo3.png');
+            background-image: url('Logos/egg-logo3.png');*/
+            background-image: url('Logos/heart-logo3.png');
         }
         .leaf:nth-child(3n+4) {
             /*background-image: url('Logos/autumn-kurbis2.png');
@@ -2761,11 +2763,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                           <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                           <p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>-->
+                            </p>
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3475,17 +3477,17 @@
                         // Freshly Cooked
 
                         //Meat
-                         "moschari_kokkinisto", "moschari_lemonato", "bifteki_moscharisia", "keftedakia_tiganita", "papoutsakia", "makaronia_kima","lachanontolmades","kolokythakia_gemista",
+                         "moschari_kokkinisto", "moschari_lemonato", "bifteki_moscharisia", "keftedakia_tiganita", "papoutsakia", "makaronia_kima","lachanontolmades","kolokythakia_gemista","soutzoukakia",
                     
                         //Chicken 
-                        "kotopoulo_bouti",
+                        "kotopoulo_bouti","kokoras_krasatos",
 
                         
                        //SeaFoods
-                       "garidoma_small",
+                       "mydopilafo",
                         
                        //Veggy
-                        "gemista_superfoods","fasolakia","giantes","spanakorizo","melitzanes_imam",
+                        "gemista_superfoods","fasolakia","briam","giantes","spanakorizo","melitzanes_imam","arakas_lemonatos",
 
                         // Soups
                          "kotosoupa",
@@ -3493,6 +3495,7 @@
                         
                         // Legumes
                          "fakes",
+                         "revithia",
                     ];
 
 
@@ -5794,20 +5797,19 @@ const currentHighlights = [
 
     "line",
     "moschari_kokkinisto",
+    "moschari_lemonato",
     "papoutsakia",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
+    "kokoras_krasatos",
     "kotosoupa",
-    "garidoma",
+    "mydopilafo",
     "gemista_superfoods",
     "fasolakia",
     "giantes",
-    "spanakorizo",
-    "melitzanes_imam"
-
-
-
-    
+    "briam",
+    "spanakorizo"
+  
 ];
 
 function renderDailyHighlights() {
