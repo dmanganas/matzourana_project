@@ -491,6 +491,26 @@ tr:hover td { background: #fafcfb; }
   </div>
   <div id="portionByDish"></div>
 
+  <section class="panel" id="profitOpt">
+  <h2>Βελτιστοποίηση κερδών</h2>
+  <div class="kpi-grid" id="optKpis"></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Πιάτο</th>
+          <th>Συνεισφορά κατ/μα</th>
+          <th>Συνεισφορά e-food</th>
+          <th>Συνεισφορά Wolt</th>
+          <th>Σύσταση</th>
+        </tr>
+      </thead>
+      <tbody id="optBody"></tbody>
+    </table>
+  </div>
+  <p class="note" id="optNote"></p>
+</section>
+
   <p class="note">
     Μερίδες ανά κανάλι στον πίνακα πιάτων. Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
     το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −34%, Wolt −37%, κατάστημα χωρίς προμήθεια.
@@ -2483,14 +2503,101 @@ async function loadReportMonth(){
 }
 
   
+function renderProfitOpt(){
+  let wrap = document.getElementById("profitOpt");
+  if (!wrap) {
+    wrap = document.createElement("section");
+    wrap.id = "profitOpt";
+    wrap.className = "panel";
+    const tab = document.getElementById("tab-profit");
+    const table = document.getElementById("portionByDish");
+    if (table && table.parentNode) table.parentNode.insertBefore(wrap, table);
+    else if (tab) tab.appendChild(wrap);
+    else return;
+  }
 
+  wrap.innerHTML = `
+    <h2>Βελτιστοποίηση κερδών</h2>
+    <div class="kpi-grid" id="optKpis"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Πιάτο</th>
+            <th>Συνεισφορά κατ/μα</th>
+            <th>Συνεισφορά e-food</th>
+            <th>Συνεισφορά Wolt</th>
+            <th>Σύσταση</th>
+          </tr>
+        </thead>
+        <tbody id="optBody"></tbody>
+      </table>
+    </div>
+    <p class="note" id="optNote"></p>`;
+
+  const target = Number(document.getElementById("targetProfit")?.value || 650);
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
+  const sold   = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const keys   = sold.length ? sold.map(r => r.key) : selectedDailyKeys();
+  const rows   = keys.map(k => {
+    const r = (typeof dishEconomics === "function") ? dishEconomics(k) : null;
+    if (!r || !(r.price > 0)) return null;
+    const local = r.price - r.fc;
+    const efood = r.price * 0.66 - r.fc;
+    const wolt  = r.price * 0.63 - r.fc;
+    return { ...r, local, efood, wolt };
+  }).filter(Boolean).sort((a,b) => b.local - a.local);
+
+  const sales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
+  const food  = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
+  const comm  = sold.reduce((s,r) => s + (r.commDay || 0), 0);
+  const net   = sales - food - comm - fixed;
+  const gap   = target - net;
+  const avgC  = rows.length ? rows.reduce((s,r) => s + r.local, 0) / rows.length : 0;
+  const extra = (gap > 0 && avgC > 0.05) ? Math.ceil(gap / avgC) : 0;
+  const star  = rows[0];
+
+  document.getElementById("optKpis").innerHTML = `
+    <div class="kpi ${net>=target?"good":"warn"}">
+      <div class="label">Απόσταση από στόχο</div>
+      <div class="value">${fmt(gap)}</div>
+      <div class="sub">${!sold.length ? "γράψε μερίδες για πραγματικό κενό" : (gap<=0 ? "στόχος πιάστηκε" : extra + " μερίδες καταστήματος ακόμα")}</div>
+    </div>
+    <div class="kpi good">
+      <div class="label">Καλύτερο πιάτο</div>
+      <div class="value">${star ? fmt(star.local) : "—"}</div>
+      <div class="sub">${star ? star.d.el : "επίλεξε πιάτα"} · προτίμησε κατάστημα</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Κανάλι</div>
+      <div class="value">Κατάστημα</div>
+      <div class="sub">Μετά e-food · τελευταίο το Wolt (−37%)</div>
+    </div>`;
+
+  document.getElementById("optBody").innerHTML = rows.map(r => {
+    let tip = "Κράτα το στο κατάστημα";
+    if (r.local < 2) tip = "Ακριβό food · λιγότερες μερίδες ή +0,50€";
+    else if (r.wolt < 1 && r.efood < 1.5) tip = "Μην το βάζεις σε platform χωρίς +τιμή";
+    else if (r.local > 6) tip = "Σπρώξ’ το σήμερα · υψηλή συνεισφορά";
+    return `<tr>
+      <td>${r.d.el}</td>
+      <td><strong>${fmt(r.local)}</strong></td>
+      <td>${fmt(r.efood)}</td>
+      <td>${fmt(r.wolt)}</td>
+      <td>${tip}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="5">Τσεκάρετε πιάτα ημέρας στον κατάλογο.</td></tr>`;
+
+  document.getElementById("optNote").textContent =
+    "Βελτιστοποίηση: περισσότερες μερίδες στα πιάτα με μεγάλη συνεισφορά καταστήματος. Platforms μόνο για όγκο, εκτός αν σηκώσεις τιμή καναλιού.";
+}
 
 
 function renderProfitPlanner(){
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof syncFixedDaily === "function") syncFixedDaily();
 
-  const target  = Number(document.getElementById("targetProfit")?.value || 650);
+  const target  = Number(document.getElementById("targetProfit")?.value || 50);
   const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
   const ticket  = Number(document.getElementById("avgTicket")?.value || 10);
   const foodPct = Number(document.getElementById("avgFoodPct")?.value || 32) / 100;
@@ -2558,7 +2665,6 @@ function renderProfitPlanner(){
       <div class="value">${fmt(ticket)}</div>
       <div class="sub">food ${fmt(food)} · ${(foodPct * 100).toFixed(1)}% · καθαρό ticket ${fmt(ticket / (1 + rate))}</div>
     </div>
-      <div class="sub">Food ${fmt(food)} · ${(foodPct*100).toFixed(1)}%</div></div>
     <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
       <div class="value">${p}</div><div class="sub">με μέσο ticket (χωρίς προμήθεια)</div></div>
     <div class="kpi good"><div class="label">Αγαπημένο σήμερα</div>
@@ -2634,6 +2740,8 @@ function renderProfitPlanner(){
       Κέρδος προ ΦΠΑ = πωλήσεις − σταθερά − food − προμήθειες.
       Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
+
+    if (typeof renderProfitOpt === "function") renderProfitOpt();
 }
 
 async function pushToFirebase(){
