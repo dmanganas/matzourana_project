@@ -496,31 +496,45 @@ tr:hover td { background: #fafcfb; }
     το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −34%, Wolt −37%, κατάστημα χωρίς προμήθεια.
   </p>
 </section>
-</section>
-  <!-- CHANNELS -->
+
+    <!-- CHANNELS -->
   <section class="panel" id="tab-channels">
-  <h2>Αναφορά μήνα &amp; έτους <span class="badge" id="monthBadge">—</span></h2>
+    <h2>Αναφορά μήνα &amp; έτους</h2>
+    <p>
+      <label>Μήνας
+        <input type="month" id="reportMonth">
+      </label>
+      <button type="button" class="btn-ghost" onclick="showChannelDays()">Φόρτωση ημερών μήνα</button>
+      <button type="button" class="btn-ghost" onclick="showChannelMonths()">Προβολή μηνών έτους</button>
+      <button type="button" class="btn-ghost" onclick="closeMonth()">Κλείσιμο μήνα</button>
+      <button type="button" class="btn-ghost" onclick="closeYear()">Κλείσιμο έτους</button>
+    </p>
+    <div id="monthClose"></div>
+    <div id="yearClose"></div>
 
-  <p>
-    <button type="button" class="btn-ghost" onclick="closeMonth()">Κλείσιμο μήνα</button>
-    <button type="button" class="btn-ghost" onclick="closeYear()">Κλείσιμο έτους</button>
-    <button type="button" class="btn-ghost" onclick="loadMonthFromFirebase()">Φόρτωση από βάση</button>
-  </p>
+    <div id="channelDaysView" style="display:none;">
+      <h3>Ημέρες μήνα <span class="badge" id="monthBadge">—</span></h3>
+      <div class="kpi-grid" id="monthKpis"></div>
+      <div class="chart-grid">
+        <canvas id="dSales"></canvas>
+        <canvas id="dFood"></canvas>
+        <canvas id="dFixed"></canvas>
+        <canvas id="dProfit"></canvas>
+      </div>
+    </div>
 
-  <div id="monthClose"></div>
-  <div class="kpi-grid" id="monthKpis"></div>
-
-  <div class="form-grid" style="margin-top:16px;">
-    <canvas id="gSales"  style="width:100%;height:220px;"></canvas>
-    <canvas id="gFood"   style="width:100%;height:220px;"></canvas>
-    <canvas id="gFixed"  style="width:100%;height:220px;"></canvas>
-    <canvas id="gProfit" style="width:100%;height:220px;"></canvas>
-  </div>
-
-  <h2 style="margin-top:28px;">Έτος <span class="badge" id="yearBadge">—</span></h2>
-  <div class="kpi-grid" id="yearKpis"></div>
-  <canvas id="gYear" style="width:100%;height:260px;margin-top:12px;"></canvas>
-</section>
+    <div id="channelMonthsView">
+      <h3>Μήνες έτους <span class="badge" id="yearMonthsBadge">—</span></h3>
+      <div class="chart-grid">
+        <canvas id="mSales"></canvas>
+        <canvas id="mFood"></canvas>
+        <canvas id="mFixed"></canvas>
+        <canvas id="mProfit"></canvas>
+      </div>
+      <h3 style="margin-top:28px;">Έτος <span class="badge" id="yearBadge">—</span></h3>
+      <div class="kpi-grid" id="yearKpis"></div>
+    </div>
+  </section>
 </div>
 
 <div class="maps-modal" id="mapsModal">
@@ -546,6 +560,7 @@ tr:hover td { background: #fafcfb; }
     </div>
   </div>
 </div>
+
 
 <script>
 /* =========================================================
@@ -2076,19 +2091,68 @@ function drawBars(canvasId, items, kind, color, title, labelFn){
   }
 }
 
+
+let channelMode = "months";
+
+function monthLabel(ym){
+  const [y,m] = String(ym).split("-");
+  const names = ["","Ιαν","Φεβ","Μαρ","Απρ","Μαϊ","Ιουν","Ιουλ","Αυγ","Σεπ","Οκτ","Νοε","Δεκ"];
+  return (names[Number(m)] || ym) + " " + y;
+}
+
+async function showChannelMonths(){
+  channelMode = "months";
+  const d = document.getElementById("channelDaysView");
+  const m = document.getElementById("channelMonthsView");
+  if (d) d.style.display = "none";
+  if (m) m.style.display = "block";
+  await renderYearSection();
+}
+
+async function showChannelDays(){
+  channelMode = "days";
+  const rm = document.getElementById("reportMonth");
+  if (rm && !rm.value) rm.value = currentYm();
+  const d = document.getElementById("channelDaysView");
+  const m = document.getElementById("channelMonthsView");
+  if (d) d.style.display = "block";
+  if (m) m.style.display = "none";
+  await loadMonthFromFirebase();
+  renderMonthPanel();
+}
+
+function drawMonthSet(months){
+  const lab = mo => monthLabel(mo.month || "");
+  drawBars("mSales",  months, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
+  drawBars("mFood",   months, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
+  drawBars("mFixed",  months, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
+  drawBars("mProfit", months, "profit", "#1565c0", "Κέρδος / μήνα", lab);
+}
+
+function drawDaySet(prefix, days){
+  const lab = d => d.date || "";
+  drawBars(prefix+"Sales",  days, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
+  drawBars(prefix+"Food",   days, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
+  drawBars(prefix+"Fixed",  days, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
+  drawBars(prefix+"Profit", days, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
+}
+
 function showChartTip(ev, id){
   const tip = document.getElementById("chartTip");
   const c = ev.currentTarget;
   if (!tip || !c) return;
-  const scale = c.width / Math.max(1, c.getBoundingClientRect().width);
-  const x = ev.offsetX * scale;
+  const rect = c.getBoundingClientRect();
+  const x = (ev.clientX - rect.left) * (c.width / Math.max(1, rect.width));
   const hit = (CHART_HITS[id] || []).find(b => x >= b.x0 && x < b.x1);
-  if (!hit) { tip.style.display = "none"; return; }
+  if (!hit) { tip.style.display = "none"; c.title = ""; return; }
+  const text = hit.label + " · " + hit.value;
+  c.title = text;
+  tip.textContent = text;
   tip.style.display = "block";
-  tip.textContent = hit.label + " · " + hit.value;
   tip.style.left = (ev.clientX + 12) + "px";
   tip.style.top  = (ev.clientY + 12) + "px";
 }
+
 function hideChartTip(){
   const tip = document.getElementById("chartTip");
   if (tip) tip.style.display = "none";
@@ -2120,20 +2184,6 @@ function summarizeDays(days, ym){
     portions, sales, food, comm, fixed, net, profit: net, ...vatPack(sales, food) };
 }
 
-function drawDaySet(prefix, days){
-  const lab = d => d.date || "";
-  drawBars(prefix+"Sales",  days, "sales",  "#2e7d32", "Πωλήσεις / ημέρα", lab);
-  drawBars(prefix+"Food",   days, "food",   "#c62828", "Κόστος πιάτων / ημέρα", lab);
-  drawBars(prefix+"Fixed",  days, "fixed",  "#ef6c00", "Σταθερά / ημέρα", lab);
-  drawBars(prefix+"Profit", days, "profit", "#1565c0", "Κέρδος / ημέρα", lab);
-}
-function drawMonthSet(months){
-  const lab = m => m.month || "";
-  drawBars("mSales",  months, "sales",  "#2e7d32", "Πωλήσεις / μήνα", lab);
-  drawBars("mFood",   months, "food",   "#c62828", "Κόστος πιάτων / μήνα", lab);
-  drawBars("mFixed",  months, "fixed",  "#ef6c00", "Σταθερά / μήνα", lab);
-  drawBars("mProfit", months, "profit", "#1565c0", "Κέρδος / μήνα", lab);
-}
 
 function fillKpis(id, rec){
   const el = document.getElementById(id);
