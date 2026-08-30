@@ -1262,9 +1262,13 @@ function switchTab(id){
   }
   if (id === "opt") {
     renderProfitOpt();
+    renderDailyMenuPlan();
     renderMenuAudit();
   }
+  if (id === "profit" && typeof renderProfitPlanner === "function")
+    renderProfitPlanner();
 }
+
 
 
 /* =========================================================
@@ -2588,6 +2592,157 @@ function renderProfitOpt(){
     </div>`;
 }
 
+const PLAT = { efood: 0.34, wolt: 0.37 };
+const MIN_PLAT_CONTRIB = 2.20; // ελάχιστο καθαρό μετά προμήθεια · όχι αύξηση στο μαγαζί
+
+function shopPrice(key){
+  return parseEuro(menuCatalog[key]?.price);
+}
+
+function platPriceFor(fc, contrib, commission){
+  const need = Math.max(MIN_PLAT_CONTRIB, contrib * 0.55);
+  return (fc + need) / (1 - commission);
+}
+
+function channelPrices(key){
+  const r = dishEconomics(key);
+  if (!r || !(r.price > 0)) return null;
+  const eNow = r.price * (1 - PLAT.efood) - r.fc;
+  const wNow = r.price * (1 - PLAT.wolt) - r.fc;
+  const eSug = platPriceFor(r.fc, r.price - r.fc, PLAT.efood);
+  const wSug = platPriceFor(r.fc, r.price - r.fc, PLAT.wolt);
+  return {
+    r,
+    shop: r.price,
+    eNow, wNow,
+    eSug: eNow >= MIN_PLAT_CONTRIB ? r.price : Math.ceil(eSug * 20) / 20,
+    wSug: wNow >= MIN_PLAT_CONTRIB ? r.price : Math.ceil(wSug * 20) / 20,
+    liftE: eNow < MIN_PLAT_CONTRIB,
+    liftW: wNow < MIN_PLAT_CONTRIB
+  };
+}
+
+function sameFamily(a, b){
+  if (!a || !b) return false;
+  return a.category === b.category || a.type === b.type;
+}
+
+function candidateDishes(){
+  const picked = (typeof selectedDailyKeys === "function") ? selectedDailyKeys() : [];
+  const keys = picked.length
+    ? picked
+    : Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
+  return keys
+    .map(k => {
+      const r = dishEconomics(k);
+      if (!r || !(r.price > 0) || isDrinkDish(r.d)) return null;
+      return { ...r, local: r.price - r.fc, fcPct: r.price ? r.fc / r.price : 0 };
+    })
+    .filter(Boolean)
+    .sort((a,b) => b.local - a.local);
+}
+
+function suggestDailyMenu(maxN){
+  const pool = candidateDishes();
+  const byType = {};
+  const picked = [];
+  for (const d of pool) {
+    if (picked.length >= maxN) break;
+    if (d.local < 2.2) continue;
+    const t = d.d.type || d.d.category || "x";
+    byType[t] = byType[t] || 0;
+    if (byType[t] >= 3) continue;
+    byType[t]++;
+    picked.push(d);
+  }
+  if (picked.length < 6) {
+    pool.forEach(d => {
+      if (picked.length >= maxN) return;
+      if (!picked.some(p => p.key === d.key) && d.local >= 1.8) picked.push(d);
+    });
+  }
+  return picked;
+}
+
+function renderDailyMenuPlan(){
+  let box = document.getElementById("menuPlan");
+  if (!box) {
+    const { audit } = ensureOptBoxes();
+    if (!audit) return;
+    box = document.createElement("div");
+    box.id = "menuPlan";
+    audit.parentNode.insertBefore(box, audit);
+  }
+
+  const target = Number(document.getElementById("targetProfit")?.value || 650);
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
+  const plan = suggestDailyMenu(10);
+  const avg  = plan.length ? plan.reduce((s,d) => s + d.local, 0) / plan.length : 0;
+  const need = avg > 0.05 ? Math.ceil((fixed + target) / avg) : 0;
+  const sales = need * (plan.length ? plan.reduce((s,d) => s + d.price, 0) / plan.length : 0);
+
+  box.innerHTML = `
+    <h2>Μενού πρότασης ημέρας
+      <span class="badge">${plan.length} πιάτα · στόχος ${fmt(target)}</span>
+    </h2>
+    <p class="note">
+      Επιλογή από τα τσεκαρισμένα (αλλιώς όλος ο κατάλογος). Μέχρι 3 ανά οικογένεια.
+      Στο κατάστημα μένει η τιμή καταλόγου. Platform παίρνει άλλη τιμή μόνο αν αλλιώς βγαίνει κάτω από ${fmt(MIN_PLAT_CONTRIB)}/μερίδα.
+    </p>
+    <div class="kpi-grid">
+      <div class="kpi good">
+        <div class="label">Μέση συνεισφορά μείγματος</div>
+        <div class="value">${fmt(avg)}</div>
+        <div class="sub">μόνο κατάστημα, χωρίς προμήθεια</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Μερίδες κατ/μα για ${fmt(target)}</div>
+        <div class="value">${need || "—"}</div>
+        <div class="sub">πωλήσεις ~ ${fmt(sales)}</div>
+      </div>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Πιάτο</th>
+        <th>Κατ/μα (αμετάβλητη)</th>
+        <th>Food %</th>
+        <th>€ / μερίδα κατ.</th>
+        <th>e-food τιμή</th>
+        <th>Wolt τιμή</th>
+        <th>Γιατί</th>
+      </tr></thead>
+      <tbody>
+        ${plan.map(d => {
+          const ch = channelPrices(d.key);
+          const fam = candidateDishes()
+            .filter(x => x.key !== d.key && sameFamily(x.d, d.d) && x.local > d.local + 0.4)
+            .sort((a,b) => b.local - a.local)[0];
+
+          const why = fam
+            ? "Εναλλακτική: " + fam.d.el + " (+" + fmt(fam.local - d.local) + ")"
+            : d.local >= 6 ? "Βιτρίνα / προφορική πώληση"
+            : d.fcPct > 0.40 ? "Κράτα ποιότητα · ζύγισε μερίδα"
+            : "Μέσα στο μείγμα στόχου";
+          return `<tr>
+            <td>${d.d.el}</td>
+            <td>${fmt(d.price)}</td>
+            <td>${red(Math.round(d.fcPct*100)+"%", d.fcPct>0.40)}</td>
+            <td><strong>${fmt(d.local)}</strong></td>
+            <td>${ch.liftE ? red(fmt(ch.eSug) + " (+platform)", true) : fmt(ch.shop)}</td>
+            <td>${ch.liftW ? red(fmt(ch.wSug) + " (+platform)", true) : fmt(ch.shop)}</td>
+            <td>${why}</td>
+          </tr>`;
+        }).join("") || `<tr><td colspan="7">Τσεκάρετε πιάτα στην καρτέλα Πιάτα.</td></tr>`}
+      </tbody>
+    </table></div>
+    <p class="note">
+      Κόκκινη τιμή platform = μόνο εκεί. Μην την περνάς στο site / τιμοκατάλογο καταστήματος.
+      Πέρασέ την χειροκίνητα στο e-food και στο Wolt.
+    </p>`;
+}
+
+
+
 function renderMenuAudit(){
   const { audit } = ensureOptBoxes();
   if (!audit) return;
@@ -2786,6 +2941,8 @@ function renderProfitPlanner(){
     if (tab) tab.appendChild(box);
     
   }
+
+  
 
   box.innerHTML = `
     <h2>Επιλεγμένα πιάτα ημέρας
