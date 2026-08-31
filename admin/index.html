@@ -203,6 +203,23 @@ tr:hover td { background: #fafcfb; }
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 10px;
 }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+.form-grid .card-mini {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.form-grid .card-mini .section-title {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 8px;
+}
 .ing, .card-mini {
   background: #fbfcfb; border: 1px solid var(--line);
   border-radius: 12px; padding: 10px 12px;
@@ -2623,6 +2640,61 @@ function channelPrices(key){
   };
 }
 
+function favList(plat){
+  if (typeof loadFavorites === "function") loadFavorites();
+  const src = (typeof favorites !== "undefined" && favorites[plat]) ? favorites[plat] : [];
+  return src.filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks");
+}
+
+function favBadge(key){
+  const marks = [];
+  if (favList("shop").includes(key))  marks.push("κατ.");
+  if (favList("efood").includes(key)) marks.push("e-food");
+  if (favList("wolt").includes(key))  marks.push("Wolt");
+  return marks.length ? ` <span class="badge">${marks.join(" · ")}</span>` : "";
+}
+
+function favRowHtml(plat, title){
+  const keys = favList(plat);
+  if (!keys.length) return `<div class="note">${title}: δεν έχουν οριστεί</div>`;
+  return `<div class="card-mini"><div class="section-title">${title}</div>
+    ${keys.map((k,i) => {
+      const r = (typeof dishEconomics === "function") ? dishEconomics(k) : null;
+      const name = menuCatalog[k].el;
+      const price = r ? fmt(r.price) : (menuCatalog[k].price || "");
+      const contrib = r ? fmt(r.contrib) : "—";
+      return `<div>${i+1}. ${name} · ${price} · συνεισφορά ${contrib}</div>`;
+    }).join("")}
+  </div>`;
+}
+
+function top3FromOrders(plat){
+  const field = plat === "shop" ? "local" : plat;
+  const comm = { shop: 0, efood: 0.34, wolt: 0.37 }[plat] || 0;
+  return Object.keys(menuCatalog)
+    .filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks")
+    .map(key => {
+      const q = (typeof chOf === "function") ? chOf(key) : { local:0, efood:0, wolt:0 };
+      const n = Number(q[field] || 0);
+      const r = dishEconomics(key);
+      const unit = r.price * (1 - comm) - r.fc;
+      return { key, n, score: n * unit };
+    })
+    .filter(x => x.n > 0)
+    .sort((a,b) => b.n - a.n || b.score - a.score)
+    .slice(0, 3)
+    .map(x => x.key);
+}
+
+function setFavFromOrders(){
+  favorites = {
+    shop:  top3FromOrders("shop"),
+    efood: top3FromOrders("efood"),
+    wolt:  top3FromOrders("wolt")
+  };
+  if (typeof saveFavorites === "function") saveFavorites();
+}
+
 function sameFamily(a, b){
   if (!a || !b) return false;
   return a.category === b.category || a.type === b.type;
@@ -2663,6 +2735,63 @@ function suggestDailyMenu(maxN){
     });
   }
   return picked;
+}
+
+function highlightsByPlatform(){
+  const comm = { shop: 0, efood: 0.34, wolt: 0.37 };
+  const best = { shop: null, efood: null, wolt: null };
+  Object.keys(menuCatalog).forEach(key => {
+    const d = menuCatalog[key];
+    if (!d || d.category === "drinks") return;
+    const r = dishEconomics(key);
+    if (!r || !(r.price > 0)) return;
+    const q = (typeof chOf === "function") ? chOf(key) : { local:0, efood:0, wolt:0 };
+    const qty = { shop: q.local || 0, efood: q.efood || 0, wolt: q.wolt || 0 };
+    ["shop", "efood", "wolt"].forEach(p => {
+      const n = qty[p];
+      if (!n) return;
+      const unit = r.price * (1 - comm[p]) - r.fc;
+      const score = n * unit;
+      const cur = best[p];
+      if (!cur || score > cur.score) {
+        best[p] = { key, name: r.d.el, qty: n, unit, score, price: r.price };
+      }
+    });
+  });
+  return best;
+}
+
+function renderDailyHighlights(){
+  const h = highlightsByPlatform();
+  const line = (p, title) => {
+    const x = h[p];
+    if (!x) return `<div class="card-mini"><div class="section-title">${title}</div><div>—</div></div>`;
+    return `<div class="card-mini">
+      <div class="section-title">${title}</div>
+      <div><strong>${x.name}</strong></div>
+      <div class="note">${x.qty} μερίδες · καθαρό ${fmt(x.score)} · ${fmt(x.unit)}/μερίδα</div>
+    </div>`;
+  };
+  let box = document.getElementById("dailyHighlights");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "dailyHighlights";
+    const after = document.getElementById("favReport") || document.getElementById("profitKpis");
+    if (after && after.parentNode) after.parentNode.insertBefore(box, after.nextSibling);
+    else {
+      const tab = document.getElementById("tab-profit");
+      if (tab) tab.appendChild(box);
+    }
+  }
+  box.innerHTML = `
+    <h2>Highlight ημέρας / κανάλι</h2>
+    <div class="form-grid">
+      ${line("shop", "Κατάστημα")}
+      ${line("efood", "e-food")}
+      ${line("wolt", "Wolt")}
+    </div>
+    <p class="note">Μεγαλύτερο καθαρό του καναλιού (μερίδες × τιμή μετά προμήθεια − food). Τα 3 αγαπημένα μένουν κλειδωμένα από πάνω.</p>`;
+  return h;
 }
 
 function renderDailyMenuPlan(){
@@ -2839,6 +2968,7 @@ function renderMenuAudit(){
 function renderProfitPlanner(){
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof syncFixedDaily === "function") syncFixedDaily();
+  if (typeof setFavFromOrders === "function") setFavFromOrders();
 
   const target  = Number(document.getElementById("targetProfit")?.value || 50);
   const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
@@ -2866,7 +2996,11 @@ function renderProfitPlanner(){
   const soldFood  = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
   const soldSales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
   const commDay   = sold.reduce((s,r) => s + (r.commDay || 0), 0);
-  const favorite  = sold[0] || null;
+  const soldFoodOnly = sold.filter(r =>
+    r.d && r.d.category !== "drinks" && r.d.type !== "drinks"
+  ).sort((a,b) => (b.qty || 0) - (a.qty || 0));
+  const favorite = soldFoodOnly[0] || null;
+  
 
   const foodDay = useSold ? soldFood : (p * selFood);
   const sales   = useSold ? soldSales : (p * ticket);
@@ -2924,6 +3058,21 @@ function renderProfitPlanner(){
       <div class="sub">απόδοση ${fmt(vatDue)} · εκροές ${fmt(vatSales)} − εισροές ${fmt(vatFood)}</div>
     </div>`;
 
+  let favBox = document.getElementById("favReport");
+  if (!favBox) {
+    favBox = document.createElement("div");
+    favBox.id = "favReport";
+    if (kpis && kpis.parentNode) kpis.parentNode.insertBefore(favBox, kpis.nextSibling);
+  }
+  favBox.innerHTML = `
+    <h2>3 αγαπημένα / κανάλι <span class="badge">κλειδωμένα</span></h2>
+    <div class="form-grid">
+      ${favRowHtml("shop", "Κατάστημα")}
+      ${favRowHtml("efood", "e-food")}
+      ${favRowHtml("wolt", "Wolt")}
+    </div>
+    <p class="note">Αυτά μένουν στη βιτρίνα. Οι εναλλαγές πλατφόρμας αφορούν τα υπόλοιπα πιάτα.</p>`;
+
   const ladder = document.getElementById("targetLadder");
   if (ladder) ladder.innerHTML = [650,800,1000,1200].map(tg => {
     const n = portionsFor(ticket - food, fixed, tg) || 0;
@@ -2962,7 +3111,7 @@ function renderProfitPlanner(){
             : { qty:{local:0,efood:0,wolt:0}, n:0, sales:0, comm:0, net:0 };
           const star = favorite && r.key === favorite.key ? " ★" : "";
           return `<tr>
-            <td>${r.d.el}${star}</td>
+            <td>${r.d.el}${star}${favBadge(r.key)}</td>
             <td>${e.qty.local || "—"}</td>
             <td>${e.qty.efood || "—"}</td>
             <td>${e.qty.wolt || "—"}</td>
@@ -2986,6 +3135,7 @@ function renderProfitPlanner(){
       Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
 
+    if (typeof renderDailyHighlights === "function") renderDailyHighlights();
     const optOn = document.getElementById("tab-opt")?.classList.contains("active");
     if (optOn) {
       if (typeof renderProfitOpt === "function") renderProfitOpt();
@@ -3042,6 +3192,12 @@ async function pushToFirebase(){
     channels: (typeof portionChannels !== "undefined") ? JSON.parse(JSON.stringify(portionChannels)) : {},
     keys: sold.map(r => r.key),
     favorite: sold[0] ? sold[0].d.el : "",
+    favorites: (typeof favorites !== "undefined")
+    ? JSON.parse(JSON.stringify(favorites))
+    : { shop: [], efood: [], wolt: [] },
+    highlights: (typeof highlightsByPlatform === "function")
+    ? highlightsByPlatform()
+    : { shop: null, efood: null, wolt: null },
     createdAt: Date.now(),
     dishes
   });
