@@ -2768,11 +2768,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                            <p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                            <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>
+                            </p>-->
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3091,7 +3091,7 @@
 
                     const menuCatalog = {
                         // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ (All Fresh Cooked) ====================
-                        
+                        "freshly_cooked": { category: "freshly-cooked"},
                         // ==================== ΠΙΑΤΑ ΚΡΕΑΤΙΚΩΝ ====================
                         "katsikaki_naxou": { category: "meat-cooked", el: "Κατσικάκι (Νάξου) στο φούρνο <br><br> (Λεμονάτο κατσικάκι με μελωμένες πατάτες φούρνου)", en: "Roast Kid Goat (from Naxos) <br><br> (Lemony kid goat with tender oven-baked potatoes)", price: "€16.00" },
                         "kokoretsi": { category: "meat-cooked", el: "Κοκορέτσι χειροποίητο <br><br> (Παραδοσιακό κοκορέτσι φτιαγμένο στο χέρι, ψημένο αργά)", en: "Handmade Kokoretsi <br><br> (Traditional hand-prepared kokoretsi, slow-roasted)", price: "€15.50" },
@@ -3487,6 +3487,7 @@
                     // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★
                     const currentDailyMenu = [
                         // Freshly Cooked
+                        
 
                         //Meat
                         "moschari_kokkinisto", 
@@ -3496,21 +3497,19 @@
                         "lachanontolmades", 
                         "kolokythakia_gemista",
                         "pastitsio", 
-                        "moussakas",
-                        "soutzoukakia",
                         "makaronia_kima",
 
                         //Chicken 
                        "kotopoulo_bouti",
-                       "kokoras_krasatos",
+                       
 
                        //SeaFoods
                       
                        //Veggy
                         "gemista_superfoods", 
                         "fasolakia", 
-                        "arakas_lemonatos",
-                        "spanakorizo",
+                        "briam",
+                        "melitzanes_imam",
 
 
                         // Soups
@@ -3518,7 +3517,6 @@
                          "giouvarlakia",
                         
                         // Legumes
-                        "revithia",
                          "fakes",
                          "fasolada"
                     ];
@@ -3559,6 +3557,7 @@
 
                         // Group dishes by category
                         const grouped = {
+                            "freshly-cooked": [],
                             "meat-cooked": [],
                             "veg-cooked": [],
                             "seafood": [],
@@ -3575,6 +3574,7 @@
                         });
 
                         const categoryLabels = {
+                            "freshly-cooked": { el: "Φρεσκομαγειρεμένα", en: "Freshly Cooked Dishes" },
                             "meat-cooked": { el: "Πιάτα Κρεατικών", en: "Meat Dishes" },
                             "veg-cooked":  { el: "Πιάτα Λαχανικών", en: "Vegetable Dishes" },
                             "seafood":     { el: "Πιάτα Θαλασσινών", en: "Seafood Dishes" },
@@ -5832,14 +5832,14 @@ const currentHighlights = [
     "moschari_lemonato",
     "bifteki_moscharisia",
     "keftedakia_tiganita",
-    "moussakas",
+
     "kotopoulo_bouti",
-    "kokoras_krasatos",
+
     "kotosoupa",
     "fasolakia",
-    "arakas",
+    "briam",
     "gemista_superfoods",
-    "spanakorizo"
+    "melitzanes_imam"
 ];
 
 function renderDailyHighlights() {
