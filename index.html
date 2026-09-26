@@ -2768,11 +2768,11 @@
                                 ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
                             </p>
 
-                            <p class="lang" style="font-weight: bold; color: #8B3A3A;"
+                            <!--<p class="lang" style="font-weight: bold; color: #8B3A3A;"
                                 data-el="🌹🍽️✨ Καλή Κυριακή!"
                                 data-en="🍷🍽️✨ Happy Sunday!">
                                 🌹🍽️✨ Καλή Κυριακή!
-                            </p>
+                            </p>-->
                             
                             <!--<p class="lang"
                                 style="font-weight: bold; color: #8B3A3A;"
@@ -3491,36 +3491,33 @@
 
                         //Meat
                         "moschari_kokkinisto", 
-                        "moschari_lemonato",
                         "bifteki_moscharisia", 
-                        "soutzoukakia",
-                        "keftedakia_saltsa", 
+                        "pastitsio",
+                        "keftedakia_tiganita", 
                         "lachanontolmades", 
-                        "kolokythakia_gemista",
-                        "pastitsio", 
+                        "soutzoukakia",
                         "makaronia_kima",
 
                         //Chicken 
                        "kotopoulo_bouti",
                        "kokoras_krasatos",
                        
-
                        //SeaFoods
                       
                        //Veggy
                         "gemista_superfoods", 
                         "fasolakia", 
                         "spanakorizo",
+                        "briam",
 
 
                         // Soups
                          "kotosoupa",
+                         "kreatosoupa",
                          "giouvarlakia",
                         
                         // Legumes
                          "fakes",
-                         "revithia",
-                         "fasolada"
                     ];
 
 
@@ -5755,6 +5752,13 @@ const highlightsCatalog = {
         en: "Fish <br> Soup"
     },
 
+    "kreatosoupa": {
+        icons: ["meat-logo.png", "soup-logo.png"],
+        el: "Κρεατόσουπα",
+        en: "Meat <br> Soup"
+    },
+
+   
     // ==================== FISH / SEAFOOD ====================
     "garidoma": {
         icons: ["schrimp-logo.png", "spagetti-logo.png"],
@@ -5831,18 +5835,18 @@ const currentHighlights = [
 
     "line",
     "moschari_kokkinisto",
-    "moschari_lemonato",
     "bifteki_moscharisia",
-    "keftedakia_saltsa",
+    "keftedakia_tiganita", 
 
     "kotopoulo_bouti",
     "kokoras_krasatos",
 
-    "kotosoupa",
-    "psarosoupa",
+    "kreatosoupa",
 
     "spanakorizo",
-    "gemista_superfoods"
+    "fasolakia",
+    "gemista_superfoods",
+    "briam"
 ];
 
 function renderDailyHighlights() {
