@@ -3171,6 +3171,8 @@
                         "sfirida_spetsiota": { category: "seafood", el: "Σφυρίδα α λα σπετσιώτα με πατάτες <br><br> (Φρέσκια σφυρίδα μαγειρεμένη με πατάτες, φρέσκια ντομάτα και αρωματική ματζουράνα. Ένα εκλεκτό πιάτο με πλούσια, μεσογειακή γεύση)", en: "Grouper Spetsiota with Potatoes <br><br> (Fresh grouper cooked with potatoes, fresh tomato and aromatic marjoram. A delicious Mediterranean seafood dish)", price: "€16.00" },
                         "galeos_spetsiota": { category: "seafood", el: "Γαλέος α λα σπετσιώτα με πατάτες <br><br> (Φρέσκος γαλέος μαγειρεμένος με πατάτες, φρέσκια ντομάτα και ματζουράνα. Ένα ξεχωριστό πιάτο για τους λάτρεις των θαλασσινών)", en: "Galeos Spetsiota with Potatoes <br><br> (Fresh galeos cooked with potatoes, fresh tomato, and marjoram. A unique dish for seafood lovers)", price: "€9.50" },
                         "bakaliaros_lemonatos": { category: "seafood", el: "Μπακαλιάρος λεμονάτος <br><br> (Τρυφερός μπακαλιάρος μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Lemon Cod <br><br> (Tender cod cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€12.50" },
+                        "galeos_lemonatos": { category: "seafood", el: "Γαλέος λεμονάτος <br><br> (Τρυφερός φρέσκος γαλέος μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Lemon Galeos <br><br> (Tender fresh galeos cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€11.00" },
+
                         "bakaliaros_plaki": { category: "seafood", el: "Μπακαλιάρος Πλακί <br><br> (Με πατάτες, φρέσκια ντομάτα, κρεμμύδι και μυρωδικά ψημένα στον φούρνο. Παραδοσιακό ελληνικό πιάτο θαλασσινών)", en: "Bakaliaros Plaki (Baked Cod) <br><br> (With potatoes, fresh tomato, onion, and herbs baked in the oven. A traditional Greek seafood dish)", price: "€12.50" },
                         "bakaliaros_skordalia": { category: "seafood", el: "Μπακαλιάρος με σκορδαλιά <br><br> (Τραγανός τηγανητός μπακαλιάρος, σερβιρισμένος με παραδοσιακή σκορδαλιά. Κλασική ελληνική γεύση της 25ης Μαρτίου)", en: "Fried Cod with Garlic Dip <br><br> (Crispy fried cod served with traditional garlic dip. A classic Greek flavor for March 25th)", price: "€12.80" },
                         "bakaliarokroketes": { category: "seafood", el: "Μπακαλιαροκροκέτες <br><br> (Τραγανές κροκέτες μπακαλιάρου, σερβιρισμένες με σκορδαλιά ή σως λεμονιού)", en: "Cod Fritters <br><br> (Crispy cod fritters served with garlic dip or lemon sauce)", price: "€9.50" },
@@ -3493,12 +3495,10 @@
 
                         //Meat
                         "moschari_kokkinisto",
-                        "keftedakia_tiganita", 
                         "bifteki_moscharisia", 
                         "soutzoukakia",
                         "pastitsio",
                         "lachanontolmades",
-                        "kolokythakia_gemista", 
                         "makaronia_kima",
 
                         //Chicken 
@@ -3506,10 +3506,14 @@
                        "kokoras_krasatos",
                        
                        //SeaFoods
+                       "galeos_lemonatos",
                       
                        //Veggy
+                       "melitzanes_imam",
                         "spanakorizo", 
                         "briam",
+                        "gemista_superfoods",
+
 
                         // Soups
                          "kotosoupa",
@@ -5847,6 +5851,11 @@ const highlightsCatalog = {
         el: "Γαλέος <br> α λα σπετσιώτα",
         en: "Galeos <br> Spetsiota"
     },
+    "galeos_lemonatos": {
+        icons: ["fish-logo.png", "lemon-logo.png"],
+        el: "Γαλέος <br> λεμονάτος",
+        en: "Galeos <br> in Lemon <br> Sauce"
+    },
 
 };
 // ★★★★★ Change daily highlights here ★★★★★
@@ -5855,16 +5864,18 @@ const currentHighlights = [
     "line",
 
     "moschari_kokkinisto",
-    "keftedakia_tiganita",
+    
     "bifteki_moscharisia", 
     
 
     "kotopoulo_bouti",
-    "kokoras_krasatos",
+
+    "galeos_lemonatos",
 
     "kotosoupa",
-
-
+    
+    "gemista_superfoods",
+    "melitzanes_imam",
     "spanakorizo",
     "briam",
 ];
