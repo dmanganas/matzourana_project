@@ -3,7 +3,7 @@
  * Matzourana – per-dish SEO page generator
  * ----------------------------------------
  * Reads menuCatalog + dishImageMap from index.html and writes one small static,
- * crawlable page per dish:  piata/<slug>/index.html  (URL: https://www.matzourana.gr/piata/<slug>/)
+ * crawlable page per dish:  dishes/<slug>/index.html  (URL: https://www.matzourana.gr/dishes/<slug>/)
  *
  * Usage:
  *   node tools/generate-dish-pages.js pastitsio            # one or more catalog keys
@@ -62,7 +62,7 @@ function page(key, allKeys) {
   const el = split(d.el), en = split(d.en);
   const price = priceNum(d.price);
   const slug = slugOf(key);
-  const url = SITE + 'piata/' + slug + '/';
+  const url = SITE + 'dishes/' + slug + '/';
   const imgUrl = img ? SITE + 'DishImages/' + img.file : SITE + 'MatzouranaImages/matzourana-girl-logo-800.jpg'; // fallback: Matzourana girl + logo
   const size = img ? pngSize(path.join(ROOT, 'DishImages', img.file)) : [800, 800];
   const imgAlt = (img ? img.alt.split('|')[0].trim() : el.name) + ' – Matzourana Καλλιθέα';
@@ -178,12 +178,12 @@ for (const k of keys) if (!menuCatalog[k] || !menuCatalog[k].el) { console.error
 
 const today = new Date().toISOString().slice(0, 10);
 for (const k of keys) {
-  const dir = path.join(ROOT, 'piata', slugOf(k));
+  const dir = path.join(ROOT, 'dishes', slugOf(k));
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), page(k, keys));
-  console.log('wrote piata/' + slugOf(k) + '/index.html');
+  console.log('wrote dishes/' + slugOf(k) + '/index.html');
 }
 if (wantSitemap) {
   console.log('\n<!-- add to sitemap.xml -->');
-  for (const k of keys) console.log(`<url>\n  <loc>${SITE}piata/${slugOf(k)}/</loc>\n  <lastmod>${today}</lastmod>\n  <priority>0.8</priority>\n</url>`);
+  for (const k of keys) console.log(`<url>\n  <loc>${SITE}dishes/${slugOf(k)}/</loc>\n  <lastmod>${today}</lastmod>\n  <priority>0.8</priority>\n</url>`);
 }
