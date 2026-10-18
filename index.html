@@ -2253,6 +2253,123 @@
             }
         }
     </style>
+    <style>
+        /* ==================== "Τι λένε για εμάς" / What they say about us ==================== */
+        #gallery.active + #reviews { display: block; }      /* shown right below the gallery, and on its own from the menu */
+        .reviews { background: linear-gradient(180deg, #fbf8ef 0%, #f3eedc 100%); }
+        .reviews-wrap { max-width: 1180px; margin: 0 auto; padding: 0.6em 0.8em 1em; }
+        .reviews-hero {
+            display: flex; align-items: center; gap: 1.6em;
+            background: #2f3a2f; color: #f6f1e3; border-radius: 18px; padding: 1.2em 1.6em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18); position: relative; overflow: hidden;
+        }
+        .reviews-hero::after {
+            content: ''; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px;
+            border-radius: 50%; border: 2px solid rgba(212,160,23,0.25);
+        }
+        .reviews-art { flex: 0 0 auto; }
+        .reviews-art img {
+            display: block; width: 9em; height: 9em; object-fit: cover; object-position: 50% 30%;
+            border-radius: 50%; border: 5px solid #f6f1e3; box-shadow: 0 0 0 3px #D4A017, 0 8px 24px rgba(0,0,0,0.35);
+        }
+        .reviews-head { flex: 1 1 auto; position: relative; z-index: 1; }
+        .reviews-kicker { margin: 0; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7em; color: #D4A017; font-weight: 700; }
+        .reviews .reviews-head h2 { color: #f6f1e3; margin: 0.15em 0 0.3em; font-size: 1.7em; }
+        .reviews-rating {
+            display: inline-flex; align-items: center; gap: 0.5em; flex-wrap: wrap;
+            background: rgba(246,241,227,0.1); border: 1px solid rgba(246,241,227,0.25);
+            padding: 0.45em 0.9em; border-radius: 999px; color: #f6f1e3; text-decoration: none; font-size: 0.85em;
+            transition: background 0.2s ease;
+        }
+        .reviews-rating:hover { background: rgba(246,241,227,0.2); }
+        .reviews-rating .rv-g { font-weight: 700; font-family: 'Montserrat', sans-serif; }
+        .rv-stars { color: #D4A017; letter-spacing: 0.08em; }
+        .reviews-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1em; margin: 1.3em 0 1em; }
+        .rv-card {
+            position: relative; background: #fffefb; border-radius: 16px; padding: 1.4em 1.2em 1em;
+            box-shadow: 0 6px 20px rgba(74,93,74,0.12); border-top: 4px solid #4A5D4A;
+            display: flex; flex-direction: column; margin: 0;
+        }
+        .rv-card::before {
+            content: '\201C'; position: absolute; top: -0.15em; right: 0.35em; font-family: Georgia, serif;
+            font-size: 4em; color: rgba(139,58,58,0.15); line-height: 1;
+        }
+        .rv-card .rv-stars { font-size: 1em; }
+        .rv-card blockquote { margin: 0.6em 0 1em; font-size: 0.8em; line-height: 1.55; color: #3b3b3b; font-style: italic; flex: 1; }
+        .rv-card figcaption { display: flex; align-items: center; gap: 0.7em; border-top: 1px dashed #d8d2bf; padding-top: 0.8em; }
+        .rv-avatar {
+            flex: 0 0 auto; width: 2.2em; height: 2.2em; border-radius: 50%; background: #4A5D4A; color: #fff;
+            display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85em;
+        }
+        .rv-name { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #4A5D4A; font-size: 0.75em; margin: 0; }
+        .rv-meta { margin: 0.1em 0 0; font-size: 0.62em; color: #7a7a6e; line-height: 1.3; }
+        .rv-meta .rv-src { color: #8B3A3A; font-weight: 700; }
+        .reviews-cta { text-align: center; margin: 0.4em 0 1.6em; }
+        .reviews-cta a {
+            display: inline-block; font-family: 'Montserrat', sans-serif; font-size: 0.85em; text-decoration: none;
+            color: #fff; background: #4A5D4A; padding: 0.7em 1.4em; border-radius: 999px;
+            box-shadow: 0 6px 16px rgba(74,93,74,0.3); transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .reviews-cta a:hover { background: #8B3A3A; transform: translateY(-2px); }
+
+        /* Video panel */
+        .rv-videos { background: #2f3a2f; border-radius: 18px; padding: 1.2em; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+        .reviews .rv-videos h3 { color: #f6f1e3; text-align: center; margin: 0 0 0.8em; }
+        .rv-stage { display: flex; gap: 1.2em; align-items: flex-start; }
+        .rv-featured { flex: 0 0 auto; width: min(360px, 42%); }
+        .rv-featured video {
+            display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: #1f271f;
+            border-radius: 14px; box-shadow: 0 0 0 3px #D4A017, 0 10px 26px rgba(0,0,0,0.4);
+        }
+        .rv-caption { color: #f6f1e3; text-align: center; margin: 0.7em 0 0; font-size: 0.8em; font-family: 'Montserrat', sans-serif; }
+        .rv-thumbs { flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8em; }
+        .rv-thumb {
+            position: relative; padding: 0; margin: 0; border: 0; background: none; cursor: pointer;
+            border-radius: 12px; overflow: hidden; aspect-ratio: 9 / 16; box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            outline: 3px solid transparent; outline-offset: 2px; transition: transform 0.2s ease, outline-color 0.2s ease;
+        }
+        .rv-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .rv-thumb span {
+            position: absolute; left: 0; right: 0; bottom: 0; padding: 1.6em 0.5em 0.5em; text-align: left;
+            background: linear-gradient(transparent, rgba(0,0,0,0.78)); color: #fff; font-size: 0.6em; line-height: 1.25;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .rv-thumb::after {
+            content: '\25B6'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 2em; height: 2em; border-radius: 50%; background: rgba(246,241,227,0.85); color: #2f3a2f;
+            display: flex; align-items: center; justify-content: center; font-size: 0.8em; opacity: 0.85;
+        }
+        .rv-thumb:hover { transform: translateY(-3px); }
+        .rv-thumb.active { outline-color: #D4A017; }
+        .rv-thumb.active::after { content: '\2759\2759'; font-size: 0.6em; }
+        .reviews .return-btn { display: block; margin: 1.2em auto 0; }
+
+        @media (max-width: 900px) {
+            .reviews-cards { grid-template-columns: 1fr; }
+            .rv-stage { flex-direction: column; align-items: center; }
+            .rv-featured { width: min(320px, 80%); }
+            .rv-thumbs { width: 100%; }
+        }
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .rv-card blockquote { font-size: 0.95em; }
+            .rv-name { font-size: 0.9em; }
+            .rv-meta { font-size: 0.75em; }
+            .rv-caption { font-size: 0.95em; }
+            .rv-thumb span { font-size: 0.7em; }
+        }
+        @media (max-width: 480px) {
+            .reviews-hero { flex-direction: column; text-align: center; padding: 1.2em 1em; gap: 0.8em; }
+            .reviews .reviews-head h2 { font-size: 1.6em; }
+            .reviews-rating { font-size: 1em; }
+            .rv-card blockquote { font-size: 1.15em; }
+            .rv-name { font-size: 1.05em; }
+            .rv-meta { font-size: 0.85em; }
+            .reviews-cta a { font-size: 1.05em; }
+            .rv-caption { font-size: 1.05em; }
+            .rv-thumb span { font-size: 0.75em; }
+            .rv-thumbs { grid-template-columns: repeat(4, 1fr); gap: 0.5em; }
+        }
+    </style>
 </head>
 
 <body>
@@ -2376,6 +2493,7 @@
             <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
             <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
             <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
+            <button onclick="showSection('reviews')" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
             <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
         </div>
     </header>
@@ -4434,6 +4552,135 @@
             </div>
         </div>
     </section>
+
+    <!-- ==================== Τι λένε για εμάς / What they say about us ==================== -->
+    <section class="reviews" id="reviews">
+        <div class="reviews-wrap">
+            <div class="reviews-hero">
+                <div class="reviews-art">
+                    <picture>
+                        <source srcset="MatzouranaImages/matzourana-spring-logo-600.webp" type="image/webp">
+                        <img src="MatzouranaImages/matzourana-spring-logo-600.jpg" width="600" height="735" loading="lazy" decoding="async"
+                             alt="Η ανοιξιάτικη φιγούρα της Matzourana – μαγειρείο στην Καλλιθέα">
+                    </picture>
+                </div>
+                <div class="reviews-head">
+                    <p class="reviews-kicker lang" data-el="Οι πελάτες μας" data-en="Our guests">Οι πελάτες μας</p>
+                    <h2 class="lang" data-el="Τι λένε για εμάς" data-en="What they say about us">Τι λένε για εμάς</h2>
+                    <a class="reviews-rating" target="_blank" rel="noopener"
+                       href="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp">
+                        <span class="rv-stars" aria-hidden="true">★★★★★</span>
+                        <span class="rv-g lang" data-el="4.8 ★ από 71 κριτικές στο Google" data-en="4.8 ★ from 71 Google reviews">4.8 ★ από 71 κριτικές στο Google</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="reviews-cards">
+                <figure class="rv-card">
+                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
+                    <blockquote lang="en">Food is absolutely fresh and amazing, it displays the greek cuisins beyond grill food. The owners super kind and helpful and the place has a modern interior. Highly recommend!!!</blockquote>
+                    <figcaption>
+                        <span class="rv-avatar" aria-hidden="true">J</span>
+                        <div>
+                            <p class="rv-name">J. Anna Fekete</p>
+                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Νοέμβριος 2025" data-en="Local Guide · <span class='rv-src'>Google review</span> · November 2025">Local Guide · <span class="rv-src">Κριτική Google</span> · Νοέμβριος 2025</span></p>
+                        </div>
+                    </figcaption>
+                </figure>
+                <figure class="rv-card">
+                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
+                    <blockquote lang="en">Easily the best place to eat in Kallithea with great service and the owner is the best!</blockquote>
+                    <figcaption>
+                        <span class="rv-avatar" aria-hidden="true">Μ</span>
+                        <div>
+                            <p class="rv-name">Μανος Κουτρουλακης</p>
+                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Μάρτιος 2026" data-en="Local Guide · <span class='rv-src'>Google review</span> · March 2026">Local Guide · <span class="rv-src">Κριτική Google</span> · Μάρτιος 2026</span></p>
+                        </div>
+                    </figcaption>
+                </figure>
+                <figure class="rv-card">
+                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
+                    <blockquote lang="en">Exceptional food and service!! Try soutzoukakia!! A+++</blockquote>
+                    <figcaption>
+                        <span class="rv-avatar" aria-hidden="true">P</span>
+                        <div>
+                            <p class="rv-name">Petros Moschidis</p>
+                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Αύγουστος 2026" data-en="Local Guide · <span class='rv-src'>Google review</span> · August 2026">Local Guide · <span class="rv-src">Κριτική Google</span> · Αύγουστος 2026</span></p>
+                        </div>
+                    </figcaption>
+                </figure>
+            </div>
+
+            <div class="reviews-cta">
+                <a class="lang" target="_blank" rel="noopener"
+                   href="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp"
+                   data-el="Διαβάστε όλες τις κριτικές στο Google" data-en="Read all reviews on Google">Διαβάστε όλες τις κριτικές στο Google</a>
+            </div>
+
+            <div class="rv-videos">
+                <h3 class="lang" data-el="🎬 Από την κουζίνα της Matzourana" data-en="🎬 From the Matzourana kitchen">🎬 Από την κουζίνα της Matzourana</h3>
+                <div class="rv-stage">
+                    <div class="rv-featured">
+                        <video id="rv-player" muted loop playsinline preload="none"
+                               poster="Videos/posters/dish-video-21.jpg" data-src="Videos/dish-video-21.mp4"
+                               aria-label="Σουτζουκάκια Σμυρνέικα"></video>
+                        <p id="rv-caption" class="rv-caption lang" data-el="Σουτζουκάκια Σμυρνέικα" data-en="Smyrna-Style Soutzoukakia">Σουτζουκάκια Σμυρνέικα</p>
+                    </div>
+                    <div class="rv-thumbs">
+                        <button type="button" class="rv-thumb active" data-video="Videos/dish-video-21.mp4" data-poster="Videos/posters/dish-video-21.jpg" data-cap-el="Σουτζουκάκια Σμυρνέικα" data-cap-en="Smyrna-Style Soutzoukakia"><img src="Videos/posters/dish-video-21.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Σουτζουκάκια Σμυρνέικα" data-en="Smyrna-Style Soutzoukakia">Σουτζουκάκια Σμυρνέικα</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-7.mp4" data-poster="Videos/posters/dish-video-7.jpg" data-cap-el="Παστίτσιο – Χειροποίητο με μπεσαμέλ" data-cap-en="Pastitsio – Handmade with béchamel"><img src="Videos/posters/dish-video-7.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Παστίτσιο</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-5.mp4" data-poster="Videos/posters/dish-video-5.jpg" data-cap-el="Μουσακάς – Με μοσχαρίσιο κιμά και μπεσαμέλ" data-cap-en="Moussaka – With beef mince and béchamel"><img src="Videos/posters/dish-video-5.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Μουσακάς" data-en="Moussaka">Μουσακάς</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-19.mp4" data-poster="Videos/posters/dish-video-19.jpg" data-cap-el="Γεμιστά" data-cap-en="Stuffed Vegetables"><img src="Videos/posters/dish-video-19.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Γεμιστά" data-en="Stuffed Vegetables">Γεμιστά</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-2.mp4" data-poster="Videos/posters/dish-video-2.jpg" data-cap-el="Μοσχάρι Γιουβέτσι – Με τριμμένη μυζήθρα" data-cap-en="Beef Giouvetsi – With grated myzithra"><img src="Videos/posters/dish-video-2.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Μοσχάρι Γιουβέτσι" data-en="Beef Giouvetsi">Μοσχάρι Γιουβέτσι</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-25.mp4" data-poster="Videos/posters/dish-video-25.jpg" data-cap-el="Κατσίκι γάλακτος στο φούρνο" data-cap-en="Milk-Fed Kid Goat (Oven)"><img src="Videos/posters/dish-video-25.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Κατσίκι γάλακτος" data-en="Milk-Fed Kid Goat">Κατσίκι γάλακτος</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-22.mp4" data-poster="Videos/posters/dish-video-22.jpg" data-cap-el="Ψητά της ώρας" data-cap-en="Grilled Dishes"><img src="Videos/posters/dish-video-22.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Ψητά της ώρας" data-en="Grilled Dishes">Ψητά της ώρας</span></button>
+                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-making-01.mp4" data-poster="Videos/posters/dish-video-making-01.jpg" data-cap-el="Σουτζουκάκια από την Matzourana" data-cap-en="Making Matzourana Soutzoukakia"><img src="Videos/posters/dish-video-making-01.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Παρασκευή: Σουτζουκάκια" data-en="Making of: Soutzoukakia">Παρασκευή: Σουτζουκάκια</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
+        </div>
+
+        <script>
+        // Reviews video panel: lazy-load the featured video when visible, swap on thumbnail click
+        (function () {
+            var player = document.getElementById('rv-player');
+            var caption = document.getElementById('rv-caption');
+            var thumbs = document.querySelectorAll('#reviews .rv-thumb');
+            if (!player) return;
+            var visible = false;
+            function lang() { return (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'el'; }
+            function start() {
+                if (!player.getAttribute('src')) player.src = player.dataset.src;
+                var p = player.play(); if (p && p.catch) p.catch(function () {});
+            }
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        visible = e.isIntersecting;
+                        if (visible) start(); else player.pause();
+                    });
+                }, { threshold: 0.25 }).observe(player);
+            } else { start(); visible = true; }
+            thumbs.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    thumbs.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    player.dataset.src = btn.dataset.video;
+                    player.poster = btn.dataset.poster;
+                    player.src = btn.dataset.video;
+                    player.setAttribute('aria-label', btn.dataset.capEl);
+                    caption.setAttribute('data-el', btn.dataset.capEl);
+                    caption.setAttribute('data-en', btn.dataset.capEn);
+                    caption.textContent = lang() === 'en' ? btn.dataset.capEn : btn.dataset.capEl;
+                    var p = player.play(); if (p && p.catch) p.catch(function () {});
+                });
+            });
+        })();
+        </script>
+    </section>
+
         
     <footer>
         <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery. All rights reserved.</p>
