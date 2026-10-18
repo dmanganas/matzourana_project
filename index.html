@@ -72,6 +72,11 @@
             font-size: 32px;          /* ~17px, όχι 32px */
             overflow-x: hidden;
         }
+        /* Large screens (laptops/desktops above 1200px): the desktop styles are drawn ~1.33x too big,
+           so scale the whole page down uniformly. Phones/tablets (<=1200px) are unaffected. */
+        @media (min-width: 1201px) {
+            html { zoom: 0.75; }
+        }
         header {
             
             background-color: hsl(120, 10%, 21%);
