@@ -9,11 +9,105 @@
 
 <url>
   <loc>https://www.matzourana.gr/</loc>
-  <lastmod>2025-08-06T09:30:47+00:00</lastmod>
+  <lastmod>2026-10-18T00:00:00+00:00</lastmod>
   <priority>1.0</priority>
   <changefreq>weekly</changefreq>
 </url>
 
-
+<url>
+  <loc>https://www.matzourana.gr/piata/pastitsio/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moussakas/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moschari-kokkinisto/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moschari-giouvesti/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moschari-lemonato/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/rolo-moscharisio/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moscharaki-noua/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moscharaki-noua-with-fried-potatoes/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/moscharaki-noua-with-rice/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/keftedakia-tiganita/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/kotopoulo-bouti/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/kokoras-krasatos/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/lachanontolmades/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/briam/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/giantes/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/melitzanes-imam/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/kritharoto-garides/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/glossa-lemonati/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/piata/giouvarlakia/</loc>
+  <lastmod>2026-10-18</lastmod>
+  <priority>0.8</priority>
+</url>
 </urlset>
 
