@@ -77,16 +77,132 @@ function toggleLanguage(lang) {
 // ===== DATES & TEXT =====
 
 /*-------------------
-Purpose: Today's date as readable text in the given language, in Greek time.
+Purpose: Turn a calendar date into its 'YYYY-MM-DD' text (local calendar fields).
+On Input: date - Date (a calendar day, e.g. from getAthensToday()).
+On Output: String, e.g. '2027-05-02'.
+Used by: isDateInRange, the ?testDate= check.
+---------------------*/
+function toIsoDay(date) {
+    const p = n => String(n).padStart(2, '0');
+    return date.getFullYear() + '-' + p(date.getMonth() + 1) + '-' + p(date.getDate());
+}
+
+/*-------------------
+Purpose: Make a calendar-day Date from year, month, day (00:00, no time zone tricks).
+On Input: y - Number (e.g. 2027); m - Number 1..12; d - Number 1..31 (overflow rolls on).
+On Output: Date at 00:00 of that day.
+---------------------*/
+function makeDay(y, m, d) {
+    return new Date(y, m - 1, d);
+}
+
+/*-------------------
+Purpose: Return "today" as a calendar date in Greek time (Europe/Athens), so seasonal
+         messages switch at Greek midnight for every visitor.
+On Input: none. For previews, the URL parameter ?testDate=YYYY-MM-DD overrides today
+          (only affects the visitor who opens that link).
+On Output: Date object at 00:00 of today's Athens date.
+Used by: getActiveMessages, getAthensDayIndex, getFormattedDate, renderDailyHighlights.
+---------------------*/
+function getAthensToday() {
+    const m = /[?&]testDate=(\d{4})-(\d{2})-(\d{2})(?:&|$)/.exec(location.search);
+    if (m) {
+        const d = makeDay(+m[1], +m[2], +m[3]);
+        if (toIsoDay(d) === m[1] + '-' + m[2] + '-' + m[3]) return d;   // valid calendar day only
+    }
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Athens', year: 'numeric', month: '2-digit', day: '2-digit' })
+        .formatToParts(new Date());
+    const get = t => +parts.find(x => x.type === t).value;
+    return makeDay(get('year'), get('month'), get('day'));
+}
+
+/*-------------------
+Purpose: Move a calendar date by a number of days.
+On Input: date - Date; n - Number of days (negative = earlier).
+On Output: new Date (the input is not changed).
+---------------------*/
+function addDays(date, n) {
+    return makeDay(date.getFullYear(), date.getMonth() + 1, date.getDate() + n);
+}
+
+/*-------------------
+Purpose: Compute the date of Greek Orthodox Easter Sunday for a given year, so Easter,
+         Lent, Carnival, Clean Monday, Palm Sunday and Holy Week messages move by
+         themselves every year.
+On Input: year - Number, e.g. 2027 (valid 1900..2099).
+On Output: Date object for Easter Sunday at 00:00, a plain calendar date
+           (e.g. 2027 → 2 May 2027).
+Notes: Meeus Julian algorithm: a=y%4, b=y%7, c=y%19, d=(19c+15)%30,
+       e=(2a+4b-d+34)%7, month=floor((d+e+114)/31), day=((d+e+114)%31)+1 (Julian),
+       then +13 days to convert Julian → Gregorian.
+Used by: resolveRuleRange (rule.type 'easter').
+---------------------*/
+function getOrthodoxEaster(year) {
+    const a = year % 4, b = year % 7, c = year % 19;
+    const d = (19 * c + 15) % 30;
+    const e = (2 * a + 4 * b - d + 34) % 7;
+    const month = Math.floor((d + e + 114) / 31);
+    const day = ((d + e + 114) % 31) + 1;
+    return makeDay(year, month, day + 13);
+}
+
+/*-------------------
+Purpose: Find the n-th given weekday of a month (e.g. Mother's Day = 2nd Sunday of May).
+On Input: year - Number; month - Number 1..12; weekday - Number 0..6 (0 = Sunday);
+          n - Number 1..5.
+On Output: Date at 00:00 of that day.
+---------------------*/
+function nthWeekdayOfMonth(year, month, weekday, n) {
+    const first = makeDay(year, month, 1);
+    const offset = (weekday - first.getDay() + 7) % 7;
+    return makeDay(year, month, 1 + offset + (n - 1) * 7);
+}
+
+/*-------------------
+Purpose: Tell whether a calendar day falls inside a from..to range (both days included).
+On Input: date - Date (calendar day, usually getAthensToday());
+          from - Date, first day of the range;
+          to   - Date, last day of the range.
+On Output: Boolean - true if from <= date <= to (compared as Y-M-D, time ignored).
+Notes: Compares 'YYYY-MM-DD' strings, so time zones and daylight saving can't
+       shift a day. Yearly MM-DD ranges (also those that wrap over New Year) are turned
+       into real dates by resolveRuleRange first.
+---------------------*/
+function isDateInRange(date, from, to) {
+    const d = toIsoDay(date);
+    return toIsoDay(from) <= d && d <= toIsoDay(to);
+}
+
+/*-------------------
+Purpose: Write a date as day/month for messages.
+On Input: date - Date.
+On Output: String 'dd/mm', e.g. '14/04'.
+---------------------*/
+function formatDayMonth(date) {
+    return String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0');
+}
+
+/*-------------------
+Purpose: Fill the {placeholders} of a message text.
+On Input: text - String with e.g. {from}, {to}, {reopen}, {year}, {nextYear}, {date};
+          values - Object { from:'14/04', ... }.
+On Output: String with every known placeholder replaced (unknown ones stay as they are).
+---------------------*/
+function fillPlaceholders(text, values) {
+    return String(text).replace(/\{(\w+)\}/g, (all, key) => (values && values[key] !== undefined ? values[key] : all));
+}
+
+/*-------------------
+Purpose: Today's date as readable text in the given language, in Greek time
+         (follows ?testDate= previews).
 On Input: lang - String, 'el' for Greek, anything else for English.
 On Output: String, e.g. "9 Αυγούστου 2025" or "August 9, 2025".
 ---------------------*/
 function getFormattedDate(lang) {
-    return new Date().toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-US', {
+    return getAthensToday().toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-US', {
         day: 'numeric',
         month: 'long',
-        year: 'numeric',
-        timeZone: 'Europe/Athens'
+        year: 'numeric'
     });
 }
 
@@ -94,13 +210,29 @@ function getFormattedDate(lang) {
 Purpose: Return today's weekday number in Greek time (Europe/Athens), so day-based
          messages (Sunday greeting, Monday closed) switch at Greek midnight no matter
          where the visitor's phone or laptop is.
-On Input: none (reads the current clock).
+On Input: none (reads the clock, or ?testDate=).
 On Output: Number 0..6  (0 = Sunday, 1 = Monday, ... 6 = Saturday).
-Used by: renderDailyHighlights, initSundayGreeting.
+Notes: Built on getAthensToday(), so ?testDate= previews also drive Monday/Sunday.
+Used by: renderDailyHighlights, isShopClosedToday, applySeasonalTheme, isAthensSunday, isAthensMonday.
 ---------------------*/
 function getAthensDayIndex() {
-    const name = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone: 'Europe/Athens' });
-    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(name);
+    return getAthensToday().getDay();
+}
+
+/*-------------------
+Purpose: Is it Sunday in Greece today?
+On Input: none. On Output: Boolean.
+---------------------*/
+function isAthensSunday() {
+    return getAthensDayIndex() === 0;
+}
+
+/*-------------------
+Purpose: Is it Monday (closed day) in Greece today?
+On Input: none. On Output: Boolean.
+---------------------*/
+function isAthensMonday() {
+    return getAthensDayIndex() === 1;
 }
 
 /*-------------------

@@ -648,14 +648,301 @@ function openVideoSequence(videoList, startIndex = 0) {
     document.body.appendChild(lightbox);
 }
 
+
+// ===== SEASONAL MESSAGES & THEMES (data: matzourana_messages.js) =====
+const SEASONAL_THEME_STYLES = {
+    'notice': 'font-weight: bold; color: #4A5D4A;',
+    'urgent': 'font-weight: bold; color: #8B3A3A;',
+    'plain': '',
+    'tree-love': ''
+};
+
+/*-------------------
+Purpose: Make a calendar day from a 'MM-DD' text in a given year; a day past the end of
+         the month (e.g. '02-29' in a normal year) becomes the last day of that month.
+On Input: year - Number; mmdd - String 'MM-DD'.
+On Output: Date at 00:00.
+---------------------*/
+function dayFromMonthDay(year, mmdd) {
+    const [m, d] = mmdd.split('-').map(Number);
+    const last = makeDay(year, m + 1, 0).getDate();
+    return makeDay(year, m, Math.min(d, last));
+}
+
+/*-------------------
+Purpose: Turn one message rule into the concrete date window for the current year
+         (and the previous/next year for ranges that wrap over New Year), including the
+         early-announcement days.
+On Input: rule - Object from seasonalMessages (type fixed|once|easter|nthWeekday|weekly|manual);
+          today - Date (Athens calendar day).
+On Output: { show:Date, from:Date, to:Date, reopen:Date } for the window that is live
+           today, else the next upcoming one; null if the rule cannot apply
+           (manual, or weekly on another weekday → weekly is today..today when it matches).
+Used by: getActiveMessages, isShopClosedToday, applySeasonalTheme.
+---------------------*/
+function resolveRuleRange(rule, today) {
+    if (!rule) return null;
+    const y = today.getFullYear();
+    const pairs = [];
+    if (rule.type === 'fixed') {
+        [y - 1, y, y + 1].forEach(yy => {
+            const from = dayFromMonthDay(yy, rule.from);
+            let to = dayFromMonthDay(yy, rule.to);
+            if (toIsoDay(to) < toIsoDay(from)) to = dayFromMonthDay(yy + 1, rule.to);
+            pairs.push([from, to]);
+        });
+    } else if (rule.type === 'once') {
+        const f = rule.from.split('-').map(Number), t = rule.to.split('-').map(Number);
+        pairs.push([makeDay(f[0], f[1], f[2]), makeDay(t[0], t[1], t[2])]);
+    } else if (rule.type === 'easter') {
+        [y, y + 1].forEach(yy => {
+            const e = getOrthodoxEaster(yy);
+            pairs.push([addDays(e, rule.from || 0), addDays(e, rule.to || 0)]);
+        });
+    } else if (rule.type === 'nthWeekday') {
+        [y, y + 1].forEach(yy => {
+            const base = nthWeekdayOfMonth(yy, rule.month, rule.weekday, rule.n);
+            pairs.push([addDays(base, rule.from || 0), addDays(base, rule.to || 0)]);
+        });
+    } else if (rule.type === 'weekly') {
+        if ((rule.weekdays || []).indexOf(today.getDay()) >= 0) pairs.push([today, today]);
+    } else {
+        return null; // 'manual': only with forceOn
+    }
+    const windows = pairs.map(([from, to]) => ({ show: addDays(from, -(rule.showBefore || 0)), from, to, reopen: addDays(to, 1) }));
+    const live = windows.find(w => isDateInRange(today, w.show, w.to));
+    if (live) return live;
+    const next = windows.filter(w => toIsoDay(w.show) > toIsoDay(today)).sort((a, b) => (toIsoDay(a.show) < toIsoDay(b.show) ? -1 : 1))[0];
+    return next || null;
+}
+
+/*-------------------
+Purpose: Decide whether one message / theme entry is live today and with which dates.
+On Input: entry - Object (seasonalMessages or seasonalThemes item); today - Date.
+On Output: the resolved window { show, from, to, reopen }, or null when not live.
+Rules: live if forceOn (window of the rule if it is live, else today only), or
+       enabled AND today is within show..to.
+---------------------*/
+function getLiveWindow(entry, today) {
+    if (entry.forceOn) {
+        const r = resolveRuleRange(entry.rule, today);
+        return (r && isDateInRange(today, r.show, r.to)) ? r : { show: today, from: today, to: today, reopen: addDays(today, 1) };
+    }
+    if (!entry.enabled) return null;
+    const r = resolveRuleRange(entry.rule, today);
+    return (r && isDateInRange(today, r.show, r.to)) ? r : null;
+}
+
+/*-------------------
+Purpose: Pick which seasonal / holiday messages are live right now, one winner per slot.
+On Input: today - Date (Athens calendar day; default getAthensToday());
+          messages - Array (default seasonalMessages).
+On Output: Object keyed by slot, e.g. { header:[msg], notice:[msg,msg], specials:[msg] },
+           each msg a copy carrying `range` (its resolved dates for the placeholders).
+Rules: per slot sort by priority desc, then shortest range; keep SEASONAL_MAX_PER_SLOT
+       (notice: 2, others: 1). Entries without both el and en are refused (warning).
+---------------------*/
+function getActiveMessages(today, messages) {
+    today = today || getAthensToday();
+    messages = messages || (typeof seasonalMessages !== 'undefined' ? seasonalMessages : []);
+    const bySlot = {};
+    messages.forEach(m => {
+        if (!m.el || !m.en) { console.warn('Seasonal message without el/en skipped:', m.id); return; }
+        const range = getLiveWindow(m, today);
+        if (!range) return;
+        (bySlot[m.slot] = bySlot[m.slot] || []).push(Object.assign({}, m, { range }));
+    });
+    const span = r => (r.to - r.from);
+    Object.keys(bySlot).forEach(slot => {
+        bySlot[slot].sort((a, b) => (b.priority - a.priority) || (span(a.range) - span(b.range)));
+        const max = (typeof SEASONAL_MAX_PER_SLOT !== 'undefined' && SEASONAL_MAX_PER_SLOT[slot]) || 1;
+        bySlot[slot] = bySlot[slot].slice(0, max);
+    });
+    return bySlot;
+}
+
+/*-------------------
+Purpose: The texts of one live message with its placeholders filled.
+On Input: msg - Object from getActiveMessages (with .range); today - Date.
+On Output: { el:String, en:String }.
+---------------------*/
+function getMessageTexts(msg, today) {
+    const r = msg.range;
+    const values = {
+        from: formatDayMonth(r.from), to: formatDayMonth(r.to), reopen: formatDayMonth(r.reopen),
+        year: r.from.getFullYear(), nextYear: r.from.getFullYear() + 1, date: formatDayMonth(today)
+    };
+    return { el: fillPlaceholders(msg.el, values), en: fillPlaceholders(msg.en, values) };
+}
+
+/*-------------------
+Purpose: Build the HTML element(s) of one message for the notice / specials slots:
+         the bilingual text, plus optional picture and YouTube thumbnails.
+On Input: msg - Object (live message); texts - { el, en }; lang - 'el' | 'en'.
+On Output: DocumentFragment.
+---------------------*/
+function buildMessageElement(msg, texts, lang) {
+    const frag = document.createDocumentFragment();
+    const p = document.createElement('p');
+    p.className = 'lang seasonal-message';
+    p.dataset.messageId = msg.id;
+    const style = SEASONAL_THEME_STYLES[msg.theme] || '';
+    if (style) p.setAttribute('style', style);
+    p.setAttribute('data-el', texts.el);
+    p.setAttribute('data-en', texts.en);
+    p.innerHTML = lang === 'en' ? texts.en : texts.el;
+    frag.appendChild(p);
+    if (msg.image) {
+        const img = document.createElement('img');
+        img.src = msg.image;
+        img.alt = texts.el;
+        img.style.maxWidth = '100%';
+        frag.appendChild(img);
+    }
+    if (msg.youtube && msg.youtube.length) {
+        const box = document.createElement('div');
+        box.className = 'yt-previews';
+        msg.youtube.forEach(id => {
+            const a = document.createElement('a');
+            a.href = 'https://youtube.com/shorts/' + id;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.className = 'yt-preview';
+            const img = document.createElement('img');
+            img.src = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+            img.alt = 'YouTube Shorts Preview';
+            img.className = 'yt-thumb';
+            a.appendChild(img);
+            box.appendChild(a);
+        });
+        frag.appendChild(box);
+    }
+    return frag;
+}
+
+/*-------------------
+Purpose: Show the live seasonal / holiday / closure messages in their places on the
+         page (header greeting, home notice, specials line, specials heading), always
+         bilingual and in the visitor's current language.
+On Input: none. Language getLang(); date getAthensToday() (?testDate= previews).
+          Data: seasonalMessages (matzourana_messages.js).
+On Output: none.
+Side effects: fills #seasonal-header, #seasonal-notice, #seasonal-specials and the
+          #specials-title override with elements of class "lang" + data-el / data-en
+          (placeholders already filled), plus optional image / YouTube thumbnails;
+          empties a slot when nothing is live; the specials line stays empty on closed
+          days (Mondays, holiday closures). Missing slots on a page are skipped.
+Used by: initPage() on every page, and the 'languageChange' event.
+---------------------*/
+function renderSeasonalMessages() {
+    if (typeof seasonalMessages === 'undefined') return;
+    const today = getAthensToday();
+    const lang = getLang();
+    const active = getActiveMessages(today);
+
+    const header = document.getElementById('seasonal-header');
+    if (header) {
+        const msg = (active.header || [])[0];
+        if (msg) {
+            const texts = getMessageTexts(msg, today);
+            header.className = (msg.theme === 'tree-love' ? 'tree-love ' : '') + 'lang';
+            header.setAttribute('data-el', texts.el);
+            header.setAttribute('data-en', texts.en);
+            header.innerHTML = lang === 'en' ? texts.en : texts.el;
+            header.style.display = '';
+        } else {
+            header.removeAttribute('data-el');
+            header.removeAttribute('data-en');
+            header.innerHTML = '';
+            header.style.display = 'none';
+        }
+    }
+    const closedToday = isShopClosedToday(today).closed;
+    ['notice', 'specials'].forEach(slot => {
+        const box = document.getElementById('seasonal-' + slot);
+        if (!box) return;
+        box.innerHTML = '';
+        if (slot === 'specials' && closedToday) return;   // no specials line (e.g. "Καλή Κυριακή") on a closed day
+        (active[slot] || []).forEach(msg => box.appendChild(buildMessageElement(msg, getMessageTexts(msg, today), lang)));
+    });
+    const title = document.getElementById('specials-title');
+    if (title) {
+        if (!title.hasAttribute('data-default-el')) {
+            title.setAttribute('data-default-el', title.getAttribute('data-el'));
+            title.setAttribute('data-default-en', title.getAttribute('data-en'));
+        }
+        const msg = (active.specialsTitle || [])[0];
+        const texts = msg ? getMessageTexts(msg, today)
+            : { el: title.getAttribute('data-default-el'), en: title.getAttribute('data-default-en') };
+        title.setAttribute('data-el', texts.el);
+        title.setAttribute('data-en', texts.en);
+        title.innerHTML = '<strong>' + (lang === 'en' ? texts.en : texts.el) + '</strong>';
+    }
+}
+
+/*-------------------
+Purpose: Say whether Matzourana is closed today: every Monday, or a live message
+         with closesShop:true whose from..to covers today (announcement days don't count).
+On Input: today - Date (default getAthensToday()).
+On Output: { closed:Boolean, reason:'monday'|'message'|null, message:Object|null,
+             texts:{el,en}|null }.
+Used by: renderDailyHighlights (hides dishes and shows the closed text; on Mondays the
+         Monday video as today).
+---------------------*/
+function isShopClosedToday(today) {
+    today = today || getAthensToday();
+    if (today.getDay() === 1) return { closed: true, reason: 'monday', message: null, texts: null };
+    const list = typeof seasonalMessages !== 'undefined' ? seasonalMessages : [];
+    for (const m of list) {
+        if (!m.closesShop || !m.el || !m.en) continue;
+        const range = getLiveWindow(m, today);
+        if (range && isDateInRange(today, range.from, range.to)) {
+            const msg = Object.assign({}, m, { range });
+            return { closed: true, reason: 'message', message: msg, texts: getMessageTexts(msg, today) };
+        }
+    }
+    return { closed: false, reason: null, message: null, texts: null };
+}
+
+/*-------------------
+Purpose: Switch the header logo video to the live seasonal theme (autumn, winter,
+         spring, summer, and the holiday sets when enabled), optionally a different
+         video for every weekday.
+On Input: none. Data: seasonalThemes (matzourana_messages.js); date getAthensToday().
+On Output: none.
+Side effects: changes the <source> of .logo-video only when it differs from the
+          current file (no reload otherwise). Replaces the old #logoVideo code that
+          threw a TypeError on every visit.
+---------------------*/
+function applySeasonalTheme() {
+    if (typeof seasonalThemes === 'undefined') return;
+    const video = document.querySelector('.logo-video');
+    const source = video && video.querySelector('source');
+    if (!source) return;
+    const today = getAthensToday();
+    const live = seasonalThemes
+        .map(t => ({ t, r: getLiveWindow(t, today) }))
+        .filter(x => x.r && x.t.logoVideos && x.t.logoVideos.length)
+        .sort((a, b) => (b.t.priority - a.t.priority) || ((a.r.to - a.r.from) - (b.r.to - b.r.from)));
+    if (!live.length) return;
+    const theme = live[0].t;
+    const file = theme.rotateByWeekday ? theme.logoVideos[today.getDay() % theme.logoVideos.length] : theme.logoVideos[0];
+    if (source.getAttribute('src') !== file) {
+        source.setAttribute('src', file);
+        video.load();
+        const p = video.play(); if (p && p.catch) p.catch(() => {});
+    }
+}
+
 // ===== HOME =====
 
 /*-------------------
 Purpose: Draw the "today's highlights" notebook on the home page: the weekday row,
-         the highlighted dishes with their icons, and on Mondays the closed message
-         plus the Matzourana_Monday video instead of dishes.
+         the highlighted dishes with their icons, and on closed days the closed message
+         instead of dishes (Mondays: plus the Matzourana_Monday video; holiday closures
+         with closesShop:true: that message's text).
 On Input: none. Language: getLang().
-          Data: currentHighlights + highlightsCatalog (matzourana_data.js).
+          Data: currentHighlights + highlightsCatalog (matzourana_data.js); isShopClosedToday().
 On Output: none.
 Side effects: replaces the contents of <tbody id="daily-highlights-body">;
           does nothing if that element is not on the page.
@@ -667,7 +954,9 @@ function renderDailyHighlights() {
 
     const lang = getLang();
     const dayIndex = getAthensDayIndex();
-    const isMonday = dayIndex === 1; // Matzourana is closed on Mondays
+    const closedInfo = isShopClosedToday();
+    const isClosed = closedInfo.closed;              // Mondays + holiday closures
+    const isMonday = closedInfo.reason === 'monday';
     const dayEl = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'][dayIndex];
     const dayEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
     const dayLabelEl = '🗓️ ' + dayEl;
@@ -681,8 +970,8 @@ function renderDailyHighlights() {
     currentHighlights.forEach(key => {
         // The day goes right after the leading spacer line
         if (!dayRowAdded && key !== 'line') { html += dayRow; dayRowAdded = true; }
-        // Mondays (closed): no dishes, only the spacer
-        if (isMonday && key !== 'line') return;
+        // Closed days: no dishes, only the spacer
+        if (isClosed && key !== 'line') return;
         const dish = highlightsCatalog[key];
         if (!dish) return;
         let iconHTML = '';
@@ -708,18 +997,13 @@ function renderDailyHighlights() {
             'aria-label="' + (lang === 'en' ? 'Closed every Monday – see you again from Tuesday!' : 'Κάθε Δευτέρα κλειστά – από την Τρίτη και πάλι μαζί!') + '" ' +
             'style="display: block; width: 100%; max-width: 240px; max-height: 60vh; height: auto; margin: 0.4em auto 0; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); pointer-events: none;">' +
             '</video></td></tr>';
+    } else if (isClosed) {
+        const t = closedInfo.texts;
+        html += '<tr class="highlight-row animate-write" id="highlights-closed-row">' +
+            '<td class="highlight-name lang" colspan="2" data-el="' + t.el.replace(/"/g, '&quot;') + '" data-en="' + t.en.replace(/"/g, '&quot;') + '">' +
+            (lang === 'en' ? t.en : t.el) + '</td></tr>';
     }
     tbody.innerHTML = html;
-}
-
-/*-------------------
-Purpose: Show the "Καλή Κυριακή" line on the home page only on Sundays (Greek time).
-On Input: none. On Output: none.
-Side effects: un-hides #sunday-greeting on Sundays.
----------------------*/
-function initSundayGreeting() {
-    const sundayGreeting = document.getElementById('sunday-greeting');
-    if (sundayGreeting && getAthensDayIndex() === 0) sundayGreeting.style.display = '';
 }
 
 /*-------------------
@@ -943,7 +1227,7 @@ Purpose: Start a page: language from the visitor's last choice, then only the
 On Input: pageName - String (optional; default <body data-page>, else 'home').
 On Output: none.
 Side effects: sets currentLang / <html lang>; renders the daily table, highlights,
-          videos, reviews, Menu JSON-LD; applies the language to all .lang texts;
+          videos, reviews, seasonal messages + logo theme, Menu JSON-LD; applies the language to all .lang texts;
           lightbox controls; on 'home' also the rating widget and the daily
           Firebase publish (D5). Registers the 'languageChange' re-renderers.
 ---------------------*/
@@ -957,7 +1241,8 @@ function initPage(pageName) {
     renderDishVideos();
     initReviews();
     initReviewsVideoPanel();
-    initSundayGreeting();
+    renderSeasonalMessages();
+    applySeasonalTheme();
     buildMenuSchema('https://www.matzourana.gr/');
     initLightboxControls();
     initLogoVideo();
@@ -975,6 +1260,7 @@ function initPage(pageName) {
         renderDailyHighlights();
         renderDishVideos();
         renderReviews();
+        renderSeasonalMessages();
         updateZoomCaption();
     });
 }
