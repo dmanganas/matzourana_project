@@ -293,6 +293,41 @@ function showMenu(menuId, silent) {
     collectZoomableImages();
 }
 
+
+/*-------------------
+Purpose: Build the public URL path of a dish SEO page from its catalog key.
+On Input: key - String, a menuCatalog / dishImageMap key (e.g. "pastitsio").
+On Output: String path "/dishes/<slug>/" (underscores become hyphens), or "" when key is empty.
+---------------------*/
+function dishPagePath(key) {
+    if (!key) return '';
+    return '/dishes/' + String(key).toLowerCase().replace(/_/g, '-') + '/';
+}
+
+/*-------------------
+Purpose: Tell whether a catalog key has a crawlable dish SEO page (photo + page).
+On Input: key - String, catalog key.
+On Output: Boolean - true when dishImageMap has an entry for that key.
+---------------------*/
+function hasDishPage(key) {
+    return !!(typeof dishImageMap !== 'undefined' && key && dishImageMap[key]);
+}
+
+/*-------------------
+Purpose: Wrap a dish name in a plain <a href> to its dish page when one exists
+         (crawlable internal link). Keeps bilingual data-el / data-en on the cell.
+On Input: key - String catalog key; elHtml - String Greek HTML name; enHtml - String English HTML name;
+          lang - String 'el' | 'en' (which text to show now).
+On Output: String HTML for the table cell contents (with or without the link).
+---------------------*/
+function dishNameLinked(key, elHtml, enHtml, lang) {
+    const shown = (lang === 'en' ? enHtml : elHtml);
+    if (!hasDishPage(key)) return shown;
+    const href = dishPagePath(key);
+    const label = String(shown).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    return '<a class="dish-page-link" href="' + href + '" aria-label="' + label.replace(/"/g, '&quot;') + '">' + shown + '</a>';
+}
+
 /*-------------------
 Purpose: Put today's date into the header row of the daily dishes table.
 On Input: lang - String 'el' | 'en' (optional; default the current language).
@@ -331,17 +366,18 @@ function renderDailyMenuTable() {
     Object.keys(DAILY_CATEGORY_LABELS).forEach(cat => { grouped[cat] = []; });
     currentDailyMenu.forEach(key => {
         const dish = menuCatalog[key];
-        if (dish && grouped[dish.category]) grouped[dish.category].push(dish);
+        if (dish && grouped[dish.category]) grouped[dish.category].push({ key, dish });
     });
     Object.keys(grouped).forEach(cat => {
         if (grouped[cat].length === 0) return;
         const catLabel = DAILY_CATEGORY_LABELS[cat];
         html += `<tr><th class="lang" data-el="${catLabel.el}" data-en="${catLabel.en}">${catLabel[lang] || catLabel.el}</th><th></th></tr>`;
-        grouped[cat].forEach(dish => {
+        grouped[cat].forEach(({ key, dish }) => {
+            const linked = dishNameLinked(key, dish.el, dish.en, lang);
             html += `
                 <tr>
                     <td class="lang" data-el="${dish.el}" data-en="${dish.en}">
-                        ${lang === 'en' ? dish.en : dish.el}
+                        ${linked}
                     </td>
                     <td>${dish.price}</td>
                 </tr>
@@ -941,7 +977,7 @@ function renderDailyHighlights() {
         });
         html += '<tr class="highlight-row animate-write">';
         html += '<td class="highlight-icons">' + iconHTML + '</td>';
-        html += '<td class="highlight-name lang" data-el="' + dish.el + '" data-en="' + dish.en + '">' + (lang === 'en' ? dish.en : dish.el) + '</td>';
+        html += '<td class="highlight-name lang" data-el="' + dish.el + '" data-en="' + dish.en + '">' + dishNameLinked(key, dish.el, dish.en, lang) + '</td>';
         html += '</tr>';
     });
     if (!dayRowAdded) html += dayRow;
@@ -1341,6 +1377,10 @@ function initPage(pageName) {
     currentLang = loadSavedLanguage();
     document.documentElement.lang = currentLang;
 
+    // Static .lang texts first; then JS-built tables so applyLanguage cannot
+    // wipe the <a class="dish-page-link"> links those renderers insert.
+    applyLanguage(currentLang);
+
     renderDailyMenuTable();
     renderDailyHighlights();
     renderDishVideos();
@@ -1355,7 +1395,6 @@ function initPage(pageName) {
     initLightboxControls();
     initLogoVideo();
 
-    applyLanguage(currentLang);
     updateDailyDishesDate(currentLang);
 
     if (page === 'home') {
