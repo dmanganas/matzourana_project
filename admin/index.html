@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Matzourana · Professional Costing & Profit Planner</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<title>Matzourana · Professional Costing & Profit Planner</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
@@ -22,7 +20,9 @@
     appId: "1:396072691292:web:39c93ba4db33ff5991e899"
   };
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  window.rtdb = firebase.database();
+  // Security step S: no database handle until the owner has signed in (see admin gate below).
+  window.rtdb = null;
+  window.ADMIN_OWNER_UID = "2zTPrE21d7SDBSJAXgxCXX0GtRI3";
 </script>
 <style>
 :root {
@@ -299,7 +299,7 @@ tr:hover td { background: #fafcfb; }
 
 </style>
 </head>
-<body>
+<body class="admin-locked">
 <div class="topbar">
   <div class="brand">
     <div class="logo">M</div>
@@ -316,6 +316,7 @@ tr:hover td { background: #fafcfb; }
     <button class="btn-primary" onclick="applySuggested(true)">Εφαρμογή τιμών</button>
     <button class="btn-secondary" onclick="exportAll()">Export</button>
     <button class="btn-secondary" onclick="downloadAdminHTML()">Λήψη HTML</button>
+    <button class="btn-danger" id="admin-signout" type="button" onclick="adminSignOut()" title="Sign out">Αποσύνδεση</button>
   </div>
 </div>
 
@@ -1989,13 +1990,20 @@ function dishesWithSales(){
 }
 
 
+/*-------------------
+Purpose: Give admin code the Realtime Database handle, but only while the owner is
+         signed in, so no business data is read or written before login.
+On Input: none (reads firebase.auth().currentUser and window.ADMIN_OWNER_UID).
+On Output: firebase.database.Database when the signed-in user is the owner; otherwise null
+           (callers already treat null as "Firebase off").
+Side effects: caches the handle in window.rtdb; clears it when nobody (or a non-owner) is signed in.
+---------------------*/
 function getDb(){
+  const user = (typeof firebase !== "undefined" && firebase.auth) ? firebase.auth().currentUser : null;
+  if (!user || user.uid !== window.ADMIN_OWNER_UID) { window.rtdb = null; return null; }
   if (window.rtdb) return window.rtdb;
-  if (typeof firebase !== "undefined" && firebase.apps && firebase.apps.length) {
-    window.rtdb = firebase.database();
-    return window.rtdb;
-  }
-  return null;
+  window.rtdb = firebase.database();
+  return window.rtdb;
 }
 
 function num(v){
@@ -3404,6 +3412,14 @@ function recalcAll(){
   //renderChannels();
 //}
 
+/*-------------------
+Purpose: Load and draw everything in the admin once the owner is signed in: national
+         ingredient prices, the Firebase kitchen book, today's menu picks, planner and channels.
+On Input: none. Must only be called by the admin gate after onAuthStateChanged reports
+          the owner UID.
+On Output: Promise<void> (resolves when the first render is done).
+Side effects: reads matzourana_kitchenbook and matzourana_daily from Firebase; renders all tabs.
+---------------------*/
 async function afterAdminUnlock() {
   loadNationalPrices();
   await loadKitchenBook();
@@ -3854,13 +3870,9 @@ function importKitchenFile(file){
   r.readAsText(file);
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  loadNationalPrices();          // βάση HTML / εθνικές
-  await loadKitchenBook();       // από πάνω το Firebase (αν υπάρχει)
-  recalcAll();
-  renderProfitPlanner();
-  renderChannels();
-});
+// Security step S: nothing is loaded on page open any more. All data (national prices,
+// Firebase kitchen book, today's menu, ledgers) loads in afterAdminUnlock(), which the
+// admin gate calls only after Firebase Auth confirms the owner's account.
 
 
 </script>
@@ -3868,7 +3880,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 <div id="chartTip"></div>
 
 </body>
-<!-- ========== ADMIN PASSWORD GATE ========== -->
+<!-- ========== ADMIN SIGN-IN GATE (Firebase Auth) ========== -->
 <style>
   #admin-gate {
     position: fixed; inset: 0; z-index: 99999;
@@ -3924,59 +3936,143 @@ document.addEventListener("DOMContentLoaded", async () => {
 </style>
 
 <div id="admin-gate">
-  <div class="box">
+  <form class="box" id="gate-form" autocomplete="on" novalidate>
     <h1>Matzourana Admin</h1>
     <p>Κόστος · Συνταγές · Κέρδος / ημέρα</p>
-    <div class="err" id="gate-err">Λάθος κωδικός</div>
-    <input id="gate-pass" type="password" placeholder="Κωδικός πρόσβασης" autocomplete="current-password">
-    <button type="button" id="gate-btn">Είσοδος</button>
-  </div>
+    <div class="err" id="gate-err" role="alert" aria-live="polite"></div>
+    <label class="gate-label" for="gate-email">Email</label>
+    <input id="gate-email" type="email" placeholder="Email" autocomplete="username" required>
+    <label class="gate-label" for="gate-pass">Κωδικός</label>
+    <input id="gate-pass" type="password" placeholder="Κωδικός πρόσβασης" autocomplete="current-password" required>
+    <button type="submit" id="gate-btn">Είσοδος</button>
+    <p class="gate-note">Ασφαλής σύνδεση μέσω Firebase · Secure sign-in</p>
+  </form>
 </div>
+<style>
+  #admin-gate .gate-label { display: block; font-size: .8rem; color: #6a7b71; margin: 2px 0 4px; }
+  #admin-gate .gate-note { margin: 12px 0 0; font-size: .75rem; color: #8a9a90; text-align: center; }
+  #admin-gate button[disabled] { opacity: .65; cursor: wait; }
+</style>
 
 <script>
 (function () {
-  // ★ Αλλάξτε μόνο αυτή τη γραμμή
-  const ADMIN_PASSWORD = "0!MV_Matzourana20260!";
+  const gate  = document.getElementById("admin-gate");
+  const form  = document.getElementById("gate-form");
+  const email = document.getElementById("gate-email");
+  const pass  = document.getElementById("gate-pass");
+  const err   = document.getElementById("gate-err");
+  const btn   = document.getElementById("gate-btn");
+  let unlocked = false;
 
-  const KEY = "matzourana_admin_ok";
-  const gate = document.getElementById("admin-gate");
-  const input = document.getElementById("gate-pass");
-  const err = document.getElementById("gate-err");
-  const btn = document.getElementById("gate-btn");
-
-  function unlock() {
-    sessionStorage.setItem(KEY, "1");
-    document.body.classList.remove("admin-locked");
-    if (gate) gate.remove();
-    afterAdminUnlock();
+  /*-------------------
+  Purpose: Turn a Firebase Auth error into a short message the owner understands.
+  On Input: e - Error from signInWithEmailAndPassword (has e.code, e.g. 'auth/invalid-credential').
+  On Output: String - Greek message with a short English hint.
+  ---------------------*/
+  function authErrorText(e) {
+    const code = (e && e.code) || "";
+    if (code === "auth/invalid-credential" || code === "auth/invalid-login-credentials" ||
+        code === "auth/wrong-password" || code === "auth/user-not-found") return "Λάθος email ή κωδικός (Wrong email or password)";
+    if (code === "auth/invalid-email") return "Μη έγκυρο email (Invalid email)";
+    if (code === "auth/missing-password") return "Γράψτε τον κωδικό (Enter the password)";
+    if (code === "auth/too-many-requests") return "Πολλές προσπάθειες. Δοκιμάστε ξανά σε λίγο (Too many attempts)";
+    if (code === "auth/network-request-failed") return "Δεν υπάρχει σύνδεση στο internet (No connection)";
+    if (code === "not-owner") return "Αυτός ο λογαριασμός δεν έχει πρόσβαση (This account has no access)";
+    return "Η σύνδεση απέτυχε (Sign-in failed)";
   }
 
+  /*-------------------
+  Purpose: Show or clear the red error line on the sign-in screen.
+  On Input: text - String to show, or '' to hide the line.
+  On Output: none.
+  ---------------------*/
+  function showError(text) {
+    err.textContent = text || "";
+    err.style.display = text ? "block" : "none";
+  }
+
+  /*-------------------
+  Purpose: Hide the admin behind the sign-in screen (initial state and after sign-out).
+  On Input: none.
+  On Output: none.
+  Side effects: adds body.admin-locked, shows the gate, focuses the email field.
+  ---------------------*/
   function lock() {
     document.body.classList.add("admin-locked");
+    if (gate) gate.style.display = "flex";
+    setTimeout(function () { (email.value ? pass : email).focus(); }, 150);
   }
 
-  function tryLogin() {
-    if (input.value === ADMIN_PASSWORD) {
-      unlock();
-    } else {
-      err.style.display = "block";
-      input.value = "";
-      input.focus();
+  /*-------------------
+  Purpose: Open the admin for the signed-in owner and load its data exactly once.
+  On Input: none (called only from onAuthStateChanged with the owner's UID).
+  On Output: none.
+  Side effects: removes body.admin-locked, hides the gate, clears the password field,
+                calls afterAdminUnlock() (first Firebase reads happen there).
+  ---------------------*/
+  function unlock() {
+    document.body.classList.remove("admin-locked");
+    if (gate) gate.style.display = "none";
+    pass.value = "";
+    showError("");
+    if (!unlocked) {
+      unlocked = true;
+      Promise.resolve(afterAdminUnlock()).catch(function (e) { console.error("Admin load failed", e); });
     }
   }
 
-  if (sessionStorage.getItem(KEY) === "1") {
-    unlock();
-  } else {
-    lock();
-    btn.addEventListener("click", tryLogin);
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") tryLogin();
-    });
-    setTimeout(function () { input.focus(); }, 200);
+  /*-------------------
+  Purpose: Sign in with the email and password typed on the gate (Firebase Auth).
+  On Input: ev - submit Event of the sign-in form.
+  On Output: none (success is handled by onAuthStateChanged).
+  Side effects: disables the button while waiting; shows an error message on failure.
+  ---------------------*/
+  function tryLogin(ev) {
+    if (ev) ev.preventDefault();
+    showError("");
+    btn.disabled = true;
+    firebase.auth().signInWithEmailAndPassword(email.value.trim(), pass.value)
+      .catch(function (e) { showError(authErrorText(e)); pass.value = ""; pass.focus(); })
+      .finally(function () { btn.disabled = false; });
   }
+
+  /*-------------------
+  Purpose: React to every sign-in state change: only the owner's account opens the admin.
+  On Input: user - firebase.User or null (from onAuthStateChanged).
+  On Output: none.
+  Side effects: unlock() for the owner; for any other account signs out with an error;
+                lock() when nobody is signed in.
+  ---------------------*/
+  function onAuthChanged(user) {
+    if (user && user.uid === window.ADMIN_OWNER_UID) { unlock(); return; }
+    window.rtdb = null;
+    if (user) { showError(authErrorText({ code: "not-owner" })); firebase.auth().signOut(); }
+    lock();
+  }
+
+  /*-------------------
+  Purpose: Sign the owner out and wipe what the page had loaded.
+  On Input: none (bound to the "Αποσύνδεση" button).
+  On Output: Promise<void>.
+  Side effects: Firebase signOut, clears the cached kitchen book copy, reloads the page
+                so no business numbers stay in memory.
+  ---------------------*/
+  window.adminSignOut = function adminSignOut() {
+    window.rtdb = null;
+    return firebase.auth().signOut().finally(function () {
+      try { localStorage.removeItem("mz_kitchenbook"); } catch (e) {}
+      location.reload();
+    });
+  };
+
+  form.addEventListener("submit", tryLogin);
+  lock();
+  // Stay signed in only for this browser tab session (like the old gate).
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    .catch(function () {})
+    .finally(function () { firebase.auth().onAuthStateChanged(onAuthChanged); });
 })();
 </script>
-<!-- ========== END PASSWORD GATE ========== -->
+<!-- ========== END SIGN-IN GATE ========== -->
 </html>
 
