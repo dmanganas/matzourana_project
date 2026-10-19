@@ -776,7 +776,7 @@ const imageList = [
     'DishImages/greek-dish-22.png', 'DishImages/greek-dish-23.png', 'DishImages/greek-dish-24.png',
     'DishImages/greek-dish-25.png', 'DishImages/greek-dish-26.png', 'DishImages/greek-dish-27.png',
     'DishImages/greek-dish-28.png', 'DishImages/greek-dish-29.png', 'DishImages/greek-dish-30.png',
-    'DishImages/greek-dish-30.png'
+    'DishImages/greek-dish-31.png'
 ];
 
 const dishAlts = {

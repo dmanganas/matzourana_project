@@ -33,11 +33,13 @@
     <meta name="twitter:image" content="https://www.matzourana.gr/MatzouranaImages/matzourana-gravity-permanente-front.png">
 
     <link rel="stylesheet" href="matzourana_styles.css?v=20261019">
-    <script src="matzourana_data.js?v=20261019"></script>
+    <script defer src="matzourana_data.js?v=20261019"></script>
+    <script defer src="matzourana_utils.js?v=20261019"></script>
+    <script defer src="matzourana_tools.js?v=20261019"></script>
     
 </head>
 
-<body>
+<body data-page="home">
     <header>
         <!--<img src="MatzouranaImages/matzourana-logo.png" alt="Matzourana Grill Logo">-->
         <div class="logo-container">
@@ -153,7 +155,7 @@
         </div>
         
         <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu active">
+        <div class="nav-menu">
             <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
             <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
             <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
@@ -163,7 +165,7 @@
         </div>
     </header>
 
-    <section class="hero" id="home">
+    <section class="hero active" id="home">
         <div class="section-container left-image">
             <div class="text-panel">
                 <h1 class="lang" data-el="Καλώς ήρθατε <br> στη Ματζουράνα <br>" 
@@ -366,34 +368,7 @@
                  <!--<img id="hero-image" src="CoreImages/hero-image.png" alt="Hero Image" style="max-width: 100%; margin-bottom: 20px;">-->
                  <!--<img id="hero-image" src="MatzouranaImages/matzourana-shield-logo.png" alt="Hero Image" style="max-width: 100%; margin-bottom: 20px;">-->
                 <!--<img id="hero-image" src="MatzouranaImages/matzourana-gravity-permanente.png" alt="Hero Image" style="max-width: 100%; margin-bottom: 40px; margin-top: 20px;">-->
-                <div id="dynamic-panel"></div>
-
-                <script>
-                const load_music_menu = false; // Set to true if you want to show the music panel
-                const dynamicPanel = document.getElementById('dynamic-panel');
-
-                if (load_music_menu) {
-                    dynamicPanel.innerHTML = `
-                    <div class="music-panel">
-                        <h3 class="lang" data-el="Ακούστε το τραγούδι της Ματζουράνας" data-en="Listen to Matzourana's Song">Listen to Matzourana's Songs</h3>
-                        <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
-                        <div class="music-player-icon">
-                        <div class="equalizer">
-                            <span class="bar"></span>
-                            <span class="bar"></span>
-                            <span class="bar"></span>
-                        </div>
-                        </div>
-                        <p id="music-info" class="lang" 
-                          data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
-                          data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
-                          style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
-                          Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
-                        </p>
-                    </div>
-                    `;
-                } else {
-                    dynamicPanel.innerHTML = `
+                <div id="dynamic-panel">
                     <div class="contact-panel">
                         <a href="https://youtube.com/shorts/PF2YfVqf5cI" target="_blank">
                             <img id="hero-image" 
@@ -694,18 +669,26 @@
                             </div>
                         </div>
                     </div>
-                    `;
-                }
-
-                // Show the Καλή Κυριακή greeting only on Sundays (Greek time)
-                (function () {
-                    var sundayGreeting = document.getElementById('sunday-greeting');
-                    var day = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone: 'Europe/Athens' });
-                    if (sundayGreeting && day === 'Sunday') {
-                        sundayGreeting.style.display = '';
-                    }
-                })();
-                </script>
+                </div>
+                <!-- Music panel (switched off; to show it, put this block inside #dynamic-panel instead of the contact panel):
+                    <div class="music-panel">
+                        <h3 class="lang" data-el="Ακούστε το τραγούδι της Ματζουράνας" data-en="Listen to Matzourana's Song">Listen to Matzourana's Songs</h3>
+                        <button class="music-btn lang" data-el="Αναπαραγωγή Μουσικής" data-en="Play Music" onclick="toggleMusic()">Play Music</button>
+                        <div class="music-player-icon">
+                        <div class="equalizer">
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                        </div>
+                        </div>
+                        <p id="music-info" class="lang" 
+                          data-el="Στίχοι από τη Ματζουράνα<br>Μουσική/Φωνητικά δημιουργημένα μέσω του SUNO AI" 
+                          data-en="Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI"
+                          style="display: none; font-style: normal; font-size: 0.50em; margin-top: 20px; color: #4A5D4A;">
+                          Lyrics by Matzourana<br>Music/Vocals generated via SUNO AI
+                        </p>
+                    </div>
+                    -->
             </div>
         </div>
     </section>
@@ -883,127 +866,6 @@
                         </table>
                     </div>
 
-                    <script>
-                    /* ============================================================
-                    MATZOURANA DAILY MENU - COMPLETE FRESHLY COOKED + SEAFOOD
-                    ============================================================ */
-
-                    // menuCatalog → matzourana_data.js
-
-                    // ==================== DISH IMAGE MAP ====================
-                    // Connects catalog keys to actual image files + rich alt texts
-                    // dishImageMap → matzourana_data.js
-
-                    // dishVideoCatalog → matzourana_data.js
-
-                // makingVideoCatalog → matzourana_data.js
-
-                    // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★
-                    // currentDailyMenu → matzourana_data.js
-
-
-                    
-                    function publishDailyMenuToFirebase(){
-                        if (typeof firebase === "undefined" || !firebase.apps.length) return false;
-                        const keys = (currentDailyMenu || []).filter(Boolean);
-                        firebase.database().ref("matzourana_daily").set({
-                            updatedAt: new Date().toISOString(),
-                            keys
-                        });
-                        console.log("matzourana_daily", keys.length, keys);
-                        return true;
-                    }
-
-                    if (!publishDailyMenuToFirebase()) {
-                       window.addEventListener("load", publishDailyMenuToFirebase);
-                    }
-
-                    function renderDailyMenuTable() {
-                        const table = document.getElementById('daily-menu-table');
-                        if (!table) return;
-
-                        // Get current language (defaults to Greek)
-                        const currentLang = document.documentElement.lang || 'el';
-
-                        let html = `
-                            <tr>
-                                <th class="lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Daily Dishes</th>
-                                <th class="lang" data-el="Τιμή" data-en="Price">Price</th>
-                            </tr>
-                            <tr>
-                                <th class="lang" data-el="" data-en="" id="daily-dishes-header" colspan="2"></th>
-                            </tr>
-                        `;
-
-                        // Group dishes by category
-                        const grouped = {
-                            "freshly-cooked": [],
-                            "meat-cooked": [],
-                            "veg-cooked": [],
-                            "seafood": [],
-                            "soups": [],
-                            "legumes": [],
-                            "sweets": []
-                        };
-
-                        currentDailyMenu.forEach(key => {
-                            const dish = menuCatalog[key];
-                            if (dish && grouped[dish.category]) {
-                                grouped[dish.category].push(dish);
-                            }
-                        });
-
-                        const categoryLabels = {
-                            "freshly-cooked": { el: "Φρεσκομαγειρεμένα", en: "Freshly Cooked Dishes" },
-                            "meat-cooked": { el: "Πιάτα Κρεατικών", en: "Meat Dishes" },
-                            "veg-cooked":  { el: "Πιάτα Λαχανικών", en: "Vegetable Dishes" },
-                            "seafood":     { el: "Πιάτα Θαλασσινών", en: "Seafood Dishes" },
-                            "soups":       { el: "Σούπες", en: "Soups" },
-                            "legumes":     { el: "Όσπρια/Σούπες", en: "Legumes/Soups" },
-                            "sweets":      { el: "Γλυκά", en: "Sweets" }
-                            };
-
-                        // Render categories and dishes
-                        Object.keys(grouped).forEach(cat => {
-                            if (grouped[cat].length === 0) return;
-
-                            // Category header (respects current language)
-                            const catLabel = categoryLabels[cat];
-                            html += `<tr><th class="lang" data-el="${catLabel.el}" data-en="${catLabel.en}">${catLabel[currentLang] || catLabel.el}</th><th></th></tr>`;
-
-                            // Dishes
-                            grouped[cat].forEach(dish => {
-                                const dishText = currentLang === 'en' ? dish.en : dish.el;
-
-                                html += `
-                                    <tr>
-                                        <td class="lang" data-el="${dish.el}" data-en="${dish.en}">
-                                            ${dishText}
-                                        </td>
-                                        <td>${dish.price}</td>
-                                    </tr>
-                                `;
-                            });
-                        });
-
-                        table.innerHTML = html;
-
-                        // Update date header
-                        const dateHeader = document.getElementById('daily-dishes-header');
-                        if (dateHeader) {
-                            const today = new Date();
-                            const dateStr = today.toLocaleDateString('el-GR', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            });
-                            dateHeader.innerHTML = `🍽️ ${dateStr}`;
-                        }
-                    }
-
-                    document.addEventListener('DOMContentLoaded', renderDailyMenuTable);
-                    document.addEventListener('languageChange', renderDailyMenuTable);
-                    </script>
                 </div>
                 <div class="menu-content" id="grilled-dishes">
                     <div class="menu-catalogue">
@@ -1094,9 +956,7 @@
 
                         <!-- Left Panel: Daily Dishes -->
                         <div class="video-card" id="dailyDishesPanel" onclick="zoomDailyDishesSequence()">
-                            <video muted autoplay loop playsinline id="dailyPreviewVideo">
-                                <source src="" type="video/mp4">
-                            </video>
+                            <video muted autoplay loop playsinline id="dailyPreviewVideo"></video>
                             <div class="play-overlay">▶</div>
                             <div class="panel-label lang" 
                                 data-el="Πιάτα Ημέρας" 
@@ -1108,7 +968,7 @@
                         <!-- Right Panel: Making Of -->
                         <div class="video-card" id="makingPanel" onclick="zoomMakingSequence()">
                             <video muted autoplay loop playsinline id="makingPreviewVideo">
-                                <source src="Videos/dish-video-01-making.mp4" type="video/mp4">
+                                <source src="Videos/dish-video-making-01.mp4" type="video/mp4">
                             </video>
                             <div class="play-overlay">▶</div>
                             <div class="panel-label lang" 
@@ -1556,194 +1416,222 @@
                 <!-- Google Maps Photo 10 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX8FvEX5JbfRxTEM_i7dVkVq4KJ6xjnp1OBnQQSLijNQ8A5hInGY6nSE0eJP42RxCbNee6Xk4rGeIwCMZU6akdGFrfxCHClKFih_JiLDhQ5tHBSya1_krKLI6c-IsVh1sj1nUp4gpbsqkyk=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhA9MlhcknvH_dlq-NAWIWvI!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8FvEX5JbfRxTEM_i7dVkVq4KJ6xjnp1OBnQQSLijNQ8A5hInGY6nSE0eJP42RxCbNee6Xk4rGeIwCMZU6akdGFrfxCHClKFih_JiLDhQ5tHBSya1_krKLI6c-IsVh1sj1nUp4gpbsqkyk%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhA9MlhcknvH_dlq-NAWIWvI!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8FvEX5JbfRxTEM_i7dVkVq4KJ6xjnp1OBnQQSLijNQ8A5hInGY6nSE0eJP42RxCbNee6Xk4rGeIwCMZU6akdGFrfxCHClKFih_JiLDhQ5tHBSya1_krKLI6c-IsVh1sj1nUp4gpbsqkyk%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 11 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX-ucuBZpThnXO3Xj8XvZJ9C4y3EUOgCyGv0GHcugjTFCkKnqPrT1JpRCNJP-xdjj9IRUrZW752rz6vXtqBuz1ZC1SWxF2QjtMejPXO1heI1t-pXNyEbyZK4dBD7fIvQiZyXSilgmR6V6qI9=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhDmeM5QzhzFRXTlFlOc3lHZ!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-ucuBZpThnXO3Xj8XvZJ9C4y3EUOgCyGv0GHcugjTFCkKnqPrT1JpRCNJP-xdjj9IRUrZW752rz6vXtqBuz1ZC1SWxF2QjtMejPXO1heI1t-pXNyEbyZK4dBD7fIvQiZyXSilgmR6V6qI9%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhDmeM5QzhzFRXTlFlOc3lHZ!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-ucuBZpThnXO3Xj8XvZJ9C4y3EUOgCyGv0GHcugjTFCkKnqPrT1JpRCNJP-xdjj9IRUrZW752rz6vXtqBuz1ZC1SWxF2QjtMejPXO1heI1t-pXNyEbyZK4dBD7fIvQiZyXSilgmR6V6qI9%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 12 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX8mZhqsCeTNAswcgH-aGnOh-muUn-h9OHpfI9CfP4E0Y3y9cHuZEI7oHWhEiKv-15708tUluV0bScAtW3ft7nS5CQlh0IT983d8Tx0Op6z2YAsqrINz93DQR_j1_Josfvf_VTCiS9Jw0uI=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAB3OHA8SLhfAwEfeYgp4Sy!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8mZhqsCeTNAswcgH-aGnOh-muUn-h9OHpfI9CfP4E0Y3y9cHuZEI7oHWhEiKv-15708tUluV0bScAtW3ft7nS5CQlh0IT983d8Tx0Op6z2YAsqrINz93DQR_j1_Josfvf_VTCiS9Jw0uI%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAB3OHA8SLhfAwEfeYgp4Sy!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8mZhqsCeTNAswcgH-aGnOh-muUn-h9OHpfI9CfP4E0Y3y9cHuZEI7oHWhEiKv-15708tUluV0bScAtW3ft7nS5CQlh0IT983d8Tx0Op6z2YAsqrINz93DQR_j1_Josfvf_VTCiS9Jw0uI%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 13 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX_uv3eJPE8ZR66oHpjfO9vXpb1ai3YBLlFw5e96yxKPnPVmH9wd13gV3LM8jkiOKh3x2q9KL3IJqSTuUIoigg9yG1ZOZ5J2IgiBUDlhJ5faoLCtJMoWXoBYV3_tphQGoOFFkFZcaaycN8AZ=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,76y,90t/data=!3m7!1e2!3m5!1sCIABIhAcyndEgXxbS_Icvb5GEIgx!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_uv3eJPE8ZR66oHpjfO9vXpb1ai3YBLlFw5e96yxKPnPVmH9wd13gV3LM8jkiOKh3x2q9KL3IJqSTuUIoigg9yG1ZOZ5J2IgiBUDlhJ5faoLCtJMoWXoBYV3_tphQGoOFFkFZcaaycN8AZ%3Dw607-h260-k-no!7i1179!8i505!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,76y,90t/data=!3m7!1e2!3m5!1sCIABIhAcyndEgXxbS_Icvb5GEIgx!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_uv3eJPE8ZR66oHpjfO9vXpb1ai3YBLlFw5e96yxKPnPVmH9wd13gV3LM8jkiOKh3x2q9KL3IJqSTuUIoigg9yG1ZOZ5J2IgiBUDlhJ5faoLCtJMoWXoBYV3_tphQGoOFFkFZcaaycN8AZ%3Dw607-h260-k-no!7i1179!8i505!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 14 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX-Z6Q_YsZ0w-V72w2S2IZwstll98fTS-mnAnxOVvsa2bjep5vUTaVZA9Gw4EtqZFiKrFy7b9xTACF9hHzfp9fYgR7eBim7Zrq57QcuzdBTJNyJufD8zxnOkz-uRimItFm6G49JEt-2_4qg=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhApsPXvskFB-BUSlnXGMf6l!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-Z6Q_YsZ0w-V72w2S2IZwstll98fTS-mnAnxOVvsa2bjep5vUTaVZA9Gw4EtqZFiKrFy7b9xTACF9hHzfp9fYgR7eBim7Zrq57QcuzdBTJNyJufD8zxnOkz-uRimItFm6G49JEt-2_4qg%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhApsPXvskFB-BUSlnXGMf6l!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-Z6Q_YsZ0w-V72w2S2IZwstll98fTS-mnAnxOVvsa2bjep5vUTaVZA9Gw4EtqZFiKrFy7b9xTACF9hHzfp9fYgR7eBim7Zrq57QcuzdBTJNyJufD8zxnOkz-uRimItFm6G49JEt-2_4qg%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 15 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX-VpRm_XnQsfZfXd3AahAlOhOM4qDFK8G2zo00PUPoYoujjmZs-B9iiLLt7pRhjB3btuzvT0yTcdSHHrLgJA4RoRbEq4HQ1nDfTBz0dDKXK570SFmkXMFh-LRVDZb71qAyQF5VgFa7pzw0=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhDOaGJGsz55niu7JoT8FnIN!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-VpRm_XnQsfZfXd3AahAlOhOM4qDFK8G2zo00PUPoYoujjmZs-B9iiLLt7pRhjB3btuzvT0yTcdSHHrLgJA4RoRbEq4HQ1nDfTBz0dDKXK570SFmkXMFh-LRVDZb71qAyQF5VgFa7pzw0%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhDOaGJGsz55niu7JoT8FnIN!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-VpRm_XnQsfZfXd3AahAlOhOM4qDFK8G2zo00PUPoYoujjmZs-B9iiLLt7pRhjB3btuzvT0yTcdSHHrLgJA4RoRbEq4HQ1nDfTBz0dDKXK570SFmkXMFh-LRVDZb71qAyQF5VgFa7pzw0%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 16 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX8N1vat-3pVU7ERm28mZUxWFOnGuoyKbSsaGXN_JKu1IGg_A6MjZJeS1GU6EgkM5YJKFMn3plMjmdN67eOq_-jhgkwfXa2hWlpK0KIiDzzMjdJDkERZvHNmkWTaaCPBq_W9QwEGiyog5ID4=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAQhaiVoGbYjncmIPJiE34K!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8N1vat-3pVU7ERm28mZUxWFOnGuoyKbSsaGXN_JKu1IGg_A6MjZJeS1GU6EgkM5YJKFMn3plMjmdN67eOq_-jhgkwfXa2hWlpK0KIiDzzMjdJDkERZvHNmkWTaaCPBq_W9QwEGiyog5ID4%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAQhaiVoGbYjncmIPJiE34K!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX8N1vat-3pVU7ERm28mZUxWFOnGuoyKbSsaGXN_JKu1IGg_A6MjZJeS1GU6EgkM5YJKFMn3plMjmdN67eOq_-jhgkwfXa2hWlpK0KIiDzzMjdJDkERZvHNmkWTaaCPBq_W9QwEGiyog5ID4%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 17 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX89Xed1DaGinzyIc_aJXYmRFfV2_594urvm4GRMNKy0n249GBpOOB7EtMHIQW-ZC1bmbRqaerBvN41EdBc3d9p4N3OmpmWEh5myka92-BWH2A5LDWL30M7sR-FRB8x1495wwe--3nf3wpU=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhBQ6ZjtL4IE0N-ykOE4DNzB!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX89Xed1DaGinzyIc_aJXYmRFfV2_594urvm4GRMNKy0n249GBpOOB7EtMHIQW-ZC1bmbRqaerBvN41EdBc3d9p4N3OmpmWEh5myka92-BWH2A5LDWL30M7sR-FRB8x1495wwe--3nf3wpU%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhBQ6ZjtL4IE0N-ykOE4DNzB!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX89Xed1DaGinzyIc_aJXYmRFfV2_594urvm4GRMNKy0n249GBpOOB7EtMHIQW-ZC1bmbRqaerBvN41EdBc3d9p4N3OmpmWEh5myka92-BWH2A5LDWL30M7sR-FRB8x1495wwe--3nf3wpU%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 18 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX-h1N2Rgiu3nZJYQlegTxZL3ot9Thn24kS34v8EwuBq36hoDJOaQb0hbujgIPWd8saJhRO3n3hSOrRVsiQu8RReGhj1v4bLUEbjXN5K-wQsbrbnaGoo3g3o3BX7-hfJIZTfhteTai1KwMBg=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhBeN9P9Aq9_fC6GVHXfqu1E!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-h1N2Rgiu3nZJYQlegTxZL3ot9Thn24kS34v8EwuBq36hoDJOaQb0hbujgIPWd8saJhRO3n3hSOrRVsiQu8RReGhj1v4bLUEbjXN5K-wQsbrbnaGoo3g3o3BX7-hfJIZTfhteTai1KwMBg%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhBeN9P9Aq9_fC6GVHXfqu1E!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-h1N2Rgiu3nZJYQlegTxZL3ot9Thn24kS34v8EwuBq36hoDJOaQb0hbujgIPWd8saJhRO3n3hSOrRVsiQu8RReGhj1v4bLUEbjXN5K-wQsbrbnaGoo3g3o3BX7-hfJIZTfhteTai1KwMBg%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 19 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX87_v0h_Aojx0SlCLmkFpEKgQMWsE1k32Fi3-JAttZgPNDlrdYdjz4zdlmxtkxvA8VEte7XCsBzxp61PX_jjiRFoBeg6_Zemjb0BjlO_yx8zWCTYL_Z6w75bVqZe_AIVwCIgsJTeI2vCrU=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhATtmJ6dTBcejbDxI-uHdiI!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX87_v0h_Aojx0SlCLmkFpEKgQMWsE1k32Fi3-JAttZgPNDlrdYdjz4zdlmxtkxvA8VEte7XCsBzxp61PX_jjiRFoBeg6_Zemjb0BjlO_yx8zWCTYL_Z6w75bVqZe_AIVwCIgsJTeI2vCrU%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhATtmJ6dTBcejbDxI-uHdiI!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX87_v0h_Aojx0SlCLmkFpEKgQMWsE1k32Fi3-JAttZgPNDlrdYdjz4zdlmxtkxvA8VEte7XCsBzxp61PX_jjiRFoBeg6_Zemjb0BjlO_yx8zWCTYL_Z6w75bVqZe_AIVwCIgsJTeI2vCrU%3Dw365-h648-k-no!7i901!8i1600!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 20 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX9qwE8qR3Fuj-IdMGHVb1dnZO5lKIWEpCq6-9vvk6cSaeqTdkHiJrraRLB83cPdWkk91xFlb5ZYJ_Q8A9WsvrSM9W_xhtIdbhvfefje-XpjkfKEVkXqf_L_CZmLXyV33iG1pXyAE6zCJSl3=w800-h1300-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhDPOhfgW3mvzEzb7Epn5mI5!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX9qwE8qR3Fuj-IdMGHVb1dnZO5lKIWEpCq6-9vvk6cSaeqTdkHiJrraRLB83cPdWkk91xFlb5ZYJ_Q8A9WsvrSM9W_xhtIdbhvfefje-XpjkfKEVkXqf_L_CZmLXyV33iG1pXyAE6zCJSl3%3Dw365-h601-k-no!7i2186!8i3600!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhDPOhfgW3mvzEzb7Epn5mI5!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX9qwE8qR3Fuj-IdMGHVb1dnZO5lKIWEpCq6-9vvk6cSaeqTdkHiJrraRLB83cPdWkk91xFlb5ZYJ_Q8A9WsvrSM9W_xhtIdbhvfefje-XpjkfKEVkXqf_L_CZmLXyV33iG1pXyAE6zCJSl3%3Dw365-h601-k-no!7i2186!8i3600!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 21 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX_2vSKfqKIhsKisZRskg8gNWmNDfaNET6NxLOCBAqdrFZzeNqXvp5p2bLQFB96Rs0plSqjIGcD_qZX6yPVhK9wm913zAVGGD9m8iqoVxduL3U2ZyAQsOfEppUqDZfWj1j48hEqK1yCRHxLI=w800-h1100-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhCNeoCRdUy1dTVQd4zMEbqY!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_2vSKfqKIhsKisZRskg8gNWmNDfaNET6NxLOCBAqdrFZzeNqXvp5p2bLQFB96Rs0plSqjIGcD_qZX6yPVhK9wm913zAVGGD9m8iqoVxduL3U2ZyAQsOfEppUqDZfWj1j48hEqK1yCRHxLI%3Dw365-h486-k-no!7i4284!8i5712!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhCNeoCRdUy1dTVQd4zMEbqY!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_2vSKfqKIhsKisZRskg8gNWmNDfaNET6NxLOCBAqdrFZzeNqXvp5p2bLQFB96Rs0plSqjIGcD_qZX6yPVhK9wm913zAVGGD9m8iqoVxduL3U2ZyAQsOfEppUqDZfWj1j48hEqK1yCRHxLI%3Dw365-h486-k-no!7i4284!8i5712!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 22 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX-vHwyIMf_986z779lmB1ZQhIcKTw4uYcDSB_uqFXxLFWhVtsQg-r1FaF1NMn0xHQTw36SQM60yqqRGCVrSeroSZ3Gp6YjxMSLxIGCDYYA5GiVDapxRFen4WNgfSsiDjHXK0lPYsgOtJpec=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAHhfL3StUehC3yKLWadmy2!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-vHwyIMf_986z779lmB1ZQhIcKTw4uYcDSB_uqFXxLFWhVtsQg-r1FaF1NMn0xHQTw36SQM60yqqRGCVrSeroSZ3Gp6YjxMSLxIGCDYYA5GiVDapxRFen4WNgfSsiDjHXK0lPYsgOtJpec%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhAHhfL3StUehC3yKLWadmy2!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX-vHwyIMf_986z779lmB1ZQhIcKTw4uYcDSB_uqFXxLFWhVtsQg-r1FaF1NMn0xHQTw36SQM60yqqRGCVrSeroSZ3Gp6YjxMSLxIGCDYYA5GiVDapxRFen4WNgfSsiDjHXK0lPYsgOtJpec%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 23 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs/AH1DqX_bRjZqfijwEbrX4oDLjJE7UFl4JhmwZ56XAU5aFoQZNWYhUsLIwtp6VjMF35xCKVtivYatL-UKorzHEuz_LBuKYYt90cpx3VSai6Ue5oFVDzBgcdaXPzbIp1HYvlUayTvSRdGaVnopSCiL=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhCTWq05hGyHGZZWj14HrE8z!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_bRjZqfijwEbrX4oDLjJE7UFl4JhmwZ56XAU5aFoQZNWYhUsLIwtp6VjMF35xCKVtivYatL-UKorzHEuz_LBuKYYt90cpx3VSai6Ue5oFVDzBgcdaXPzbIp1HYvlUayTvSRdGaVnopSCiL%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/contrib/104862164101929374018/photos/@37.9566043,23.7106794,3a,75y,90t/data=!3m7!1e5!3m5!1sCIABIhCTWq05hGyHGZZWj14HrE8z!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAH1DqX_bRjZqfijwEbrX4oDLjJE7UFl4JhmwZ56XAU5aFoQZNWYhUsLIwtp6VjMF35xCKVtivYatL-UKorzHEuz_LBuKYYt90cpx3VSai6Ue5oFVDzBgcdaXPzbIp1HYvlUayTvSRdGaVnopSCiL%3Dw365-h648-k-no!7i1080!8i1920!4m3!8m2!3m1!1e1?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
                 <!-- Google Maps Photo 24 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmYiRstlnyukvD88720bfVMkntxvufeqo2ZRFNztyDFYJ9-RO8oU76KypRvjLXYP3SVkoIbj73juEzlwBW4AstPyPP4ECSX3mHHOotk6yA8r8JnJUI3ZnrCm1Yr0SOzPojj9BQUSvXGLOd9=w800-h600-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhADyc5UghZaK2fX7FUACyR4!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmYiRstlnyukvD88720bfVMkntxvufeqo2ZRFNztyDFYJ9-RO8oU76KypRvjLXYP3SVkoIbj73juEzlwBW4AstPyPP4ECSX3mHHOotk6yA8r8JnJUI3ZnrCm1Yr0SOzPojj9BQUSvXGLOd9%3Dw114-h86-k-no!7i4624!8i3472!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhADyc5UghZaK2fX7FUACyR4!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmYiRstlnyukvD88720bfVMkntxvufeqo2ZRFNztyDFYJ9-RO8oU76KypRvjLXYP3SVkoIbj73juEzlwBW4AstPyPP4ECSX3mHHOotk6yA8r8JnJUI3ZnrCm1Yr0SOzPojj9BQUSvXGLOd9%3Dw114-h86-k-no!7i4624!8i3472!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 25 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmjEPjxOnafnZU997kBV6BT2cUIbb7ukKRBFhSqwtflhX5leJL3E6AaIJKsuVmAuczytRhsMs5jyqD2ZrEa0quSeUVoutORU527oAM3D5Aa2QcTgyll6ZoWPzGACUFQxQiuAXJ9fX4Yfggx=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBFkKTYwCV7PDiSd-7pcosN!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmjEPjxOnafnZU997kBV6BT2cUIbb7ukKRBFhSqwtflhX5leJL3E6AaIJKsuVmAuczytRhsMs5jyqD2ZrEa0quSeUVoutORU527oAM3D5Aa2QcTgyll6ZoWPzGACUFQxQiuAXJ9fX4Yfggx%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBFkKTYwCV7PDiSd-7pcosN!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmjEPjxOnafnZU997kBV6BT2cUIbb7ukKRBFhSqwtflhX5leJL3E6AaIJKsuVmAuczytRhsMs5jyqD2ZrEa0quSeUVoutORU527oAM3D5Aa2QcTgyll6ZoWPzGACUFQxQiuAXJ9fX4Yfggx%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 26 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm2td06JXv1lwuWTuLf9MHb_t__KqEY6lc_L67v5OqlhysPAkbhQSow7z2zpuVncRniImhpHj_8bzQ-S3G-ynQbmZyu3--It1NQc4rXXmT58VVv-KVoap5kJV0QKLnh456CvDfcv58JYvHX=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhC31wQXicxjb4JBmioYfAvi!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWm2td06JXv1lwuWTuLf9MHb_t__KqEY6lc_L67v5OqlhysPAkbhQSow7z2zpuVncRniImhpHj_8bzQ-S3G-ynQbmZyu3--It1NQc4rXXmT58VVv-KVoap5kJV0QKLnh456CvDfcv58JYvHX%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhC31wQXicxjb4JBmioYfAvi!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWm2td06JXv1lwuWTuLf9MHb_t__KqEY6lc_L67v5OqlhysPAkbhQSow7z2zpuVncRniImhpHj_8bzQ-S3G-ynQbmZyu3--It1NQc4rXXmT58VVv-KVoap5kJV0QKLnh456CvDfcv58JYvHX%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 27 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk0h2yud8Kc8zV_AaaP5INBQXQanb_7kaJS_AreP0vEPAoS2TA2QjQocbrTf7dg96gSUlsFPzlKUR6_9pE8R1ExSrR-3UGZr6GYCy1k8EyCjItV9FjdTSijHAfO4n_KJIy4htn5Ji8LuFze=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhARAzr5gwUfQGAykFmL_ugJ!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWk0h2yud8Kc8zV_AaaP5INBQXQanb_7kaJS_AreP0vEPAoS2TA2QjQocbrTf7dg96gSUlsFPzlKUR6_9pE8R1ExSrR-3UGZr6GYCy1k8EyCjItV9FjdTSijHAfO4n_KJIy4htn5Ji8LuFze%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhARAzr5gwUfQGAykFmL_ugJ!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWk0h2yud8Kc8zV_AaaP5INBQXQanb_7kaJS_AreP0vEPAoS2TA2QjQocbrTf7dg96gSUlsFPzlKUR6_9pE8R1ExSrR-3UGZr6GYCy1k8EyCjItV9FjdTSijHAfO4n_KJIy4htn5Ji8LuFze%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 28 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkq_6kOqoQPyPKoFnnGQzMeJixu-ycXXgkA6T9FZ4gMym5FY6ftXqC9hO12Kz_L7OsDCUtt8CGLzr1sYhQm52H5ZURhw-AxriA3U1tog697UaV5wM3uwUYnlheUoNjtjd5mrCzQDtvlYW97=w800-h1800-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhAtrHS0co2mjXaLWsoyGTXY!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkq_6kOqoQPyPKoFnnGQzMeJixu-ycXXgkA6T9FZ4gMym5FY6ftXqC9hO12Kz_L7OsDCUtt8CGLzr1sYhQm52H5ZURhw-AxriA3U1tog697UaV5wM3uwUYnlheUoNjtjd5mrCzQDtvlYW97%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhAtrHS0co2mjXaLWsoyGTXY!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkq_6kOqoQPyPKoFnnGQzMeJixu-ycXXgkA6T9FZ4gMym5FY6ftXqC9hO12Kz_L7OsDCUtt8CGLzr1sYhQm52H5ZURhw-AxriA3U1tog697UaV5wM3uwUYnlheUoNjtjd5mrCzQDtvlYW97%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 29 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn-1ljVwUlir4jG0_h9M0VcTAZsAbN9biyHOzyO1hx-kfznEb1un99L1qZg5H5ugBzE8QTENF82LrnzqGTY30HuFbeOgrdETwccEBqlisLPdTNmMGsGfYJOd3clZvLB1M_CjTDwNWM8lP8=w800-h1800-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBKV4-HVaIqbPXwRJAo9s_9!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWn-1ljVwUlir4jG0_h9M0VcTAZsAbN9biyHOzyO1hx-kfznEb1un99L1qZg5H5ugBzE8QTENF82LrnzqGTY30HuFbeOgrdETwccEBqlisLPdTNmMGsGfYJOd3clZvLB1M_CjTDwNWM8lP8%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBKV4-HVaIqbPXwRJAo9s_9!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWn-1ljVwUlir4jG0_h9M0VcTAZsAbN9biyHOzyO1hx-kfznEb1un99L1qZg5H5ugBzE8QTENF82LrnzqGTY30HuFbeOgrdETwccEBqlisLPdTNmMGsGfYJOd3clZvLB1M_CjTDwNWM8lP8%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 30 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkywnKOsz4yVpdB4WD9Xwy4qfRbGvyOxRyJNSGb1O2GsibvViXHV4tEDfPtlfXwy1PLwDi26K7V-n8bAZ2UWNHX4qbClk29RBNAqUj28THxxfI81y861uODrT-SVJnuqcoUzgxKm_DI7Tie=w800-h1800-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBzwBy96s7ejpBJVBGca8Ta!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkywnKOsz4yVpdB4WD9Xwy4qfRbGvyOxRyJNSGb1O2GsibvViXHV4tEDfPtlfXwy1PLwDi26K7V-n8bAZ2UWNHX4qbClk29RBNAqUj28THxxfI81y861uODrT-SVJnuqcoUzgxKm_DI7Tie%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBzwBy96s7ejpBJVBGca8Ta!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkywnKOsz4yVpdB4WD9Xwy4qfRbGvyOxRyJNSGb1O2GsibvViXHV4tEDfPtlfXwy1PLwDi26K7V-n8bAZ2UWNHX4qbClk29RBNAqUj28THxxfI81y861uODrT-SVJnuqcoUzgxKm_DI7Tie%3Dw203-h451-k-no!7i2080!8i4624!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 31 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkLbTsJgv6Q9IJafAc0OCzTgIUrzMIjAMcrTfRf0ojA4jF_W3_IGbIN-MaZKAffDQOCGI29C8M2zqjzGRvhqRSv6jIOPvCxFfqBHV5HW54aRmmvPtfqIOaPZvHRQ-pu-ieWxokiaPuMsl1G=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBPFoxjSSvsBZ6TsFtFsqQF!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkLbTsJgv6Q9IJafAc0OCzTgIUrzMIjAMcrTfRf0ojA4jF_W3_IGbIN-MaZKAffDQOCGI29C8M2zqjzGRvhqRSv6jIOPvCxFfqBHV5HW54aRmmvPtfqIOaPZvHRQ-pu-ieWxokiaPuMsl1G%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBPFoxjSSvsBZ6TsFtFsqQF!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkLbTsJgv6Q9IJafAc0OCzTgIUrzMIjAMcrTfRf0ojA4jF_W3_IGbIN-MaZKAffDQOCGI29C8M2zqjzGRvhqRSv6jIOPvCxFfqBHV5HW54aRmmvPtfqIOaPZvHRQ-pu-ieWxokiaPuMsl1G%3Dw222-h100-k-no!7i4624!8i2080!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 32 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWncQzAfmpSMcg3VtNFGqpyM1kZTOTEoNmXuR1QY9T-6TTwV_MsIGi5zwU0TPSHCJxSlHmknFLufQ5JcyglWhvzSetr85pcZKMQryxmfKngmLl8poqWFaUGrRbgnt2bQ9lh2TCQ=w800-h1100-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIHM0ogKEICAgMDwpIjeHw!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWncQzAfmpSMcg3VtNFGqpyM1kZTOTEoNmXuR1QY9T-6TTwV_MsIGi5zwU0TPSHCJxSlHmknFLufQ5JcyglWhvzSetr85pcZKMQryxmfKngmLl8poqWFaUGrRbgnt2bQ9lh2TCQ%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIHM0ogKEICAgMDwpIjeHw!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWncQzAfmpSMcg3VtNFGqpyM1kZTOTEoNmXuR1QY9T-6TTwV_MsIGi5zwU0TPSHCJxSlHmknFLufQ5JcyglWhvzSetr85pcZKMQryxmfKngmLl8poqWFaUGrRbgnt2bQ9lh2TCQ%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 33 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkV3UH7hQH4B_rbjH2XEMKA5wJXaFRJoZG2ca8qijwwrXflllBb4jwEV4yq6Ifk5DKXDGHJg0rrRVCnpYlAHfQhkyIT_4uCInUSWWghoqojmACDx90Bshi3nVUTvZ8pv9vXzscnyTi5qA9X=w800-h1100-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBHVB6sfWyol8S4VPgYJ3dp!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkV3UH7hQH4B_rbjH2XEMKA5wJXaFRJoZG2ca8qijwwrXflllBb4jwEV4yq6Ifk5DKXDGHJg0rrRVCnpYlAHfQhkyIT_4uCInUSWWghoqojmACDx90Bshi3nVUTvZ8pv9vXzscnyTi5qA9X%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBHVB6sfWyol8S4VPgYJ3dp!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkV3UH7hQH4B_rbjH2XEMKA5wJXaFRJoZG2ca8qijwwrXflllBb4jwEV4yq6Ifk5DKXDGHJg0rrRVCnpYlAHfQhkyIT_4uCInUSWWghoqojmACDx90Bshi3nVUTvZ8pv9vXzscnyTi5qA9X%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 34 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkpMaW65hLrZwT2EJRmEOFj24PNXcaT38YiMufdaj1DAwVx78-nKo92TGo6Kamw2U74m6sZy0tQldPbiZoRVmB-eEJ0LOqB4XHx6qJHXvTNHHYh3gtYCFAhh2J-dHboPbdAZBL8Q9jUBJZc=w800-h1100-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhB0mtDoeZzFPrsRXnhIvXlJ!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkpMaW65hLrZwT2EJRmEOFj24PNXcaT38YiMufdaj1DAwVx78-nKo92TGo6Kamw2U74m6sZy0tQldPbiZoRVmB-eEJ0LOqB4XHx6qJHXvTNHHYh3gtYCFAhh2J-dHboPbdAZBL8Q9jUBJZc%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhB0mtDoeZzFPrsRXnhIvXlJ!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWkpMaW65hLrZwT2EJRmEOFj24PNXcaT38YiMufdaj1DAwVx78-nKo92TGo6Kamw2U74m6sZy0tQldPbiZoRVmB-eEJ0LOqB4XHx6qJHXvTNHHYh3gtYCFAhh2J-dHboPbdAZBL8Q9jUBJZc%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 35 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnwlpt5CVv6eTFdzfBALNfFqJfvpc0W8e6JeZhpYabl64Hz0xotAuxGaz2TNyUr8TsojNR4Mx7dwzoYWJhnkVyevWrozZPjaw2UZrYKCHhlHT6uysfM1fvYOKSTwoY0WWOZGx2qKNO2-S_a=w800-h1400-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e5!3m6!1sCIABIhAJDHPjQVTLDoZQky0JJT6c!2e10!3e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWnwlpt5CVv6eTFdzfBALNfFqJfvpc0W8e6JeZhpYabl64Hz0xotAuxGaz2TNyUr8TsojNR4Mx7dwzoYWJhnkVyevWrozZPjaw2UZrYKCHhlHT6uysfM1fvYOKSTwoY0WWOZGx2qKNO2-S_a%3Dw203-h360-k-no!7i1080!8i1920!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e5!3m6!1sCIABIhAJDHPjQVTLDoZQky0JJT6c!2e10!3e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWnwlpt5CVv6eTFdzfBALNfFqJfvpc0W8e6JeZhpYabl64Hz0xotAuxGaz2TNyUr8TsojNR4Mx7dwzoYWJhnkVyevWrozZPjaw2UZrYKCHhlHT6uysfM1fvYOKSTwoY0WWOZGx2qKNO2-S_a%3Dw203-h360-k-no!7i1080!8i1920!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
 
                 <!-- Google Maps Photo 36 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmLm5OUfY6Hd2eluCe_Xa_YAY1RzMkvoOxTd4LwNmrR50gwr0QLX3OAAA8tXsLU9dD1l53WRxxF52e2sDVOBLPmDmtmo7X3KA7sEfCUhHIi2Wj4-ai9uM9xKliffFAcnnTa1SuagmfnXDbg=w800-h1100-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhAk3yaEjGCpMmv3chGYMEJP!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmLm5OUfY6Hd2eluCe_Xa_YAY1RzMkvoOxTd4LwNmrR50gwr0QLX3OAAA8tXsLU9dD1l53WRxxF52e2sDVOBLPmDmtmo7X3KA7sEfCUhHIi2Wj4-ai9uM9xKliffFAcnnTa1SuagmfnXDbg%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhAk3yaEjGCpMmv3chGYMEJP!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmLm5OUfY6Hd2eluCe_Xa_YAY1RzMkvoOxTd4LwNmrR50gwr0QLX3OAAA8tXsLU9dD1l53WRxxF52e2sDVOBLPmDmtmo7X3KA7sEfCUhHIi2Wj4-ai9uM9xKliffFAcnnTa1SuagmfnXDbg%3Dw203-h270-k-no!7i3000!8i4000!4m13!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m6!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
                 <!-- Google Maps Photo 37 -->
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWko100ZBVNl2AtHDsf8FJwGw8_bP1O9V4-PJr0bFQaxBqPai2ftq7XEsxb9Gqcu-EohSpxXf8pB_pYVNapIOaLX6ctIvkrL4UI3ViK1n-7Ws1j1okcGz7jIgTU6Cl8xzhfHYWTlQ636Kzw=w800-h360-k-no"
                     alt="Matzourana Eatery – Google Maps Photo"
-                    onclick="zoomMedia(this.src, this.alt, 'https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBzaRiKd1WrmmAENvWUOWNw!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWko100ZBVNl2AtHDsf8FJwGw8_bP1O9V4-PJr0bFQaxBqPai2ftq7XEsxb9Gqcu-EohSpxXf8pB_pYVNapIOaLX6ctIvkrL4UI3ViK1n-7Ws1j1okcGz7jIgTU6Cl8xzhfHYWTlQ636Kzw%3Dw222-h100-k-no!7i4624!8i2080!4m15!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m8!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!14m1!1BCgIgARICEAE!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu')"
+                    data-maps-url="https://www.google.com/maps/place/MATZOURANA/@37.9565029,23.7107916,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhBzaRiKd1WrmmAENvWUOWNw!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWko100ZBVNl2AtHDsf8FJwGw8_bP1O9V4-PJr0bFQaxBqPai2ftq7XEsxb9Gqcu-EohSpxXf8pB_pYVNapIOaLX6ctIvkrL4UI3ViK1n-7Ws1j1okcGz7jIgTU6Cl8xzhfHYWTlQ636Kzw%3Dw222-h100-k-no!7i4624!8i2080!4m15!1m5!8m4!1e1!2s104862164101929374018!3m1!1e1!3m8!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!10e5!14m1!1BCgIgARICEAE!16s%2Fg%2F11m5lpfpyp?hl=el&entry=ttu"
+                    onclick="zoomImage(this.src, this.alt)"
                     onerror="this.style.display='none'"
                     loading="lazy" style="cursor:pointer;" title="Click to enlarge">
             </div>
@@ -1929,93 +1817,6 @@
             <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
         </div>
 
-        <script>
-        // Review texts: original + translations. Shown in the site language; a translated text gets
-        // a small "see original / see translation" toggle. Add future reviews here (origLang 'el' or 'en').
-        (function () {
-            var REVIEWS = reviewsData.reviews;
-            var UI = reviewsData.ui;
-            var showOriginal = {};   // per review, survives language switches
-            function siteLang() { return (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'el'; }
-            function render() {
-                var lang = siteLang(), ui = UI[lang];
-                document.querySelectorAll('#reviews .rv-text').forEach(function (bq) {
-                    var i = +bq.getAttribute('data-review'), r = REVIEWS[i];
-                    var bar = document.querySelector('#reviews .rv-trans[data-review="' + i + '"]');
-                    if (!r) return;
-                    var translated = r.origLang !== lang && r.text[lang];
-                    var useOrig = !translated || showOriginal[i];
-                    var shownLang = useOrig ? r.origLang : lang;
-                    bq.textContent = r.text[shownLang];
-                    bq.setAttribute('lang', shownLang);
-                    if (!bar) return;
-                    if (!translated) { bar.hidden = true; return; }
-                    bar.hidden = false;
-                    bar.querySelector('.rv-trans-note').textContent = useOrig
-                        ? ui.origNote.replace('{lang}', ui.langsShort[r.origLang])
-                        : ui.note.replace('{lang}', ui.langs[r.origLang]);
-                    bar.querySelector('.rv-trans-toggle').textContent = useOrig ? ui.trans : ui.orig;
-                });
-            }
-            document.querySelectorAll('#reviews .rv-trans-toggle').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var i = +btn.parentNode.getAttribute('data-review');
-                    showOriginal[i] = !showOriginal[i];
-                    render();
-                });
-            });
-            // toggleLanguage() can throw before it fires 'languageChange' (missing music button),
-            // so also re-render right after every toggleLanguage call.
-            document.addEventListener('DOMContentLoaded', function () {
-                if (typeof window.toggleLanguage === 'function' && !window.toggleLanguage._reviews) {
-                    var orig = window.toggleLanguage;
-                    window.toggleLanguage = function () {
-                        try { return orig.apply(this, arguments); } finally { render(); }
-                    };
-                    window.toggleLanguage._reviews = true;
-                }
-                render();
-            });
-            document.addEventListener('languageChange', render);
-            render();
-        })();
-
-        // Reviews video panel: lazy-load the featured video when visible, swap on thumbnail click
-        (function () {
-            var player = document.getElementById('rv-player');
-            var caption = document.getElementById('rv-caption');
-            var thumbs = document.querySelectorAll('#reviews .rv-thumb');
-            if (!player) return;
-            var visible = false;
-            function lang() { return (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'el'; }
-            function start() {
-                if (!player.getAttribute('src')) player.src = player.dataset.src;
-                var p = player.play(); if (p && p.catch) p.catch(function () {});
-            }
-            if ('IntersectionObserver' in window) {
-                new IntersectionObserver(function (entries) {
-                    entries.forEach(function (e) {
-                        visible = e.isIntersecting;
-                        if (visible) start(); else player.pause();
-                    });
-                }, { threshold: 0.25 }).observe(player);
-            } else { start(); visible = true; }
-            thumbs.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    thumbs.forEach(function (b) { b.classList.remove('active'); });
-                    btn.classList.add('active');
-                    player.dataset.src = btn.dataset.video;
-                    player.poster = btn.dataset.poster;
-                    player.src = btn.dataset.video;
-                    player.setAttribute('aria-label', btn.dataset.capEl);
-                    caption.setAttribute('data-el', btn.dataset.capEl);
-                    caption.setAttribute('data-en', btn.dataset.capEn);
-                    caption.textContent = lang() === 'en' ? btn.dataset.capEn : btn.dataset.capEl;
-                    var p = player.play(); if (p && p.catch) p.catch(function () {});
-                });
-            });
-        })();
-        </script>
     </section>
 
         
@@ -2046,1099 +1847,17 @@
         <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">⟩</button>
     </div>
 
-    <audio id="background-music" loop>
+    <audio id="background-music" loop preload="none">
         <source src="Sounds/matzourana-song.mp3" type="audio/mpeg">
         <!--<source src="Sounds/eat-them-all.mp3" type="audio/mpeg">-->
     </audio>
-    <audio id="button-click-sound">
+    <audio id="button-click-sound" preload="none">
         <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
     </audio>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-    <script>
-        let currentLang = 'en';
-        let isPlaying = false;
-        let zoomableImages = [];
-        let currentImageIndex = -1;
-
-        
-
-        
-        // ---------------------------------------------------------
-        // Function: collectZoomableImages()
-        // ---------------------------------------------------------
-        // Purpose: Collects all images on the page that have an onclick handler 
-        // containing "zoomImage" and stores them in the global zoomableImages array 
-        // for use in zoom navigation (next/prev).
-        // Arguments: None
-        // Returns: None (updates global zoomableImages array)
-        // ---------------------------------------------------------
-        // Important notes:
-        // - Uses querySelectorAll with attribute selector [onclick*="zoomImage"]
-        // - Converts NodeList to Array for easier manipulation
-        // - Called on every zoom open to ensure the list is fresh (after showMenu shuffles)
-        // ---------------------------------------------------------
-        function collectZoomableImages() {
-        const gallerySection = document.querySelector('#gallery');
-        const menuActive = document.querySelector('.menu-content.active') || document.querySelector('.section-container.active #menu');
-
-        if (gallerySection && gallerySection.classList.contains('active')) {
-            // Gallery mode: ONLY gallery images
-            zoomableImages = Array.from(
-                gallerySection.querySelectorAll('img[onclick*="zoomImage"]')
-            ).filter(img => img.style.display !== 'none' && !(img.complete && img.naturalWidth === 0)); // skip hidden/broken tiles
-            console.log('Gallery mode: Collected ALL gallery images:', zoomableImages.length);
-        } else if (menuActive) {
-            // Menu mode: ONLY visible images from the active .image-panel in menu
-            zoomableImages = Array.from(
-                document.querySelectorAll('.image-panel img[onclick*="zoomImage"][style*="display: block"]')
-            );
-            console.log('Menu mode: Collected visible menu images:', zoomableImages.length);
-        } else {
-            // Fallback: nothing or whole page visible (rare)
-            zoomableImages = Array.from(
-                document.querySelectorAll('img[onclick*="zoomImage"][style*="display: block"], img[onclick*="zoomImage"]:not([style*="display: none"])')
-            );
-            console.log('Fallback mode: Collected visible images from page:', zoomableImages.length);
-        }
-    }
-
-        function toggleLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang').forEach(el => {
-                el.innerHTML = el.getAttribute(`data-${lang}`);
-            });
-            updateDailyDishesDate(lang); // Update date after language change
-            
-            const musicBtn = document.querySelector('.music-btn');
-            if (isPlaying) {
-                musicBtn.innerHTML = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
-            } else {
-                musicBtn.innerHTML = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
-            }
-            // Dispatch languageChange event
-            const event = new CustomEvent('languageChange', { detail: { lang } });
-            document.dispatchEvent(event);
-
-            // If zoom is open, update caption immediately
-            const overlay = document.querySelector('.zoom-overlay');
-            if (overlay && overlay.style.display === 'flex') {
-                const zoomedImage = document.querySelector('#zoomed-image');
-                const currentAlt = zoomedImage.alt;
-                const captionCurrent = document.getElementById('caption-current');
-
-                if (captionCurrent && currentAlt) {
-                    if (lang === 'el') {
-                        captionCurrent.textContent = currentAlt.includes('|') 
-                            ? currentAlt.split('|')[0].trim() 
-                            : currentAlt;
-                    } else {
-                        captionCurrent.textContent = currentAlt.includes('|') 
-                            ? currentAlt.split('|')[1].trim() 
-                            : currentAlt;
-                    }
-                }
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const video = document.querySelector('.logo-video');
-            const text = document.querySelector('.lang');
-
-            if (video && text) {
-                text.style.opacity = 1; // hide text initially
-
-                // Explicitly stop the video after it finishes
-                video.addEventListener('ended', () => {
-                    video.pause();
-                    video.currentTime = 0; // reset to first frame
-                    text.style.transition = 'opacity 1.5s ease';
-                    text.style.opacity = 1; // fade in when video ends
-                });
-            }
-        });
-
-        function toggleMenu() {
-            playButtonSound();
-            const navMenu = document.querySelector('.nav-menu');
-            // Remove the hide-on-load class the first time toggle is used
-            if (navMenu.classList.contains('hide-on-load')) {
-                navMenu.classList.remove('hide-on-load');
-            }
-            navMenu.classList.toggle('active');
-        }
-
-        function showSection(sectionId) {
-            playButtonSound();
-            document.querySelectorAll('section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelector(`#${sectionId}`).classList.add('active');
-            
-            if (sectionId === 'menu') {
-                showMenu('appetizers');
-            }
-            
-            toggleMenu();
-        }
-
-        function gotoDailyDishes() {
-            // Check if we're already in the menu section
-            // (optional – prevents unnecessary calls)
-            const currentSection = document.querySelector('.section-container.active')?.id || '';
-                if (currentSection === 'menu' || currentSection.includes('menu')) {
-                    showMenu('daily-dishes');
-                } else {
-                    // If not in menu, first show menu section, then daily dishes
-                    showSection('menu');           // your function to show the menu section
-                setTimeout(() => {
-                    showMenu('daily-dishes');
-                }, 10); // small delay to allow section transition
-
-                const navMenu = document.querySelector('.nav-menu');
-                navMenu.classList.remove('active');
-
-            }
-        }
-
-        // ---------------------------------------------------------
-        // Function: showMenu(menuId)
-        // ---------------------------------------------------------
-        // Purpose: Switches the active menu category (Appetizers, Salads, Daily Dishes, etc.) 
-        // and dynamically updates the image gallery with a random selection of dish photos.
-        // Arguments:
-        // menuId — String: The ID of the menu section to show 
-        //          (e.g. 'appetizers', 'salads', 'daily-dishes', 'grilled-dishes')
-        // ---------------------------------------------------------
-        // Important notes:
-        // - Plays button sound effect
-        // - Hides other sections and highlights the selected button
-        // - Counts visible menu items to decide how many images to display
-        // - Randomly shuffles and shows up to 24 images (even number, min 10)
-        // - Updates src and onclick for zoom functionality
-        // - CRITICAL: Do NOT overwrite alt text here — keep the rich, descriptive 
-        //   alt attributes defined in the HTML for SEO and accessibility
-        //   (remove any line like imgElement.alt = `Greek Dish ${index + 1}`)
-        // ---------------------------------------------------------
-       
-function showMenu(menuId) {
-    playButtonSound();
-
-    // Hide all menu contents
-    document.querySelectorAll('.menu-content').forEach(content => {
-        content.classList.remove('active');
-    });
-
-    // Deactivate all buttons
-    document.querySelectorAll('.menu-buttons button').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    // Show selected menu
-    const selectedContent = document.querySelector(`#${menuId}`);
-    if (selectedContent) selectedContent.classList.add('active');
-
-    // Highlight active button
-    const selectedButton = document.querySelector(`button[onclick="showMenu('${menuId}')"]`);
-    if (selectedButton) selectedButton.classList.add('active');
-
-    // Count visible menu items (excluding headers)
-    const tableRows = selectedContent.querySelectorAll('table tr');
-    let menuItemCount = 0;
-    tableRows.forEach(row => {
-        if (!row.querySelector('th')) menuItemCount++;
-    });
-
-    // Calculate how many images to show
-    let numImagesToShow = Math.min(menuItemCount, 24);
-    numImagesToShow = Math.floor(numImagesToShow / 2) * 2; // keep even
-    if (numImagesToShow < 6) numImagesToShow = 10;
-
-    // === SMART IMAGE SELECTION (Connected to menuCatalog) ===
-    
-    
-
-    
-    
-    // Prioritize images that match dishes currently in the daily menu
-    let prioritizedImages = [];
-    let remainingImages = [...imageList];
-
-    if (typeof currentDailyMenu !== 'undefined' && typeof dishImageMap !== 'undefined') {
-        currentDailyMenu.forEach(key => {
-            const imgInfo = dishImageMap[key];
-            if (imgInfo) {
-                const fullPath = `DishImages/${imgInfo.file}`;
-                if (imageList.includes(fullPath)) {
-                    prioritizedImages.push(fullPath);
-                    // Remove from remaining so we don't duplicate
-                    remainingImages = remainingImages.filter(img => img !== fullPath);
-                }
-            }
-        });
-    }
-
-    // Fill the rest randomly
-    const shuffledRemaining = remainingImages.sort(() => Math.random() - 0.5);
-    const finalImageList = [...prioritizedImages, ...shuffledRemaining].slice(0, numImagesToShow);
-
-    // Update the image elements
-    const imageElements = document.querySelectorAll('.menu .image-panel img');
-
-    imageElements.forEach((imgElement, index) => {
-        if (index < numImagesToShow) {
-            const imageName = finalImageList[index];
-
-            imgElement.src = imageName;
-            imgElement.alt = dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα";
-
-            // Safe onclick with escaped quotes
-            const safeAlt = (dishAlts[imageName] || "Πιάτο από το Matzourana Eatery Καλλιθέα").replace(/'/g, "\\'");
-            imgElement.setAttribute('onclick', `zoomImage('${imageName}', '${safeAlt}')`);
-
-            imgElement.style.display = 'block';
-        } else {
-            imgElement.style.display = 'none';
-        }
-    });
-
-    collectZoomableImages();
-}
-
-
-        // ---------------------------------------------------------
-        // Function: getFormattedDate(lang)
-        // Purpose:  Returns the current date formatted according to 
-        //           the given language ("el" for Greek, otherwise English).
-        // Arguments:
-        //   lang — String: "el" for Greek date format, anything else for English.
-        // Returns:
-        //   String: Formatted date, e.g. "9 Αυγούστου 2025" or "August 9, 2025"
-        // ---------------------------------------------------------
-        function getFormattedDate(lang) {
-            const today = new Date();
-            return today.toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-US', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        }
-
-        // ---------------------------------------------------------
-        // Function: updateDailyDishesDate(lang)
-        // Purpose:  Updates the "Daily Dishes" table header to include 
-        //           the current date in the appropriate language.
-        // Arguments:
-        //   lang — String: "el" for Greek, "en" for English.
-        // Usage:
-        //   updateDailyDishesDate("el"); // Greek version
-        //   updateDailyDishesDate("en"); // English version
-        // ---------------------------------------------------------
-        function updateDailyDishesDate(lang) {
-            const header = document.getElementById('daily-dishes-header');
-            if (header) {
-                header.textContent = `🍽️ ${getFormattedDate(lang)}`;
-            }
-        }
-
-
-        // ---------------------------------------------------------
-        // Function: zoomImage(src)
-        // ---------------------------------------------------------
-        // Purpose: Opens a full-screen zoom overlay to display an enlarged version 
-        // of a selected menu dish image, with navigation support.
-        // Arguments:
-        // src — String: The path to the image file (e.g. 'DishImages/greek-dish-3.png')
-        // ---------------------------------------------------------
-        // Important notes:
-        // - Plays a button sound effect for feedback
-        // - Refreshes the list of zoomable images
-        // - Determines current image position for next/previous navigation
-        // - Displays smooth zoom-in animation
-        // - Supports keyboard (arrows + Escape) and touch swipe
-        // - The zoomed image should inherit the descriptive alt text from the thumbnail
-        //   (add zoomedImage.alt = originalImg.alt if not already handled)
-        // ---------------------------------------------------------
-        function zoomImage(src, altText) {
-            playButtonSound();
-            collectZoomableImages(); // needed for index/navigation
-
-            const overlay = document.querySelector('.zoom-overlay');
-            const zoomedImage = document.querySelector('#zoomed-image');
-            const captionCurrent = document.getElementById('caption-current');
-
-            // Find the index of the clicked image in the current visible list
-            currentImageIndex = zoomableImages.findIndex(img => img.src.includes(src));
-
-            if (currentImageIndex === -1) {
-                console.warn('Clicked image not found in visible list - resetting to 0');
-                currentImageIndex = 0;
-            }
-            zoomedImage.src = src;
-            zoomedImage.alt = altText || "Μεγενθυμένη φωτογραφία πιάτου από το Matzourana Eatery Καλλιθέα";
-
-            // Set caption using current language
-            if (captionCurrent) {
-                let displayText = "";
-                
-                // Step 1: Pick the language part
-               if (altText && altText.includes('|')) {
-                    const parts = altText.split('|').map(part => part.trim());
-                    displayText = currentLang === 'el' ? parts[0] : parts[1];
-                } else {
-                    displayText = currentLang === 'el' 
-                        ? (altText || "Φωτό Matzourana Eatery Καλλιθέα")
-                        : (altText || "Photo Matzourana Eatery Kallithea");
-                }
-
-                // Step 2: Force line break before brand/location (as before)
-                if (currentLang === 'el') {
-                    displayText = displayText.replace(/Matzourana Eatery Καλλιθέα/g, '\nMatzourana Eatery Καλλιθέα');
-                } else {
-                    displayText = displayText.replace(/Matzourana Eatery Kallithea/g, '\nMatzourana Eatery Kallithea');
-                }
-
-                // Step 3: Add line break after the first '-' (or before parentheses content)
-                // Example: "Μοσχάρι κοκκινιστό - (Τρυφερό...)" → "Μοσχάρι κοκκινιστό\n(Τρυφερό...)"
-                displayText = displayText.replace(/ - /g, '\n');  // break after first " - "
-
-                // Step 4: Bold text outside parentheses, regular inside
-                // This uses <strong> tags for bold – captionCurrent must allow HTML (innerHTML)
-                displayText = displayText.replace(/([^()]+)(?=\()/g, '<strong>$1</strong>'); // bold before '('
-                displayText = displayText.replace(/\((.*?)\)/g, '($1)'); // keep inside regular
-
-                // Set caption with HTML for bold
-                captionCurrent.innerHTML = displayText;
-            }
-            // Google Maps album photos: show a link to the photo on Google Maps
-            const mapsLink = document.getElementById('zoom-maps-link');
-            if (mapsLink) {
-                const cur = zoomableImages[currentImageIndex];
-                const mapsUrl = cur && cur.dataset ? cur.dataset.mapsUrl : '';
-                if (mapsUrl && cur.src.includes(src)) {
-                    mapsLink.href = mapsUrl;
-                    mapsLink.textContent = currentLang === 'el' ? 'Δείτε τη φωτογραφία στο Google Maps ↗' : 'View this photo on Google Maps ↗';
-                    mapsLink.hidden = false;
-                } else {
-                    mapsLink.hidden = true;
-                }
-            }
-            console.log('Zoomed image set - src:', src, 'alt:', zoomedImage.alt); // debug
-
-            overlay.style.display = 'flex';
-
-            setTimeout(() => {
-                zoomedImage.classList.add('zoomed');
-            }, 50);
-        }
-
-        function closeZoom() {
-            playButtonSound();
-            const overlay = document.querySelector('.zoom-overlay');
-            const zoomedImage = document.querySelector('#zoomed-image');
-            const captionCurrent = document.getElementById('caption-current');
-            zoomedImage.classList.remove('zoomed');
-            if (captionCurrent) captionCurrent.textContent = '';
-            overlay.style.display = 'none';    
-        }
-
-  
-        function zoomMedia(src, alt = '', isVideo = false) {
-        // Remove any existing lightbox
-        const existing = document.getElementById('zoom-lightbox');
-        if (existing) existing.remove();
-
-        // Create lightbox
-        const lightbox = document.createElement('div');
-        lightbox.id = 'zoom-lightbox';
-        lightbox.style.cssText = `
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.94);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            cursor: zoom-out;
-            padding: 20px;
-            box-sizing: border-box;
-        `;
-
-        // Close when clicking the background
-        lightbox.onclick = function (e) {
-            if (e.target === lightbox) {
-                // Stop video if playing
-                const vid = lightbox.querySelector('video');
-                if (vid) {
-                    vid.pause();
-                    vid.currentTime = 0;
-                }
-                lightbox.remove();
-            }
-        };
-
-        let media;
-
-        if (isVideo) {
-            // ===== VIDEO =====
-            media = document.createElement('video');
-            media.src = src;
-            media.controls = true;
-            media.autoplay = true;
-            media.muted = false;          // sound on (user can mute)
-            media.playsInline = true;
-            media.style.cssText = `
-                max-width: 92%;
-                max-height: 85vh;
-                border-radius: 12px;
-                box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-                background: #000;
-            `;
-        } else {
-            // ===== IMAGE =====
-            media = document.createElement('img');
-            media.src = src;
-            media.alt = alt;
-            media.style.cssText = `
-                max-width: 92%;
-                max-height: 85vh;
-                border-radius: 12px;
-                box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-                object-fit: contain;
-            `;
-        }
-
-        // Prevent closing when clicking the media itself
-        media.onclick = (e) => e.stopPropagation();
-
-        lightbox.appendChild(media);
-        document.body.appendChild(lightbox);
-    }
-
-    /* ============================================================
-   DISHES EXHIBITION - DUAL PANELS
-   Left  → Daily Dishes sequence
-   Right → Making-of sequence
-   ============================================================ */
-
-    function renderDishVideos() {
-        const container = document.querySelector('.video-panels');
-        if (!container) return;
-
-        // Clear previous content
-        container.innerHTML = '';
-
-        // ========== LEFT PANEL: Daily Dishes ==========
-        const activeKeys = (typeof currentDailyMenu !== 'undefined')
-            ? currentDailyMenu
-            : (typeof currentHighlights !== 'undefined' ? currentHighlights : []);
-
-        const activeVideos = activeKeys
-            .filter(key => dishVideoCatalog[key])
-            .map(key => ({ key, ...dishVideoCatalog[key] }));
-
-        // Create Daily Dishes card (only if there is at least one active video)
-        if (activeVideos.length > 0) {
-            const firstVideo = activeVideos[0];
-
-            const dailyCard = document.createElement('div');
-            dailyCard.className = 'video-card';
-            dailyCard.onclick = () => zoomDailyDishesSequence(0);
-
-            dailyCard.innerHTML = `
-                <video muted autoplay loop playsinline>
-                    <source src="${firstVideo.src}" type="video/mp4">
-                </video>
-                <div class="play-overlay">▶</div>
-                <div class="panel-label lang" data-el="Πιάτα Ημέρας" data-en="Daily Dishes">Πιάτα Ημέρας</div>
-            `;
-            container.appendChild(dailyCard);
-        }
-
-        // ========== RIGHT PANEL: Making-of ==========
-        if (typeof makingVideoCatalog !== 'undefined' && makingVideoCatalog.length > 0) {
-            const firstMaking = makingVideoCatalog[0];
-
-            const makingCard = document.createElement('div');
-            makingCard.className = 'video-card';
-            makingCard.onclick = () => zoomMakingSequence(0);
-
-            makingCard.innerHTML = `
-                <video muted autoplay loop playsinline>
-                    <source src="${firstMaking.src}" type="video/mp4">
-                </video>
-                <div class="play-overlay">▶</div>
-                <div class="panel-label lang" 
-                  data-el="Παρασκευή Πιάτων και Δημιουργίες από την Matzourana" 
-                  data-en="Matzourana Dishes Making Off and Creations">
-                </div>
-            `;
-            container.appendChild(makingCard);
-        }
-
-        // Hide the whole exhibition if nothing to show
-        const exhibition = document.querySelector('.dishes-exhibition');
-        if (exhibition) {
-            exhibition.style.display = container.children.length > 0 ? 'block' : 'none';
-        }
-    }
-
-
-    /* ========== DAILY DISHES SEQUENCE ========== */
-    function zoomDailyDishesSequence(startIndex = 0) {
-        const activeKeys = (typeof currentDailyMenu !== 'undefined')
-            ? currentDailyMenu
-            : (typeof currentHighlights !== 'undefined' ? currentHighlights : []);
-
-        const activeVideos = activeKeys
-            .filter(key => dishVideoCatalog[key])
-            .map(key => ({ key, ...dishVideoCatalog[key] }));
-
-        if (activeVideos.length === 0) return;
-
-        openVideoSequence(activeVideos, startIndex);
-    }
-
-
-    /* ========== MAKING-OF SEQUENCE ========== */
-    function zoomMakingSequence(startIndex = 0) {
-        if (typeof makingVideoCatalog === 'undefined' || makingVideoCatalog.length === 0) return;
-        openVideoSequence(makingVideoCatalog, startIndex);
-    }
-
-
-    /* ========== SHARED SEQUENCE PLAYER ========== */
-    function openVideoSequence(videoList, startIndex = 0) {
-        let current = startIndex % videoList.length;
-
-        // Remove existing lightbox
-        const existing = document.getElementById('zoom-lightbox');
-        if (existing) existing.remove();
-
-        // Create lightbox
-        const lightbox = document.createElement('div');
-        lightbox.id = 'zoom-lightbox';
-        lightbox.style.cssText = `
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            cursor: zoom-out;
-            padding: 16px;
-            box-sizing: border-box;
-        `;
-
-        lightbox.onclick = (e) => {
-            if (e.target === lightbox) {
-                const vid = lightbox.querySelector('video');
-                if (vid) {
-                    vid.pause();
-                    vid.src = "";
-                }
-                lightbox.remove();
-            }
-        };
-
-        // Title
-        const title = document.createElement('div');
-        title.style.cssText = `
-            color: white;
-            font-size: 1.2rem;
-            margin-bottom: 14px;
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            max-width: 90%;
-            line-height: 1.4;
-        `;
-        lightbox.appendChild(title);
-
-        // Video
-        const video = document.createElement('video');
-        video.controls = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.style.cssText = `
-            max-width: 92%;
-            max-height: 72vh;
-            border-radius: 12px;
-            background: #000;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-        `;
-        video.onclick = (e) => e.stopPropagation();
-        lightbox.appendChild(video);
-
-        // Navigation
-        const nav = document.createElement('div');
-        nav.style.cssText = `
-            display: flex;
-            gap: 14px;
-            margin-top: 18px;
-            align-items: center;
-        `;
-
-        const counter = document.createElement('span');
-        counter.style.cssText = `
-            color: #ccc;
-            font-size: 0.95rem;
-            min-width: 60px;
-            text-align: center;
-        `;
-
-        const prevBtn = document.createElement('button');
-        prevBtn.textContent = '‹';
-        prevBtn.style.cssText = navBtnStyle();
-        prevBtn.onclick = (e) => {
-            e.stopPropagation();
-            playVideo(current - 1);
-        };
-
-        const nextBtn = document.createElement('button');
-        nextBtn.textContent = '›';
-        nextBtn.style.cssText = navBtnStyle();
-        nextBtn.onclick = (e) => {
-            e.stopPropagation();
-            playVideo(current + 1);
-        };
-
-        nav.appendChild(prevBtn);
-        nav.appendChild(counter);
-        nav.appendChild(nextBtn);
-        lightbox.appendChild(nav);
-
-        function navBtnStyle() {
-            return `
-                background: rgba(255,255,255,0.15);
-                border: none;
-                color: white;
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                font-size: 1.7rem;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-        }
-
-        function playVideo(index) {
-            current = (index + videoList.length) % videoList.length;
-            const item = videoList[current];
-
-            title.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en')
-                ? item.titleEn
-                : item.titleEl;
-
-            counter.textContent = `${current + 1} / ${videoList.length}`;
-            video.src = item.src;
-            video.load();
-            video.play().catch(() => {});
-        }
-
-        video.addEventListener('ended', () => {
-            playVideo(current + 1);
-        });
-
-        playVideo(current);
-        document.body.appendChild(lightbox);
-    }
-
-
-    /* ========== INITIALIZE ========== */
-    document.addEventListener('DOMContentLoaded', () => {
-        renderDishVideos();
-    });
-
-    document.addEventListener('languageChange', renderDishVideos);
-
-
-        // ---------------------------------------------------------
-        // Function: nextImage()
-        // ---------------------------------------------------------
-        // Purpose: Navigates to the next image in the zoomable list while in zoom mode.
-        // Arguments: None
-        // Returns: None (calls zoomImage with next item)
-        // ---------------------------------------------------------
-        // Important notes:
-        // - Increments currentImageIndex if not at end
-        // - Passes both src and alt from the next image element
-        // - Relies on zoomableImages array being up-to-date
-        // ---------------------------------------------------------
-        function nextImage() {
-    
-            if (currentImageIndex < zoomableImages.length - 1) {
-                currentImageIndex++;
-                const nextImg = zoomableImages[currentImageIndex];
-                zoomImage(nextImg.src, nextImg.alt);
-            }
-        }
-
-        // ---------------------------------------------------------
-        // Function: prevImage()
-        // ---------------------------------------------------------
-        // Purpose: Navigates to the previous image in the zoomable list while in zoom mode. 
-        //            // Arguments: None
-        // Returns: None (calls zoomImage with previous item)
-        // ---------------------------------------------------------
-        // Important notes:
-        // - Decrements currentImageIndex if not at start
-        // - Passes both src and alt from the previous image element
-        // - Relies on zoomableImages array being up-to-date
-        // ---------------------------------------------------------
-        function prevImage() {
-    
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-                const prevImg = zoomableImages[currentImageIndex];
-                zoomImage(prevImg.src, prevImg.alt);
-            }
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            const overlay = document.querySelector('.zoom-overlay');
-            if (overlay.style.display === 'flex') {
-                if (e.key === 'ArrowRight') nextImage();
-                if (e.key === 'ArrowLeft') prevImage();
-                if (e.key === 'Escape') closeZoom();
-            }
-        });
-
-        // Touch navigation
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.querySelector('.zoom-overlay').addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, false);
-
-        document.querySelector('.zoom-overlay').addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleGesture();
-        }, false);
-
-        function handleGesture() {
-            const diff = touchEndX - touchStartX;
-            if (Math.abs(diff) > 50) { // minimum swipe distance
-                if (diff > 0) {
-                    prevImage(); // Swipe Right → Previous
-                } else {
-                    nextImage(); // Swipe Left → Next
-                }
-            }
-        }
-
-        function toggleMusic() {
-            playButtonSound();
-            const music = document.getElementById('background-music');
-            const musicBtn = document.querySelector('.music-btn');
-            const musicIcon = document.querySelector('.music-player-icon');
-            const info = document.getElementById('music-info');
-
-            if (isPlaying) {
-                music.pause();
-                musicBtn.textContent = currentLang === 'el' ? 'Αναπαραγωγή Μουσικής' : 'Play Music';
-                musicIcon.style.display = 'none';
-                info.style.display = 'none';
-            } else {
-                music.play();
-                musicBtn.textContent = currentLang === 'el' ? 'Παύση Μουσικής' : 'Pause Music';
-                musicIcon.style.display = 'block';
-                
-                info.style.display = 'block';
-            }
-            isPlaying = !isPlaying;
-            
-        }
-
-        function playButtonSound() {
-            const sound = document.getElementById('button-click-sound');
-            sound.currentTime = 0; // Reset to start
-            sound.play();
-        }
-        
-        function gotoGoogleMaps() {
-            // Define the specific Google Maps URL (e.g., for a specific location)
-            var googleMapsURL = "https://www.google.com/maps/place/MATZOURANA/@37.9566025,23.7106779,17z/data=!4m15!1m8!3m7!1s0x14a1bc55ee53ece7:0xf88c808dd92b6d74!2sDimosthenous+48,+Kallithea+176+71,+Griechenland!3b1!8m2!3d37.9566025!4d23.7106779!16s%2Fg%2F11pw2vry8d!3m5!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!16s%2Fg%2F11m5lpfpyp?entry=ttu&g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D";
-    
-            // Redirect to the Google Maps page
-            window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
-        }
-
-        function gotoTripAdvisor() {
-            var tripAdvisorURL = "https://www.tripadvisor.com/Restaurant_Review-g262046-d33012087-Reviews-Matzourana-Kallithea_Attica.html";
-            window.open(tripAdvisorURL, "_blank"); // Opens in new tab
-        }
-
-        function gotoGoogleMapsReview() {
-            // Define the specific Google Maps URL (e.g., for a specific location)
-            var googleMapsURL = "https://www.google.com/maps/place/MATZOURANA/@37.9566042,23.7058085,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D";
-    
-            // Redirect to the Google Maps page
-            window.open(googleMapsURL, "_blank"); // Opens the URL in a new tab
-        }
-
-        
-        
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Navigation menu show on load ---
-            const navMenu = document.querySelector('.nav-menu');
-            navMenu.classList.remove('hide-on-load');
-
-            // --- Show home section by default ---
-            showSection('home');
-            toggleLanguage('el');
-
-            // Detect current language (default to Greek)
-            let currentLang = document.documentElement.lang || "el";
-            updateDailyDishesDate(currentLang);
-
-            // Hook into existing language change system
-            document.addEventListener("languageChange", function(e) {
-                updateDailyDishesDate(e.detail.lang);
-            });
-
-            // Keyboard navigation for zoom overlay
-            document.addEventListener('keydown', (e) => {
-                const overlay = document.querySelector('.zoom-overlay');
-                if (overlay && overlay.style.display === 'flex') {
-                    if (e.key === 'ArrowRight') nextImage();
-                    if (e.key === 'ArrowLeft') prevImage();
-                    if (e.key === 'Escape') closeZoom();
-                }
-            });
-           
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-        console.log("⭐ Firebase script started");
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCQym9rOl6nX4kD_vs0dR3LyxsrD_aQfKA",
-            authDomain: "matzouranaeatery-ratings.firebaseapp.com",
-            databaseURL: "https://matzouranaeatery-ratings-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "matzouranaeatery-ratings",
-            storageBucket: "matzouranaeatery-ratings.firebasestorage.app",
-            messagingSenderId: "396072691292",
-            appId: "1:396072691292:web:39c93ba4db33ff5991e899"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const ratingsRef = db.ref('matzourana_ratings');
-
-        let currentRating = 0;
-        let hasRatedThisVisit = false;
-
-        const container = document.getElementById('star-rating');
-        const stars = container.querySelectorAll('.star');
-        const ratingDisplay = document.getElementById('rating-display');
-        const thankYouMsg = document.getElementById('thank-you-message');
-
-        // === DYNAMIC JSON-LD UPDATE FUNCTION ===
-        function updateJsonLd(average, totalRatings) {
-            const schemaScript = document.getElementById('restaurant-schema');
-            if (!schemaScript) return;
-
-            let schema = JSON.parse(schemaScript.textContent);
-
-            schema.aggregateRating = {
-                "@type": "AggregateRating",
-                "ratingValue": average.toString(),
-                "bestRating": "5",
-                "ratingCount": totalRatings,
-                "reviewCount": totalRatings
-            };
-
-            schemaScript.textContent = JSON.stringify(schema, null, 2);
-            console.log(`✅ JSON-LD updated → ${average}/5 (${totalRatings} ratings)`);
-        }
-
-        // === SIMPLE & RELIABLE UPDATE FUNCTION ===
-        function updateDisplay() {
-            ratingsRef.once('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                let total = 0;
-                let sum = 0;
-
-                Object.keys(data).forEach(key => {
-                    const count = data[key];
-                    total += count;
-                    sum += parseInt(key) * count;
-                });
-             
-                //const avg = total > 0 ? (sum / total).toFixed(1) : "—";
-                const avg = total > 0 ? parseFloat((sum / total).toFixed(1)) : 4.9;
-                // Update visible display on page
-                const text = currentLang === 'el' 
-                    ? ` (${total} βαθμολογίες)` 
-                    : ` (${total} ratings)`;
-
-                ratingDisplay.innerHTML = `
-                    <span style="font-size:1.6em;color:#4A5D4A;">${avg}</span>
-                    <span style="font-size:0.65em;vertical-align:super;color:#4A5D4A;">/5</span>
-                    <span style="font-size:0.9em;color:#666;margin-left:10px;">${text}</span>
-                `;
-                // Update JSON-LD for Google robots
-                updateJsonLd(avg, total);
-                console.log(`✅ Display updated → ${avg}/5 (${total} ratings)`);
-            });
-        }
-
-        // Click handler
-        document.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('star') || hasRatedThisVisit) return;
-
-            currentRating = parseInt(e.target.dataset.value);
-            hasRatedThisVisit = true;
-
-            ratingsRef.child(currentRating).transaction((c) => (c || 0) + 1);
-
-            highlightStars(currentRating);
-            thankYouMsg.style.display = 'block';
-
-            console.log(`⭐ Rating ${currentRating} saved`);
-
-            // Force update display after saving
-            setTimeout(updateDisplay, 800);
-        });
-
-        function highlightStars(rating) {
-            stars.forEach(star => {
-                if (parseInt(star.dataset.value) <= rating) {
-                    star.style.color = '#4A5D4A';
-                    star.style.transform = 'scale(1.25)';
-                } else {
-                    star.style.color = '#e0e0e0';
-                    star.style.transform = 'scale(1)';
-                }
-            });
-        }
-
-        // Initial load + real-time listener
-        updateDisplay();
-        ratingsRef.on('value', updateDisplay);
-
-        console.log("⭐ Live rating system ready");
-    });
-        // Array of 7 video paths
-        const videos = [
-            /*"MatzouranaImages/matzourana-winter-december-movie-logo.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo2.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo3.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo5.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-winter-december-movie-logo7.mp4"*/
-            /*"MatzouranaImages/matzourana-xmas-movie-logo.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo2.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo3.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo5.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-xmas-movie-logo7.mp4"
-
-            "MatzouranaImages/matzourana-2026-movie-logo5.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo2.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo3.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo1.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo9.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo8.mp4",
-            "MatzouranaImages/matzourana-2026-movie-logo7.mp4"
-
-            "MatzouranaImages/matzourana-winter-january-movie-logo.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo2.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo3.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo5.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-winter-january-movie-logo7.mp4"
-
-            "MatzouranaImages/valentine-2026-movie-logo1.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo2.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo3.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo4.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo5.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo6.mp4",
-            "MatzouranaImages/valentine-2026-movie-logo7.mp4",
-
-            
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4",
-            "MatzouranaImages/matzourana-easter_2026-movie-logo.mp4"
-
-            "MatzouranaImages/matzourana-spring_2026-movie-logo2.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo3.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo5.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo6.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo7.mp4",
-            "MatzouranaImages/matzourana-spring_2026-movie-logo1.mp4"*/
-
-            
-            "MatzouranaImages/matzourana-summer_2026-movie-logo12.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo13.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo4.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo8.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo9.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo10.mp4",
-            "MatzouranaImages/matzourana-summer_2026-movie-logo11.mp4"
-
-            
-        ];
-
-        // Get current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-        const dayIndex = new Date().getDay();
-
-        // Select video element
-        const videoElement = document.getElementById("logoVideo");
-
-        // Set video source based on day
-        videoElement.querySelector("source").src = videos[dayIndex];
-
-        // Reload video to apply the new source
-        videoElement.load();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const typewriterElements = document.querySelectorAll('.typewriter');
-
-            typewriterElements.forEach((el, index) => {
-                const text = el.dataset.textEl || el.textContent.trim(); // fallback to inner text
-                el.textContent = ''; // clear initial content
-
-                let i = 0;
-                const speed = 60; // ms per character – adjust speed
-
-                function type() {
-                    if (i < text.length) {
-                        el.textContent += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
-                    } else {
-                        // Optional: remove cursor after finish
-                        el.style.borderRight = 'none';
-                    }
-                }
-
-                // Delay start per row for nice stagger
-                setTimeout(type, index * 800); // 800ms delay between rows
-            });
-        });
-
-    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0"></script>
@@ -3150,167 +1869,7 @@ function showMenu(menuId) {
       gtag('config', 'G-HYZYNG1DM0');
     </script>
 
-    <button width="auto" onclick="gotoDailyDishes()"
-        class="daily-highlights notebook-bg clickable-panel"
-        aria-label="Πιάτα Ημέρας – Daily Dishes"
-        type="button"
-        style="width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box;">
 
-    <div class="notebook-overlay"></div>
-
-    <table class="highlights-table">
-        <tbody id="daily-highlights-body">
-            <!-- Content is generated dynamically by JavaScript -->
-        </tbody>
-    </table>
-</button>
-
-<script>
-/* ============================================================
-   DAILY HIGHLIGHTS BUTTON - CLEAN RENDERING
-   ============================================================ */
-
-// highlightsCatalog → matzourana_data.js
-// ★★★★★ Change daily highlights here ★★★★★
-// currentHighlights → matzourana_data.js
-
-// Day of week in Greek time (Europe/Athens): 0 = Sunday ... 6 = Saturday
-function getAthensDayIndex() {
-    const name = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone: 'Europe/Athens' });
-    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(name);
-}
-
-function renderDailyHighlights(e) {
-    const tbody = document.getElementById('daily-highlights-body');
-    if (!tbody) return;
-
-    // Current language (from the languageChange event, else the global currentLang, else Greek)
-    const lang = (e && e.detail && e.detail.lang) || (typeof currentLang !== 'undefined' ? currentLang : 'el');
-    const dayIndex = getAthensDayIndex();
-    const isMonday = dayIndex === 1; // Matzourana is closed on Mondays
-    const dayEl = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'][dayIndex];
-    const dayEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
-    const dayLabelEl = '🗓️ ' + dayEl;
-    const dayLabelEn = '🗓️ ' + dayEn;
-    const dayRow = '<tr class="highlight-row animate-write" id="highlights-day-row">' +
-        '<td class="highlight-name lang" colspan="2" data-el="' + dayLabelEl + '" data-en="' + dayLabelEn + '">' +
-        (lang === 'en' ? dayLabelEn : dayLabelEl) + '</td></tr>';
-    let dayRowAdded = false;
-
-    let html = '';
-
-    currentHighlights.forEach(key => {
-        // Show the day right after the leading spacer line
-        if (!dayRowAdded && key !== 'line') { html += dayRow; dayRowAdded = true; }
-        // On Mondays (closed) hide the dishes, keep only the spacer
-        if (isMonday && key !== 'line') return;
-
-        const dish = highlightsCatalog[key];
-        if (!dish) return;
-
-        // Build icons
-        let iconHTML = '';
-        dish.icons.forEach(icon => {
-            iconHTML += '<img src="Logos/' + icon + '" alt="' + icon + '" class="category-icon">';
-        });
-
-        // Build row
-        html += '<tr class="highlight-row animate-write">';
-        html +=   '<td class="highlight-icons">' + iconHTML + '</td>';
-        html +=   '<td class="highlight-name lang" data-el="' + dish.el + '" data-en="' + dish.en + '">' + dish.el + '</td>';
-        html += '</tr>';
-    });
-
-    if (!dayRowAdded) html += dayRow;
-
-    // Monday: closed message instead of dishes
-    if (isMonday) {
-        const closedEl = 'Δευτέρα – Κλειστά. Καλή ξεκούραση! 🌿 Ανυπομονούμε να σας εξυπηρετήσουμε από αύριο!';
-        const closedEn = 'Monday – Closed. Enjoy your day off! 🌿 We look forward to serving you tomorrow!';
-        html += '<tr class="highlight-row animate-write" id="highlights-closed-row">' +
-            '<td class="highlight-name lang" colspan="2" data-el="' + closedEl + '" data-en="' + closedEn + '">' +
-            (lang === 'en' ? closedEn : closedEl) + '</td></tr>';
-        // Monday video (muted loop; clicks pass through to the panel button)
-        html += '<tr class="highlight-row animate-write" id="highlights-monday-video-row"><td colspan="2">' +
-            '<video src="Videos/Matzourana_Monday.mp4" poster="Videos/matzourana-monday-poster.jpg" autoplay muted loop playsinline preload="metadata" ' +
-            'aria-label="' + (lang === 'en' ? 'Closed every Monday – see you again from Tuesday!' : 'Κάθε Δευτέρα κλειστά – από την Τρίτη και πάλι μαζί!') + '" ' +
-            'style="display: block; width: 100%; max-width: 240px; max-height: 60vh; height: auto; margin: 0.4em auto 0; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); pointer-events: none;">' +
-            '</video></td></tr>';
-    }
-
-    tbody.innerHTML = html;
-}
-
-function initDishVideoExhibition() {
-    const slides = document.querySelectorAll('#dishVideoCarousel .video-slide');
-    const dotsContainer = document.getElementById('videoDots');
-    if (!slides.length) return;
-
-    let current = 0;
-    let timer = null;
-    const INTERVAL = 9000; // change video every 9 seconds
-
-    // Create dots
-    slides.forEach((_, i) => {
-        const dot = document.createElement('span');
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goTo(i));
-        dotsContainer.appendChild(dot);
-    });
-    const dots = dotsContainer.querySelectorAll('span');
-
-    function playCurrent() {
-        slides.forEach((slide, i) => {
-            const video = slide.querySelector('video');
-            if (i === current) {
-                slide.classList.add('active');
-                dots[i].classList.add('active');
-                video.currentTime = 0;
-                video.play().catch(() => {});
-            } else {
-                slide.classList.remove('active');
-                dots[i].classList.remove('active');
-                video.pause();
-            }
-        });
-    }
-
-    function goTo(index) {
-        current = index;
-        playCurrent();
-        resetTimer();
-    }
-
-    function next() {
-        current = (current + 1) % slides.length;
-        playCurrent();
-    }
-
-    function resetTimer() {
-        clearInterval(timer);
-        timer = setInterval(next, INTERVAL);
-    }
-
-    // Start
-    playCurrent();
-    resetTimer();
-
-    // Pause when tab is hidden (saves battery)
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            clearInterval(timer);
-            slides.forEach(s => s.querySelector('video').pause());
-        } else {
-            playCurrent();
-            resetTimer();
-        }
-    });
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', renderDailyHighlights);
-document.addEventListener('languageChange', renderDailyHighlights);
-</script>
 
 
   <!--Structured Data (JSON-LD) for SEO
@@ -3389,90 +1948,8 @@ document.addEventListener('languageChange', renderDailyHighlights);
 
 
 
-<!-- Menu Schema (JSON-LD) – generated at page load from the same data the visitor sees
-     (daily dishes: menuCatalog + currentDailyMenu + dishImageMap; other sections: the static price tables),
-     so dish names and prices in search always match the site. -->
-<script>
-(function () {
-    try {
-        var BASE = 'https://www.matzourana.gr/';
-        function clean(t) { return String(t || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
-        function split(t) { var c = clean(t); var m = c.match(/^(.*?)\s*\((.*)\)\s*$/); return m ? { name: m[1].trim(), desc: m[2].trim() } : { name: c, desc: '' }; }
-        function price(p) { var m = String(p || '').replace(',', '.').match(/(\d+(?:\.\d+)?)/); return m ? Number(m[1]).toFixed(2) : null; }
-        function item(el, en, p, img) {
-            var g = split(el), e = split(en), pr = price(p);
-            if (!g.name || !pr) return null;
-            var it = {
-                '@type': 'MenuItem',
-                'name': g.name,
-                'description': (g.desc ? g.desc + '. ' : '') + g.name + ' στην Καλλιθέα – Matzourana, Δημοσθένους 48.',
-                'offers': { '@type': 'Offer', 'price': pr, 'priceCurrency': 'EUR' }
-            };
-            if (e.name && e.name !== g.name) it.alternateName = e.name;
-            if (img) it.image = BASE + 'DishImages/' + img;
-            return it;
-        }
-        var sections = [];
-        function addSection(nameEl, nameEn, items) {
-            items = items.filter(Boolean);
-            if (items.length) sections.push({ '@type': 'MenuSection', 'name': nameEl, 'alternateName': nameEn, 'hasMenuItem': items });
-        }
-
-        // Daily dishes (same grouping as the daily menu table)
-        var labels = {
-            'freshly-cooked': { el: 'Φρεσκομαγειρεμένα', en: 'Freshly Cooked Dishes' },
-            'meat-cooked': { el: 'Πιάτα Κρεατικών', en: 'Meat Dishes' },
-            'veg-cooked': { el: 'Πιάτα Λαχανικών', en: 'Vegetable Dishes' },
-            'seafood': { el: 'Πιάτα Θαλασσινών', en: 'Seafood Dishes' },
-            'soups': { el: 'Σούπες', en: 'Soups' },
-            'legumes': { el: 'Όσπρια/Σούπες', en: 'Legumes/Soups' },
-            'sweets': { el: 'Γλυκά', en: 'Sweets' }
-        };
-        var groups = {};
-        if (typeof currentDailyMenu !== 'undefined' && typeof menuCatalog !== 'undefined') {
-            currentDailyMenu.forEach(function (k) {
-                var d = menuCatalog[k];
-                if (!d || !d.el) return;
-                var img = (typeof dishImageMap !== 'undefined' && dishImageMap[k]) ? dishImageMap[k].file : null;
-                (groups[d.category] = groups[d.category] || []).push(item(d.el, d.en, d.price, img));
-            });
-        }
-        Object.keys(labels).forEach(function (c) {
-            if (groups[c]) addSection('Πιάτα Ημέρας – ' + labels[c].el, 'Daily Dishes – ' + labels[c].en, groups[c]);
-        });
-
-        // Static food price tables
-        ['appetizers', 'salads', 'potatoes', 'grilled-dishes'].forEach(function (id) {
-            var box = document.getElementById(id);
-            if (!box) return;
-            var th = box.querySelector('th.lang');
-            var items = [];
-            box.querySelectorAll('tr').forEach(function (tr) {
-                var td = tr.querySelectorAll('td');
-                if (td.length < 2 || !td[0].hasAttribute('data-el')) return;
-                items.push(item(td[0].getAttribute('data-el'), td[0].getAttribute('data-en'), td[1].textContent, null));
-            });
-            addSection(th ? th.getAttribute('data-el') : id, th ? th.getAttribute('data-en') : id, items);
-        });
-
-        var menu = {
-            '@context': 'https://schema.org',
-            '@type': 'Menu',
-            '@id': BASE + '#menu',
-            'name': 'Μενού Matzourana Καλλιθέα – Μαγειρευτά, Πιάτα Ημέρας & Ψητά',
-            'inLanguage': 'el',
-            'hasMenuSection': sections
-        };
-        var tag = document.createElement('script');
-        tag.type = 'application/ld+json';
-        tag.id = 'menu-schema';
-        tag.text = JSON.stringify(menu);
-        document.head.appendChild(tag);
-    } catch (err) {
-        console.warn('Menu schema not generated', err);
-    }
-})();
-</script>
+<!-- Menu Schema (JSON-LD): generated at page load by buildMenuSchema() in matzourana_tools.js
+     from the same data the visitor sees, so dish names and prices in search always match the site. -->
 
 <script type="application/ld+json">
 {
