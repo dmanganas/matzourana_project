@@ -304,6 +304,22 @@ const dishImageMap = {
         file: "web/greek-dish-32.webp",
         alt: "Μοσχαράκι νουά με ρύζι - Ζουμερό μοσχαράκι νουά σιγοψημένο με ρύζι | Beef Tenderloin Roast with Rice - Juicy beef tenderloin slow-roasted with rice"
     },
+    "arakas_lemonatos": {
+        file: "web/greek-dish-33.webp",
+        alt: "Αρακάς λεμονάτος - Με πατάτες, καρότο και άνιθο | Lemony Peas - With potatoes, carrot and dill"
+    },
+    "bakaliaros_spetsiota": {
+        file: "web/greek-dish-34.webp",
+        alt: "Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες - Με πατάτες, φρέσκια ντομάτα και ματζουράνα | Salted Cod Spetsiota with Potatoes - With potatoes, fresh tomato and marjoram"
+    },
+    "soutzoukakia": {
+        file: "web/greek-dish-35.webp",
+        alt: "Σουτζουκάκια Σμυρνέικα - Χειροποίητα με 100% μοσχαρίσιο κιμά | Smyrna-Style Soutzoukakia - Handmade with 100% beef mince"
+    },
+    "oktapodi_stifado": {
+        file: "web/greek-dish-36.webp",
+        alt: "Χταπόδι στιφάδο από φρέσκο χταπόδι - Με κρεμμυδάκια και σάλτσα ντομάτας | Octopus Stifado with Fresh Octopus - With small onions and tomato sauce"
+    },
     
     // Add more mappings here when you add new photos
 };
@@ -776,7 +792,9 @@ const imageList = [
     'DishImages/web/greek-dish-22.webp', 'DishImages/web/greek-dish-23.webp', 'DishImages/web/greek-dish-24.webp',
     'DishImages/web/greek-dish-25.webp', 'DishImages/web/greek-dish-26.webp', 'DishImages/web/greek-dish-27.webp',
     'DishImages/web/greek-dish-28.webp', 'DishImages/web/greek-dish-29.webp', 'DishImages/web/greek-dish-30.webp',
-    'DishImages/web/greek-dish-31.webp'
+    'DishImages/web/greek-dish-31.webp', 'DishImages/web/greek-dish-33.webp', 'DishImages/web/greek-dish-34.webp',
+    'DishImages/web/greek-dish-35.webp', 'DishImages/web/greek-dish-36.webp',
+    'DishImages/web/greek-dish-37.webp'
 ];
 
 const dishAlts = {
@@ -810,7 +828,12 @@ const dishAlts = {
     'DishImages/web/greek-dish-28.webp': "Μοσχαράκι νουά με ρύζι - (Ζουμερό μοσχαράκι νουάά σιγοψημένο με ρύζι) Matzourana Eatery Καλλιθέα | Beef Tenderloin Roast with Rice - (Juicy beef tenderloin slow-roasted with rice) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-29.webp': "Μοσχαράκι λεμονάτο - (Τρυφερό μοσχάρι χτένι λεμονάτο) Matzourana Eatery Καλλιθέα | Lemony Beef Stew - (Tender lemony beef shank) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-30.webp': "Μοσχάρι Γιουβέτσι - (Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα) Matzourana Eatery Καλλιθέα | Beef Giouvetsi - (Traditional beef giouvetsi with grated myzithra) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-31.webp': "Μοσχαράκι νουά με τηγανητές πατάτες - (Ζουμερό μοσχαράκι νουά σιγοψημένο με τηγανητές πατάτες) Matzourana Eatery Καλλιθέα | Beef Tenderloin Roast with Fried Potatoes"
+    'DishImages/web/greek-dish-31.webp': "Μοσχαράκι νουά με τηγανητές πατάτες - (Ζουμερό μοσχαράκι νουά σιγοψημένο με τηγανητές πατάτες) Matzourana Eatery Καλλιθέα | Beef Tenderloin Roast with Fried Potatoes",
+    'DishImages/web/greek-dish-33.webp': "Αρακάς λεμονάτος - (Με πατάτες, καρότο και άνιθο) Matzourana Eatery Καλλιθέα | Lemony Peas - (With potatoes, carrot and dill) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-34.webp': "Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες - (Με πατάτες, φρέσκια ντομάτα και ματζουράνα) Matzourana Eatery Καλλιθέα | Salted Cod Spetsiota with Potatoes - (With potatoes, fresh tomato and marjoram) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-35.webp': "Σουτζουκάκια Σμυρνέικα - (Χειροποίητα με 100% μοσχαρίσιο κιμά) Matzourana Eatery Καλλιθέα | Smyrna-Style Soutzoukakia - (Handmade with 100% beef mince) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-36.webp': "Χταπόδι στιφάδο από φρέσκο χταπόδι - (Με κρεμμυδάκια και σάλτσα ντομάτας) Matzourana Eatery Καλλιθέα | Octopus Stifado with Fresh Octopus - (With small onions and tomato sauce) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-37.webp': "Χόρτα Εποχής - (Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι) Matzourana Eatery Καλλιθέα | Seasonal Greens - (Boiled seasonal greens with olive oil and lemon) Matzourana Eatery Kallithea"
  
 };
 
