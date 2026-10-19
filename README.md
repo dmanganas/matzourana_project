@@ -25,3 +25,7 @@ We offer **food delivery in Kallithea** and nearby areas. Enjoy traditional Gree
 ---
 
 *Keywords:* μαγειρευτά Καλλιθέα, μαγειρεία Καλλιθέα, εστιατόριο Καλλιθέα, ελληνική κουζίνα, παραδοσιακές συνταγές, σπιτικά μαγειρευτά, μαγειρευτό delivery Καλλιθέα, Greek cuisine, traditional Greek food, home-style Greek food, food delivery Kallithea, Matzourana Eatery, Greek lunch Kallithea
+
+## 🛠 Maintenance notes (website files)
+- **Daily menu update:** edit only `matzourana_data.js` (the *DAILY UPDATE ZONE* at the top: `currentDailyMenu`, `currentHighlights`, and `menuCatalog` prices when they change), then run `node tools/generate-dish-pages.js --all --sitemap`.
+- Shared styles: `matzourana_styles.css`.

@@ -2,7 +2,7 @@
 /*
  * Matzourana – per-dish SEO page generator
  * ----------------------------------------
- * Reads menuCatalog + dishImageMap from index.html and writes one small static,
+ * Reads menuCatalog + dishImageMap from matzourana_data.js and writes one small static,
  * crawlable page per dish:  dishes/<slug>/index.html  (URL: https://www.matzourana.gr/dishes/<slug>/)
  *
  * Usage:
@@ -18,12 +18,13 @@ const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
-const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const DATA_FILE = 'matzourana_data.js'; // shared site data (DAILY UPDATE ZONE + catalogs)
+const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
-// Extract a `const NAME = { ... };` object literal from index.html (brace matching, skipping strings/comments)
+// Extract a `const NAME = { ... };` object literal from matzourana_data.js (brace matching, skipping strings/comments)
 function extractObject(name) {
   const start = html.indexOf('const ' + name + ' =');
-  if (start < 0) throw new Error(name + ' not found in index.html');
+  if (start < 0) throw new Error(name + ' not found in ' + DATA_FILE);
   let i = html.indexOf('{', start), depth = 0, q = null;
   const from = i;
   for (; i < html.length; i++) {
