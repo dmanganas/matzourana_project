@@ -43,3 +43,10 @@ We offer **food delivery in Kallithea** and nearby areas. Enjoy traditional Gree
   `matzourana_messages.js` (set `enabled: true` on an entry; preview with
   `?testDate=YYYY-MM-DD`).
 
+### Gallery page
+
+- The gallery lives in `matzourana_gallery.html` (not in `index.html` any more).
+  The monthly "Refresh Matzourana gallery photo links" routine must edit the
+  Google Maps `<img ... data-maps-url>` tiles in `matzourana_gallery.html`.
+  Broken tiles hide themselves (`onerror`); old `/#gallery` links redirect here.
+

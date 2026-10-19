@@ -1227,12 +1227,15 @@ Purpose: Start a page: language from the visitor's last choice, then only the
 On Input: pageName - String (optional; default <body data-page>, else 'home').
 On Output: none.
 Side effects: sets currentLang / <html lang>; renders the daily table, highlights,
-          videos, reviews, seasonal messages + logo theme, Menu JSON-LD; applies the language to all .lang texts;
-          lightbox controls; on 'home' also the rating widget and the daily
-          Firebase publish (D5). Registers the 'languageChange' re-renderers.
+          videos, reviews, seasonal messages + logo theme (each only if its place is on
+          the page); applies the language to all .lang texts; lightbox controls;
+          on 'home' also old-#anchor redirects, the Menu JSON-LD (until the menu
+          page exists), the rating widget and the daily Firebase publish (D5).
+          Registers the 'languageChange' re-renderers.
 ---------------------*/
 function initPage(pageName) {
     const page = pageName || document.body.dataset.page || 'home';
+    if (page === 'home' && redirectOldAnchors()) return;   // old /#gallery links → own page
     currentLang = loadSavedLanguage();
     document.documentElement.lang = currentLang;
 
@@ -1243,7 +1246,7 @@ function initPage(pageName) {
     initReviewsVideoPanel();
     renderSeasonalMessages();
     applySeasonalTheme();
-    buildMenuSchema('https://www.matzourana.gr/');
+    if (page === 'home') buildMenuSchema('https://www.matzourana.gr/');
     initLightboxControls();
     initLogoVideo();
 

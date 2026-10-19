@@ -346,19 +346,55 @@ function gotoGoogleMapsReview() {
 // ===== ONE-PAGE NAVIGATION (until the page split; replaced by real links) =====
 
 /*-------------------
-Purpose: Show one section of the one-page site and hide the others.
+Purpose: Which former home-page sections now live on their own page.
+         Grows with each split step; used by showSection and redirectOldAnchors.
+---------------------*/
+const SECTION_PAGES = {
+    gallery: 'matzourana_gallery.html'
+};
+
+/*-------------------
+Purpose: Nav / return buttons: open a part of the site. A part that has its own
+         page opens that page; a part that is still a section of the home page is
+         shown there (from another page: index.html#<section>).
 On Input: sectionId - String: 'home' | 'menu' | 'about' | 'gallery' | 'reviews' | 'contact'.
 On Output: none.
-Side effects: moves class 'active' to that <section>; opening 'menu' selects the
-          Appetizers tab; closes/opens the hamburger menu like before.
+Side effects: navigates, or moves class 'active' to that <section>; opening 'menu'
+          selects the Appetizers tab; closes/opens the hamburger menu like before.
 ---------------------*/
 function showSection(sectionId) {
+    if (SECTION_PAGES[sectionId]) { goToPage(SECTION_PAGES[sectionId]); return; }
+    const target = document.getElementById(sectionId);
+    if (!target || target.tagName !== 'SECTION') {
+        goToPage(sectionId === 'home' ? 'index.html' : 'index.html#' + sectionId);
+        return;
+    }
     playButtonSound();
     document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
-    const target = document.querySelector(`#${sectionId}`);
-    if (target) target.classList.add('active');
+    target.classList.add('active');
     if (sectionId === 'menu' && typeof showMenu === 'function') showMenu('appetizers');
     toggleMenu();
+}
+
+/*-------------------
+Purpose: Keep old shared links working: /#gallery (and later /#menu, /#reviews, ...)
+         is sent to its own page; a #section that is still on the home page is shown.
+On Input: none (reads location.hash).
+On Output: Boolean - true when the browser is being sent to another page.
+Side effects: location.replace (no extra history entry) or shows the section.
+Used by: initPage() on the home page.
+---------------------*/
+function redirectOldAnchors() {
+    const id = decodeURIComponent((location.hash || '').slice(1));
+    if (!id) return false;
+    if (SECTION_PAGES[id]) { location.replace(SECTION_PAGES[id]); return true; }
+    const target = document.getElementById(id);
+    if (target && target.tagName === 'SECTION') {
+        document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
+        target.classList.add('active');
+        if (id === 'menu' && typeof showMenu === 'function') showMenu('appetizers');
+    }
+    return false;
 }
 
 /*-------------------
