@@ -41,16 +41,11 @@
 </head>
 
 <body data-page="home">
+    <!-- @header -->
     <header>
-        <!--<img src="MatzouranaImages/matzourana-logo.png" alt="Matzourana Grill Logo">-->
         <div class="logo-container">
-            <!--<img src="MatzouranaImages/matzourana-autumn-october-logo.png" alt="Matzourana Grill Logo">-->
             <video autoplay loop muted playsinline class="logo-video">
-                 <!--<source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mov" type="video/quicktime">-->
-                <!-- Optional fallback -->
                 <source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mp4" type="video/mp4">
-                <!--<source src="MatzouranaImages/matzourana-winter-december-movie-logo.mp4" type="video/mp4">-->
-                <!-- Your browser does not support the video tag.-->
             </video>
 
             <!-- Seasonal header greeting: filled by renderSeasonalMessages() from matzourana_messages.js (this autumn text is only the no-JS fallback) -->
@@ -62,9 +57,6 @@
 
         </div>
         <div id="leaves">
-            <!-- Generate multiple leaves with varying sizes and positions -->
-            <!--<div class="branch left"></div>
-            <div class="branch right"></div>-->
             <div class="leaf" style="width: 30px; height: 30px; left: 10%; top: 5%; animation-delay: 0.2s; transform: rotate(-15deg);"></div>
             <div class="leaf" style="width: 40px; height: 40px; left: 75%; top: 15%; animation-delay: 1.3s; transform: rotate(60deg);"></div>
             <div class="leaf" style="width: 35px; height: 35px; left: 30%; top: 25%; animation-delay: 0.7s; transform: rotate(30deg);"></div>
@@ -81,11 +73,6 @@
             <div class="leaf" style="width: 44px; height: 44px; left: 45%; top: 50%; animation-delay: 0.3s; transform: rotate(-80deg);"></div>
             <div class="leaf" style="width: 36px; height: 36px; left: 80%; top: 30%; animation-delay: 1.2s; transform: rotate(50deg);"></div>
         </div>
-            <!-- More leaves can be added for density -->
-        <!-- <div class="language-toggle">
-            <span onclick="toggleLanguage('el')">🇬🇷</span>
-            <span onclick="toggleLanguage('en')">🇬🇧</span>
-        </div> -->
         <div class="language-toggle">
             <span onclick="toggleLanguage('el')">EL</span>
             <span onclick="toggleLanguage('en')">EN</span>
@@ -93,14 +80,15 @@
         
         <div class="hamburger" onclick="toggleMenu()">☰</div>
         <div class="nav-menu">
-            <button onclick="showSection('home')" class="lang" data-el="Αρχική" data-en="Home">Home</button>
-            <button onclick="showSection('menu')" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
-            <button onclick="showSection('about')" class="lang" data-el="Σχετικά" data-en="About">About</button>
-            <button onclick="showSection('gallery')" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
-            <button onclick="showSection('reviews')" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
-            <button onclick="showSection('contact')" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
+            <button onclick="showSection('home')" data-nav="home" aria-current="page" class="lang" data-el="Αρχική" data-en="Home">Home</button>
+            <button onclick="showSection('menu')" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
+            <button onclick="showSection('about')" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">About</button>
+            <button onclick="showSection('gallery')" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
+            <button onclick="showSection('reviews')" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
+            <button onclick="showSection('contact')" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
         </div>
     </header>
+    <!-- @/header -->
 
     <section class="hero active" id="home">
         <div class="section-container left-image">
@@ -1597,14 +1585,21 @@
     </section>
 
         
+    <!-- @footer -->
     <footer>
+        <a class="footer-brand" href="index.html" aria-label="Matzourana – Αρχική">
+            <picture>
+                <source srcset="MatzouranaImages/matzourana-girl-logo-800.webp" type="image/webp">
+                <img src="MatzouranaImages/matzourana-girl-logo-800.jpg" alt="Matzourana – μαγειρείο στην Καλλιθέα, Δημοσθένους 48" width="800" height="800" loading="lazy" decoding="async">
+            </picture>
+        </a>
         <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery. All rights reserved.</p>
         <div class="social-logos">
             <a href='tel:00302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
             <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
             <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
             <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
-            
+
         </div>
 
         <div class="footer-logo">
@@ -1624,12 +1619,14 @@
         <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">⟩</button>
     </div>
 
+    <audio id="button-click-sound" preload="none">
+        <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
+    </audio>
+    <!-- @/footer -->
+
     <audio id="background-music" loop preload="none">
         <source src="Sounds/matzourana-song.mp3" type="audio/mpeg">
         <!--<source src="Sounds/eat-them-all.mp3" type="audio/mpeg">-->
-    </audio>
-    <audio id="button-click-sound" preload="none">
-        <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
     </audio>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>

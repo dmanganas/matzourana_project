@@ -1,0 +1,53 @@
+<!-- ============================================================
+     SHARED HEADER (source of truth). Edit here, then run:
+         node tools/build-pages.js
+     It is stamped into every page between @header markers.
+     The seasonal greeting is NOT edited here: it comes from
+     matzourana_messages.js (renderSeasonalMessages).
+     ============================================================ -->
+    <header>
+        <div class="logo-container">
+            <video autoplay loop muted playsinline class="logo-video">
+                <source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mp4" type="video/mp4">
+            </video>
+
+            <!-- Seasonal header greeting: filled by renderSeasonalMessages() from matzourana_messages.js (this autumn text is only the no-JS fallback) -->
+            <p id="seasonal-header" class="tree-love lang"
+                data-el="🍂 Η Matzourana σας εύχεται ένα υπέροχο φθινόπωρο. 🍁 ✨"
+                data-en="🍂 Matzourana wishes you a wonderful autumn season. 🍁 ✨">
+                🍂 Η Matzourana σας εύχεται ένα υπέροχο φθινόπωρο. 🍁 ✨
+            </p>
+
+        </div>
+        <div id="leaves">
+            <div class="leaf" style="width: 30px; height: 30px; left: 10%; top: 5%; animation-delay: 0.2s; transform: rotate(-15deg);"></div>
+            <div class="leaf" style="width: 40px; height: 40px; left: 75%; top: 15%; animation-delay: 1.3s; transform: rotate(60deg);"></div>
+            <div class="leaf" style="width: 35px; height: 35px; left: 30%; top: 25%; animation-delay: 0.7s; transform: rotate(30deg);"></div>
+            <div class="leaf" style="width: 25px; height: 25px; left: 90%; top: 10%; animation-delay: 2.1s; transform: rotate(-45deg);"></div>
+            <div class="leaf" style="width: 45px; height: 45px; left: 50%; top: 30%; animation-delay: 0.4s; transform: rotate(90deg);"></div>
+            <div class="leaf" style="width: 50px; height: 50px; left: 20%; top: 40%; animation-delay: 1.8s; transform: rotate(-30deg);"></div>
+            <div class="leaf" style="width: 28px; height: 28px; left: 60%; top: 5%; animation-delay: 0.9s; transform: rotate(15deg);"></div>
+            <div class="leaf" style="width: 38px; height: 38px; left: 85%; top: 20%; animation-delay: 1.5s; transform: rotate(-60deg);"></div>
+            <div class="leaf" style="width: 33px; height: 33px; left: 40%; top: 35%; animation-delay: 0.6s; transform: rotate(45deg);"></div>
+            <div class="leaf" style="width: 42px; height: 42px; left: 15%; top: 45%; animation-delay: 2.3s; transform: rotate(-90deg);"></div>
+            <div class="leaf" style="width: 32px; height: 32px; left: 70%; top: 10%; animation-delay: 1.0s; transform: rotate(20deg);"></div>
+            <div class="leaf" style="width: 37px; height: 37px; left: 25%; top: 25%; animation-delay: 0.8s; transform: rotate(-25deg);"></div>
+            <div class="leaf" style="width: 29px; height: 29px; left: 95%; top: 15%; animation-delay: 1.7s; transform: rotate(70deg);"></div>
+            <div class="leaf" style="width: 44px; height: 44px; left: 45%; top: 50%; animation-delay: 0.3s; transform: rotate(-80deg);"></div>
+            <div class="leaf" style="width: 36px; height: 36px; left: 80%; top: 30%; animation-delay: 1.2s; transform: rotate(50deg);"></div>
+        </div>
+        <div class="language-toggle">
+            <span onclick="toggleLanguage('el')">EL</span>
+            <span onclick="toggleLanguage('en')">EN</span>
+        </div>
+        
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+        <div class="nav-menu">
+            <button onclick="showSection('home')" data-nav="home" class="lang" data-el="Αρχική" data-en="Home">Home</button>
+            <button onclick="showSection('menu')" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
+            <button onclick="showSection('about')" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">About</button>
+            <button onclick="showSection('gallery')" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
+            <button onclick="showSection('reviews')" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
+            <button onclick="showSection('contact')" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
+        </div>
+    </header>

@@ -971,6 +971,20 @@ footer {
 footer p {
     font-size: 1em;
 }
+/* Matzourana girl-with-logo picture, shown in the footer of every page */
+footer .footer-brand {
+    display: block;
+    width: 200px;
+    max-width: 55%;
+    margin: 5px auto 10px;
+}
+footer .footer-brand img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
 footer .social-logos {
     margin-top: 10px;
 }

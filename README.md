@@ -29,3 +29,17 @@ We offer **food delivery in Kallithea** and nearby areas. Enjoy traditional Gree
 ## 🛠 Maintenance notes (website files)
 - **Daily menu update:** edit only `matzourana_data.js` (the *DAILY UPDATE ZONE* at the top: `currentDailyMenu`, `currentHighlights`, and `menuCatalog` prices when they change), then run `node tools/generate-dish-pages.js --all --sitemap`.
 - Shared styles: `matzourana_styles.css`.
+
+### Shared header and footer (partials)
+
+- The header (logo video, seasonal greeting slot, EL/EN, menu) and the footer
+  (girl-with-logo picture, social links, ESPA logo, image lightbox) are edited
+  only in `partials/header.html` and `partials/footer.html`.
+- After an edit run `node tools/build-pages.js`; it stamps them into `index.html`
+  and every `matzourana_*.html` between the `<!-- @header -->` / `<!-- @footer -->`
+  markers. `node tools/build-pages.js --check` only reports (exit 1 if a page is
+  out of date). `admin/` and `dishes/` are never touched.
+- Seasonal greetings / holiday notices are not edited in HTML any more: see
+  `matzourana_messages.js` (set `enabled: true` on an entry; preview with
+  `?testDate=YYYY-MM-DD`).
+

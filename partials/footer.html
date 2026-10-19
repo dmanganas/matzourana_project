@@ -1,0 +1,41 @@
+<!-- ============================================================
+     SHARED FOOTER (source of truth): footer with the Matzourana girl-with-logo
+     picture (on every page), the image lightbox and the click sound.
+     Edit here, then run:  node tools/build-pages.js
+     ============================================================ -->
+    <footer>
+        <a class="footer-brand" href="index.html" aria-label="Matzourana – Αρχική">
+            <picture>
+                <source srcset="MatzouranaImages/matzourana-girl-logo-800.webp" type="image/webp">
+                <img src="MatzouranaImages/matzourana-girl-logo-800.jpg" alt="Matzourana – μαγειρείο στην Καλλιθέα, Δημοσθένους 48" width="800" height="800" loading="lazy" decoding="async">
+            </picture>
+        </a>
+        <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery. All rights reserved.</p>
+        <div class="social-logos">
+            <a href='tel:00302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
+            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
+            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+
+        </div>
+
+        <div class="footer-logo">
+            <a href="https://espa-anthropinodynamiko.gr/" target="_blank"><img src="Logos/logotipo.png" alt="Matzourana Logo"></a>
+        </div>
+    </footer>
+
+    <div class="zoom-overlay" onclick="closeZoom()" role="dialog" aria-modal="true" aria-label="Μεγέθυνση πιάτου - Πατήστε για κλείσιμο">
+        <div class="zoom-content">
+            <img id="zoomed-image" src="" alt="" role="img">
+            <div id="zoom-caption" class="zoom-caption">
+                <span id="caption-current"></span>
+                <a id="zoom-maps-link" class="zoom-maps-link" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()" hidden></a>
+            </div>
+        </div>
+        <button class="nav-btn left" onclick="event.stopPropagation(); prevImage()">⟨</button>
+        <button class="nav-btn right" onclick="event.stopPropagation(); nextImage()">⟩</button>
+    </div>
+
+    <audio id="button-click-sound" preload="none">
+        <source src="Sounds/wine-glass-click.mp3" type="audio/mpeg">
+    </audio>
