@@ -2459,3 +2459,9 @@ header .nav-menu {
     .nav-menu .nav-face, .nav-menu a.nav-link { transition: none; }
     .nav-menu a.nav-link:hover .nav-face { transform: none; }
 }
+
+/* Music Stories fit (fitMusicStories in matzourana_tools.js): whole rows hidden so the
+   right column of the home hero ends where the left one ends. */
+.yt-previews.yt-grid > .yt-preview.yt-fit-hidden {
+    display: none;
+}

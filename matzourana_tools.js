@@ -904,7 +904,9 @@ On Input: none. Language: getLang().
           Data: currentHighlights + highlightsCatalog (matzourana_data.js); isShopClosedToday().
 On Output: none.
 Side effects: replaces the contents of <tbody id="daily-highlights-body">;
-          does nothing if that element is not on the page.
+          does nothing if that element is not on the page. Then asks
+          scheduleMusicStoriesFit() to re-fit the Music Stories (the notebook height
+          may have changed).
 Used by: initPage('home') and the 'languageChange' event.
 ---------------------*/
 function renderDailyHighlights() {
@@ -963,6 +965,125 @@ function renderDailyHighlights() {
             (lang === 'en' ? t.en : t.el) + '</td></tr>';
     }
     tbody.innerHTML = html;
+    scheduleMusicStoriesFit();
+}
+
+// ===== HOME: MUSIC STORIES FIT =====
+
+/*-------------------
+Purpose: Measure the content height of one column of the home hero (the column itself
+         is stretched by the flex row, so its own height says nothing).
+On Input: col - Element (.text-panel or .image-panel).
+On Output: Number, px from the top margin of the first visible child to the bottom
+          margin of the last visible child (0 if none).
+Used by: fitMusicStories.
+---------------------*/
+function columnContentHeight(col) {
+    let top = Infinity, bottom = -Infinity;
+    Array.from(col.children).forEach(el => {
+        if (!el.getClientRects().length) return;            // display:none, <template>, ...
+        const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+        top = Math.min(top, r.top - parseFloat(cs.marginTop || 0));
+        bottom = Math.max(bottom, r.bottom + parseFloat(cs.marginBottom || 0));
+    });
+    return bottom > top ? bottom - top : 0;
+}
+
+/*-------------------
+Purpose: Make the right column of the home hero (ending with the Music Stories) end
+         where the left column (ending with the rating card) ends, by showing only as
+         many whole rows of Music Stories as fit: minimum 1 row, maximum all 6.
+On Input: none. Reads the DOM: .yt-grid inside the hero .section-container.
+On Output: Number of stories shown (0 if there is no Music Stories grid on the page).
+Side effects: toggles class 'yt-fit-hidden' on the .yt-preview cards (only when the
+          result changes) and sets data-fit-shown on the grid.
+How: 1) show all cards and measure, in the same task (no paint in between);
+     2) both columns are vertically centred, so equal content heights = equal bottoms;
+        pick the row count whose right content height is closest to the left one
+        (ties: more rows). The result depends only on the content heights with all
+        cards shown, never on the current hidden state, so it cannot loop.
+     When the columns are stacked (flex-direction: column) all cards are shown.
+Used by: scheduleMusicStoriesFit (load, resize, ResizeObserver, languageChange,
+          renderDailyHighlights).
+---------------------*/
+function fitMusicStories() {
+    const grid = document.querySelector('.yt-previews.yt-grid');
+    const row = grid && grid.closest('.section-container');
+    const left = row && row.querySelector(':scope > .text-panel');
+    const right = row && row.querySelector(':scope > .image-panel');
+    if (!grid || !left || !right) return 0;
+    const cards = Array.from(grid.querySelectorAll(':scope > .yt-preview'));
+    const before = cards.map(c => c.classList.contains('yt-fit-hidden'));
+    cards.forEach(c => c.classList.remove('yt-fit-hidden'));
+
+    let shown = cards.length;
+    if (getComputedStyle(row).flexDirection === 'row' && cards.length) {
+        const cols = Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length);
+        const rows = Math.ceil(cards.length / cols);
+        const rowStep = rows > 1 ? cards[cols].getBoundingClientRect().top - cards[0].getBoundingClientRect().top : 0;
+        const leftH = columnContentHeight(left);
+        const rightH = columnContentHeight(right);              // with all rows shown
+        let bestRows = rows, bestDiff = Math.abs(rightH - leftH);
+        for (let k = rows - 1; k >= 1; k--) {
+            const d = Math.abs(rightH - (rows - k) * rowStep - leftH);
+            if (d < bestDiff) { bestDiff = d; bestRows = k; }
+        }
+        shown = Math.min(cards.length, bestRows * cols);
+    }
+    cards.forEach((c, i) => {
+        const hide = i >= shown;
+        if (hide) c.classList.add('yt-fit-hidden');
+        if (hide !== before[i]) grid.dataset.fitChanged = String((+grid.dataset.fitChanged || 0) + 1);
+    });
+    grid.dataset.fitShown = String(shown);
+    return shown;
+}
+
+let musicFitFrame = 0;
+/*-------------------
+Purpose: Run fitMusicStories once on the next animation frame, however many times it
+         is asked for in the meantime (resize bursts, several observers at once).
+On Input: none.
+On Output: none.
+Used by: renderDailyHighlights, initMusicStoriesFit.
+---------------------*/
+function scheduleMusicStoriesFit() {
+    if (musicFitFrame || !document.querySelector('.yt-previews.yt-grid')) return;
+    musicFitFrame = requestAnimationFrame(() => { musicFitFrame = 0; fitMusicStories(); });
+}
+
+/*-------------------
+Purpose: Keep the Music Stories fitted to the left column on the home page.
+On Input: none.
+On Output: none.
+Side effects: fits now; re-fits on window load (fonts, thumbnails), on resize
+          (debounced 150 ms), on 'languageChange', and through a ResizeObserver on the
+          left column's cards, the notebook and the Music Stories grid (the observed
+          boxes have their natural height, not the stretched column height, and an
+          unchanged result writes nothing, so the observer settles).
+          Does nothing on pages without the grid.
+Used by: initPage('home').
+---------------------*/
+function initMusicStoriesFit() {
+    const grid = document.querySelector('.yt-previews.yt-grid');
+    const row = grid && grid.closest('.section-container');
+    if (!grid || !row) return;
+    scheduleMusicStoriesFit();
+    window.addEventListener('load', scheduleMusicStoriesFit);
+    let resizeTimer = 0;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(scheduleMusicStoriesFit, 150);
+    });
+    document.addEventListener('languageChange', scheduleMusicStoriesFit);
+    if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(scheduleMusicStoriesFit);
+        const left = row.querySelector(':scope > .text-panel');
+        if (left) Array.from(left.children).forEach(el => ro.observe(el));
+        const notebook = row.querySelector('.daily-highlights');
+        if (notebook) ro.observe(notebook);
+        ro.observe(grid);
+    }
 }
 
 /*-------------------
@@ -1210,7 +1331,8 @@ Side effects: sets currentLang / <html lang>; renders the daily table, highlight
           videos, reviews, seasonal messages + logo theme (each only if its place is on
           the page); applies the language to all .lang texts; lightbox controls;
           on 'menu' the tab from the address + Menu JSON-LD; on 'home' also
-          old-#anchor redirects, the rating widget and the daily Firebase publish (D5).
+          old-#anchor redirects, the rating widget, the daily Firebase publish (D5)
+          and the Music Stories fit (initMusicStoriesFit).
           Registers the 'languageChange' re-renderers.
 ---------------------*/
 function initPage(pageName) {
@@ -1239,6 +1361,7 @@ function initPage(pageName) {
     if (page === 'home') {
         initRatingWidget();
         publishDailyMenuToFirebase();
+        initMusicStoriesFit();
     }
 
     document.addEventListener('languageChange', () => {
