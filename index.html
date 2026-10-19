@@ -33,11 +33,11 @@
     <meta name="twitter:description" content="Σπιτική κουζίνα και παραδοσιακά μαγειρευτά στη Δημοσθένους 48, Καλλιθέα.">
     <meta name="twitter:image" content="https://www.matzourana.gr/MatzouranaImages/matzourana-gravity-permanente-front.png">
 
-    <link rel="stylesheet" href="matzourana_styles.css?v=20261019b">
-    <script defer src="matzourana_data.js?v=20261019b"></script>
-    <script defer src="matzourana_messages.js?v=20261019b"></script>
-    <script defer src="matzourana_utils.js?v=20261019b"></script>
-    <script defer src="matzourana_tools.js?v=20261019b"></script>
+    <link rel="stylesheet" href="matzourana_styles.css?v=20261019c">
+    <script defer src="matzourana_data.js?v=20261019c"></script>
+    <script defer src="matzourana_messages.js?v=20261019c"></script>
+    <script defer src="matzourana_utils.js?v=20261019c"></script>
+    <script defer src="matzourana_tools.js?v=20261019c"></script>
     
 </head>
 
@@ -80,13 +80,33 @@
         </div>
         
         <div class="hamburger" onclick="toggleMenu()" role="button" tabindex="0" aria-label="Μενού / Menu" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMenu();}">☰</div>
+        <!-- Nav: each link has a small round face of the Matzourana girl of that page (MatzouranaImages/icons/face-<page>-48/96).
+             The face is decorative (alt=""); the text label carries the meaning and switches EL/EN. -->
         <nav class="nav-menu" aria-label="Μενού πλοήγησης">
-            <a href="index.html" data-nav="home" aria-current="page" class="lang" data-el="Αρχική" data-en="Home">Αρχική</a>
-            <a href="matzourana_menu.html" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Μενού</a>
-            <a href="matzourana_about.html" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">Σχετικά</a>
-            <a href="matzourana_gallery.html" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</a>
-            <a href="matzourana_reviews.html" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</a>
-            <a href="matzourana_contact.html" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</a>
+            <a href="index.html" data-nav="home" aria-current="page" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-home-48.webp 1x, MatzouranaImages/icons/face-home-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-home-48.jpg" srcset="MatzouranaImages/icons/face-home-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Αρχική" data-en="Home">Αρχική</span>
+            </a>
+            <a href="matzourana_menu.html" data-nav="menu" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-menu-48.webp 1x, MatzouranaImages/icons/face-menu-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-menu-48.jpg" srcset="MatzouranaImages/icons/face-menu-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Μενού" data-en="Menu">Μενού</span>
+            </a>
+            <a href="matzourana_about.html" data-nav="about" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-about-48.webp 1x, MatzouranaImages/icons/face-about-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-about-48.jpg" srcset="MatzouranaImages/icons/face-about-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Σχετικά" data-en="About">Σχετικά</span>
+            </a>
+            <a href="matzourana_gallery.html" data-nav="gallery" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-gallery-48.webp 1x, MatzouranaImages/icons/face-gallery-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-gallery-48.jpg" srcset="MatzouranaImages/icons/face-gallery-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</span>
+            </a>
+            <a href="matzourana_reviews.html" data-nav="reviews" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-reviews-48.webp 1x, MatzouranaImages/icons/face-reviews-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-reviews-48.jpg" srcset="MatzouranaImages/icons/face-reviews-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</span>
+            </a>
+            <a href="matzourana_contact.html" data-nav="contact" class="nav-link">
+                <picture><source type="image/webp" srcset="MatzouranaImages/icons/face-contact-48.webp 1x, MatzouranaImages/icons/face-contact-96.webp 2x"><img class="nav-face" src="MatzouranaImages/icons/face-contact-48.jpg" srcset="MatzouranaImages/icons/face-contact-96.jpg 2x" alt="" width="48" height="48" decoding="async"></picture>
+                <span class="nav-label lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</span>
+            </a>
         </nav>
     </header>
     <!-- @/header -->
@@ -207,34 +227,7 @@
                           
             </div>
             <button onclick="goToPage('matzourana_menu.html')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">Δείτε το Μενού μας</button>
-            <!-- Hub: one card per page of the site -->
-            <nav class="hub-cards" aria-label="Σελίδες της Matzourana">
-                <a class="hub-card" href="matzourana_menu.html">
-                    <span class="hub-icon" aria-hidden="true">🍽️</span>
-                    <span class="hub-title lang" data-el="Μενού" data-en="Menu">Μενού</span>
-                    <span class="hub-text lang" data-el="Σημερινά πιάτα ημέρας, ορεκτικά, σαλάτες, ψητά και ποτά με τιμές" data-en="Today’s dishes, starters, salads, grills and drinks with prices">Σημερινά πιάτα ημέρας, ορεκτικά, σαλάτες, ψητά και ποτά με τιμές</span>
-                </a>
-                <a class="hub-card" href="matzourana_gallery.html">
-                    <span class="hub-icon" aria-hidden="true">🖼️</span>
-                    <span class="hub-title lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</span>
-                    <span class="hub-text lang" data-el="Φωτογραφίες από τα πιάτα, τη σάλα και τα έργα τέχνης μας" data-en="Photos of our dishes, dining room and artwork">Φωτογραφίες από τα πιάτα, τη σάλα και τα έργα τέχνης μας</span>
-                </a>
-                <a class="hub-card" href="matzourana_reviews.html">
-                    <span class="hub-icon" aria-hidden="true">⭐</span>
-                    <span class="hub-title lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</span>
-                    <span class="hub-text lang" data-el="Τι λένε οι πελάτες μας" data-en="What our guests say">Τι λένε οι πελάτες μας</span>
-                </a>
-                <a class="hub-card" href="matzourana_about.html">
-                    <span class="hub-icon" aria-hidden="true">🌿</span>
-                    <span class="hub-title lang" data-el="Σχετικά" data-en="About">Σχετικά</span>
-                    <span class="hub-text lang" data-el="Η ιστορία μας και τα υλικά μας" data-en="Our story and our ingredients">Η ιστορία μας και τα υλικά μας</span>
-                </a>
-                <a class="hub-card" href="matzourana_contact.html">
-                    <span class="hub-icon" aria-hidden="true">📍</span>
-                    <span class="hub-title lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</span>
-                    <span class="hub-text lang" data-el="Διεύθυνση, τηλέφωνα και ωράριο 12:00–19:30 (Δευτέρα κλειστά)" data-en="Address, phones and hours 12:00–19:30 (closed on Mondays)">Διεύθυνση, τηλέφωνα και ωράριο 12:00–19:30 (Δευτέρα κλειστά)</span>
-                </a>
-            </nav>
+            <!-- (Hub link cards removed: navigation lives in the header menu, which is plain <a href> links to every page.) -->
             <div class="text-panel-info">
                 <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
                     
