@@ -41,13 +41,13 @@
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
         
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu">
-            <button onclick="showSection('home')" data-nav="home" class="lang" data-el="Αρχική" data-en="Home">Home</button>
-            <button onclick="showSection('menu')" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
-            <button onclick="showSection('about')" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">About</button>
-            <button onclick="showSection('gallery')" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
-            <button onclick="showSection('reviews')" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
-            <button onclick="showSection('contact')" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
-        </div>
+        <div class="hamburger" onclick="toggleMenu()" role="button" tabindex="0" aria-label="Μενού / Menu" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMenu();}">☰</div>
+        <nav class="nav-menu" aria-label="Μενού πλοήγησης">
+            <a href="index.html" data-nav="home" class="lang" data-el="Αρχική" data-en="Home">Αρχική</a>
+            <a href="matzourana_menu.html" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Μενού</a>
+            <a href="matzourana_about.html" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">Σχετικά</a>
+            <a href="matzourana_gallery.html" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</a>
+            <a href="matzourana_reviews.html" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</a>
+            <a href="matzourana_contact.html" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</a>
+        </nav>
     </header>

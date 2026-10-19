@@ -11,6 +11,7 @@
                                    Matzourana Eatery, Greek lunch Kallithea">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="canonical" href="https://www.matzourana.gr/">
+    <link rel="icon" type="image/png" href="Logos/matzourana-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Open Graph / Facebook / Instagram -->
@@ -78,15 +79,15 @@
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
         
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu">
-            <button onclick="showSection('home')" data-nav="home" aria-current="page" class="lang" data-el="Αρχική" data-en="Home">Home</button>
-            <button onclick="showSection('menu')" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
-            <button onclick="showSection('about')" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">About</button>
-            <button onclick="showSection('gallery')" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
-            <button onclick="showSection('reviews')" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
-            <button onclick="showSection('contact')" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
-        </div>
+        <div class="hamburger" onclick="toggleMenu()" role="button" tabindex="0" aria-label="Μενού / Menu" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMenu();}">☰</div>
+        <nav class="nav-menu" aria-label="Μενού πλοήγησης">
+            <a href="index.html" data-nav="home" aria-current="page" class="lang" data-el="Αρχική" data-en="Home">Αρχική</a>
+            <a href="matzourana_menu.html" data-nav="menu" class="lang" data-el="Μενού" data-en="Menu">Μενού</a>
+            <a href="matzourana_about.html" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">Σχετικά</a>
+            <a href="matzourana_gallery.html" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</a>
+            <a href="matzourana_reviews.html" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</a>
+            <a href="matzourana_contact.html" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</a>
+        </nav>
     </header>
     <!-- @/header -->
 
@@ -95,7 +96,7 @@
             <div class="text-panel">
                 <h1 class="lang" data-el="Καλώς ήρθατε <br> στη Ματζουράνα <br>" 
                                  data-en="Welcome <br> to Matzourana <br>">
-                                 Καλώς ήρθατε <br> στη Ματζουράνα <br>>
+                                 Καλώς ήρθατε <br> στη Ματζουράνα <br>
                 </h1>
                 <!--<h3 class="lang"
                     data-el="
@@ -122,7 +123,7 @@
                     <p class="lang" 
                         data-el="Στο μικρό μας γαστρομαγειρείο στην Καλλιθέα θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς."  
                         data-en="In our small gastro-tavern in Kallithea you will enjoy home-cooked meals and freshly grilled dishes, infused with our love for authentic flavors and the quality of our ingredients.<br><br>We collaborate with certified small producers from the Ionian and Western Greece to offer you familiar, traditional dishes — sometimes with a modern twist — always focusing on taste and highlighting our culinary heritage.">
-                        Στο μικρό μας γαστρομαγειρείο θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.
+                        Στο μικρό μας γαστρομαγειρείο στην Καλλιθέα θα απολαύσετε μαγειρευτά φαγητά και ψητά της ώρας, που κρύβουν μέσα τους την αγάπη μας για τις αυθεντικές γεύσεις και την ποιότητα των πρώτων υλών.<br><br>Συνεργαζόμαστε με πιστοποιημένους μικρούς παραγωγούς από το Ιόνιο και τη Δυτική Ελλάδα, για να σας προσφέρουμε πιάτα γνώριμα, παραδοσιακά, ενίοτε και με πιο μοντέρνες πινελιές, με έμφαση όμως πάντα στη νοστιμιά και στην ανάδειξη της γαστρονομικής μας κληρονομιάς.
                     </p>
                      <div class="footer-line">
                         <span class="leafs">
@@ -133,30 +134,27 @@
 
                 <div class="text-panel-info">
                     
-                    <h2 class="lang""
+                    <h2 class="lang"
                         data-el="Delivery & Μαγειρευτά Φαγητά στην Καλλιθέα" 
                         data-en="Delivery & Cooked Food in Kallithea">
-                        <strong>Delivery & Μαγειρευτά Φαγητά στην Καλλιθέα</strong>
+                        Delivery & Μαγειρευτά Φαγητά στην Καλλιθέα
                     </h2>
                     <p class="lang"
                         data-el="🌿 Απολαύστε αυθεντικό σπιτικό φαγητό από την κουζίνα της Matzourana, καθημερινά φρέσκο και γεμάτο γεύση! <br><br> ✨ Επωφεληθείτε από το πρόγραμμα διανομής μας απευθείας: <strong>Delivery & Μαγειρευτά Φαγητά</strong> σε όλη την ευρύτερη περιοχή της Καλλιθέας."
                         data-en="🌿 Enjoy authentic homemade food straight from Matzourana's kitchen—fresh and full of flavor every day! <br><br> ✨ Take advantage of our direct delivery program: <strong>Delivery & Cooked Food</strong> across the wider Kallithea area.">
-                        Απολαύστε αυθεντικό σπιτικό φαγητό από την κουζίνα της Matzourana, καθημερινά φρέσκο και γεμάτο γεύση! Επωφεληθείτε από το πρόγραμμα διανομής μας απευθείας: <strong>Delivery & Μαγειρευτά Φαγητά</strong> σε όλη την ευρύτερη περιοχή της <strong>Καλλιθέας</strong>.
+                        🌿 Απολαύστε αυθεντικό σπιτικό φαγητό από την κουζίνα της Matzourana, καθημερινά φρέσκο και γεμάτο γεύση! <br><br> ✨ Επωφεληθείτε από το πρόγραμμα διανομής μας απευθείας: <strong>Delivery & Μαγειρευτά Φαγητά</strong> σε όλη την ευρύτερη περιοχή της Καλλιθέας.
                     </p>
 
                     <p class="lang"
                         data-el="<span style='color:#4A5A4A;'>📞</span> Παραγγείλτε απευθείας τηλεφωνικά και κερδίστε <strong>καθημερινές προνομιακές τιμές</strong>, <strong>μοναδικές προσφορές</strong> και την καλύτερη εξυπηρέτηση σας!"
                         data-en="<span style='color:#4A5A4A;'>📞</span> Order directly by phone and enjoy <strong>daily special prices</strong>, <strong>exclusive offers</strong>, and top service!">
-                        <span style="color:#4A5A4A;">📞</span> Παραγγείλτε απευθείας τηλεφωνικά και κερδίστε 
-                        <strong>καθημερινές προνομιακές τιμές</strong>, 
-                        <strong>μοναδικές προσφορές</strong> 
-                        και την καλύτερη εξυπηρέτηση σας!
+                        <span style='color:#4A5A4A;'>📞</span> Παραγγείλτε απευθείας τηλεφωνικά και κερδίστε <strong>καθημερινές προνομιακές τιμές</strong>, <strong>μοναδικές προσφορές</strong> και την καλύτερη εξυπηρέτηση σας!
                     </p>
 
                     <p class="lang"
                         data-el="Τηλεφωνικές Παραγγελίες με <strong>Διανομή/Delivery</strong> από τη Matzourana:"
                         data-en="Phone Orders with <strong>Delivery</strong> from Matzourana:">
-                        Τηλεφωνικές Παραγγελίες με <strong>Διανομή</strong> από τη Matzourana (Πατήστε για κλήση!):
+                        Τηλεφωνικές Παραγγελίες με <strong>Διανομή/Delivery</strong> από τη Matzourana:
                     </p>
                     <div class="social-logos">
                         <span class="lang" data-el="(Πατήστε για να καλέσετε!)<br>" data-en="(Tap to Call!)<br>">
@@ -165,7 +163,7 @@
                         
                         <a href="tel:+302109577846" class="call-btn">
                             <img src="Logos/matzourana-logo.png" alt="Κλήση Matzourana" class="button-logo">
-                            <span class="lang" data-el="Καλέστε <br> Τώρα" data-en="Press <br> to Call">Καλέστε Τώρα</span>
+                            <span class="lang" data-el="Καλέστε <br> Τώρα" data-en="Press <br> to Call">Καλέστε <br> Τώρα</span>
                         </a>
                     </div>
                     <p class="lang" data-el="(Πληρωμή με μετρητά ή IRIS)" data-en="(Payment by Cash or IRIS)">
@@ -195,8 +193,7 @@
                     <p class="lang"
                         data-el="Για μία συνολική εμπειρία στο περιβάλλον της Ματζουράνας επισκεφθείτε μας στο κατάστημα! <br><br>Θα χαρούμε πολύ να σας υποδεχτούμε και να σας εξυπηρετήσουμε!"
                         data-en="For a complete experience in the environment of Matzourana visit us in-store! <br><br>We’d be delighted to welcome and serve you!">
-                        Θέλετε την πλήρη εμπειρία Ματζουράνας; Επισκεφθείτε μας στο κατάστημα! <br><br>
-                        Θα χαρούμε πολύ να σας υποδεχτούμε και να σας εξυπηρετήσουμε!
+                        Για μία συνολική εμπειρία στο περιβάλλον της Ματζουράνας επισκεφθείτε μας στο κατάστημα! <br><br>Θα χαρούμε πολύ να σας υποδεχτούμε και να σας εξυπηρετήσουμε!
                     </p>
                     <div class="footer-line">
                         <span class="leafs">
@@ -209,7 +206,35 @@
                    
                           
             </div>
-            <button onclick="showSection('menu')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">View Our Menu</button>
+            <button onclick="goToPage('matzourana_menu.html')" class="lang" data-el="Δείτε το Μενού μας" data-en="View Our Menu">Δείτε το Μενού μας</button>
+            <!-- Hub: one card per page of the site -->
+            <nav class="hub-cards" aria-label="Σελίδες της Matzourana">
+                <a class="hub-card" href="matzourana_menu.html">
+                    <span class="hub-icon" aria-hidden="true">🍽️</span>
+                    <span class="hub-title lang" data-el="Μενού" data-en="Menu">Μενού</span>
+                    <span class="hub-text lang" data-el="Σημερινά πιάτα ημέρας, ορεκτικά, σαλάτες, ψητά και ποτά με τιμές" data-en="Today’s dishes, starters, salads, grills and drinks with prices">Σημερινά πιάτα ημέρας, ορεκτικά, σαλάτες, ψητά και ποτά με τιμές</span>
+                </a>
+                <a class="hub-card" href="matzourana_gallery.html">
+                    <span class="hub-icon" aria-hidden="true">🖼️</span>
+                    <span class="hub-title lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</span>
+                    <span class="hub-text lang" data-el="Φωτογραφίες από τα πιάτα, τη σάλα και τα έργα τέχνης μας" data-en="Photos of our dishes, dining room and artwork">Φωτογραφίες από τα πιάτα, τη σάλα και τα έργα τέχνης μας</span>
+                </a>
+                <a class="hub-card" href="matzourana_reviews.html">
+                    <span class="hub-icon" aria-hidden="true">⭐</span>
+                    <span class="hub-title lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</span>
+                    <span class="hub-text lang" data-el="Τι λένε οι πελάτες μας" data-en="What our guests say">Τι λένε οι πελάτες μας</span>
+                </a>
+                <a class="hub-card" href="matzourana_about.html">
+                    <span class="hub-icon" aria-hidden="true">🌿</span>
+                    <span class="hub-title lang" data-el="Σχετικά" data-en="About">Σχετικά</span>
+                    <span class="hub-text lang" data-el="Η ιστορία μας και τα υλικά μας" data-en="Our story and our ingredients">Η ιστορία μας και τα υλικά μας</span>
+                </a>
+                <a class="hub-card" href="matzourana_contact.html">
+                    <span class="hub-icon" aria-hidden="true">📍</span>
+                    <span class="hub-title lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</span>
+                    <span class="hub-text lang" data-el="Διεύθυνση, τηλέφωνα και ωράριο 12:00–19:30 (Δευτέρα κλειστά)" data-en="Address, phones and hours 12:00–19:30 (closed on Mondays)">Διεύθυνση, τηλέφωνα και ωράριο 12:00–19:30 (Δευτέρα κλειστά)</span>
+                </a>
+            </nav>
             <div class="text-panel-info">
                 <!-- Matzourana Dual Review CTA Card – FULLY BILINGUAL with .lang system -->
                     
@@ -219,17 +244,17 @@
                     style="height: 55px; width: auto; margin-bottom: 15px;">-->
                 
                 <!-- Bilingual Heading -->
-                <h2 class="lang""
+                <h2 class="lang"
                     data-el="Αξιολογήστε την προσπάθειά μας να σας εξυπηρετήσουμε!"
-                    data-en="Please rate our effort to serve you!"
-                    <strong>Αξιολογήστε την προσπάθειά μας να σας εξυπηρετήσουμε</strong>
+                    data-en="Please rate our effort to serve you!">
+                    Αξιολογήστε την προσπάθειά μας να σας εξυπηρετήσουμε!
                     
                 </h2>
                 
                 
                 <p class="lang"
                     data-el="(Επιλέξτε μια βαθμολογία)"
-                    data-en="(Choose a rating)"
+                    data-en="(Choose a rating)">
                     (Επιλέξτε μια βαθμολογία)
                 </p>
 
@@ -252,6 +277,7 @@
                     data-el="Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️"
                     data-en="Thank you! Your rating has been recorded ❤️"
                     style="display: none; margin-top: 15px; color: #4A5D4A; font-weight: 500; font-size: 1.15em;">
+                    Ευχαριστούμε! Η βαθμολογία σας καταγράφηκε ❤️
                     </p>
                 </div>
                 
@@ -271,7 +297,7 @@
                             data-el="Αξιολόγηση στο Χάρτη Google" 
                             data-en="Review on on Google Maps"
                             onclick="gotoGoogleMapsReview()">
-                        Δείτε στον Χάρτη Google
+                        Αξιολόγηση στο Χάρτη Google
                     </button>
                     
                 </div>
@@ -280,8 +306,7 @@
                 <p class="lang"
                 data-el="Βοηθήστε μας να μεγαλώσουμε <br>την αυθεντική σπιτική κουζίνα μας!<br><strong>Σας ευχαριστούμε θερμά <br>για την εμπιστοσύνη σας ❤️</strong>"
                 data-en="Help us grow <br> our authentic home-style Greek cuisine!<br><strong>Thank you very much <br>for your trust ❤️</strong>">
-                    Βοηθήστε μας να μεγαλώσουμε <br>την αυθεντική σπιτική κουζίνα μας!<br>
-                    <strong>Σας ευχαριστούμε θερμά <br>για την εμπιστοσύνη σας ❤️</strong>
+                    Βοηθήστε μας να μεγαλώσουμε <br>την αυθεντική σπιτική κουζίνα μας!<br><strong>Σας ευχαριστούμε θερμά <br>για την εμπιστοσύνη σας ❤️</strong>
                 </p>
 
             </div>
@@ -304,44 +329,34 @@
                                 loading="eager">
                         </a> 
                         <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">-->
-                        <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
+                        <a href="https://www.google.com/maps/place/MATZOURANA/@37.9566025,23.7106779,17z/data=!4m15!1m8!3m7!1s0x14a1bc55ee53ece7:0xf88c808dd92b6d74!2sDimosthenous+48,+Kallithea+176+71,+Griechenland!3b1!8m2!3d37.9566025!4d23.7106779!16s%2Fg%2F11pw2vry8d!3m5!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!16s%2Fg%2F11m5lpfpyp?entry=ttu&amp;g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Matzourana στον Χάρτη Google"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
                         <div class="image-panel-info">
                                 <h2 class="lang"
                                     data-el="Βρείτε μας στην Καλλιθέα" 
                                     data-en="Find us in Kallithea">
-                                    <strong>Βρείτε μας στην Καλλιθέα</strong>
+                                    Βρείτε μας στην Καλλιθέα
                                 </h2>
                            <p class="lang"
                                 data-el="Δημοσθένους 48, Καλλιθέα<br>
-                                Τηλ.: <a href='tel:00302109577846' class='phone-link'>
+                                Τηλ.: <a href='tel:+302109577846' class='phone-link'>
                                 <!--<img src='Logos/phone-logo.png' alt='Call' class='phone-icon'>-->
                                 210 9577 846</a><br>
                                 Διανομή καθημερινά: 12:00–19:30<br>
                                 Δευτέρα κλειστά"
 
                                 data-en="Dimosthenous 48, Kallithea<br>
-                                Tel: <a href='tel:00302109577846' class='phone-link'>
+                                Tel: <a href='tel:+302109577846' class='phone-link'>
                                 <!--<img src='Logos/phone-logo.png' alt='Call' class='phone-icon'>-->
                                 210 9577 846</a><br>
                                 Daily Delivery: 12:00–19:30<br>
                                 Closed on Mondays">
 
-                                Dimosthenous 48, Kallithea<br>
-
-                                Tel:
-                                <a href="tel:2109577846" class="phone-link">
-                                    <!--<img src="Logos/phone-logo.png" alt="Call" class="phone-icon">-->
-                                    210 9577 846
-                                </a><br>
-
-                                Mobile:
-                                <a href="tel:6971701113" class="phone-link">
-                                    <!--<img src="Logos/phone-logo.png" alt="Call" class="phone-icon">-->
-                                    697 1701 113
-                                </a><br>
-
-                                Daily Delivery: 11:30–19:30<br>
-                                Closed on Mondays
+                                Δημοσθένους 48, Καλλιθέα<br>
+                                Τηλ.: <a href='tel:+302109577846' class='phone-link'>
+                                
+                                210 9577 846</a><br>
+                                Διανομή καθημερινά: 12:00–19:30<br>
+                                Δευτέρα κλειστά
                             </p>
                            
                             <!-- Seasonal notices (closures, holiday wishes, music): filled by renderSeasonalMessages() from matzourana_messages.js -->
@@ -350,13 +365,13 @@
                             <h2 class="lang" id="specials-title"
                                 data-el="Σημερινές Φρεσκομαγειρεμένες Προτάσεις"
                                 data-en="Today's Freshly Cooked Specials">
-                                <strong>Σημερινές Φρεσκομαγειρεμένες Προτάσεις</strong>
+                                Σημερινές Φρεσκομαγειρεμένες Προτάσεις
                             </h2>
 
                             <p class="lang" style="font-weight: bold; color: #4A5D4A;"
                                 data-el="🍷🍽️✨ Οι προτάσεις της ημέρας από την κουζίνα της Matzourana. <br><br> 👉 Πατήστε στην εικόνα για να δείτε το μενού με τα φρεσκομαγειρεμένα φαγητά μας:"
                                 data-en="🍷🍽️✨ Today’s suggestions from the Matzourana kitchen. <br><br> 👉 Click the image to view our freshly cooked meals menu:">
-                                ✨ Σημερινές προτάσεις από την κουζίνα της Matzourana: 👉 Πατήστε στην εικόνα για να δείτε το μενού των ημερήσιων πιάτων
+                                🍷🍽️✨ Οι προτάσεις της ημέρας από την κουζίνα της Matzourana. <br><br> 👉 Πατήστε στην εικόνα για να δείτε το μενού με τα φρεσκομαγειρεμένα φαγητά μας:
                             </p>
 
                             
@@ -387,7 +402,7 @@
                             <h2 class="lang" 
                                 data-el="📽️ Μουσικές Ιστορίες από την Κουζίνα της Matzourana"
                                 data-en="📽️ Musical Stories from Matzourana Kitchen">
-                                <strong>📽️ Μουσικές Ιστορίες από την Κουζίνα μας</strong>
+                                📽️ Μουσικές Ιστορίες από την Κουζίνα της Matzourana
                             </h2>
                             <p class="lang" 
                                 data-el="🎵 Για μία αφηγηματική μουσική εμπειρία από τη 🌿 Matzourana, αφιερωμένη στον Ερχομό της Άνοιξης ❤️ ως ένα εσωτερικό κάλεσμα, κάντε κλικ στις εικόνες των YouTube Short. ✨"
@@ -457,204 +472,6 @@
             </div>
         </div>
     </section>
-
-    <section class="about" id="about">
-        <!--<div class="section-container right-image">
-            <div class="text-panel">
-                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
-                <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
-                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
-            </div>
-            <div class="image-panel">
-                <img id="about-image" src="CoreImages/about-image.png" alt="About Us Image">
-            </div>
-        </div>-->
-        <div class="section-container">
-            <div class="left-panel">
-                <div class="image-panel">
-                    <a href="https://youtube.com/shorts/x_X9GzP7X5g" target="_blank">
-                        <img id="about-image" src="MatzouranaImages/matzourana-about-logo.png" alt="About Us Image">
-                    </a>
-                </div>
-                <div class="text-info">
-                    
-                        <p class="lang" data-el="Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτέρη, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον." 
-                                        data-en="Our kitchen focuses on the nutritional value and quality of our ingredients. Our meats are all sourced from the Skouteri family, from Astakos, Aetoloakarnania, renowned for adhering to strict standards in their products. Our minced meat is 100% beef. Our feta is PDO. Our vegetables, always fresh and seasonal, are selected from our local farmers’ market as well as from small certified producers. Our eggs are organic. The olive oil we use in all our dishes is exceptional extra virgin olive oil from Achaia and Kefalonia. The sunflower oil we use only for frying is of high quality and changed very frequently. Our care in ingredient selection is non-negotiable. Every dish is the result of respect and love for both people and the environment.">
-                                        Το μαγειρείο μας, δίνει μεγάλη έμφαση στη θρεπτική αξία και την ποιότητα των πρώτων υλών. Τα κρέατά μας είναι όλα παραγωγής οικογένειας Σκουτέρη, από τον Αστακό Αιτωλοακαρνανίας, γνωστής για την τήρηση αυστηρών προδιαγραφών στα προϊόντα τους. Ο κιμάς μας είναι 100% μοσχαρίσιος. Η φέτα μας είναι ΠΟΠ. Τα λαχανικά μας, πάντα φρέσκα και εποχιακά, είναι διαλεγμένα από τη λαϊκή αγορά της γειτονιάς μας καθώς και από μικρούς πιστοποιημένους παραγωγούς. Τα αυγά μας είναι βιολογικά. Το ελαιόλαδο που χρησιμοποιούμε σε όλες μας τις παρασκευές, είναι εξαιρετικό έξτρα παρθένο ελαιόλαδο Αχαΐας και Κεφαλονιάς. Το ηλιέλαιο που χρησιμοποιούμε μόνο στο τηγάνισμα, είναι υψηλής ποιότητας ηλιέλαιο που αλλάζουμε πολύ τακτικά. Η φροντίδα της επιλογής των υλικών μας είναι αδιαπραγμάτευτη. Κάθε πιάτο μας είναι αποτέλεσμα σεβασμού και αγάπης προς τον άνθρωπο και το περιβάλλον.</p>
-                    <div class="footer-line">
-                        <span class="leafs">
-                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <h2 class="lang" data-el="Σχετικά με Εμάς" data-en="About Us">Σχετικά με Εμάς</h2>
-                <div class="text-panel">
-                    <div class="text-panel-info">
-                        <p class="lang" data-el="Η Ματζουράνα άνοιξε τις πόρτες της την Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!" 
-                                    data-en="Matzourana opened its doors in Spring 2025. <br><br> Brings the authentic taste of Greek cuisine with fresh ingredients and traditional recipes. <br><br> Come and experience the magic of taste!">
-                                    Η Ματζουράνα άνοιξε τις πόρτες της Άνοιξη του 2025. <br><br> Φέρνει την αυθεντική γεύση της ελληνικής κουζίνας με φρέσκα υλικά και παραδοσιακές συνταγές. <br><br> Ελάτε να δοκιμάσετε τη μαγεία της γεύσης!</p>
-                    </div>
-                </div>
-                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
-            </div>
-        </div>
-    </section>
-
-    <section class="contact" id="contact">
-        <div class="section-container left-image">
-            <div class="image-panel">
-                <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map">-->
-                <a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
-                <button class="map-btn lang" data-el="Δείτε στον Χάρτη Google" data-en="View on Google Maps" onclick="gotoGoogleMaps()">View on Google Maps</button>
-                <!-- YouTube Shorts Preview -->
-                <a href="https://youtu.be/czBhNw-r-vU?si=aEbg88iVXjryIW6r" target="_blank" class="yt-preview">
-                    <img src="https://img.youtube.com/vi/czBhNw-r-vU/hqdefault.jpg" 
-                    alt="YouTube Shorts Preview"
-                    class="yt-thumb">
-                </a>
-                <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
-            </div>
-            <div class="text-panel">
-                <h2 class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</h2>
-                <div class="image-panel">
-                    <a href="https://youtube.com/shorts/hkI9bFksWFI" target="_blank">
-                        <img id="contact-map" src="MatzouranaImages/matzourana-contact-logo.png" alt="Matzourana Contact Logo">
-                    </a>
-                    <!--<a href="#" onclick="gotoGoogleMaps()" target="_blank"> <img img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>-->
-                </div>
-                <div class="text-panel-info">
-                    <!--<p class="lang" data-el="Δημοσθένους 48, Καλλιθέα<br>Τηλ.: 210 9577 846<br>Διανομή καθημερινά: 12:00-19:30<br>Δευτέρα κλειστά" data-en="Dimosthenous 48, Kallithea<br>Mobile: 697 1701 113<br>Daily Delivery: 12:00-19:30<br>Closed on Mondays">Dimosthenous 48, Kallithea<br>Tel: 210 9577 846<br>Mobile: 697 1701 113<br>Daily Delivery: 11:30-19:30<br>Closed on Mondays</p>-->
-                    <p class="lang" 
-                        data-el="Δημοσθένους 48, Καλλιθέα<br>
-                        Τηλ.: <a href='tel:2109577846'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:2px;'></a> 210 9577 846<br>
-                        Διανομή καθημερινά: 12:00-19:30<br>
-                        Δευτέρα κλειστά"
-
-                        data-en="Dimosthenous 48, Kallithea<br>
-                        Mobile: <a href='tel:6971701113'><img src='Logos/phone-logo.png' alt='Call' style='width:25px; position:relative; top:2px;'></a> 697 1701 113<br>
-                        Daily Delivery: 12:00-19:30<br>
-                         Closed on Mondays">
-
-                        Dimosthenous 48, Kallithea<br>
-
-                        Tel:
-                        <a href="tel:2109577846">
-                            <img src="Logos/phone-logo.png" alt="Call" style="width:22px; position:relative; top:3px;">
-                        </a>
-                        210 9577 846<br>
-
-                        Mobile:
-                        <a href="tel:6971701113">
-                            <img src="Logos/phone-logo.png" alt="Call" style="width:22px; position:relative; top:3px;">
-                        </a>
-                        697 1701 113<br>
-
-                        Daily Delivery: 11:30-19:30<br>
-                        Closed on Mondays
-                    </p>
-                </div>
-                
-            </div>
-        </div>
-    </section>
-    
-    <!-- ==================== Τι λένε για εμάς / What they say about us ==================== -->
-    <section class="reviews" id="reviews">
-        <div class="reviews-wrap">
-            <div class="reviews-hero">
-                <div class="reviews-art">
-                    <picture>
-                        <source srcset="MatzouranaImages/matzourana-spring-logo-600.webp" type="image/webp">
-                        <img src="MatzouranaImages/matzourana-spring-logo-600.jpg" width="600" height="735" loading="lazy" decoding="async"
-                             alt="Η ανοιξιάτικη φιγούρα της Matzourana – μαγειρείο στην Καλλιθέα">
-                    </picture>
-                </div>
-                <div class="reviews-head">
-                    <p class="reviews-kicker lang" data-el="Οι πελάτες μας" data-en="Our guests">Οι πελάτες μας</p>
-                    <h2 class="lang" data-el="Τι λένε για εμάς" data-en="What they say about us">Τι λένε για εμάς</h2>
-                    <a class="reviews-rating" target="_blank" rel="noopener"
-                       href="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp">
-                        <span class="rv-stars" aria-hidden="true">★★★★★</span>
-                        <span class="rv-g lang" data-el="4.8 ★ από 71 κριτικές στο Google" data-en="4.8 ★ from 71 Google reviews">4.8 ★ από 71 κριτικές στο Google</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="reviews-cards">
-                <figure class="rv-card">
-                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
-                    <blockquote class="rv-text" data-review="0" lang="en">Food is absolutely fresh and amazing, it displays the greek cuisins beyond grill food. The owners super kind and helpful and the place has a modern interior. Highly recommend!!!</blockquote>
-                    <p class="rv-trans" data-review="0" hidden><span class="rv-trans-note"></span> <button type="button" class="rv-trans-toggle"></button></p>
-                    <figcaption>
-                        <span class="rv-avatar" aria-hidden="true">J</span>
-                        <div>
-                            <p class="rv-name">J. Anna Fekete</p>
-                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Νοέμβριος 2025" data-en="Local Guide · <span class='rv-src'>Google review</span> · November 2025">Local Guide · <span class="rv-src">Κριτική Google</span> · Νοέμβριος 2025</span></p>
-                        </div>
-                    </figcaption>
-                </figure>
-                <figure class="rv-card">
-                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
-                    <blockquote class="rv-text" data-review="1" lang="en">Easily the best place to eat in Kallithea with great service and the owner is the best!</blockquote>
-                    <p class="rv-trans" data-review="1" hidden><span class="rv-trans-note"></span> <button type="button" class="rv-trans-toggle"></button></p>
-                    <figcaption>
-                        <span class="rv-avatar" aria-hidden="true">Μ</span>
-                        <div>
-                            <p class="rv-name">Μανος Κουτρουλακης</p>
-                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Μάρτιος 2026" data-en="Local Guide · <span class='rv-src'>Google review</span> · March 2026">Local Guide · <span class="rv-src">Κριτική Google</span> · Μάρτιος 2026</span></p>
-                        </div>
-                    </figcaption>
-                </figure>
-                <figure class="rv-card">
-                    <div class="rv-stars" aria-label="5/5">★★★★★</div>
-                    <blockquote class="rv-text" data-review="2" lang="en">Exceptional food and service!! Try soutzoukakia!! A+++</blockquote>
-                    <p class="rv-trans" data-review="2" hidden><span class="rv-trans-note"></span> <button type="button" class="rv-trans-toggle"></button></p>
-                    <figcaption>
-                        <span class="rv-avatar" aria-hidden="true">P</span>
-                        <div>
-                            <p class="rv-name">Petros Moschidis</p>
-                            <p class="rv-meta"><span class="lang" data-el="Local Guide · <span class='rv-src'>Κριτική Google</span> · Αύγουστος 2026" data-en="Local Guide · <span class='rv-src'>Google review</span> · August 2026">Local Guide · <span class="rv-src">Κριτική Google</span> · Αύγουστος 2026</span></p>
-                        </div>
-                    </figcaption>
-                </figure>
-            </div>
-
-            <div class="reviews-cta">
-                <a class="lang" target="_blank" rel="noopener"
-                   href="https://www.google.com/maps/place/MATZOURANA/@37.9566043,23.7106794,17z/data=!4m8!3m7!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!9m1!1b1!16s%2Fg%2F11m5lpfpyp"
-                   data-el="Διαβάστε όλες τις κριτικές στο Google" data-en="Read all reviews on Google">Διαβάστε όλες τις κριτικές στο Google</a>
-            </div>
-
-            <div class="rv-videos">
-                <h3 class="lang" data-el="🎬 Από την κουζίνα της Matzourana" data-en="🎬 From the Matzourana kitchen">🎬 Από την κουζίνα της Matzourana</h3>
-                <div class="rv-stage">
-                    <div class="rv-featured">
-                        <video id="rv-player" muted loop playsinline preload="none"
-                               poster="Videos/posters/dish-video-21.jpg" data-src="Videos/dish-video-21.mp4"
-                               aria-label="Σουτζουκάκια Σμυρνέικα"></video>
-                        <p id="rv-caption" class="rv-caption lang" data-el="Σουτζουκάκια Σμυρνέικα" data-en="Smyrna-Style Soutzoukakia">Σουτζουκάκια Σμυρνέικα</p>
-                    </div>
-                    <div class="rv-thumbs">
-                        <button type="button" class="rv-thumb active" data-video="Videos/dish-video-21.mp4" data-poster="Videos/posters/dish-video-21.jpg" data-cap-el="Σουτζουκάκια Σμυρνέικα" data-cap-en="Smyrna-Style Soutzoukakia"><img src="Videos/posters/dish-video-21.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Σουτζουκάκια Σμυρνέικα" data-en="Smyrna-Style Soutzoukakia">Σουτζουκάκια Σμυρνέικα</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-7.mp4" data-poster="Videos/posters/dish-video-7.jpg" data-cap-el="Παστίτσιο – Χειροποίητο με μπεσαμέλ" data-cap-en="Pastitsio – Handmade with béchamel"><img src="Videos/posters/dish-video-7.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Παστίτσιο" data-en="Pastitsio">Παστίτσιο</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-5.mp4" data-poster="Videos/posters/dish-video-5.jpg" data-cap-el="Μουσακάς – Με μοσχαρίσιο κιμά και μπεσαμέλ" data-cap-en="Moussaka – With beef mince and béchamel"><img src="Videos/posters/dish-video-5.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Μουσακάς" data-en="Moussaka">Μουσακάς</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-19.mp4" data-poster="Videos/posters/dish-video-19.jpg" data-cap-el="Γεμιστά" data-cap-en="Stuffed Vegetables"><img src="Videos/posters/dish-video-19.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Γεμιστά" data-en="Stuffed Vegetables">Γεμιστά</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-2.mp4" data-poster="Videos/posters/dish-video-2.jpg" data-cap-el="Μοσχάρι Γιουβέτσι – Με τριμμένη μυζήθρα" data-cap-en="Beef Giouvetsi – With grated myzithra"><img src="Videos/posters/dish-video-2.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Μοσχάρι Γιουβέτσι" data-en="Beef Giouvetsi">Μοσχάρι Γιουβέτσι</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-25.mp4" data-poster="Videos/posters/dish-video-25.jpg" data-cap-el="Κατσίκι γάλακτος στο φούρνο" data-cap-en="Milk-Fed Kid Goat (Oven)"><img src="Videos/posters/dish-video-25.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Κατσίκι γάλακτος" data-en="Milk-Fed Kid Goat">Κατσίκι γάλακτος</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-22.mp4" data-poster="Videos/posters/dish-video-22.jpg" data-cap-el="Ψητά της ώρας" data-cap-en="Grilled Dishes"><img src="Videos/posters/dish-video-22.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Ψητά της ώρας" data-en="Grilled Dishes">Ψητά της ώρας</span></button>
-                        <button type="button" class="rv-thumb" data-video="Videos/dish-video-making-01.mp4" data-poster="Videos/posters/dish-video-making-01.jpg" data-cap-el="Σουτζουκάκια από την Matzourana" data-cap-en="Making Matzourana Soutzoukakia"><img src="Videos/posters/dish-video-making-01.jpg" alt="" loading="lazy" width="360" height="640"><span class="lang" data-el="Παρασκευή: Σουτζουκάκια" data-en="Making of: Soutzoukakia">Παρασκευή: Σουτζουκάκια</span></button>
-                    </div>
-                </div>
-            </div>
-
-            <button class="return-btn lang" data-el="Επιστροφή στην Κύρια Σελίδα" data-en="Return to Main Page" onclick="showSection('home')">Return to Main Page</button>
-        </div>
-
-    </section>
-
-        
     <!-- @footer -->
     <footer>
         <a class="footer-brand" href="index.html" aria-label="Matzourana – Αρχική">
@@ -663,9 +480,9 @@
                 <img src="MatzouranaImages/matzourana-girl-logo-800.jpg" alt="Matzourana – μαγειρείο στην Καλλιθέα, Δημοσθένους 48" width="800" height="800" loading="lazy" decoding="async">
             </picture>
         </a>
-        <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery. All rights reserved.</p>
+        <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery - All rights reserved.</p>
         <div class="social-logos">
-            <a href='tel:00302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
+            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
             <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
             <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
             <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>

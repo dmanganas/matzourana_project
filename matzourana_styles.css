@@ -302,7 +302,7 @@ p { font-size: 1em; line-height: 1.4; }
     pointer-events: auto;
 }
 
-.nav-menu button {
+.nav-menu button, .nav-menu a {
     color: white;
     background: none;
     border: none;
@@ -315,7 +315,7 @@ p { font-size: 1em; line-height: 1.4; }
     text-align: left;
 }
 
-.nav-menu button:hover {
+.nav-menu button:hover, .nav-menu a:hover {
     color: #f4c430;
 }
 
@@ -497,7 +497,7 @@ section.active {
     display: block;
     opacity: 1;
 }
-button.lang {
+button.lang, .nav-menu a.lang, a.map-btn.lang {
     font-weight: 400 !important; /* Override any bold styles */
     font-family: 'Open Sans', sans-serif !important;
 }
@@ -1442,38 +1442,6 @@ filter: blur(0);
     filter: drop-shadow(0 0 1px rgba(0,0,0,0.35));
 }
 
-/* Typewriter container */
-.typewriter {
-    overflow: hidden; /* Ensures content is clipped */
-    white-space: nowrap; /* Keeps text on one line during animation */
-    border-right: 0.15em solid #4A5D4A; /* Blinking cursor */
-    animation: 
-typing 3.5s steps(40, end) forwards,  /* letter by letter */
-blink-caret 0.75s step-end infinite;   /* cursor blink */
-}
-
-/*.typewriter {
-    border-right: 0.15em solid #4A5D4A;
-    animation: blink-caret 0.75s step-end infinite;
-    white-space: pre-wrap; /* allows wrapping after typing */
-}*/
-
-/* The actual text span */
-.typewriter-text {
-    display: inline-block;
-}
-
-/* Typing animation */
-@keyframes typing {
-    from { width: 0 }
-    to   { width: 100% }
-}
-
-/* Blinking cursor */
-@keyframes blink-caret {
-    from, to   { border-color: transparent }
-    50%        { border-color: #4A5D4A; }
-}
 .handwriting-svg {
     width: 100%;
     height: 100px;                /* adjust height to match your row design */
@@ -1584,7 +1552,7 @@ stroke-dashoffset: 0;
         right: 50px;
         width: 10px;
     }
-    .nav-menu button {
+    .nav-menu button, .nav-menu a {
         font-size: 1em;
         padding: 2px 2px;
         min-width: 120px;
@@ -1696,7 +1664,7 @@ stroke-dashoffset: 0;
         width: 5px;
     }
     
-    .nav-menu button {
+    .nav-menu button, .nav-menu a {
         font-size: 0.85em;
         padding: 1.5px 1;
         z-index: 3; 
@@ -2038,7 +2006,7 @@ stroke-dashoffset: 0;
     .nav-menu {
         width: 110px;
     }
-    .nav-menu button {
+    .nav-menu button, .nav-menu a {
         font-size: 0.8em;
     }
     
@@ -2260,7 +2228,7 @@ stroke-dashoffset: 0;
 }
 .reviews-head { flex: 1 1 auto; position: relative; z-index: 1; }
 .reviews-kicker { margin: 0; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7em; color: #D4A017; font-weight: 700; }
-.reviews .reviews-head h2 { color: #f6f1e3; margin: 0.15em 0 0.3em; font-size: 1.7em; }
+.reviews .reviews-head h2, .reviews .reviews-head h1 { color: #f6f1e3; margin: 0.15em 0 0.3em; font-size: 1.7em; }
 .reviews-rating {
     display: inline-flex; align-items: center; gap: 0.5em; flex-wrap: wrap;
     background: rgba(246,241,227,0.1); border: 1px solid rgba(246,241,227,0.25);
@@ -2353,7 +2321,7 @@ stroke-dashoffset: 0;
 }
 @media (max-width: 480px) {
     .reviews-hero { flex-direction: column; text-align: center; padding: 1.2em 1em; gap: 0.8em; }
-    .reviews .reviews-head h2 { font-size: 1.6em; }
+    .reviews .reviews-head h2, .reviews .reviews-head h1 { font-size: 1.6em; }
     .reviews-rating { font-size: 1em; }
     .rv-card blockquote { font-size: 1.15em; }
     .rv-name { font-size: 1.05em; }
@@ -2363,4 +2331,67 @@ stroke-dashoffset: 0;
     .rv-caption { font-size: 1.05em; }
     .rv-thumb span { font-size: 0.75em; }
     .rv-thumbs { grid-template-columns: repeat(4, 1fr); gap: 0.5em; }
+}
+
+/* ===== Page split: nav links, current page, home hub cards ===== */
+/* The nav items are real links now; they look exactly like the old buttons */
+.nav-menu a {
+    text-decoration: none;
+    box-sizing: border-box;
+}
+.nav-menu a[aria-current="page"] {
+    color: #f4c430;
+}
+/* Home hub: one card per page */
+.hub-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin: 16px 0 8px;
+}
+.hub-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 14px 12px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid #4A5D4A;
+    border-radius: 16px;
+    color: #4A5D4A;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.hub-card:hover, .hub-card:focus-visible {
+    background-color: #4A5D4A;
+    color: #fff;
+}
+.hub-icon { font-size: 1.8em; line-height: 1.1; }
+.hub-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.15em;
+    margin: 6px 0 4px;
+}
+.hub-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9em;
+    line-height: 1.35;
+}
+@media (max-width: 600px) {
+    .hub-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hub-card { padding: 10px 8px; border-radius: 12px; }
+    .hub-title { font-size: 1em; }
+    .hub-text { font-size: 0.8em; }
+}
+/* "View on Google Maps" is a real link now; same look as the old button */
+a.map-btn {
+    display: inline-block;
+    box-sizing: border-box;
+    line-height: normal;
+}
+/* Home: the text column is taller with the hub cards; keep the picture + contact panel at the top */
+.hero .image-panel {
+    justify-content: flex-start;
 }

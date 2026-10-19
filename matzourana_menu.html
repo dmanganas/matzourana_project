@@ -6,6 +6,7 @@
     <title>Μενού – Μαγειρευτά &amp; Πιάτα Ημέρας | Matzourana Καλλιθέα</title>
     <meta name="description" content="Το μενού της Matzourana στην Καλλιθέα: σημερινά πιάτα ημέρας (μαγειρευτά), ορεκτικά, σαλάτες, ψητά της ώρας, αναψυκτικά, μπύρες και κρασιά με τιμές. Delivery 12:00–19:30, Δευτέρα κλειστά.">
     <link rel="canonical" href="https://www.matzourana.gr/matzourana_menu.html">
+    <link rel="icon" type="image/png" href="Logos/matzourana-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
@@ -452,15 +453,15 @@
             <span onclick="toggleLanguage('en')">EN</span>
         </div>
         
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-        <div class="nav-menu">
-            <button onclick="showSection('home')" data-nav="home" class="lang" data-el="Αρχική" data-en="Home">Home</button>
-            <button onclick="showSection('menu')" data-nav="menu" aria-current="page" class="lang" data-el="Μενού" data-en="Menu">Menu</button>
-            <button onclick="showSection('about')" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">About</button>
-            <button onclick="showSection('gallery')" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Gallery</button>
-            <button onclick="showSection('reviews')" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Reviews</button>
-            <button onclick="showSection('contact')" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Contact</button>
-        </div>
+        <div class="hamburger" onclick="toggleMenu()" role="button" tabindex="0" aria-label="Μενού / Menu" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMenu();}">☰</div>
+        <nav class="nav-menu" aria-label="Μενού πλοήγησης">
+            <a href="index.html" data-nav="home" class="lang" data-el="Αρχική" data-en="Home">Αρχική</a>
+            <a href="matzourana_menu.html" data-nav="menu" aria-current="page" class="lang" data-el="Μενού" data-en="Menu">Μενού</a>
+            <a href="matzourana_about.html" data-nav="about" class="lang" data-el="Σχετικά" data-en="About">Σχετικά</a>
+            <a href="matzourana_gallery.html" data-nav="gallery" class="lang" data-el="Γκαλερί" data-en="Gallery">Γκαλερί</a>
+            <a href="matzourana_reviews.html" data-nav="reviews" class="lang" data-el="Κριτικές" data-en="Reviews">Κριτικές</a>
+            <a href="matzourana_contact.html" data-nav="contact" class="lang" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</a>
+        </nav>
     </header>
     <!-- @/header -->
 
@@ -963,9 +964,9 @@
                 <img src="MatzouranaImages/matzourana-girl-logo-800.jpg" alt="Matzourana – μαγειρείο στην Καλλιθέα, Δημοσθένους 48" width="800" height="800" loading="lazy" decoding="async">
             </picture>
         </a>
-        <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery. All rights reserved.</p>
+        <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery - All rights reserved.</p>
         <div class="social-logos">
-            <a href='tel:00302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
+            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
             <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
             <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
             <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>

@@ -13,7 +13,7 @@ Welcome to **Matzourana Eatery**, your destination in Kallithea for **authentic 
 **Tel:** 210 9577 846  
 
 ## 🕒 Opening Hours & Delivery
-Daily Delivery: 11:30 - 19:30  
+Daily Delivery: 12:00 - 19:30 (Tuesday–Sunday, closed on Mondays)  
 **Closed on Mondays**
 
 ## 🚚 Delivery
@@ -49,4 +49,23 @@ We offer **food delivery in Kallithea** and nearby areas. Enjoy traditional Gree
   The monthly "Refresh Matzourana gallery photo links" routine must edit the
   Google Maps `<img ... data-maps-url>` tiles in `matzourana_gallery.html`.
   Broken tiles hide themselves (`onerror`); old `/#gallery` links redirect here.
+
+### Pages (after the page split)
+
+| Page | File |
+|---|---|
+| Home (hub: welcome, delivery, today's highlights, rating) | `index.html` |
+| Menu (price lists, daily dishes, dish videos) | `matzourana_menu.html` (`#daily-dishes` opens that tab) |
+| Gallery | `matzourana_gallery.html` |
+| Reviews | `matzourana_reviews.html` |
+| About | `matzourana_about.html` |
+| Contact & hours | `matzourana_contact.html` |
+
+- Shared code: `matzourana_styles.css`, `matzourana_data.js` (daily update zone),
+  `matzourana_messages.js` (seasonal messages), `matzourana_utils.js`, `matzourana_tools.js`.
+  Bump the `?v=` number in the pages when one of them changes.
+- Old one-page links (`/#menu`, `/#gallery`, `/#reviews`, `/#about`, `/#contact`)
+  redirect to the matching page.
+- `sitemap.xml` lists the 6 pages and the dish pages; `tools/generate-dish-pages.js
+  --sitemap` only prints dish entries to paste, it does not rewrite the file.
 

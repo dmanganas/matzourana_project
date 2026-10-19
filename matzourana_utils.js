@@ -320,14 +320,6 @@ function openExternal(url) {
 }
 
 /*-------------------
-Purpose: Open Matzourana on Google Maps in a new tab.
-On Input: none. On Output: none.
----------------------*/
-function gotoGoogleMaps() {
-    openExternal(GOOGLE_MAPS_URL);
-}
-
-/*-------------------
 Purpose: Open the Matzourana TripAdvisor page (to leave a review) in a new tab.
 On Input: none. On Output: none.
 ---------------------*/
@@ -343,55 +335,31 @@ function gotoGoogleMapsReview() {
     openExternal(GOOGLE_MAPS_REVIEW_URL);
 }
 
-// ===== ONE-PAGE NAVIGATION (until the page split; replaced by real links) =====
+// ===== OLD ONE-PAGE LINKS =====
 
 /*-------------------
-Purpose: Which former home-page sections now live on their own page.
-         Grows with each split step; used by showSection and redirectOldAnchors.
+Purpose: Where each former home-page section lives now (the site used to be one page
+         with #sections; old shared links like /#menu must keep working).
 ---------------------*/
 const SECTION_PAGES = {
     menu: 'matzourana_menu.html',
-    gallery: 'matzourana_gallery.html'
+    gallery: 'matzourana_gallery.html',
+    reviews: 'matzourana_reviews.html',
+    about: 'matzourana_about.html',
+    contact: 'matzourana_contact.html',
+    'daily-dishes': 'matzourana_menu.html#daily-dishes'
 };
 
 /*-------------------
-Purpose: Nav / return buttons: open a part of the site. A part that has its own
-         page opens that page; a part that is still a section of the home page is
-         shown there (from another page: index.html#<section>).
-On Input: sectionId - String: 'home' | 'menu' | 'about' | 'gallery' | 'reviews' | 'contact'.
-On Output: none.
-Side effects: navigates, or moves class 'active' to that <section>;
-          closes/opens the hamburger menu like before.
----------------------*/
-function showSection(sectionId) {
-    if (SECTION_PAGES[sectionId]) { goToPage(SECTION_PAGES[sectionId]); return; }
-    const target = document.getElementById(sectionId);
-    if (!target || target.tagName !== 'SECTION') {
-        goToPage(sectionId === 'home' ? 'index.html' : 'index.html#' + sectionId);
-        return;
-    }
-    playButtonSound();
-    document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
-    target.classList.add('active');
-    toggleMenu();
-}
-
-/*-------------------
-Purpose: Keep old shared links working: /#gallery (and later /#menu, /#reviews, ...)
-         is sent to its own page; a #section that is still on the home page is shown.
+Purpose: Keep old shared links working: /#menu, /#gallery, /#reviews, /#about,
+         /#contact (and /#daily-dishes) are sent to their own page.
 On Input: none (reads location.hash).
 On Output: Boolean - true when the browser is being sent to another page.
-Side effects: location.replace (no extra history entry) or shows the section.
+Side effects: location.replace (no extra history entry, the Back button still works).
 Used by: initPage() on the home page.
 ---------------------*/
 function redirectOldAnchors() {
     const id = decodeURIComponent((location.hash || '').slice(1));
-    if (!id) return false;
-    if (SECTION_PAGES[id]) { location.replace(SECTION_PAGES[id]); return true; }
-    const target = document.getElementById(id);
-    if (target && target.tagName === 'SECTION') {
-        document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
-        target.classList.add('active');
-    }
+    if (id && SECTION_PAGES[id]) { location.replace(SECTION_PAGES[id]); return true; }
     return false;
 }

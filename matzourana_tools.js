@@ -230,48 +230,6 @@ function updateZoomCaption() {
     }
 }
 
-/*-------------------
-Purpose: Simple full-screen viewer for one image or one video (click outside closes).
-On Input: src - String, file or URL; alt - String (images); isVideo - Boolean.
-On Output: none.
-Side effects: adds/replaces <div id="zoom-lightbox"> on the page.
----------------------*/
-function zoomMedia(src, alt = '', isVideo = false) {
-    const existing = document.getElementById('zoom-lightbox');
-    if (existing) existing.remove();
-
-    const lightbox = document.createElement('div');
-    lightbox.id = 'zoom-lightbox';
-    lightbox.style.cssText = 'position: fixed; inset: 0; background: rgba(0, 0, 0, 0.94); display: flex; flex-direction: column;' +
-        'justify-content: center; align-items: center; z-index: 99999; cursor: zoom-out; padding: 20px; box-sizing: border-box;';
-    lightbox.onclick = function (e) {
-        if (e.target === lightbox) {
-            const vid = lightbox.querySelector('video');
-            if (vid) { vid.pause(); vid.currentTime = 0; }
-            lightbox.remove();
-        }
-    };
-
-    let media;
-    if (isVideo === true) {
-        media = document.createElement('video');
-        media.src = src;
-        media.controls = true;
-        media.autoplay = true;
-        media.muted = false;
-        media.playsInline = true;
-        media.style.cssText = 'max-width: 92%; max-height: 85vh; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); background: #000;';
-    } else {
-        media = document.createElement('img');
-        media.src = src;
-        media.alt = alt;
-        media.style.cssText = 'max-width: 92%; max-height: 85vh; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); object-fit: contain;';
-    }
-    media.onclick = (e) => e.stopPropagation();
-    lightbox.appendChild(media);
-    document.body.appendChild(lightbox);
-}
-
 // ===== MENU =====
 
 /*-------------------
