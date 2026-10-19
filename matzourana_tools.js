@@ -278,15 +278,16 @@ function zoomMedia(src, alt = '', isVideo = false) {
 Purpose: Switch the active menu tab (Appetizers, Salads, Potatoes, Daily Dishes,
          Grilled) and refresh the dish photos next to it.
 On Input: menuId - String, id of the tab content ('appetizers', 'salads', 'potatoes',
-          'daily-dishes', 'grilled-dishes').
+          'daily-dishes', 'grilled-dishes', 'soft-drinks', 'beers', 'wines');
+          silent - Boolean (optional): true = no click sound (page start).
 On Output: none.
 Side effects: sets .active on the tab content and its button; shows up to 24 photos
           (even number, at least 10): photos of today's daily dishes first, the rest
           shuffled. Keeps the rich bilingual alt texts (dishAlts) for SEO.
           Data: imageList, dishAlts, dishImageMap, currentDailyMenu (matzourana_data.js).
 ---------------------*/
-function showMenu(menuId) {
-    playButtonSound();
+function showMenu(menuId, silent) {
+    if (!silent) playButtonSound();
     const selectedContent = document.querySelector(`#${menuId}`);
     if (!selectedContent) return;
 
@@ -1222,6 +1223,27 @@ function initReviewsVideoPanel() {
 // ===== STARTUP =====
 
 /*-------------------
+Purpose: Menu page start: open the tab named in the address (e.g.
+         matzourana_menu.html#daily-dishes from the home notebook or the dish pages),
+         else Appetizers, and bring the tab buttons into view when a tab was asked for.
+On Input: none (reads location.hash).
+On Output: none.
+Side effects: showMenu(tab, silent) for the food tab and, if the hash names a drinks
+          tab, that one too; scrolls to the tab's button row.
+---------------------*/
+function initMenuPage() {
+    const hash = decodeURIComponent((location.hash || '').slice(1));
+    const target = hash ? document.getElementById(hash) : null;
+    const isTab = target && target.classList.contains('menu-content');
+    showMenu(isTab ? hash : 'appetizers', true);
+    if (isTab) {
+        let row = target.previousElementSibling;
+        while (row && !row.classList.contains('menu-buttons')) row = row.previousElementSibling;
+        (row || target).scrollIntoView({ block: 'start' });
+    }
+}
+
+/*-------------------
 Purpose: Start a page: language from the visitor's last choice, then only the
          features this page has.
 On Input: pageName - String (optional; default <body data-page>, else 'home').
@@ -1229,8 +1251,8 @@ On Output: none.
 Side effects: sets currentLang / <html lang>; renders the daily table, highlights,
           videos, reviews, seasonal messages + logo theme (each only if its place is on
           the page); applies the language to all .lang texts; lightbox controls;
-          on 'home' also old-#anchor redirects, the Menu JSON-LD (until the menu
-          page exists), the rating widget and the daily Firebase publish (D5).
+          on 'menu' the tab from the address + Menu JSON-LD; on 'home' also
+          old-#anchor redirects, the rating widget and the daily Firebase publish (D5).
           Registers the 'languageChange' re-renderers.
 ---------------------*/
 function initPage(pageName) {
@@ -1246,7 +1268,10 @@ function initPage(pageName) {
     initReviewsVideoPanel();
     renderSeasonalMessages();
     applySeasonalTheme();
-    if (page === 'home') buildMenuSchema('https://www.matzourana.gr/');
+    if (page === 'menu') {
+        initMenuPage();
+        buildMenuSchema('https://www.matzourana.gr/matzourana_menu.html');
+    }
     initLightboxControls();
     initLogoVideo();
 

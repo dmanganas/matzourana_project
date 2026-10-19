@@ -145,7 +145,7 @@ ${JSON.stringify(ld, null, 2)}
     <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek cooking at Matzourana Eatery, Kallithea.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
     <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
-    <a class="cta" href="${SITE}">Δείτε το σημερινό μενού</a>
+    <a class="cta" href="${SITE}matzourana_menu.html#daily-dishes">Δείτε το σημερινό μενού</a>
     <section class="info">
       <a class="brand-img" href="${SITE}">
         <picture>

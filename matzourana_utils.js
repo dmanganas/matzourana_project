@@ -350,6 +350,7 @@ Purpose: Which former home-page sections now live on their own page.
          Grows with each split step; used by showSection and redirectOldAnchors.
 ---------------------*/
 const SECTION_PAGES = {
+    menu: 'matzourana_menu.html',
     gallery: 'matzourana_gallery.html'
 };
 
@@ -359,8 +360,8 @@ Purpose: Nav / return buttons: open a part of the site. A part that has its own
          shown there (from another page: index.html#<section>).
 On Input: sectionId - String: 'home' | 'menu' | 'about' | 'gallery' | 'reviews' | 'contact'.
 On Output: none.
-Side effects: navigates, or moves class 'active' to that <section>; opening 'menu'
-          selects the Appetizers tab; closes/opens the hamburger menu like before.
+Side effects: navigates, or moves class 'active' to that <section>;
+          closes/opens the hamburger menu like before.
 ---------------------*/
 function showSection(sectionId) {
     if (SECTION_PAGES[sectionId]) { goToPage(SECTION_PAGES[sectionId]); return; }
@@ -372,7 +373,6 @@ function showSection(sectionId) {
     playButtonSound();
     document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
     target.classList.add('active');
-    if (sectionId === 'menu' && typeof showMenu === 'function') showMenu('appetizers');
     toggleMenu();
 }
 
@@ -392,18 +392,6 @@ function redirectOldAnchors() {
     if (target && target.tagName === 'SECTION') {
         document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
         target.classList.add('active');
-        if (id === 'menu' && typeof showMenu === 'function') showMenu('appetizers');
     }
     return false;
-}
-
-/*-------------------
-Purpose: Highlights notebook click: open the menu on the Daily Dishes tab.
-On Input: none. On Output: none.
----------------------*/
-function gotoDailyDishes() {
-    showSection('menu');
-    setTimeout(() => showMenu('daily-dishes'), 10);
-    const navMenu = document.querySelector('.nav-menu');
-    if (navMenu) navMenu.classList.remove('active');
 }
