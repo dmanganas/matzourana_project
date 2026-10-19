@@ -159,6 +159,13 @@ button, .btn {
   .chart-grid { grid-template-columns: 1fr; }
 }
 h2 { margin: 0 0 12px; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.seed-banner { margin-top: 12px; padding: 14px 16px; border-radius: 12px; background: var(--amber-soft); border: 1px solid #f1d3a2; color: var(--ink); }
+.seed-banner .seed-sub { color: var(--muted); font-size: .85rem; margin-left: 6px; }
+.seed-banner .seed-list { margin: 8px 0 6px; font-weight: 600; color: var(--amber); }
+.seed-banner .seed-hint { margin: 8px 0 10px; color: var(--muted); font-size: .9rem; }
+.seed-table { border-collapse: collapse; margin-top: 10px; width: 100%; max-width: 560px; background: #fff; border-radius: 10px; overflow: hidden; }
+.seed-table th, .seed-table td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; font-size: .9rem; }
+.seed-table td.seed-add { color: var(--green); font-weight: 700; }
 .badge {
   font-size: .72rem; padding: 4px 8px; border-radius: 999px;
   background: var(--green-soft); color: var(--green); font-weight: 700;
@@ -335,6 +342,9 @@ tr:hover td { background: #fafcfb; }
     <h2>Πηγές <span class="badge" id="kitchenStamp">—</span></h2>
     <button class="btn-primary" onclick="saveKitchenBook('live')">Αποθήκευση στην  Matzourana-Database</button>
     <button class="btn-primary" onclick="loadKitchenBook()">Φόρτωση από την Matzourana-Database</button>
+    <button class="btn-secondary" type="button" onclick="openSeedFile()">Εισαγωγή αρχικών δεδομένων</button>
+    <input type="file" id="seedFile" accept="application/json,.json" hidden onchange="readSeedFile(this.files[0])">
+    <div id="seedBanner" class="seed-banner" role="status" hidden></div>
   </div>
 
   <!-- OVERVIEW -->
@@ -598,130 +608,17 @@ tr:hover td { background: #fafcfb; }
    MATZOURANA PROFESSIONAL COSTING ENGINE
    ========================================================= */
 
-const OTHER_COST = 0.85; // λοιπά (μπαχαρικά, αέριο κ.λπ.) ανά μερίδα
+/* PRIVATE COSTING DATA (security step S2)
+   The business rules, ingredient prices, recipes and fixed costs are NOT in this file any more.
+   They load from the login-protected Firebase kitchen book (matzourana_kitchenbook) after the
+   owner signs in: see loadKitchenBook() / applyKitchenBook() and the seed import further down.
+   Until then these containers stay empty and the admin shows empty states + an import banner. */
+let OTHER_COST = 0; // λοιπά (μπαχαρικά, αέριο κ.λπ.) ανά μερίδα: kitchen book rules.otherCost
 
-const categoryRules = {
-  soups:     { min: 5.0, max: 12.0, target: 0.32 },
-  legumes:   { min: 5.0, max: 7.5,  target: 0.32 },
-  vegan:     { min: 5.5, max: 9.0,  target: 0.30 },
-  pasta:     { min: 7.0, max: 9.5,  target: 0.30 },
-  beef:      { min: 9.5, max: 13.5, target: 0.28 },
-  chicken:   { min: 8.0, max: 11.0, target: 0.30 },
-  goat_lamb: { min: 14.0, max: 17.0, target: 0.28 },
-  seafood:   { min: 8.0, max: 17.0, target: 0.30 },
-  grilled:   { min: 7.5, max: 17.0, target: 0.28 },
-  sweets:    { min: 3.5, max: 5.5,  target: 0.35 },
-  drinks:    { min: 1.0, max: 10.0, target: 0.40 },
-  default:   { min: 5.0, max: 14.0, target: 0.30 }
-};
+const categoryRules = {}; // kitchen book rules.categoryRules
 
-/* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης (EL 2026) */
-const NATIONAL_PRICES = {
-  // ==================== ΚΡΕΑΤΑ ====================
-  beef_shank: 14.50,
-  beef_mince: 12.00,
-  pork: 8.20,
-  chicken_leg: 6.20,
-  chicken_whole: 5.40,
-  rooster: 7.20,
-  goat_kid: 16.00,
-  lamb: 15.50,
-  bacon: 9.50,
-
-  // ==================== ΛΑΧΑΝΙΚΑ ====================
-  tomato: 1.20,
-  onion: 0.70,
-  potato: 0.70,
-  eggplant: 1.60,
-  zucchini: 1.40,
-  green_beans: 2.60,
-  cabbage: 0.80,
-  carrot: 0.90,
-  lettuce: 1.50,
-  spinach: 2.30,
-  okra: 3.60,
-  pepper: 1.50,
-  mushroom: 3.40,
-  artichoke: 4.00,
-  celery: 1.60,
-  cucumber: 1.20,
-  beetroot: 1.10,
-  greens: 2.20,
-  broccoli: 2.40,
-  radish: 1.80,
-
-  // ==================== ΦΡΟΥΤΑ / ΣΑΛΑΤΑ ====================
-  lemon: 1.40,
-  apple: 1.40,
-  pomegranate: 3.50,
-  grapefruit: 2.20,
-  olives: 6.50,
-  capers: 8.50,
-  figs: 8.00,
-  walnuts: 12.00,
-  almond: 14.00,
-  cranberries: 9.00,
-  sesame: 6.50,
-  tuna: 8.50,
-
-  // ==================== ΟΣΠΡΙΑ ====================
-  gigantes: 3.20,
-  lentils: 2.10,
-  chickpeas: 2.30,
-
-  // ==================== ΤΥΡΙΑ / ΑΥΓΑ / ΓΑΛΑΚΤΟΚΟΜΙΚΑ ====================
-  feta_pdo: 10.00,
-  kefalotyri: 12.50,
-  myzithra: 8.50,
-  halloumi: 11.50,
-  parmesan: 14.00,
-  yogurt: 3.20,
-  cream: 3.80,
-  butter: 8.50,
-  milk: 1.30,
-  egg: 0.28,
-
-  // ==================== ΛΑΔΙΑ / ΞΗΡΑ / ΒΑΣΙΚΑ ====================
-  olive_oil: 9.00,
-  garlic: 3.80,
-  flour: 0.90,
-  sugar: 1.10,
-  rice: 2.10,
-  orzo: 2.40,
-  pasta: 1.90,
-  bulgur: 2.60,
-  bread: 1.80,
-  phyllo: 3.50,
-  trahana: 4.20,
-  tomato_paste: 3.80,
-  wine: 4.50,
-  honey: 12.00,
-
-  // ==================== ΘΑΛΑΣΣΙΝΑ ====================
-  shrimp: 18.00,
-  mussels: 6.50,
-  octopus: 14.00,
-  cod: 12.00,
-  sardines: 7.50,
-  calamari: 11.50,
-  sole: 16.00,
-  monkfish: 19.00,
-  sea_bream: 14.50,
-  grouper: 22.00,
-  swordfish: 20.00,
-  cuttlefish: 12.00,
-  ray: 11.00,
-
-  // ==================== ΠΟΤΑ (κόστος μονάδας) ====================
-  cola: 0.55,
-  sprite: 0.55,
-  soda: 0.40,
-  water: 0.30,
-  beer: 1.10,
-  wine_half: 1.40,
-  tsipouro: 3.50,
-  ouzo: 3.50
-};
+/* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης: kitchen book "national" */
+const NATIONAL_PRICES = {}; // kitchen book national
 
 const ING_EL = {
   beef_shank: "Μοσχάρι χτένι (€/kg)",
@@ -816,7 +713,7 @@ const ING_EL = {
   
 };
 
-let ingredientPrices = { ...NATIONAL_PRICES };
+let ingredientPrices = {}; // kitchen book ingredients (on top of national)
 const menuCatalog = {
 
   // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ ====================
@@ -1029,201 +926,7 @@ const menuCatalog = {
 };
 
 /* Συνταγές: ποσότητα ανά ΜΕΡΙΔΑ */
-let recipes = {
-
-  // ==================== ΦΡΕΣΚΟΜΑΓΕΙΡΕΜΕΝΑ / ΚΡΕΑΣ ====================
-  katsikaki_naxou:              { goat_kid:0.35, potato:0.25, olive_oil:0.03, lemon:0.04, garlic:0.01 },
-  katsikaki_frikase:            { goat_kid:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
-  kokoretsi:                    { lamb:0.30, olive_oil:0.02, lemon:0.03 },
-  arni_kotsi_frikase:           { lamb:0.32, lettuce:0.12, olive_oil:0.03, egg:1, lemon:0.04 },
-  arnaki_galaktos:              { lamb:0.30, pasta:0.10, olive_oil:0.025, tomato:0.08, kefalotyri:0.02 },
-  gida_vrasti:                  { goat_kid:0.30, lemon:0.04, olive_oil:0.02, garlic:0.01 },
-  kleftiko:                     { lamb:0.28, potato:0.18, olive_oil:0.025, feta_pdo:0.03, tomato:0.05 },
-  gioulmpasi:                   { beef_shank:0.28, olive_oil:0.025, tomato:0.06, onion:0.05 },
-
-  moschari_kokkinisto:          { beef_shank:0.28, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.18 },
-  moschari_giouvesti:           { beef_shank:0.26, orzo:0.08, tomato:0.10, onion:0.05, myzithra:0.03, olive_oil:0.02 },
-  moschari_lemonato:            { beef_shank:0.28, potato:0.20, olive_oil:0.03, onion:0.04, lemon:0.04 },
-  moschari_stifado:             { beef_shank:0.28, onion:0.18, tomato:0.08, olive_oil:0.025, wine:0.05 },
-  moschari_ragout:              { beef_shank:0.26, potato:0.18, tomato:0.10, onion:0.05, olive_oil:0.025 },
-  moscharaki_noua:              { beef_shank:0.30, zucchini:0.10, carrot:0.08, olive_oil:0.025 },
-  moscharaki_noua_with_fried_potatoes: { beef_shank:0.30, potato:0.20, olive_oil:0.04 },
-  moscharaki_noua_with_rice:    { beef_shank:0.30, rice:0.08, olive_oil:0.025 },
-  rolo_moscharisio:             { beef_mince:0.22, feta_pdo:0.04, tomato:0.05, potato:0.18, olive_oil:0.02 },
-  soutzoukakia:                 { beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.02, garlic:0.01, bread:0.03 },
-  bifteki_moscharisia:          { beef_mince:0.30, potato:0.20, olive_oil:0.02, onion:0.03, bread:0.03 },
-  keftedakia_tiganita:          { beef_mince:0.18, onion:0.03, olive_oil:0.04, bread:0.04, egg:0.5 },
-  keftedakia_saltsa:            { beef_mince:0.16, tomato:0.10, onion:0.04, olive_oil:0.03 },
-  papoutsakia:                  { eggplant:0.25, beef_mince:0.10, tomato:0.08, olive_oil:0.025, kefalotyri:0.02 },
-  lachanontolmades:             { cabbage:0.22, beef_mince:0.10, rice:0.04, egg:1, olive_oil:0.02, lemon:0.03 },
-  kolokythakia_gemista:         { zucchini:0.30, beef_mince:0.08, rice:0.04, tomato:0.08, olive_oil:0.025 },
-  gemista_kima:                 { tomato:0.25, pepper:0.08, beef_mince:0.08, rice:0.05, onion:0.04, olive_oil:0.025 },
-
-  choirino_selino:              { pork:0.28, celery:0.12, onion:0.05, olive_oil:0.025, lemon:0.03 },
-  choirino_damaskina:           { pork:0.28, onion:0.06, olive_oil:0.025, wine:0.04 },
-  choirines_brizoles:           { pork:0.32, potato:0.20, olive_oil:0.025 },
-  spetzofai:                    { pork:0.18, pepper:0.15, tomato:0.10, onion:0.05, olive_oil:0.025 },
-
-  // ==================== ΚΟΤΟΠΟΥΛΟ / ΚΟΚΟΡΑΣ ====================
-  kotopoulo_bouti:              { chicken_leg:0.35, potato:0.22, olive_oil:0.025, lemon:0.03, garlic:0.01 },
-  kotopoulo_fournou:            { chicken_whole:0.35, potato:0.22, olive_oil:0.025, lemon:0.03 },
-  kotopoulo_kokkinisto:         { chicken_whole:0.32, tomato:0.12, onion:0.06, olive_oil:0.025, potato:0.15 },
-  bifteki_kotopoulo:            { chicken_leg:0.28, potato:0.18, onion:0.03, olive_oil:0.02, bread:0.03 },
-  rolo_kotopoulo:               { chicken_leg:0.28, feta_pdo:0.03, tomato:0.04, olive_oil:0.02 },
-  kokoras_krasatos:             { rooster:0.32, wine:0.08, onion:0.06, olive_oil:0.02, tomato:0.06 },
-  kokoras_hilopites:            { rooster:0.30, pasta:0.10, onion:0.05, tomato:0.08, olive_oil:0.02, kefalotyri:0.02 },
-  kokoras_stifado:              { rooster:0.32, onion:0.16, tomato:0.08, olive_oil:0.025, wine:0.05 },
-
-  // ==================== ΖΥΜΑΡΙΚΑ / ΦΟΥΡΝΟΥ ====================
-  pastitsio:                    { beef_mince:0.12, pasta:0.10, olive_oil:0.02, kefalotyri:0.025, milk:0.08, butter:0.015, flour:0.02 },
-  moussakas:                    { beef_mince:0.12, eggplant:0.18, potato:0.10, olive_oil:0.03, kefalotyri:0.02, milk:0.08, flour:0.02 },
-  moussakas_nistisimos:         { eggplant:0.20, potato:0.12, tomato:0.10, olive_oil:0.035, flour:0.02, milk:0.00 },
-  makaronia_kima:               { beef_mince:0.12, pasta:0.10, tomato:0.08, onion:0.04, olive_oil:0.02 },
-  makaronia_vegan:              { pasta:0.11, tomato:0.10, onion:0.05, olive_oil:0.025 },
-  carbonara:                    { pasta:0.11, egg:1, bacon:0.05, cream:0.04, parmesan:0.02 },
-  kanelonia:                    { beef_mince:0.12, pasta:0.10, tomato:0.08, kefalotyri:0.02, milk:0.06, olive_oil:0.02 },
-  krepes_kima:                  { flour:0.06, milk:0.08, egg:1, beef_mince:0.10, tomato:0.05, olive_oil:0.015 },
-  krepes_zampon_tyri:           { flour:0.06, milk:0.08, egg:1, bacon:0.04, kefalotyri:0.03, butter:0.015 },
-
-  // ==================== ΛΑΧΑΝΙΚΑ / VEGAN ΦΟΥΡΝΟΥ ====================
-  briam:                        { eggplant:0.12, zucchini:0.12, potato:0.12, tomato:0.10, olive_oil:0.035, pepper:0.05 },
-  fasolakia:                    { green_beans:0.28, tomato:0.10, potato:0.12, onion:0.04, olive_oil:0.03 },
-  gemista:                      { tomato:0.28, rice:0.06, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
-  gemista_rice:                 { tomato:0.25, rice:0.08, onion:0.05, potato:0.08, olive_oil:0.03, pepper:0.08 },
-  gemista_superfoods:           { tomato:0.25, bulgur:0.06, onion:0.04, potato:0.08, olive_oil:0.03 },
-  spanakorizo:                  { spinach:0.22, rice:0.07, onion:0.04, olive_oil:0.03, lemon:0.03 },
-  arakas_lemonatos:             { potato:0.15, carrot:0.08, olive_oil:0.025, lemon:0.03 },
-  bamies_fournou:               { okra:0.28, tomato:0.12, onion:0.05, olive_oil:0.03, potato:0.08 },
-  bamies_yiahni:                { okra:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
-  kounoupidi_yiahni:            { potato:0.10, tomato:0.12, onion:0.05, olive_oil:0.03 },
-  melitzanes_yiahni:            { eggplant:0.22, potato:0.12, tomato:0.10, onion:0.05, olive_oil:0.03 },
-  patates_yiahni:               { potato:0.35, tomato:0.10, onion:0.05, olive_oil:0.03 },
-  melitzanes_imam:              { eggplant:0.28, tomato:0.10, onion:0.05, olive_oil:0.03, feta_pdo:0.04 },
-  anginares_polita:             { artichoke:0.25, potato:0.12, carrot:0.08, onion:0.05, olive_oil:0.03, lemon:0.03 },
-  manitaria_frikase:            { mushroom:0.22, lettuce:0.08, olive_oil:0.025, egg:1, lemon:0.03 },
-  manitaria_stifado:            { mushroom:0.25, onion:0.14, tomato:0.08, olive_oil:0.025, wine:0.04 },
-  revithia_frikase:             { chickpeas:0.12, lettuce:0.10, olive_oil:0.025, lemon:0.03, egg:1 },
-
-  // ==================== ΟΣΠΡΙΑ ====================
-  giantes:                      { gigantes:0.12, tomato:0.10, onion:0.05, olive_oil:0.03, carrot:0.03 },
-  fasolada:                     { gigantes:0.10, tomato:0.08, onion:0.05, carrot:0.04, olive_oil:0.03, celery:0.03 },
-  fakes:                        { lentils:0.10, onion:0.04, tomato:0.04, olive_oil:0.025, garlic:0.01 },
-  revithia:                     { chickpeas:0.12, onion:0.05, olive_oil:0.03, lemon:0.02 },
-  fava:                         { chickpeas:0.12, onion:0.04, olive_oil:0.03, lemon:0.03 },
-
-  // ==================== ΣΟΥΠΕΣ ====================
-  kotosoupa:                    { chicken_whole:0.22, carrot:0.06, onion:0.04, rice:0.03, celery:0.04 },
-  giouvarlakia:                 { beef_mince:0.14, rice:0.03, egg:1, olive_oil:0.015, lemon:0.03 },
-  manitarosoupa:                { mushroom:0.18, onion:0.04, cream:0.05, olive_oil:0.015, flour:0.01 },
-  patsas_vrastos:               { beef_shank:0.20, lemon:0.05, garlic:0.02, olive_oil:0.01 },
-  patsas_anamiktos:             { beef_shank:0.12, lamb:0.10, lemon:0.05, garlic:0.02, olive_oil:0.01 },
-  kreatosoupa:                  { beef_shank:0.22, carrot:0.06, onion:0.04, celery:0.04, potato:0.10 },
-  psarosoupa:                   { cod:0.18, potato:0.12, carrot:0.05, onion:0.04, olive_oil:0.02, lemon:0.03 },
-  hortosoupa_trahanas:          { trahana:0.06, carrot:0.05, onion:0.04, celery:0.03, olive_oil:0.02 },
-  magiritsa:                    { lamb:0.18, lettuce:0.10, egg:1, lemon:0.04, olive_oil:0.02, rice:0.03 },
-  borscht:                      { beef_shank:0.12, cabbage:0.10, carrot:0.05, onion:0.04, potato:0.08, olive_oil:0.02 },
-
-  // ==================== ΘΑΛΑΣΣΙΝΑ / ΨΑΡΙΑ ====================
-  spaghetti_garides_egaio:      { shrimp:0.12, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  spaghetti_garida:             { shrimp:0.14, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  spaghetti_thalassina:         { shrimp:0.08, mussels:0.12, calamari:0.08, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  spaghetti_calamari:           { calamari:0.18, pasta:0.10, tomato:0.10, olive_oil:0.025 },
-  spaghetti_calamari_sauce:     { calamari:0.16, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  marinara:                     { mussels:0.12, calamari:0.08, shrimp:0.06, pasta:0.10, tomato:0.10, olive_oil:0.02 },
-  garidoma:                     { shrimp:0.22, pasta:0.11, tomato:0.10, olive_oil:0.025 },
-  garidoma_small:               { shrimp:0.12, pasta:0.10, tomato:0.08, olive_oil:0.02 },
-  kritharoto_garides:           { shrimp:0.18, orzo:0.10, olive_oil:0.02, onion:0.03 },
-  kritharoto_garidoules:        { shrimp:0.12, orzo:0.10, olive_oil:0.02, onion:0.03 },
-  kritharoto_thalassina:        { shrimp:0.08, mussels:0.12, calamari:0.08, orzo:0.10, olive_oil:0.02 },
-  mydopilafo:                   { mussels:0.35, rice:0.08, onion:0.04, olive_oil:0.02 },
-
-  bakaliaros_plaki:             { cod:0.28, tomato:0.12, onion:0.06, potato:0.15, olive_oil:0.03 },
-  bakaliaros_lemonatos:         { cod:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
-  bakaliaros_spetsiota:         { cod:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
-  bakaliaros_skordalia:         { cod:0.28, potato:0.15, garlic:0.02, olive_oil:0.04 },
-  bakaliarokroketes:            { cod:0.18, potato:0.12, flour:0.03, egg:1, olive_oil:0.04 },
-  glossa_lemonati:              { sole:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
-  peskandritsa_plaki:           { monkfish:0.28, tomato:0.12, onion:0.06, olive_oil:0.03 },
-  perka_plaki:                  { sea_bream:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
-  perka_lemonati:               { sea_bream:0.28, potato:0.18, olive_oil:0.03, lemon:0.04 },
-  lavraki_fileto:               { sea_bream:0.28, olive_oil:0.025, lemon:0.03 },
-  tsipoures_pelagisies:         { sea_bream:0.35, olive_oil:0.025, lemon:0.03 },
-  sfirida_spetsiota:            { grouper:0.28, tomato:0.12, onion:0.05, olive_oil:0.03 },
-  ksifias_lemonatos:            { swordfish:0.28, potato:0.15, olive_oil:0.03, lemon:0.04 },
-  sardeles_fileto_plaki:        { sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
-  gavros_plaki:                 { sardines:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
-  gavros_lemonatos:             { sardines:0.28, potato:0.15, olive_oil:0.025, lemon:0.04 },
-  ratza_katsarola:              { ray:0.28, tomato:0.10, onion:0.05, olive_oil:0.025 },
-
-  oktapodi_stifado:             { octopus:0.30, onion:0.15, tomato:0.08, olive_oil:0.025, wine:0.04 },
-  oktapodi_makaroni:            { octopus:0.28, pasta:0.10, tomato:0.08, onion:0.05, olive_oil:0.025 },
-  oktapodi_giouvetsi:           { octopus:0.28, orzo:0.08, tomato:0.08, onion:0.05, olive_oil:0.025 },
-  soupies_yiahni:               { cuttlefish:0.28, tomato:0.12, onion:0.06, olive_oil:0.025 },
-  soupies_krasates:             { cuttlefish:0.28, wine:0.08, onion:0.06, olive_oil:0.025 },
-  soupies_spanaki:              { cuttlefish:0.26, spinach:0.12, onion:0.05, olive_oil:0.025 },
-  lachanontolmades_thalassina:  { cabbage:0.20, shrimp:0.08, rice:0.04, onion:0.03, olive_oil:0.02 },
-
-  // ==================== ΨΗΤΑ ====================
-  fileto_kotopoulo:             { chicken_leg:0.28, olive_oil:0.015 },
-  bifteki_grilled:              { beef_mince:0.28, onion:0.03, bread:0.03 },
-  brizola_hoirini:              { pork:0.32, olive_oil:0.015 },
-  brizolakia:                   { pork:0.28, olive_oil:0.015 },
-  loukaniko_hoirino:            { pork:0.22, olive_oil:0.01 },
-  loukaniko_moscharisio:        { beef_mince:0.22, olive_oil:0.01 },
-
-  // ==================== ΠΑΤΑΤΕΣ ====================
-  patates_tiganites:            { potato:0.30, olive_oil:0.04 },
-  patates_tiganites_kefalotyri: { potato:0.30, olive_oil:0.04, kefalotyri:0.025 },
-  patates_tiganites_bolognese:  { potato:0.28, olive_oil:0.035, beef_mince:0.06, tomato:0.05, feta_pdo:0.02, bacon:0.02 },
-  patates_fournou:              { potato:0.32, olive_oil:0.025, lemon:0.02 },
-  patates_saltsa:               { potato:0.30, olive_oil:0.03, tomato:0.04 },
-
-
-  // ==================== ΑΛΟΙΦΕΣ / SAUCE ====================
-  tzatziki:            { yogurt:0.18, cucumber:0.05, olive_oil:0.015, garlic:0.008 },
-  tyrokauteri:         { feta_pdo:0.10, pepper:0.03, olive_oil:0.015 },
-  cocktail_sauce:      { cream:0.04 },
-  dip_tzatziki:        { yogurt:0.10, cucumber:0.03, olive_oil:0.008, garlic:0.004 },
-  dip_tyrokauteri:     { feta_pdo:0.05, pepper:0.015, olive_oil:0.008 },
-  dip_cocktail:        { cream:0.03 },
-
-  // ==================== ΣΑΛΑΤΕΣ ====================
-  matzourana_salad:    { lettuce:0.10, tomato:0.08, cucumber:0.06, apple:0.05, radish:0.03, pomegranate:0.03, onion:0.02, parmesan:0.02, olive_oil:0.02 },
-  halloumi_salad:      { lettuce:0.12, halloumi:0.08, tomato:0.05, figs:0.03, walnuts:0.02, cranberries:0.015, olive_oil:0.02 },
-  detox_salad:         { lettuce:0.12, grapefruit:0.10, almond:0.02, olive_oil:0.02 },
-  dakos:               { bread:0.08, tomato:0.12, feta_pdo:0.07, capers:0.01, olive_oil:0.02 },
-  choriatiki:          { tomato:0.18, cucumber:0.10, onion:0.03, feta_pdo:0.08, olive_oil:0.025, pepper:0.04, olives:0.03 },
-  elliniki:            { tomato:0.16, cucumber:0.10, onion:0.03, olive_oil:0.02, pepper:0.04, olives:0.03 },
-  marouli:             { lettuce:0.20, olive_oil:0.02, lemon:0.02 },
-  lachano_karoto:      { cabbage:0.16, carrot:0.06, olive_oil:0.02, lemon:0.02 },
-  xorta_epoxis:        { greens:0.22, olive_oil:0.025, lemon:0.02 },
-  brokolo:             { broccoli:0.25, olive_oil:0.02, lemon:0.02 },
-  kolokythakia_vrasta: { zucchini:0.28, olive_oil:0.02, lemon:0.02 },
-  
-  // ==================== ΟΡΕΚΤΙΚΑ ==================== 
-  psomi_prozymeno:     { bread:0.06, olive_oil:0.01 },
-  skordalia:           { potato:0.12, garlic:0.015, olive_oil:0.03 },
-  kolokythokeftedes:   { zucchini:0.18, feta_pdo:0.04, flour:0.03, egg:1, olive_oil:0.03 },
-  tyrokroketes:        { feta_pdo:0.04, kefalotyri:0.03, flour:0.03, egg:1, olive_oil:0.03 },
-  piperies_gemistes:   { pepper:0.18, feta_pdo:0.05, tomato:0.04, olive_oil:0.02 },
-  feta_ladorigani:     { feta_pdo:0.12, olive_oil:0.015 },
-  bouyourdi:           { feta_pdo:0.12, tomato:0.05, pepper:0.03, olive_oil:0.015 },
-  saganaki:            { kefalotyri:0.12, olive_oil:0.015 },
-  halloumi_psito:      { halloumi:0.12, olive_oil:0.01 },
-  halloumi_meli:       { halloumi:0.12, honey:0.02, sesame:0.008 },
-  fava_orektiko:       { chickpeas:0.10, onion:0.03, olive_oil:0.02, lemon:0.02 },
-  dolmadakia:          { rice:0.04, onion:0.03, olive_oil:0.02, lemon:0.02 },
-  psita_lachanika:     { zucchini:0.08, eggplant:0.08, pepper:0.06, mushroom:0.05, olive_oil:0.02 },
-
-
-  // ==================== ΓΛΥΚΑ ====================
-  haliavas:                     { flour:0.08, olive_oil:0.04, sugar:0.05 },
-  halvas:                       { flour:0.08, olive_oil:0.04, sugar:0.05 },
-  lemonopita:                   { phyllo:0.08, lemon:0.05, sugar:0.04, egg:1, butter:0.03 },
-  sokolatopita:                 { flour:0.07, sugar:0.05, egg:1, butter:0.04, milk:0.04 },
-  profiterole:                  { flour:0.05, egg:1, cream:0.08, sugar:0.03, butter:0.02 },
-  cheesecake:                   { cream:0.10, sugar:0.04, egg:1, butter:0.03 }
-};
+let recipes = {}; // kitchen book recipes: { dishKey: { ingredientKey: qtyPerPortion } }
 
 const manualOverrides = {};
 let currentRecipeKey = null;
@@ -1245,11 +948,29 @@ function foodCost(key){
   }
   return Number(cost.toFixed(2));
 }
+/*-------------------
+Purpose: Find the pricing rule (target food-cost share and price band) for a dish.
+On Input: dish - menuCatalog entry ({type, category, ...}).
+On Output: { min, max, target } from the kitchen book rules (by type, then category,
+           then 'default'), or null while the rules are not loaded.
+---------------------*/
+function ruleFor(dish){
+  if (!dish) return null;
+  return categoryRules[dish.type] || categoryRules[dish.category] || categoryRules.default || null;
+}
+
+/*-------------------
+Purpose: Suggest a selling price for a dish from its food cost and its category rule.
+On Input: key - String, dish key in menuCatalog.
+On Output: { foodCost:Number, suggested:Number } or null for an unknown key. Without
+           loaded rules the suggestion equals the current menu price (no change proposed).
+---------------------*/
 function suggest(key){
   const dish = menuCatalog[key];
   if (!dish) return null;
   const rules = categoryRules[dish.type] || categoryRules.default;
   const fc = foodCost(key);
+  if (!rules) return { foodCost: fc, suggested: parseEuro(dish.price) };
   let price = fc / rules.target;
   price = Math.max(rules.min, Math.min(rules.max, price));
   return { foodCost: fc, suggested: round10(price) };
@@ -1365,10 +1086,18 @@ function detectOutliers(rows) {
   return flags;
 }
 
+/*-------------------
+Purpose: Price suggestion used by the menu audit: food cost / (1 - target), kept inside the
+         category's min-max band and rounded.
+On Input: key - String, dish key in menuCatalog.
+On Output: Number (euro). Returns the current menu price while the kitchen book rules are
+           not loaded yet.
+---------------------*/
 function suggestPrice(key) {
   const dish = menuCatalog[key];
   if (!dish) return 0;
-  const rules = categoryRules[dish.type] || categoryRules[dish.category] || categoryRules.default;
+  const rules = ruleFor(dish);
+  if (!rules) return parseEuro(dish.price); // rules not loaded yet
   const cost = (typeof foodCost === "function") ? foodCost(key) : 0;
   let raw = cost > 0 ? cost / (1 - rules.target) : parseEuro(dish.price);
   raw = popularityAdjust(raw, key);
@@ -1505,7 +1234,19 @@ function computeAll(){
   });
 }
 
+/*-------------------
+Purpose: Draw the four overview KPIs (average margin, healthy dishes, watch/risk, price moves).
+On Input: rows - Array from computeAll().
+On Output: none.
+Side effects: fills #kpiGrid; shows an empty state ("—") while no recipes are loaded from the
+          kitchen book, instead of a misleading 100% margin.
+---------------------*/
 function renderKPIs(rows){
+  if (!Object.keys(recipes).length) {
+    const empty = label => `<div class="kpi"><div class="label">${label}</div><div class="value">—</div><div class="sub">Χωρίς δεδομένα κόστους</div></div>`;
+    document.getElementById("kpiGrid").innerHTML = empty("Μέσο περιθώριο") + empty("Υγιή πιάτα") + empty("Προσοχή") + empty("Κινήσεις τιμών");
+    return;
+  }
   let rise=0,fall=0,same=0,sum=0,n=0,healthy=0,watch=0,risk=0;
   rows.forEach(r => {
     if (r.diff>0) rise++; else if (r.diff<0) fall++; else same++;
@@ -1772,28 +1513,15 @@ function renderChannels(){
   renderChannelCards("channelCards", ticket, food, fixed);
 }
 
-const defaultFixedCosts = {
-  noiki:    { el: "Νοίκι",           day: 25.92 },
-  daneio:   { el: "Δάνειο",          day: 15.38 },
-  nero:     { el: "Νερό",            day: 1.54 },
-  deh:      { el: "ΔΕΗ",             day: 30.77 },
-  aerio:    { el: "Φυσικό αέριο",    day: 7.69 },
-  tilefono: { el: "Τηλέφωνο",        day: 1.31 },
-  internet: { el: "Internet",        day: 0.88 },
-  rythmisi: { el: "Ρύθμιση",         day: 5.88 },
-  teve:     { el: "ΤΕΒΕ",            day: 38.46 },
-  eforia:   { el: "Εφορία + δήμος",  day: 50.00 },
-  cooking:  { el: "Μαγείρεμα (μισθός)", day: 20.00 },
-  cleaning: { el: "Λάτζα (μισθός)",  day: 29.17 },
-  cutting:  { el: "Πάγκος (μισθός)",  day: 48.00 },
-  extra:    { el: "Extra (προμήθεια)",  day: 30.00 }
-};
+const defaultFixedCosts = {}; // kitchen book fixed: { key: { el, day } }
 
+// Reset targets. dishes = public menu prices in this file; recipes / ingredients / fixed are
+// captured from the kitchen book right after it loads (captureLoadedDefaults).
 const HTML_DEFAULTS = {
   dishes: Object.fromEntries(Object.keys(menuCatalog).map(k => [k, menuCatalog[k].price])),
-  recipes: JSON.parse(JSON.stringify(recipes)),
-  ingredients: { ...NATIONAL_PRICES },
-  fixed: JSON.parse(JSON.stringify(defaultFixedCosts))
+  recipes: {},
+  ingredients: {},
+  fixed: {}
 };
 
 let fixedCostOverrides = {};
@@ -3750,24 +3478,58 @@ function currentFixedMap(){
   return out;
 }
 
+/*-------------------
+Purpose: Take a full copy of the admin's current costing data in kitchen-book shape,
+         for saving to Firebase or downloading as a file.
+On Input: source - String label stored with the copy (e.g. 'live', 'file').
+On Output: Object { updatedAt, source, dishes, ingredients, national, recipes, fixed,
+           rules:{categoryRules, otherCost}, overrides }.
+---------------------*/
 function kitchenSnapshot(source){
   return {
     updatedAt: new Date().toISOString(),
     source: source || "manual",
     dishes: Object.fromEntries(Object.keys(menuCatalog).map(k => [k, menuCatalog[k].price])),
     ingredients: { ...ingredientPrices },
+    national: { ...NATIONAL_PRICES },
     recipes: JSON.parse(JSON.stringify(recipes)),
     fixed: currentFixedMap(),
+    rules: { categoryRules: JSON.parse(JSON.stringify(categoryRules)), otherCost: OTHER_COST },
     overrides: { ...(typeof manualOverrides !== "undefined" ? manualOverrides : {}) }
   };
 }
 
+/*-------------------
+Purpose: Put the kitchen book's data into the admin: business rules, national and current
+         ingredient prices, recipes, fixed costs, dish price overrides.
+On Input: book - kitchen-book Object (any section may be missing);
+          parts - optional { dishes, ingredients, recipes, fixed, rules } flags (default: all).
+On Output: none.
+Side effects: fills categoryRules, OTHER_COST, NATIONAL_PRICES, ingredientPrices, recipes,
+          defaultFixedCosts (+ fixedCostOverrides), menuCatalog prices, manualOverrides;
+          syncs the daily fixed-cost total. Same override order as before step S2:
+          national prices first, then the book's own ingredient prices on top.
+---------------------*/
 function applyKitchenBook(book, parts){
   if (!book) return;
-  parts = parts || { dishes:true, ingredients:true, recipes:true, fixed:true };
+  parts = parts || { dishes:true, ingredients:true, recipes:true, fixed:true, rules:true };
+  if (parts.rules !== false && book.rules) {
+    const cr = book.rules.categoryRules || {};
+    Object.keys(cr).forEach(k => {
+      const r = cr[k] || {};
+      categoryRules[k] = { min: Number(r.min), max: Number(r.max), target: Number(r.target) };
+    });
+    if (book.rules.otherCost != null) OTHER_COST = Number(book.rules.otherCost);
+  }
   if (parts.dishes && book.dishes) {
     Object.keys(book.dishes).forEach(k => {
       if (menuCatalog[k]) menuCatalog[k].price = book.dishes[k];
+    });
+  }
+  if (parts.ingredients && book.national) {
+    Object.keys(book.national).forEach(k => {
+      NATIONAL_PRICES[k] = Number(book.national[k]);
+      if (ingredientPrices[k] == null) ingredientPrices[k] = NATIONAL_PRICES[k];
     });
   }
   if (parts.ingredients && book.ingredients) {
@@ -3780,8 +3542,11 @@ function applyKitchenBook(book, parts){
   }
   if (parts.fixed && book.fixed) {
     Object.keys(book.fixed).forEach(k => {
-      if (!defaultFixedCosts[k]) return;
-      const day = Number(book.fixed[k].day ?? book.fixed[k]);
+      const entry = book.fixed[k];
+      const day = Number(entry && typeof entry === "object" ? entry.day : entry);
+      const el = (entry && typeof entry === "object" && entry.el) || (defaultFixedCosts[k] && defaultFixedCosts[k].el) || k;
+      if (!defaultFixedCosts[k]) defaultFixedCosts[k] = { el, day };
+      else defaultFixedCosts[k].el = el;
       if (typeof fixedCostOverrides !== "undefined") fixedCostOverrides[k] = day;
       else defaultFixedCosts[k].day = day;
     });
@@ -3792,15 +3557,33 @@ function applyKitchenBook(book, parts){
   }
 }
 
+/*-------------------
+Purpose: Show in the Sources bar which kitchen book is loaded (date and source).
+On Input: book - kitchen-book Object or null.
+On Output: none.
+Side effects: sets the text of #kitchenStamp.
+---------------------*/
 function stampKitchen(book){
   const el = document.getElementById("kitchenStamp");
   if (!el) return;
-  el.textContent = book && book.updatedAt
-    ? ("Firebase " + book.updatedAt.replace("T"," ").slice(0,19) + " · " + (book.source||""))
-    : "Δεν υπάρχει βιβλίο Firebase — ισχύουν HTML / εθνικές";
+  const when = book && (book.updatedAt || book.seedImportedAt);
+  el.textContent = when
+    ? ("Firebase " + String(when).replace("T"," ").slice(0,19) + " · " + (book.updatedAt ? (book.source||"") : "seed"))
+    : "Δεν υπάρχουν δεδομένα κόστους — κάντε εισαγωγή αρχικών δεδομένων";
 }
 
+/*-------------------
+Purpose: Save all current costing data to the Firebase kitchen book (and a local copy).
+On Input: source - String label (e.g. 'live', 'file-upload').
+On Output: Promise<void>.
+Side effects: overwrites matzourana_kitchenbook with kitchenSnapshot(); refuses while the
+          private sections are empty, so an unloaded admin can never wipe the book.
+---------------------*/
 async function saveKitchenBook(source){
+  if (!Object.keys(recipes).length && !Object.keys(defaultFixedCosts).length && !Object.keys(categoryRules).length) {
+    alert("Δεν έχουν φορτωθεί δεδομένα κόστους. Πρώτα «Εισαγωγή αρχικών δεδομένων» ή «Φόρτωση».\n(Nothing loaded yet: import the seed or load first.)");
+    return;
+  }
   const book = kitchenSnapshot(source || "save");
   localStorage.setItem("mz_kitchenbook", JSON.stringify(book));
   const db = (typeof getDb === "function" && getDb()) || window.rtdb;
@@ -3810,6 +3593,13 @@ async function saveKitchenBook(source){
   alert("Αποθηκεύτηκε στο Firebase.");
 }
 
+/*-------------------
+Purpose: Load the owner's kitchen book from Firebase (or the local copy if Firebase is
+         unreachable) and apply it; then show the seed banner if sections are missing.
+On Input: parts - optional section flags passed to applyKitchenBook.
+On Output: Promise<Object|null> - the loaded book, or null when there is none.
+Side effects: sets window.kitchenBookLoaded; re-renders all tabs.
+---------------------*/
 async function loadKitchenBook(parts){
   const db = (typeof getDb === "function" && getDb()) || window.rtdb;
   let book = null;
@@ -3817,9 +3607,12 @@ async function loadKitchenBook(parts){
   if (!book) {
     try { book = JSON.parse(localStorage.getItem("mz_kitchenbook") || "null"); } catch(e){}
   }
-  if (!book) { stampKitchen(null); return null; }
+  window.kitchenBookLoaded = book || null;
+  if (!book) { stampKitchen(null); captureLoadedDefaults(); renderSeedBanner(kitchenMissingSections(null)); return null; }
   applyKitchenBook(book, parts);
+  captureLoadedDefaults();
   stampKitchen(book);
+  renderSeedBanner(kitchenMissingSections(book));
   if (typeof recalcAll === "function") recalcAll();
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
@@ -3842,14 +3635,248 @@ function resetRecipesHtml(){
   });
   recalcAll();
 }
+/*-------------------
+Purpose: Put the fixed costs back to the values loaded from the kitchen book.
+On Input: none.
+On Output: none.
+Side effects: restores defaultFixedCosts from HTML_DEFAULTS.fixed (re-creating missing keys),
+          clears manual fixed-cost overrides, re-syncs the daily total.
+---------------------*/
 function resetFixedHtml(){
   Object.keys(HTML_DEFAULTS.fixed).forEach(k => {
+    if (!defaultFixedCosts[k]) defaultFixedCosts[k] = { el: HTML_DEFAULTS.fixed[k].el, day: 0 };
     defaultFixedCosts[k].day = HTML_DEFAULTS.fixed[k].day;
     if (typeof fixedCostOverrides !== "undefined") delete fixedCostOverrides[k];
   });
   if (typeof syncFixedDaily === "function") syncFixedDaily();
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+}
+
+/* =========================================================
+   SEED IMPORT (security step S2)
+   Moves the private costing data that used to be hard-coded here into the kitchen book.
+   Owner-only (needs sign-in), merges ONLY missing keys, never overwrites existing data.
+   ========================================================= */
+const SEED_SECTIONS = ["rules", "national", "ingredients", "recipes", "fixed"];
+const SEED_LABELS = {
+  rules: "Κανόνες τιμολόγησης (rules)",
+  national: "Εθνικές τιμές υλικών (national)",
+  ingredients: "Τιμές υλικών (ingredients)",
+  recipes: "Συνταγές (recipes)",
+  fixed: "Σταθερά κόστη (fixed)"
+};
+let pendingSeedPlan = null;
+
+/*-------------------
+Purpose: List which private sections are missing or empty in a kitchen book.
+On Input: book - kitchen-book Object or null.
+On Output: Array of section names from SEED_SECTIONS (e.g. ['rules','national']);
+           all of them when book is null.
+---------------------*/
+function kitchenMissingSections(book){
+  return SEED_SECTIONS.filter(sec => {
+    const v = book && book[sec];
+    if (sec === "rules") return !(v && v.categoryRules && Object.keys(v.categoryRules).length && v.otherCost != null);
+    return !(v && typeof v === "object" && Object.keys(v).length);
+  });
+}
+
+/*-------------------
+Purpose: Show (or hide) the yellow banner that asks the owner to import the seed file.
+On Input: missing - Array of missing section names (empty array hides the banner).
+On Output: none.
+Side effects: updates #seedBanner (text + buttons); never touches data.
+---------------------*/
+function renderSeedBanner(missing){
+  const box = document.getElementById("seedBanner");
+  if (!box) return;
+  if (pendingSeedPlan) return; // a preview is on screen
+  if (!missing || !missing.length) { box.hidden = true; box.innerHTML = ""; return; }
+  box.hidden = false;
+  box.innerHTML = `
+    <strong>Λείπουν δεδομένα κόστους από τη Matzourana-Database</strong>
+    <span class="seed-sub">(Missing costing data in the kitchen book)</span>
+    <div class="seed-list">${missing.map(m => SEED_LABELS[m] || m).join(" · ")}</div>
+    <div class="seed-hint">Επιλέξτε το αρχείο <code>kitchenbook-seed.json</code>. Προστίθενται μόνο όσα λείπουν· τίποτα δεν αντικαθίσταται.</div>
+    <button class="btn-primary" type="button" onclick="openSeedFile()">Εισαγωγή αρχικών δεδομένων / Import seed</button>`;
+}
+
+/*-------------------
+Purpose: Open the file chooser for the seed JSON (owner only).
+On Input: none.
+On Output: none.
+Side effects: clicks the hidden <input type="file" id="seedFile">.
+---------------------*/
+function openSeedFile(){
+  if (!getDb()) { alert("Συνδεθείτε πρώτα (Sign in first)."); return; }
+  const inp = document.getElementById("seedFile");
+  if (inp) { inp.value = ""; inp.click(); }
+}
+
+/*-------------------
+Purpose: Work out exactly what a seed would add to a kitchen book, without changing anything.
+On Input: book - current kitchen-book Object (or null); seed - parsed seed Object.
+On Output: { patch:{ "section/key": value, ... }, counts:{ section:{ add, keep } }, total }
+           where patch holds ONLY keys missing from the book (multi-path update format).
+Notes: numbers are checked (non-numbers skipped); recipe lines must be numeric quantities;
+       an existing fixed cost stored as a bare number only gains its label.
+---------------------*/
+function planSeedMerge(book, seed){
+  book = book || {};
+  const patch = {}, counts = {};
+  const isNum = v => typeof v === "number" && isFinite(v) && v >= 0;
+  const bump = (sec, kind) => { counts[sec] = counts[sec] || { add: 0, keep: 0 }; counts[sec][kind]++; };
+  const keyOk = k => /^[A-Za-z0-9_\-]{1,80}$/.test(k);
+
+  ["national", "ingredients"].forEach(sec => {
+    const src = seed[sec] || {}, cur = book[sec] || {};
+    Object.keys(src).forEach(k => {
+      if (!keyOk(k) || !isNum(src[k])) return;
+      if (cur[k] != null) bump(sec, "keep"); else { patch[sec + "/" + k] = src[k]; bump(sec, "add"); }
+    });
+  });
+  { const src = seed.recipes || {}, cur = book.recipes || {};
+    Object.keys(src).forEach(k => {
+      const rec = src[k];
+      if (!keyOk(k) || !rec || typeof rec !== "object") return;
+      const clean = {};
+      Object.keys(rec).forEach(i => { if (keyOk(i) && isNum(rec[i])) clean[i] = rec[i]; });
+      if (!Object.keys(clean).length) return;
+      if (cur[k] != null) bump("recipes", "keep"); else { patch["recipes/" + k] = clean; bump("recipes", "add"); }
+    });
+  }
+  { const src = seed.fixed || {}, cur = book.fixed || {};
+    Object.keys(src).forEach(k => {
+      const e = src[k];
+      if (!keyOk(k) || !e || !isNum(Number(e.day))) return;
+      const label = String(e.el || k).slice(0, 60);
+      if (cur[k] == null) { patch["fixed/" + k] = { el: label, day: Number(e.day) }; bump("fixed", "add"); }
+      else {
+        if (typeof cur[k] !== "object") patch["fixed/" + k] = { el: label, day: Number(cur[k]) };
+        else if (!cur[k].el) patch["fixed/" + k + "/el"] = label;
+        bump("fixed", "keep");
+      }
+    });
+  }
+  { const src = (seed.rules && seed.rules.categoryRules) || {};
+    const cur = (book.rules && book.rules.categoryRules) || {};
+    Object.keys(src).forEach(k => {
+      const r = src[k] || {};
+      if (!keyOk(k) || !isNum(r.min) || !isNum(r.max) || !isNum(r.target)) return;
+      if (cur[k] != null) bump("rules", "keep"); else { patch["rules/categoryRules/" + k] = { min: r.min, max: r.max, target: r.target }; bump("rules", "add"); }
+    });
+    if (seed.rules && isNum(seed.rules.otherCost)) {
+      if (book.rules && book.rules.otherCost != null) bump("rules", "keep");
+      else { patch["rules/otherCost"] = seed.rules.otherCost; bump("rules", "add"); }
+    }
+  }
+  const total = Object.keys(patch).length;
+  return { patch, counts, total };
+}
+
+/*-------------------
+Purpose: Read the chosen seed file, compare it with the CURRENT kitchen book in Firebase and
+         show a preview (how many items will be added / kept) before anything is saved.
+On Input: file - File from the seed file chooser.
+On Output: Promise<void>.
+Side effects: reads matzourana_kitchenbook once; shows the preview in #seedBanner.
+---------------------*/
+async function readSeedFile(file){
+  if (!file) return;
+  let seed;
+  try { seed = JSON.parse(await file.text()); }
+  catch (e) { alert("Το αρχείο δεν είναι έγκυρο JSON (Not a valid JSON file)."); return; }
+  if (!seed || typeof seed !== "object" || !SEED_SECTIONS.some(s => seed[s])) {
+    alert("Αυτό δεν είναι αρχείο αρχικών δεδομένων (Not a kitchen-book seed file)."); return;
+  }
+  const db = getDb();
+  if (!db) { alert("Συνδεθείτε πρώτα (Sign in first)."); return; }
+  let book = null;
+  try { book = (await db.ref(KITCHEN_DB).once("value")).val(); }
+  catch (e) { alert("Δεν διαβάστηκε η βάση (Could not read the database): " + e.message); return; }
+  const plan = planSeedMerge(book, seed);
+  pendingSeedPlan = plan;
+  showSeedPreview(plan);
+}
+
+/*-------------------
+Purpose: Draw the import preview: per section how many items will be added and how many
+         already exist (kept unchanged), with Save / Cancel buttons.
+On Input: plan - result of planSeedMerge().
+On Output: none.
+---------------------*/
+function showSeedPreview(plan){
+  const box = document.getElementById("seedBanner");
+  if (!box) return;
+  box.hidden = false;
+  const rows = SEED_SECTIONS.map(sec => {
+    const c = plan.counts[sec] || { add: 0, keep: 0 };
+    return `<tr><td>${SEED_LABELS[sec]}</td><td class="seed-add">+${c.add}</td><td>${c.keep}</td></tr>`;
+  }).join("");
+  box.innerHTML = `
+    <strong>Προεπισκόπηση εισαγωγής (Import preview)</strong>
+    <table class="seed-table"><thead><tr><th>Ενότητα</th><th>Νέα (add)</th><th>Υπάρχουν, μένουν ίδια (kept)</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <div class="seed-hint">${plan.total ? "Θα αποθηκευτούν " + plan.total + " νέα στοιχεία στη Matzourana-Database. Τα υπάρχοντα δεν αλλάζουν." : "Δεν λείπει τίποτα: δεν χρειάζεται εισαγωγή (nothing to add)."}</div>
+    ${plan.total ? `<button class="btn-primary" type="button" onclick="confirmSeedImport()">Αποθήκευση (${plan.total})</button>` : ""}
+    <button class="btn-secondary" type="button" onclick="cancelSeedImport()">Ακύρωση / Cancel</button>`;
+}
+
+/*-------------------
+Purpose: Save the previewed seed items to Firebase, adding only keys that are still missing.
+On Input: none (uses pendingSeedPlan from the preview).
+On Output: Promise<void>.
+Side effects: re-reads the kitchen book and recomputes the plan just before writing (so
+          nothing that appeared meanwhile is overwritten), then one multi-path update() of
+          only the missing keys + seedImportedAt; reloads the kitchen book into the admin.
+---------------------*/
+async function confirmSeedImport(){
+  const db = getDb();
+  if (!db || !pendingSeedPlan || !pendingSeedPlan.total) { cancelSeedImport(); return; }
+  try {
+    const fresh = (await db.ref(KITCHEN_DB).once("value")).val() || {};
+    const patch = {};
+    Object.keys(pendingSeedPlan.patch).forEach(path => {
+      const parts = path.split("/");
+      let cur = fresh;
+      for (const p of parts) { cur = (cur && typeof cur === "object") ? cur[p] : undefined; }
+      const isLabelFix = parts[0] === "fixed" && (parts.length === 3 || (parts.length === 2 && cur != null && typeof cur !== "object"));
+      if (cur == null || isLabelFix) patch[path] = pendingSeedPlan.patch[path];
+    });
+    if (!Object.keys(patch).length) { cancelSeedImport(); alert("Δεν λείπει τίποτα (nothing to add)."); return; }
+    patch["seedImportedAt"] = new Date().toISOString();
+    await db.ref(KITCHEN_DB).update(patch);
+    const n = Object.keys(patch).length - 1;
+    pendingSeedPlan = null;
+    await loadKitchenBook();
+    alert("Αποθηκεύτηκαν " + n + " στοιχεία στη Matzourana-Database (" + n + " items saved).");
+  } catch (e) {
+    alert("Firebase: " + e.message);
+  }
+}
+
+/*-------------------
+Purpose: Close the import preview without saving anything.
+On Input: none.
+On Output: none.
+---------------------*/
+function cancelSeedImport(){
+  pendingSeedPlan = null;
+  renderSeedBanner(kitchenMissingSections(window.kitchenBookLoaded));
+}
+
+/*-------------------
+Purpose: Remember the costing data as loaded from the kitchen book, so the reset helpers
+         restore "what was loaded" (the hard-coded copies no longer exist).
+On Input: none.
+On Output: none.
+Side effects: fills HTML_DEFAULTS.recipes / .ingredients / .fixed.
+---------------------*/
+function captureLoadedDefaults(){
+  HTML_DEFAULTS.recipes = JSON.parse(JSON.stringify(recipes));
+  HTML_DEFAULTS.ingredients = { ...ingredientPrices };
+  HTML_DEFAULTS.fixed = JSON.parse(JSON.stringify(currentFixedMap()));
 }
 
 function downloadKitchenBook(){
