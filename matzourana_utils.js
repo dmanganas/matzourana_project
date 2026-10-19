@@ -45,7 +45,8 @@ On Input: lang - String, 'el' or 'en'.
 On Output: none.
 Side effects: sets currentLang and <html lang>; replaces the innerHTML of every .lang
           element with its data-el / data-en text (elements without that attribute
-          are left alone).
+          are left alone); sets the alt text of every element that carries
+          data-alt-el / data-alt-en (e.g. the Music Stories thumbnails).
 Used by: toggleLanguage, initPage.
 ---------------------*/
 function applyLanguage(lang) {
@@ -54,6 +55,10 @@ function applyLanguage(lang) {
     document.querySelectorAll('.lang').forEach(el => {
         const text = el.getAttribute('data-' + currentLang);
         if (text !== null) el.innerHTML = text;
+    });
+    document.querySelectorAll('[data-alt-el]').forEach(el => {
+        const alt = el.getAttribute('data-alt-' + currentLang);
+        if (alt !== null) el.setAttribute('alt', alt);
     });
 }
 
