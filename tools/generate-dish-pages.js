@@ -8,7 +8,8 @@
  * Usage:
  *   node tools/generate-dish-pages.js pastitsio            # one or more catalog keys
  *   node tools/generate-dish-pages.js --all                # every dish that has a description AND a photo
- *   node tools/generate-dish-pages.js --sitemap pastitsio  # also print <url> entries for sitemap.xml
+ *   node tools/generate-dish-pages.js --sitemap pastitsio  # also print <url> entries (with <image:image>) for sitemap.xml
+ *   node tools/generate-dish-pages.js --all --sitemap      # also rewrite sitemap.xml: dish <url>s + Google image entries
  *
  * Re-run after price changes so the dish pages keep the same prices as the main menu.
  * Never reads admin/ recipes (costs, grams stay private). Public ingredient hints come
@@ -25,15 +26,18 @@ const ASSET_V = '20261019g'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
-Purpose: Extract a `const NAME = { ... };` object literal from matzourana_data.js
-         (brace matching, skipping strings and comments).
-On Input: name - String, the const identifier (e.g. "menuCatalog").
-On Output: Object, the evaluated literal.
+Purpose: Extract a `const NAME = { ... };` object literal or `const NAME = [ ... ];` array
+         literal from matzourana_data.js (bracket matching, skipping strings and comments).
+On Input: name - String, the const identifier (e.g. "menuCatalog", "imageList").
+On Output: Object | Array, the evaluated literal.
 ---------------------*/
 function extractObject(name) {
   const start = html.indexOf('const ' + name + ' =');
   if (start < 0) throw new Error(name + ' not found in ' + DATA_FILE);
-  let i = html.indexOf('{', start), depth = 0, q = null;
+  const eq = html.indexOf('=', start);
+  const ob = html.indexOf('{', eq), ab = html.indexOf('[', eq);
+  let i = (ab >= 0 && (ob < 0 || ab < ob)) ? ab : ob, depth = 0, q = null;
+  const open = html[i], close = open === '[' ? ']' : '}';
   const from = i;
   for (; i < html.length; i++) {
     const c = html[i], n = html[i + 1];
@@ -41,14 +45,15 @@ function extractObject(name) {
     if (c === '"' || c === "'" || c === '`') { q = c; continue; }
     if (c === '/' && n === '/') { i = html.indexOf('\n', i); continue; }
     if (c === '/' && n === '*') { i = html.indexOf('*/', i) + 1; continue; }
-    if (c === '{') depth++;
-    else if (c === '}' && --depth === 0) break;
+    if (c === open) depth++;
+    else if (c === close && --depth === 0) break;
   }
   return vm.runInNewContext('(' + html.slice(from, i + 1) + ')');
 }
 
 const menuCatalog = extractObject('menuCatalog');
 const dishImageMap = extractObject('dishImageMap');
+const imageList = extractObject('imageList');
 
 const CATEGORY = {
   'freshly-cooked': 'Φρεσκομαγειρεμένα', 'meat-cooked': 'Πιάτα Κρεατικών', 'veg-cooked': 'Πιάτα Λαχανικών',
@@ -382,6 +387,86 @@ ${JSON.stringify(ld, null, 2)}
 `;
 }
 
+/*-------------------
+Purpose: Turn an absolute site URL (https://www.matzourana.gr/...) into its local file path,
+         so the sitemap only lists images that really exist in the repo.
+On Input: url - String absolute URL on SITE.
+On Output: String local path, or null when the URL is not on SITE / the file is missing.
+---------------------*/
+function localFileOf(url) {
+  if (!url || !url.startsWith(SITE)) return null;
+  const p = path.join(ROOT, decodeURI(url.slice(SITE.length).split('?')[0]));
+  return fs.existsSync(p) && fs.statSync(p).isFile() ? p : null;
+}
+
+/*-------------------
+Purpose: Build the Google image-sitemap lines for a list of image URLs (existing files only).
+On Input: urls - String[] absolute image URLs; skipped - String[] collector for missing ones.
+On Output: String, zero or more "  <image:image>…</image:image>" lines joined by \n.
+---------------------*/
+function imageTags(urls, skipped) {
+  const seen = new Set();
+  return urls.filter(u => {
+    if (seen.has(u)) return false;
+    seen.add(u);
+    if (!localFileOf(u)) { skipped.push(u); return false; }
+    return true;
+  }).map(u => `  <image:image><image:loc>${esc(u)}</image:loc></image:image>`).join('\n');
+}
+
+/*-------------------
+Purpose: Render one sitemap <url> block for a dish page, with its og:image JPG as <image:image>.
+On Input: key - String catalog key; lastmod - String YYYY-MM-DD; skipped - String[] collector.
+On Output: String, the <url>…</url> block.
+---------------------*/
+function dishSitemapBlock(key, lastmod, skipped) {
+  const img = dishImageMap[key];
+  const imgs = img ? imageTags([dishImageUrls(img.file).jpgAbs], skipped) : '';
+  return `<url>\n  <loc>${SITE}dishes/${slugOf(key)}/</loc>\n  <lastmod>${lastmod}</lastmod>\n  <priority>0.8</priority>` +
+    (imgs ? '\n' + imgs : '') + `\n</url>`;
+}
+
+/*-------------------
+Purpose: Rewrite sitemap.xml: keep the static page <url>s (and their lastmod), add the image
+         namespace, add <image:image> entries for the home page (OG image) and the menu page
+         (every imageList photo), and regenerate the dish-page <url>s with their photo.
+On Input: keys - String[] dish catalog keys that have a dish page; today - String YYYY-MM-DD
+          (lastmod for dish pages that are new to the sitemap).
+On Output: { urls: Number, images: Number, skipped: String[] }. Side effect: writes sitemap.xml.
+---------------------*/
+function writeSitemap(keys, today) {
+  const file = path.join(ROOT, 'sitemap.xml');
+  let xml = fs.readFileSync(file, 'utf8').replace(/\s*<image:image>[\s\S]*?<\/image:image>/g, '');
+  if (!/xmlns:image=/.test(xml)) {
+    xml = xml.replace('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+      'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n      xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"');
+  }
+  const blocks = xml.match(/<url>[\s\S]*?<\/url>/g) || [];
+  const head = xml.slice(0, xml.indexOf('<url>'));
+  const locOf = b => (b.match(/<loc>([^<]*)<\/loc>/) || [])[1] || '';
+  const lastmodOf = b => (b.match(/<lastmod>([^<]*)<\/lastmod>/) || [])[1];
+  const skipped = [];
+  const pageImages = {
+    [SITE]: [SITE + 'MatzouranaImages/matzourana-og-1200.jpg'],
+    [SITE + 'matzourana_menu.html']: imageList.map(f => SITE + f)
+  };
+  const dishPrefix = SITE + 'dishes/';
+  const wanted = new Set(keys.map(k => dishPrefix + slugOf(k) + '/'));
+  const out = [];
+  for (const b of blocks) {
+    const loc = locOf(b);
+    if (wanted.has(loc)) continue;                       // regenerated below
+    const imgs = pageImages[loc] ? imageTags(pageImages[loc], skipped) : '';
+    out.push(imgs ? b.replace('</url>', imgs + '\n</url>') : b);
+  }
+  const prev = {};
+  blocks.forEach(b => { prev[locOf(b)] = lastmodOf(b); });
+  for (const k of keys) out.push(dishSitemapBlock(k, prev[dishPrefix + slugOf(k) + '/'] || today, skipped));
+  const body = out.join('\n');
+  fs.writeFileSync(file, head + body + '\n</urlset>\n');
+  return { urls: out.length, images: (body.match(/<image:image>/g) || []).length, skipped };
+}
+
 // ---- CLI ----
 const args = process.argv.slice(2);
 const wantSitemap = args.includes('--sitemap');
@@ -399,7 +484,12 @@ for (const k of keys) {
   fs.writeFileSync(path.join(dir, 'index.html'), page(k, keys));
   console.log('wrote dishes/' + slugOf(k) + '/index.html');
 }
-if (wantSitemap) {
+if (wantSitemap && args.includes('--all')) {
+  const r = writeSitemap(keys, today);
+  console.log(`wrote sitemap.xml: ${r.urls} urls, ${r.images} images` + (r.skipped.length ? `, skipped (missing): ${r.skipped.join(', ')}` : ''));
+} else if (wantSitemap) {
+  const skipped = [];
   console.log('\n<!-- add to sitemap.xml -->');
-  for (const k of keys) console.log(`<url>\n  <loc>${SITE}dishes/${slugOf(k)}/</loc>\n  <lastmod>${today}</lastmod>\n  <priority>0.8</priority>\n</url>`);
+  for (const k of keys) console.log(dishSitemapBlock(k, today, skipped));
+  if (skipped.length) console.log('<!-- skipped missing images: ' + skipped.join(', ') + ' -->');
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
@@ -12,12 +13,50 @@
   <lastmod>2026-10-19</lastmod>
   <priority>1.0</priority>
   <changefreq>weekly</changefreq>
+  <image:image><image:loc>https://www.matzourana.gr/MatzouranaImages/matzourana-og-1200.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_menu.html</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.9</priority>
   <changefreq>daily</changefreq>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-1.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-2.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-3.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-4.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-5.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-6.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-7.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-8.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-9.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-10.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-11.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-12.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-13.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-14.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-15.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-16.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-17.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-18.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-19.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-20.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-21.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-22.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-23.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-24.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-25.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-26.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-27.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-28.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-29.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-30.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-31.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-33.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-34.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-35.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-36.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-37.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-38.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -43,126 +82,148 @@
   <priority>0.9</priority>
   <changefreq>yearly</changefreq>
 </url>
-
 <url>
   <loc>https://www.matzourana.gr/dishes/pastitsio/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-4.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moussakas/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-3.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moschari-kokkinisto/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-1.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moschari-giouvesti/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-30.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moschari-lemonato/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-29.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/rolo-moscharisio/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-24.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moscharaki-noua/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-28.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moscharaki-noua-with-fried-potatoes/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-31.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moscharaki-noua-with-rice/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-32.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/keftedakia-tiganita/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-14.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/kotopoulo-bouti/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-25.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/kokoras-krasatos/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/lachanontolmades/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/briam/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/giantes/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/melitzanes-imam/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/kritharoto-garides/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/glossa-lemonati/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/giouvarlakia/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/arakas-lemonatos/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
-</url>
-<url>
-  <loc>https://www.matzourana.gr/dishes/bakaliaros-spetsiota/</loc>
-  <lastmod>2026-10-19</lastmod>
-  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-8.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/soutzoukakia/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-35.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/lachanontolmades/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-2.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/briam/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-22.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/giantes/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-6.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/melitzanes-imam/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-26.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/arakas-lemonatos/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-33.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/bakaliaros-spetsiota/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-34.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/oktapodi-stifado/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-36.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/kritharoto-garides/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-18.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/ksifias-lemonatos/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-38.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/glossa-lemonati/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-27.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/giouvarlakia/</loc>
+  <lastmod>2026-10-19</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-16.jpg</image:loc></image:image>
 </url>
 </urlset>
-
