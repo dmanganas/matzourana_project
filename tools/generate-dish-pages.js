@@ -205,7 +205,7 @@ function page(key, allKeys) {
   // Titles ~50–60 chars, descriptions ≤155
   const title = clipMeta(`${el.name} Καλλιθέα | Matzourana`, 60);
   const desc = clipMeta(
-    `${el.name}${el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : ''} delivery Καλλιθέα. Ματζουράνα, Δημοσθένους 48. 210 9577 846.` +
+    `${el.name}${el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : ''}. Matzourana Καλλιθέα, Δημοσθένους 48. 210 9577 846.` +
     (price ? ` Από €${price.replace('.', ',')}.` : ''),
     155
   );
@@ -228,7 +228,7 @@ function page(key, allKeys) {
       },
       Object.assign({
         '@type': 'MenuItem', '@id': url + '#dish', name: el.name, alternateName: en.name,
-        description: (el.desc ? el.desc + '. ' : '') + el.name + ' delivery Καλλιθέα – Matzourana, Δημοσθένους 48.',
+        description: (el.desc ? el.desc + '. ' : '') + el.name + ' Matzourana Καλλιθέα, Δημοσθένους 48.',
         image: urls.webpAbs || urls.jpgAbs
       }, price ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', availability: 'https://schema.org/InStock', seller: { '@id': SITE + '#restaurant' } } } : {}),
       {
@@ -243,7 +243,7 @@ function page(key, allKeys) {
         mainEntity: [
           {
             '@type': 'Question',
-            name: `Πότε σερβίρετε ${el.name};`,
+            name: `Πότε σερβίρετε το πιάτο ${el.name};`,
             acceptedAnswer: { '@type': 'Answer', text: `Το ${el.name} σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Ωράριο διανομής Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.` }
           },
           {
@@ -322,10 +322,10 @@ ${JSON.stringify(ld, null, 2)}
 <body>
   <header><a href="${SITE}">Matzourana Eatery – Μαγειρείο Καλλιθέα</a></header>
   <main>
-    <h1>${esc(el.name)} delivery Καλλιθέα</h1>
+    <h1>${esc(el.name)} Matzourana Καλλιθέα</h1>
     ${picture}
     ${el.desc ? `<p>${esc(el.desc)}.</p>` : ''}
-    <p>Σπιτικό ${esc(el.name.toLowerCase())} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>${esc(el.name)} delivery Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
+    <p>Σπιτικό ${esc(el.name.toLowerCase())} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>${esc(el.name)} Matzourana Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
     <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea. Order for delivery across the wider Kallithea area.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
     <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
@@ -339,11 +339,11 @@ ${JSON.stringify(ld, null, 2)}
       <ul class="en" lang="en">
           ${ingListEn}
       </ul>
-      <p class="note">Ενδεικτικά δημόσια υλικά από την περιγραφή του πιάτου. Για αλλεργιογόνα, ρωτήστε μας στο τηλέφωνο πριν την παραγγελία.</p>
+      <p class="note">Ενδεικτικά δημόσια υλικά από την περιγραφή του πιάτου. Για ιδιαίτερες προτιμήσεις στον τρόπο ψησίματος ή διατροφικές συνήθειες που απαιτούν την προσοχή μας, ρωτήστε μας στο τηλέφωνο πριν την παραγγελία. Θα χαρούμε να σας εξυπηρετήσουμε!</p>
     </section>
 
     <section class="areas" aria-labelledby="areas-title">
-      <h2 id="areas-title">Delivery Καλλιθέα &amp; περιοχή</h2>
+      <h2 id="areas-title">Matzourana Καλλιθέα &amp; περιοχή</h2>
       <p>Διανομή μαγειρευτών στην <strong>Καλλιθέα</strong> και την ευρύτερη περιοχή. Διεύθυνση καταστήματος: Δημοσθένους 48, 176 71 Καλλιθέα.</p>
       <p class="en" lang="en">Delivery of home-cooked dishes across Kallithea and the wider area. Shop: Dimosthenous 48, 176 71 Kallithea.</p>
       <p>Ωράριο διανομής: <strong>Τρίτη–Κυριακή 12:00–19:30</strong> · <strong>Δευτέρα κλειστά</strong>.</p>
@@ -352,7 +352,7 @@ ${JSON.stringify(ld, null, 2)}
     <section class="faq" aria-labelledby="faq-title">
       <h2 id="faq-title">Συχνές ερωτήσεις</h2>
       <dl>
-        <dt>Πότε σερβίρετε ${esc(el.name)};</dt>
+        <dt>Πότε σερβίρετε το πιάτο ${esc(el.name)};</dt>
         <dd>Όταν υπάρχει στο μενού ημέρας. Καλέστε στο <a href="tel:+302109577846">210 9577 846</a> ή δείτε το <a href="${SITE}matzourana_menu.html#daily-dishes">σημερινό μενού</a>.</dd>
         <dt>Κάνετε delivery στην Καλλιθέα;</dt>
         <dd>Ναι – απευθείας από το μαγειρείο, και μέσω efood / Wolt. Ωράριο 12:00–19:30, Δευτέρα κλειστά.</dd>
