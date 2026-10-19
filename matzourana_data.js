@@ -320,6 +320,10 @@ const dishImageMap = {
         file: "web/greek-dish-36.webp",
         alt: "Χταπόδι στιφάδο από φρέσκο χταπόδι - Με κρεμμυδάκια και σάλτσα ντομάτας | Octopus Stifado with Fresh Octopus - With small onions and tomato sauce"
     },
+    "ksifias_lemonatos": {
+        file: "web/greek-dish-38.webp",
+        alt: "Ξιφίας λεμονάτος - Τρυφερός ξιφίας με λεμόνι, ελαιόλαδο και αρωματικά, με πατάτες και ψητή ντομάτα | Swordfish in Lemon Sauce - Tender swordfish with lemon, olive oil and aromatic herbs, with potatoes and roasted tomato"
+    },
     
     // Add more mappings here when you add new photos
 };
@@ -794,7 +798,7 @@ const imageList = [
     'DishImages/web/greek-dish-28.webp', 'DishImages/web/greek-dish-29.webp', 'DishImages/web/greek-dish-30.webp',
     'DishImages/web/greek-dish-31.webp', 'DishImages/web/greek-dish-33.webp', 'DishImages/web/greek-dish-34.webp',
     'DishImages/web/greek-dish-35.webp', 'DishImages/web/greek-dish-36.webp',
-    'DishImages/web/greek-dish-37.webp'
+    'DishImages/web/greek-dish-37.webp', 'DishImages/web/greek-dish-38.webp'
 ];
 
 const dishAlts = {
@@ -833,7 +837,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-34.webp': "Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες - (Με πατάτες, φρέσκια ντομάτα και ματζουράνα) Matzourana Eatery Καλλιθέα | Salted Cod Spetsiota with Potatoes - (With potatoes, fresh tomato and marjoram) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-35.webp': "Σουτζουκάκια Σμυρνέικα - (Χειροποίητα με 100% μοσχαρίσιο κιμά) Matzourana Eatery Καλλιθέα | Smyrna-Style Soutzoukakia - (Handmade with 100% beef mince) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-36.webp': "Χταπόδι στιφάδο από φρέσκο χταπόδι - (Με κρεμμυδάκια και σάλτσα ντομάτας) Matzourana Eatery Καλλιθέα | Octopus Stifado with Fresh Octopus - (With small onions and tomato sauce) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-37.webp': "Χόρτα Εποχής - (Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι) Matzourana Eatery Καλλιθέα | Seasonal Greens - (Boiled seasonal greens with olive oil and lemon) Matzourana Eatery Kallithea"
+    'DishImages/web/greek-dish-37.webp': "Χόρτα Εποχής - (Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι) Matzourana Eatery Καλλιθέα | Seasonal Greens - (Boiled seasonal greens with olive oil and lemon) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-38.webp': "Ξιφίας λεμονάτος - (Τρυφερός ξιφίας με λεμόνι, ελαιόλαδο και αρωματικά, με πατάτες και ψητή ντομάτα) Matzourana Eatery Καλλιθέα | Swordfish in Lemon Sauce - (Tender swordfish with lemon, olive oil and aromatic herbs, with potatoes and roasted tomato) Matzourana Eatery Kallithea"
  
 };
 
