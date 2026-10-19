@@ -13,9 +13,37 @@
     <meta name="keywords" content="μαγειρευτά Καλλιθέα, μαγειρεία Καλλιθέα, μαγειρευτά, εστιατόριο Καλλιθέα, σπιτική κουζίνα, παραδοσιακές συνταγές, σπιτικά φαγητά,
                                    μαγειρευτό delivery Καλλιθέα, Greek cuisine, restaurant Kallithea, traditional Greek food, home-style Greek food, food delivery Kallithea, 
                                    Matzourana Eatery, Greek lunch Kallithea">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <!-- @head -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="Logos/heart_decor-logo.webp" type="image/webp" fetchpriority="high">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js): queued at once, the library itself loads on first interaction or 4 s after page load -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HYZYNG1DM0');
+      /*-------------------
+      Purpose: Load the Google Analytics library once, off the critical rendering path.
+      On Input: none (called by the first scroll / tap / key press, or 4 s after 'load').
+      On Output: none. Side effects: appends the async gtag.js <script> once.
+      ---------------------*/
+      function loadGtagLibrary() {
+        if (window.__gtagLoaded) return;
+        window.__gtagLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0';
+        document.head.appendChild(s);
+      }
+      ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function (e) {
+        window.addEventListener(e, loadGtagLibrary, { once: true, passive: true });
+      });
+      window.addEventListener('load', function () { setTimeout(loadGtagLibrary, 4000); });
+    </script>
+    <!-- @/head -->
     <link rel="canonical" href="https://www.matzourana.gr/">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Open Graph / Facebook / Instagram -->
     <meta property="og:type" content="website">
@@ -37,11 +65,11 @@
     <meta name="twitter:description" content="Σπιτική κουζίνα και παραδοσιακά μαγειρευτά στη Δημοσθένους 48, Καλλιθέα.">
     <meta name="twitter:image" content="https://www.matzourana.gr/MatzouranaImages/matzourana-og-1200.jpg">
 
-    <link rel="stylesheet" href="matzourana_styles.css?v=20261019g">
-    <script defer src="matzourana_data.js?v=20261019g"></script>
-    <script defer src="matzourana_messages.js?v=20261019g"></script>
-    <script defer src="matzourana_utils.js?v=20261019g"></script>
-    <script defer src="matzourana_tools.js?v=20261019g"></script>
+    <link rel="stylesheet" href="matzourana_styles.css?v=20261019h">
+    <script defer src="matzourana_data.js?v=20261019h"></script>
+    <script defer src="matzourana_messages.js?v=20261019h"></script>
+    <script defer src="matzourana_utils.js?v=20261019h"></script>
+    <script defer src="matzourana_tools.js?v=20261019h"></script>
     
 </head>
 
@@ -49,7 +77,8 @@
     <!-- @header -->
     <header>
         <div class="logo-container">
-            <video autoplay loop muted playsinline class="logo-video">
+            <video loop muted playsinline preload="none" class="logo-video" width="480" height="360"
+                   poster="MatzouranaImages/matzourana-autumn-october-movie-logo-poster.webp">
                 <source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mp4" type="video/mp4">
             </video>
 
@@ -151,7 +180,7 @@
                     </p>
                      <div class="footer-line">
                         <span class="leafs">
-                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                            <img src="Logos/leaves-logo.webp" width="120" height="82" alt="Matzourana Leafs" />
                         </span>
                     </div>
                 </div> 
@@ -186,7 +215,7 @@
                         </span>
                         
                         <a href="tel:+302109577846" class="call-btn">
-                            <img src="Logos/matzourana-logo.png" alt="Κλήση Matzourana" class="button-logo">
+                            <img src="Logos/matzourana-logo.webp" width="90" height="90" alt="Κλήση Matzourana" class="button-logo">
                             <span class="lang" data-el="Καλέστε <br> Τώρα" data-en="Press <br> to Call">Καλέστε <br> Τώρα</span>
                         </a>
                     </div>
@@ -207,8 +236,8 @@
                         Για online παραγγελίες μέσω πλατφορμών, μας βρίσκετε εδώ. Η παράδοση είναι δωρεάν!
                     </p>
                     <div class="social-logos">
-                        <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
-                        <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
+                        <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.webp" width="90" height="90" alt="eFood"></a>
+                        <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.webp" width="90" height="88" alt="Wolt"></a>
                         <br>
                     </div>
                 </div>
@@ -221,7 +250,7 @@
                     </p>
                     <div class="footer-line">
                         <span class="leafs">
-                            <img src="Logos/leaves-logo.png" alt="Matzourana Leafs" />
+                            <img src="Logos/leaves-logo.webp" width="120" height="82" alt="Matzourana Leafs" />
                         </span>
                     </div>
                     
@@ -319,7 +348,9 @@
                     <div class="contact-panel">
                         <a href="https://youtube.com/shorts/PF2YfVqf5cI" target="_blank">
                             <picture>
-                              <source srcset="MatzouranaImages/matzourana-gravity-permanente.webp" type="image/webp">
+                              <source type="image/webp"
+                                      srcset="MatzouranaImages/matzourana-gravity-permanente-600.webp 600w, MatzouranaImages/matzourana-gravity-permanente-900.webp 900w, MatzouranaImages/matzourana-gravity-permanente.webp 1200w"
+                                      sizes="(max-width: 1200px) 48vw, 554px">
                               <img id="hero-image" 
                                    src="MatzouranaImages/matzourana-gravity-permanente.jpg" 
                                    alt="Matzourana φιγούρα - Μαγειρείο Καλλιθέα με παραδοσιακές σπιτικές γεύσεις και AI ενισχυμένη τέχνη" 
@@ -330,7 +361,7 @@
                             </picture>
                         </a> 
                         <!--<img id="contact-map" src="CoreImages/contact-map.png" alt="Map" style="max-width: 100%; margin-bottom: 10px;">-->
-                        <a href="https://www.google.com/maps/place/MATZOURANA/@37.9566025,23.7106779,17z/data=!4m15!1m8!3m7!1s0x14a1bc55ee53ece7:0xf88c808dd92b6d74!2sDimosthenous+48,+Kallithea+176+71,+Griechenland!3b1!8m2!3d37.9566025!4d23.7106779!16s%2Fg%2F11pw2vry8d!3m5!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!16s%2Fg%2F11m5lpfpyp?entry=ttu&amp;g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Matzourana στον Χάρτη Google"> <img id="contact-map" src="CoreImages/contact-map.png" alt="Map"> </a>
+                        <a href="https://www.google.com/maps/place/MATZOURANA/@37.9566025,23.7106779,17z/data=!4m15!1m8!3m7!1s0x14a1bc55ee53ece7:0xf88c808dd92b6d74!2sDimosthenous+48,+Kallithea+176+71,+Griechenland!3b1!8m2!3d37.9566025!4d23.7106779!16s%2Fg%2F11pw2vry8d!3m5!1s0x14a1bd0017f85379:0xd1a70afea945a237!8m2!3d37.9566043!4d23.7106794!16s%2Fg%2F11m5lpfpyp?entry=ttu&amp;g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Matzourana στον Χάρτη Google"> <picture><source srcset="CoreImages/contact-map-600.webp" type="image/webp"><img id="contact-map" src="CoreImages/contact-map.png" alt="Map" width="600" height="525" loading="lazy" decoding="async"></picture> </a>
                         <div class="image-panel-info">
                                 <h2 class="lang"
                                     data-el="Βρείτε μας στην Καλλιθέα" 
@@ -383,11 +414,11 @@
             
                           <button width="auto" onclick="goToPage('matzourana_menu.html#daily-dishes')"
                             class="daily-highlights notebook-bg clickable-panel"
-                            aria-label="Πιάτα Ημέρας – Daily Dishes"
                             type="button"
                             style="width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box;">
 
                             <div class="notebook-overlay"></div>
+                            <span class="visually-hidden lang" data-el="Πιάτα Ημέρας:" data-en="Daily Dishes:">Πιάτα Ημέρας:</span>
 
                             <table class="highlights-table">
                                 <tbody id="daily-highlights-body">
@@ -556,15 +587,15 @@
         </a>
         <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery - All rights reserved.</p>
         <div class="social-logos">
-            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
-            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
-            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
-            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.webp' width='90' height='90' alt='Call'></a>
+            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.webp" width="90" height="90" alt="eFood"></a>
+            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.webp" width="90" height="88" alt="Wolt"></a>
+            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.webp" width="90" height="91" alt="Instagram"></a>
 
         </div>
 
         <div class="footer-logo">
-            <a href="https://espa-anthropinodynamiko.gr/" target="_blank"><img src="Logos/logotipo.png" alt="Matzourana Logo"></a>
+            <a href="https://espa-anthropinodynamiko.gr/" target="_blank"><img src="Logos/logotipo.webp" width="120" height="11" alt="Matzourana Logo"></a>
         </div>
     </footer>
 
@@ -590,19 +621,10 @@
         <!--<source src="Sounds/eat-them-all.mp3" type="audio/mpeg">-->
     </audio>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0"></script>
-    
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-HYZYNG1DM0');
-    </script>
 
 
 

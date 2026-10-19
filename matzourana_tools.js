@@ -906,8 +906,9 @@ Purpose: Switch the header logo video to the live seasonal theme (autumn, winter
 On Input: none. Data: seasonalThemes (matzourana_messages.js); date getAthensToday().
 On Output: none.
 Side effects: changes the <source> of .logo-video only when it differs from the
-          current file (no reload otherwise). Replaces the old #logoVideo code that
-          threw a TypeError on every visit.
+          current file (no reload otherwise); then drops the autumn poster and starts the
+          new video through playLogoVideoWhenReady (after page load, not for reduced motion).
+          Replaces the old #logoVideo code that threw a TypeError on every visit.
 ---------------------*/
 function applySeasonalTheme() {
     if (typeof seasonalThemes === 'undefined') return;
@@ -924,8 +925,9 @@ function applySeasonalTheme() {
     const file = theme.rotateByWeekday ? theme.logoVideos[today.getDay() % theme.logoVideos.length] : theme.logoVideos[0];
     if (source.getAttribute('src') !== file) {
         source.setAttribute('src', file);
+        video.removeAttribute('poster');
         video.load();
-        const p = video.play(); if (p && p.catch) p.catch(() => {});
+        playLogoVideoWhenReady(video);
     }
 }
 
@@ -973,7 +975,7 @@ function renderDailyHighlights() {
         if (!dish) return;
         let iconHTML = '';
         dish.icons.forEach(icon => {
-            iconHTML += '<img src="Logos/' + icon + '" alt="' + icon + '" class="category-icon">';
+            iconHTML += '<img src="Logos/' + icon.replace(/\.png$/i, '.webp') + '" alt="' + icon + '" class="category-icon" decoding="async">';
         });
         html += '<tr class="highlight-row animate-write">';
         html += '<td class="highlight-icons">' + iconHTML + '</td>';
@@ -1203,6 +1205,27 @@ Purpose: Keep the header greeting visible when the logo video ends (the video st
          on its first frame).
 On Input: none. On Output: none.
 ---------------------*/
+/*-------------------
+Purpose: Start the header logo video only after the page has loaded, so its download does
+         not compete with the first paint / LCP; visitors who ask for reduced motion keep
+         the still poster.
+On Input: video - HTMLVideoElement (optional; default the header .logo-video).
+On Output: none.
+Side effects: after window 'load' (or at once if already loaded) sets preload="auto" and
+          calls play(); does nothing when prefers-reduced-motion: reduce.
+---------------------*/
+function playLogoVideoWhenReady(video) {
+    video = video || document.querySelector('header .logo-video');
+    if (!video) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const start = () => {
+        video.preload = 'auto';
+        const p = video.play(); if (p && p.catch) p.catch(() => {});
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+}
+
 function initLogoVideo() {
     const video = document.querySelector('.logo-video');
     const text = document.querySelector('.logo-container .lang, .logo-container #seasonal-header');
@@ -1369,7 +1392,8 @@ Side effects: sets currentLang / <html lang>; renders the daily table, highlight
           on 'menu' the tab from the address + Menu JSON-LD; on 'home' also
           old-#anchor redirects, the rating widget, the daily Firebase publish (D5)
           and the Music Stories fit (initMusicStoriesFit).
-          Registers the 'languageChange' re-renderers.
+          Registers the 'languageChange' re-renderers. Starts the header logo video after
+          page load (playLogoVideoWhenReady).
 ---------------------*/
 function initPage(pageName) {
     const page = pageName || document.body.dataset.page || 'home';
@@ -1394,6 +1418,7 @@ function initPage(pageName) {
     }
     initLightboxControls();
     initLogoVideo();
+    playLogoVideoWhenReady();
 
     updateDailyDishesDate(currentLang);
 

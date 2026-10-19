@@ -10,8 +10,36 @@
     <title>Κριτικές | Matzourana Καλλιθέα</title>
     <meta name="description" content="Τι λένε οι πελάτες για τη Matzourana στην Καλλιθέα. Διαβάστε κριτικές και δείτε βίντεο από την κουζίνα μας.">
     <link rel="canonical" href="https://www.matzourana.gr/matzourana_reviews.html">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- @head -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="Logos/heart_decor-logo.webp" type="image/webp" fetchpriority="high">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js): queued at once, the library itself loads on first interaction or 4 s after page load -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HYZYNG1DM0');
+      /*-------------------
+      Purpose: Load the Google Analytics library once, off the critical rendering path.
+      On Input: none (called by the first scroll / tap / key press, or 4 s after 'load').
+      On Output: none. Side effects: appends the async gtag.js <script> once.
+      ---------------------*/
+      function loadGtagLibrary() {
+        if (window.__gtagLoaded) return;
+        window.__gtagLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0';
+        document.head.appendChild(s);
+      }
+      ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function (e) {
+        window.addEventListener(e, loadGtagLibrary, { once: true, passive: true });
+      });
+      window.addEventListener('load', function () { setTimeout(loadGtagLibrary, 4000); });
+    </script>
+    <!-- @/head -->
 
     <!-- Open Graph / Facebook / Instagram -->
     <meta property="og:type" content="website">
@@ -33,11 +61,11 @@
     <meta name="twitter:description" content="4.8 ★ από 71 κριτικές στο Google. What our guests say about Matzourana Eatery.">
     <meta name="twitter:image" content="https://www.matzourana.gr/MatzouranaImages/matzourana-og-1200.jpg">
 
-    <link rel="stylesheet" href="matzourana_styles.css?v=20261019g">
-    <script defer src="matzourana_data.js?v=20261019g"></script>
-    <script defer src="matzourana_messages.js?v=20261019g"></script>
-    <script defer src="matzourana_utils.js?v=20261019g"></script>
-    <script defer src="matzourana_tools.js?v=20261019g"></script>
+    <link rel="stylesheet" href="matzourana_styles.css?v=20261019h">
+    <script defer src="matzourana_data.js?v=20261019h"></script>
+    <script defer src="matzourana_messages.js?v=20261019h"></script>
+    <script defer src="matzourana_utils.js?v=20261019h"></script>
+    <script defer src="matzourana_tools.js?v=20261019h"></script>
     <script type="application/ld+json">
 {
       "@context": "https://schema.org",
@@ -64,7 +92,8 @@
     <!-- @header -->
     <header>
         <div class="logo-container">
-            <video autoplay loop muted playsinline class="logo-video">
+            <video loop muted playsinline preload="none" class="logo-video" width="480" height="360"
+                   poster="MatzouranaImages/matzourana-autumn-october-movie-logo-poster.webp">
                 <source src="MatzouranaImages/matzourana-autumn-october-movie-logo.mp4" type="video/mp4">
             </video>
 
@@ -233,15 +262,15 @@
         </a>
         <p class="lang" data-el="© 2025 Matzourana Eatery - All rights reserved." data-en="© 2025 Matzourana Eatery - All rights reserved.">© 2025 Matzourana Eatery - All rights reserved.</p>
         <div class="social-logos">
-            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.png' alt='Call'></a>
-            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.png" alt="eFood"></a>
-            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.png" alt="Wolt"></a>
-            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.png" alt="Instagram"></a>
+            <a href='tel:+302109577846'><img src='Logos/matzourana-logo.webp' width='90' height='90' alt='Call'></a>
+            <a href="https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385" target="_blank"><img src="Logos/efood-logo.webp" width="90" height="90" alt="eFood"></a>
+            <a href="https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens" target="_blank"><img src="Logos/wolt-logo.webp" width="90" height="88" alt="Wolt"></a>
+            <a href="https://www.instagram.com/matzourana_eatery" target="_blank"><img src="Logos/instagram-logo.webp" width="90" height="91" alt="Instagram"></a>
 
         </div>
 
         <div class="footer-logo">
-            <a href="https://espa-anthropinodynamiko.gr/" target="_blank"><img src="Logos/logotipo.png" alt="Matzourana Logo"></a>
+            <a href="https://espa-anthropinodynamiko.gr/" target="_blank"><img src="Logos/logotipo.webp" width="120" height="11" alt="Matzourana Logo"></a>
         </div>
     </footer>
 
@@ -262,13 +291,5 @@
     </audio>
     <!-- @/footer -->
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HYZYNG1DM0"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-HYZYNG1DM0');
-    </script>
 </body>
 </html>

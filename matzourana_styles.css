@@ -2,12 +2,12 @@
    matzourana_styles.css – shared styles for every Matzourana page
    (index.html and, after the split, matzourana_menu/gallery/reviews/about/contact.html).
    Moved out of the three <style> blocks of index.html (split step 1), unchanged
-   except: the @import is first (CSS requires it) and two background-image
+   except: the old Great Vibes @import moved to partials/head.html, and two background-image
    url('CoreImages/empty.png') lines were dropped (the file never existed; the
    white background-color underneath already showed).
    Desktop zoom 0.75 for widths >= 1201px lives here, so it applies to all pages.
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+/* Fonts (Great Vibes, Montserrat, Open Sans) load in one request from partials/head.html (no @import). */
 
 .tree-love {
     font-size: 3rem;
@@ -1344,6 +1344,7 @@ footer .social-logos img {
     margin: 2em auto;
     padding: 2.5em 0.2em 1.5em 1.5em;
     background: url('Logos/highlight-block-logo_dark.png') center/cover no-repeat;
+    background-image: image-set(url('Logos/highlight-block-logo_dark.webp') type('image/webp'), url('Logos/highlight-block-logo_dark.png') type('image/png'));
     background-color: #fffefd; /* fallback light paper color */
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.12);
@@ -1740,6 +1741,7 @@ stroke-dashoffset: 0;
 
     .notebook-bg {
         background-image: url('Logos/highlight-block-logo-mobile.png'); /* optional smaller version */
+        background-image: image-set(url('Logos/highlight-block-logo-mobile.webp') type('image/webp'), url('Logos/highlight-block-logo-mobile.png') type('image/png'));
         padding: 1.8em 0.6em 1.2em 1.2em;   /* reduce overall padding */
         margin: 1.5em auto;
         border-radius: 10px;                /* slightly softer corners */
@@ -2003,11 +2005,11 @@ stroke-dashoffset: 0;
 }
 
 @media (max-width: 480px) {
-    body { font-size: 12px; }
+    body { font-size: 14px; }   /* was 12px; Lighthouse: legible text >= 12px */
     h1 { font-size: 1.1em; }
     h2 { font-size: 1.1em; }
     h3 { font-size: 0.9em; }
-    p { font-size: 0.9em; }
+    p { font-size: 1em; }       /* was 0.9em (= 10.8px) */
     .nav-menu {
         width: 110px;
     }
@@ -2036,6 +2038,7 @@ stroke-dashoffset: 0;
     
     .notebook-bg {
         background-image: url('Logos/highlight-block-logo-mobile.png'); /* optional smaller version */
+        background-image: image-set(url('Logos/highlight-block-logo-mobile.webp') type('image/webp'), url('Logos/highlight-block-logo-mobile.png') type('image/png'));
         padding: 0.5em 0.1em 0.5em 0.5em;       /* even tighter – minimal right padding */
         margin: 1em auto;
         background-size: cover;             /* ensure bg still fits well */
@@ -2474,6 +2477,9 @@ header .nav-menu {
 
 /* Internal links from the menu / home notebook to /dishes/<slug>/ */
 .dish-page-link {
+    display: inline-block;      /* tap target >= 24px (Lighthouse target-size) */
+    min-height: 24px;
+    padding: 2px 0;
     color: inherit;
     text-decoration: underline;
     text-decoration-color: rgba(74, 93, 74, 0.45);
@@ -2487,3 +2493,17 @@ header .nav-menu {
 
 .dish-index-list a { display:inline-block; min-height:24px; padding:2px 0; }
 @media (max-width:600px){ .dish-index-list { columns:1 !important; } }
+
+/* ===== Speed / accessibility helpers (2026-10-19) ===== */
+/* Logos now carry width/height attributes (no layout shift); CSS sets the width, keep the ratio */
+.social-logos img, .phone-icon { height: auto; }
+/* contact map is now a 600px WebP with width/height: keep the old on-screen width (natural 750px, max 100%) */
+body[data-page="home"] #contact-map { width: 750px; }
+/* Text for screen readers only (e.g. the title of the highlights notebook button) */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+}

@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261019g'; // bust caches when assets/titles change
+const ASSET_V = '20261019h'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -295,6 +295,8 @@ function page(key, allKeys) {
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${urls.jpgAbs}">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Open Sans', sans-serif; margin: 0; color: #333; background: linear-gradient(135deg, #f9f9f9 0%, #e8e1c8 100%); }

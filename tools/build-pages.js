@@ -2,10 +2,11 @@
 /*
  * build-pages.js – stamps the shared header and footer into every public page.
  *
- * Source of truth:  partials/header.html, partials/footer.html
+ * Source of truth:  partials/head.html, partials/header.html, partials/footer.html
  * Targets:          index.html and every matzourana_*.html in the site root
  *                   (admin/ and dishes/ are never touched).
  * In each page the partial goes between the markers
+ *     <!-- @head --> ... <!-- @/head -->        (inside <head>: preconnect, fonts, preload, gtag)
  *     <!-- @header --> ... <!-- @/header -->
  *     <!-- @footer --> ... <!-- @/footer -->
  * The leading documentation comment of a partial is not copied.
@@ -21,11 +22,11 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const PARTS = ['header', 'footer'];
+const PARTS = ['head', 'header', 'footer'];
 
 /*-------------------
 Purpose: Read one partial and drop its leading documentation comment.
-On Input: name - String, 'header' or 'footer' (file partials/<name>.html).
+On Input: name - String, 'head', 'header' or 'footer' (file partials/<name>.html).
 On Output: String, the HTML to stamp (no trailing newline).
 ---------------------*/
 function readPartial(name) {
@@ -57,7 +58,7 @@ function markCurrent(html, page) {
 
 /*-------------------
 Purpose: Put the partials into one page's HTML between its markers.
-On Input: src - String (page HTML); file - String (for messages); partials - { header, footer }.
+On Input: src - String (page HTML); file - String (for messages); partials - { head, header, footer }.
 On Output: String, the new page HTML. Throws if a marker pair is missing.
 ---------------------*/
 function stampPage(src, file, partials) {
