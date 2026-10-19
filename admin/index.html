@@ -312,7 +312,7 @@ tr:hover td { background: #fafcfb; }
     <div class="logo">M</div>
     <div>
       <h1>Matzourana · Costing & Profit Planner</h1>
-      <p>Συνταγές · Εθνικές τιμές · Κανάλια πώλησης · Στόχος €650→€1200/ημέρα</p>
+      <p>Συνταγές · Εθνικές τιμές · Κανάλια πώλησης<span id="goalRangeText"></span></p>
     </div>
   </div>
   <div class="actions">
@@ -360,7 +360,7 @@ tr:hover td { background: #fafcfb; }
         <div class="chart-box"><canvas id="categoryChart"></canvas></div>
       </div>
     </div>
-    <p class="note">Στόχος food cost 28–35% · μικτό περιθώριο 65–72% · καθαρό ημερήσιο κέρδος από €650 και πάνω.</p>
+    <p class="note">Στόχος food cost 28–35% · μικτό περιθώριο 65–72%<span id="overviewGoalNote"></span>.</p>
   </section>
 
   <!-- INGREDIENTS -->
@@ -445,7 +445,7 @@ tr:hover td { background: #fafcfb; }
 
 <!-- PROFIT -->
 <section class="panel" id="tab-profit">
-  <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge">€650 → €1200</span></h2>
+  <h2>Ημερήσιος σχεδιασμός κέρδους <span class="badge" id="profitGoalBadge">—</span></h2>
 
   <p>
     <button type="button" class="btn-ghost" onclick="pushToFirebase()">
@@ -464,32 +464,32 @@ tr:hover td { background: #fafcfb; }
     </div>
     <div class="card-mini">
       <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
-      <input type="number" id="targetProfit" value="650" step="50" min="0" onchange="renderProfitPlanner()">
+      <input type="number" id="targetProfit" value="" placeholder="—" step="50" min="0" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
       <div class="section-title">Σταθερά κόστη / ημέρα (€)</div>
-      <input type="number" id="fixedDaily" value="260" step="1" min="0" onchange="renderProfitPlanner()">
+      <input type="number" id="fixedDaily" value="" placeholder="—" step="1" min="0" onchange="renderProfitPlanner()">
       <div class="note">Άθροισμα πίνακα κάτω · μπορείς και να το γράψεις μόνος</div>
     </div>
     <div class="card-mini">
       <div class="section-title">Μέσο εισιτήριο / μερίδα (€)</div>
-      <input type="number" id="avgTicket" value="9.5" step="0.1" min="1" onchange="renderProfitPlanner()">
+      <input type="number" id="avgTicket" value="" placeholder="—" step="0.1" min="1" onchange="renderProfitPlanner()">
       <div class="note" id="ticketHint">Μέσο επιλεγμένων πιάτων: —</div>
     </div>
     <div class="card-mini">
       <div class="section-title">Μέσο food cost %</div>
-      <input type="number" id="avgFoodPct" value="35" step="0.5" min="15" max="50" onchange="renderProfitPlanner()">
+      <input type="number" id="avgFoodPct" value="" placeholder="—" step="0.5" min="15" max="50" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
       <div class="section-title">% Κατάστημα (0 = αγνόησε)</div>
       <input type="number" id="wLocal" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
-      <div class="section-title">% e-food · προμήθεια 34%</div>
+      <div class="section-title">% e-food · προμήθεια <span class="commEfood">—</span></div>
       <input type="number" id="wEfood" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
     <div class="card-mini">
-      <div class="section-title">% Wolt · προμήθεια 37%</div>
+      <div class="section-title">% Wolt · προμήθεια <span class="commWolt">—</span></div>
       <input type="number" id="wWolt" value="0" min="0" max="100" step="5" onchange="renderProfitPlanner()">
     </div>
   </div>
@@ -524,7 +524,7 @@ tr:hover td { background: #fafcfb; }
 
   <p class="note">
     Μερίδες ανά κανάλι στον πίνακα πιάτων. Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
-    το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −34%, Wolt −37%, κατάστημα χωρίς προμήθεια.
+    το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −<span class="commEfood">—</span>, Wolt −<span class="commWolt">—</span>, κατάστημα χωρίς προμήθεια.
   </p>
 </section>
 
@@ -616,6 +616,87 @@ tr:hover td { background: #fafcfb; }
 let OTHER_COST = 0; // λοιπά (μπαχαρικά, αέριο κ.λπ.) ανά μερίδα: kitchen book rules.otherCost
 
 const categoryRules = {}; // kitchen book rules.categoryRules
+// Planner / channel settings (commissions, daily goals, pricing thresholds, popularity):
+// kitchen book "settings". Empty until the owner's kitchen book is loaded.
+let planSettings = {};
+
+/*-------------------
+Purpose: Read one numeric planner setting from the kitchen book settings.
+On Input: path - String like "planner.targetProfit" or "pricing.minPlatformContrib";
+          fallback - optional Number (default 0) when the setting is not loaded.
+On Output: Number.
+---------------------*/
+function planSetting(path, fallback){
+  let cur = planSettings;
+  for (const k of String(path).split(".")) cur = (cur && typeof cur === "object") ? cur[k] : undefined;
+  const n = Number(cur);
+  return (cur != null && isFinite(n)) ? n : (fallback || 0);
+}
+
+/*-------------------
+Purpose: Daily profit goals (€ per day) used by the ladder, tables and channel cards.
+On Input: none.
+On Output: Array of Numbers from kitchen book settings.planner.goals ([] when not loaded).
+---------------------*/
+function planGoals(){
+  const g = planSettings && planSettings.planner && planSettings.planner.goals;
+  return Array.isArray(g) ? g.map(Number).filter(n => isFinite(n) && n > 0) : [];
+}
+
+/*-------------------
+Purpose: Format a commission share as a percent label.
+On Input: v - Number share (e.g. 0.25) or undefined.
+On Output: String like "25%", or "—" while settings are not loaded.
+---------------------*/
+function pctTxt(v){
+  return (planSettings && planSettings.commissions) ? Math.round(Number(v || 0) * 100) + "%" : "—";
+}
+
+/*-------------------
+Purpose: Put kitchen book settings into the admin: commission shares, popularity scores,
+         pricing thresholds, planner input defaults and the goal texts in the page.
+On Input: settings - kitchen book "settings" Object (sections may be missing).
+On Output: none.
+Side effects: merges into planSettings; fills CH_COMM, dishPopularity, MIN_PLAT_CONTRIB;
+          sets #targetProfit / #fixedDaily / #avgTicket / #avgFoodPct only while they are empty;
+          calls renderSettingsText().
+---------------------*/
+function applyPlannerSettings(settings){
+  if (!settings || typeof settings !== "object") { renderSettingsText(); return; }
+  ["commissions", "planner", "pricing", "channelCards", "popularity"].forEach(sec => {
+    if (settings[sec] && typeof settings[sec] === "object") {
+      planSettings[sec] = Object.assign({}, planSettings[sec] || {}, JSON.parse(JSON.stringify(settings[sec])));
+    }
+  });
+  const c = planSettings.commissions || {};
+  ["local", "efood", "wolt"].forEach(k => { if (c[k] != null) CH_COMM[k] = Number(c[k]); });
+  const pop = planSettings.popularity || {};
+  Object.keys(pop).forEach(k => { dishPopularity[k] = Number(pop[k]); });
+  MIN_PLAT_CONTRIB = planSetting("pricing.minPlatformContrib");
+  const pl = planSettings.planner || {};
+  [["targetProfit", "targetProfit"], ["fixedDaily", "fixedDaily"], ["avgTicket", "avgTicket"], ["avgFoodPct", "avgFoodPct"]].forEach(([id, k]) => {
+    const el = document.getElementById(id);
+    if (el && el.value === "" && pl[k] != null) el.value = pl[k];
+  });
+  renderSettingsText();
+}
+
+/*-------------------
+Purpose: Write the settings-dependent texts in the page (goal range in the header, overview
+         note, planner badge, commission labels), or neutral text when nothing is loaded.
+On Input: none.
+On Output: none.
+---------------------*/
+function renderSettingsText(){
+  const goals = planGoals();
+  const lo = goals.length ? Math.min(...goals) : null, hi = goals.length ? Math.max(...goals) : null;
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  set("goalRangeText", goals.length ? " · Στόχος €" + lo + "→€" + hi + "/ημέρα" : "");
+  set("overviewGoalNote", goals.length ? " · καθαρό ημερήσιο κέρδος από €" + lo + " και πάνω" : "");
+  set("profitGoalBadge", goals.length ? "€" + lo + " → €" + hi : "—");
+  document.querySelectorAll(".commEfood").forEach(el => { el.textContent = pctTxt(CH_COMM.efood); });
+  document.querySelectorAll(".commWolt").forEach(el => { el.textContent = pctTxt(CH_COMM.wolt); });
+}
 
 /* Εθνικές ενδεικτικές τιμές χονδρικής / εστίασης: kitchen book "national" */
 const NATIONAL_PRICES = {}; // kitchen book national
@@ -1014,29 +1095,30 @@ function switchTab(id){
    POPULARITY  (1 = χαμηλή, 5 = bestseller)
    Ενημερώνετε από e-food / Wolt κάθε 1–2 εβδομάδες
    ========================================================= */
-const dishPopularity = {
-  // υψηλή ζήτηση (παράδειγμα — αλλάξτε από τα πραγματικά stats)
-  moussakas: 5, pastitsio: 5, moschari_kokkinisto: 5, moschari_giouvesti: 4,
-  moschari_lemonato: 4, moschari_stifado: 4, lachanontolmades: 5,
-  kotopoulo_fournou: 5, kotopoulo_bouti: 4, gemista: 4, fasolada: 4,
-  fakes: 4, giantes: 4, choriatiki: 5, dakos: 5, matzourana_salad: 4,
-  halloumi_salad: 4, soutzoukakia: 4, papoutsakia: 3, briam: 3,
-  fileto_kotopoulo: 4, bifteki_grilled: 4, brizola_hoirini: 3,
-  // default αν λείπει το κλειδί = 3
-};
+const dishPopularity = {}; // kitchen book settings.popularity: { dishKey: 1..5 } (missing key = neutral)
 
 const EFOOD_URL = "https://www.e-food.gr/delivery/kallithea/matzourana-greek-cuisine-kai-grill-7835385";
 const WOLT_URL  = "https://www.wolt.com/el/grc/athens/restaurant/mantzourana-athens";
 
+/*-------------------
+Purpose: Popularity score of a dish (1 = low, 5 = bestseller) from the kitchen book.
+On Input: key - String, dish key in menuCatalog.
+On Output: Number 1..5; 3 (neutral) when the dish has no score or nothing is loaded.
+---------------------*/
 function popularityOf(key) {
   const p = dishPopularity[key];
   return (typeof p === "number" && p >= 1 && p <= 5) ? p : 3;
 }
 
-/* Δημοφιλή πιάτα: μικρό premium. Αδύναμα: μικρή έκπτωση. */
+/*-------------------
+Purpose: Small price premium for popular dishes and discount for weak ones
+         (step per popularity point from kitchen book settings.pricing.popularityStep).
+On Input: basePrice - Number (euro); key - String, dish key.
+On Output: Number, adjusted price rounded to cents (unchanged while settings are not loaded).
+---------------------*/
 function popularityAdjust(basePrice, key) {
   const p = popularityOf(key);
-  const factor = 1 + (p - 3) * 0.03; // 1→-6%, 3→0%, 5→+6%
+  const factor = 1 + (p - 3) * planSetting("pricing.popularityStep");
   return +(basePrice * factor).toFixed(2);
 }
 
@@ -1360,12 +1442,24 @@ function setOverride(key, val){
   renderKPIs(computeAll());
 }
 
+/*-------------------
+Purpose: Average menu price of all food dishes (drinks excluded).
+On Input: none.
+On Output: Number (euro); the planner's default ticket from the kitchen book when the
+           catalogue is empty.
+---------------------*/
 function avgMenuTicket(){
   const keys = Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
   const sum = keys.reduce((s,k) => s + parseEuro(menuCatalog[k].price), 0);
-  return keys.length ? sum / keys.length : 9.5;
+  return keys.length ? sum / keys.length : planSetting("planner.avgTicket");
 }
 
+/*-------------------
+Purpose: Average food-cost share (%) over all priced food dishes.
+On Input: none.
+On Output: Number (percent); the planner's default food % from the kitchen book when no
+           dish has a price.
+---------------------*/
 function avgMenuFoodPct(){
   const keys = Object.keys(menuCatalog).filter(k => menuCatalog[k].category !== "drinks");
   let s = 0, n = 0;
@@ -1374,7 +1468,7 @@ function avgMenuFoodPct(){
     const fc = foodCost(k);
     if (p > 0) { s += fc / p; n++; }
   });
-  return n ? (s / n) * 100 : 32;
+  return n ? (s / n) * 100 : planSetting("planner.avgFoodPct");
 }
 
 let dailySaveTimer = null;
@@ -1451,17 +1545,30 @@ function portionsFor(contrib, fixed, target){
   return Math.ceil((fixed + target) / contrib);
 }
 
+/*-------------------
+Purpose: Channel split (shop / own delivery / platform) for the channel comparison.
+On Input: none (reads #wLocal, #wOwn, #wPlat; empty fields use kitchen book
+          settings.channelCards.weights).
+On Output: { local, own, plat } shares that add up to 1.
+---------------------*/
 function channelWeights(){
-  let local = Number(document.getElementById("wLocal")?.value || 50);
-  let own   = Number(document.getElementById("wOwn")?.value || 20);
-  let plat  = Number(document.getElementById("wPlat")?.value || 30);
+  let local = Number(document.getElementById("wLocal")?.value || planSetting("channelCards.weights.local"));
+  let own   = Number(document.getElementById("wOwn")?.value || planSetting("channelCards.weights.own"));
+  let plat  = Number(document.getElementById("wPlat")?.value || planSetting("channelCards.weights.plat"));
   const sum = local + own + plat || 1;
   return { local: local / sum, own: own / sum, plat: plat / sum };
 }
 
+/*-------------------
+Purpose: Contribution per portion for each channel and for the weighted mix.
+On Input: ticket - Number, average price; food - Number, average food cost.
+On Output: { w, cLocal, cOwn, cPlat, mixed }.
+Notes: commission % and own-delivery cost come from kitchen book settings.channelCards
+       when the optional #chCommission / #chLocalDeliv fields are absent.
+---------------------*/
 function mixedContribution(ticket, food){
-  const commission = Number(document.getElementById("chCommission")?.value || 25) / 100;
-  const deliv = Number(document.getElementById("chLocalDeliv")?.value || 1.2);
+  const commission = Number(document.getElementById("chCommission")?.value || planSetting("channelCards.commissionPct")) / 100;
+  const deliv = Number(document.getElementById("chLocalDeliv")?.value || planSetting("channelCards.ownDeliveryCost"));
   const w = channelWeights();
   const cLocal = ticket - food;
   const cOwn   = ticket - food - deliv;
@@ -1482,14 +1589,21 @@ function useCatalogAverages(){
   renderProfitPlanner();
 }
 
+/*-------------------
+Purpose: Draw the channel comparison cards (shop / own delivery / platforms) with the
+         portions needed for each daily goal.
+On Input: elId - String, container id; ticket, food, fixed - Numbers (euro).
+On Output: none (no-op when the container does not exist).
+Notes: commission %, delivery cost and goals come from kitchen book settings.
+---------------------*/
 function renderChannelCards(elId, ticket, food, fixed){
   const el = document.getElementById(elId);
   if (!el) return;
-  const commission = Number(document.getElementById("chCommission")?.value || 25) / 100;
-  const deliv = Number(document.getElementById("chLocalDeliv")?.value || 1.2);
+  const commission = Number(document.getElementById("chCommission")?.value || planSetting("channelCards.commissionPct")) / 100;
+  const deliv = Number(document.getElementById("chLocalDeliv")?.value || planSetting("channelCards.ownDeliveryCost"));
   const rows = [
     { name:"Στο κατάστημα (Matzourana)", net: ticket-food, extra:"Καθαρό μετά food", note:"Καλύτερο περιθώριο · χτίζει πιστότητα" },
-    { name:"Δική σας διανομή", net: ticket-food-deliv, extra:"Καθαρό μετά food + διανομή", note:"Καλό αν ο οδηγός / κόστος ≤ €1.20–1.50" },
+    { name:"Δική σας διανομή", net: ticket-food-deliv, extra:"Καθαρό μετά food + διανομή", note:"Καλό αν ο οδηγός / κόστος ≤ " + fmt(deliv) },
     { name:"efood / Wolt", net: ticket*(1-commission)-food, extra:"Καθαρό μετά food + προμήθεια", note:"Χρήσιμο για όγκο · καλύτερα με +τιμή καναλιού" }
   ];
   const best = Math.max(...rows.map(r => r.net));
@@ -1501,15 +1615,21 @@ function renderChannelCards(elId, ticket, food, fixed){
       <div class="note">${r.extra}</div>
       <div class="note">${r.note}</div>
       <div class="note">Ticket = μέση τιμή πιάτου ${fmt(ticket)}</div>
-      <div class="note">€650 → ${need(650)} μερίδες · €800 → ${need(800)} · €1000 → ${need(1000)} · €1200 → ${need(1200)}</div>
+      <div class="note">${planGoals().map(g => "€" + g + " → " + need(g) + " μερίδες").join(" · ") || "—"}</div>
     </div>`;
   }).join("");
 }
 
+/*-------------------
+Purpose: Render the channel comparison from the planner's ticket, food and fixed values.
+On Input: none (reads #chTicket/#avgTicket, #chFood, #fixedDaily; empty fields use the
+          kitchen book planner settings).
+On Output: none.
+---------------------*/
 function renderChannels(){
-  const ticket = Number(document.getElementById("chTicket")?.value || document.getElementById("avgTicket")?.value || 10);
-  const food = Number(document.getElementById("chFood")?.value || 3.2);
-  const fixed = Number(document.getElementById("fixedDaily")?.value || 420);
+  const ticket = Number(document.getElementById("chTicket")?.value || document.getElementById("avgTicket")?.value || planSetting("planner.avgTicket"));
+  const food = Number(document.getElementById("chFood")?.value || (ticket * planSetting("planner.avgFoodPct") / 100));
+  const fixed = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
   renderChannelCards("channelCards", ticket, food, fixed);
 }
 
@@ -1572,7 +1692,7 @@ function renderFixedCostTable(){
 }
 
 
-const CH_COMM = { local: 0, efood: 0.34, wolt: 0.37 };
+const CH_COMM = { local: 0, efood: 0, wolt: 0 }; // kitchen book settings.commissions (share of sales)
 const CH_KEYS = ["local", "efood", "wolt"];
 const CH_EL   = { local: "Κατάστημα", efood: "e-food", wolt: "Wolt" };
 
@@ -1686,10 +1806,16 @@ function dishDayEconomics(key){
   };
 }
 
+/*-------------------
+Purpose: Totals of a planned / recorded day for the given dishes (all channels).
+On Input: keys - Array of dish keys.
+On Output: { rows, portions, sales, food, comm, contrib, fixed, profit }.
+Notes: fixed comes from #fixedDaily, else the kitchen book planner default.
+---------------------*/
 function dayTotals(keys){
   const rows = keys.map(dishDayEconomics).filter(r => r.n > 0);
   const sum = (f) => rows.reduce((s,r) => s + r[f], 0);
-  const fixed = Number(document.getElementById("fixedDaily")?.value || 260);
+  const fixed = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
   return {
     rows,
     portions: sum("n"),
@@ -2292,12 +2418,17 @@ function red(val, on){
     : val;
 }
 
+/*-------------------
+Purpose: Draw the "Στόχος ημέρας" box of the Analysis / Optimisation tab.
+On Input: none (reads #targetProfit and #fixedDaily; empty fields use kitchen book planner settings).
+On Output: none.
+---------------------*/
 function renderProfitOpt(){
   const { opt } = ensureOptBoxes();
   if (!opt) return;
 
-  const target = Number(document.getElementById("targetProfit")?.value || 650);
-  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
+  const target = Number(document.getElementById("targetProfit")?.value || planSetting("planner.targetProfit"));
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
   const sold   = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
   const keys   = sold.length
     ? sold.map(r => r.key)
@@ -2346,15 +2477,21 @@ function renderProfitOpt(){
     </div>`;
 }
 
-const PLAT = { efood: 0.34, wolt: 0.37 };
-const MIN_PLAT_CONTRIB = 2.20; // ελάχιστο καθαρό μετά προμήθεια · όχι αύξηση στο μαγαζί
+const PLAT = CH_COMM; // same commission shares (kitchen book settings.commissions)
+let MIN_PLAT_CONTRIB = 0; // ελάχιστο καθαρό μετά προμήθεια: kitchen book settings.pricing.minPlatformContrib
 
 function shopPrice(key){
   return parseEuro(menuCatalog[key]?.price);
 }
 
+/*-------------------
+Purpose: Platform price that keeps a minimum contribution after commission.
+On Input: fc - food cost; contrib - shop contribution; commission - share (0..1).
+On Output: Number, platform price before rounding.
+Notes: minimum and share of the shop contribution come from kitchen book settings.pricing.
+---------------------*/
 function platPriceFor(fc, contrib, commission){
-  const need = Math.max(MIN_PLAT_CONTRIB, contrib * 0.55);
+  const need = Math.max(MIN_PLAT_CONTRIB, contrib * planSetting("pricing.platformContribShare"));
   return (fc + need) / (1 - commission);
 }
 
@@ -2404,9 +2541,15 @@ function favRowHtml(plat, title){
   </div>`;
 }
 
+/*-------------------
+Purpose: Top 3 dishes of a channel by recorded portions (ties by net value).
+On Input: plat - 'shop' | 'efood' | 'wolt'.
+On Output: Array of up to 3 dish keys.
+Notes: commission shares come from CH_COMM (kitchen book settings.commissions).
+---------------------*/
 function top3FromOrders(plat){
   const field = plat === "shop" ? "local" : plat;
-  const comm = { shop: 0, efood: 0.34, wolt: 0.37 }[plat] || 0;
+  const comm = { shop: CH_COMM.local, efood: CH_COMM.efood, wolt: CH_COMM.wolt }[plat] || 0;
   return Object.keys(menuCatalog)
     .filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks")
     .map(key => {
@@ -2451,13 +2594,20 @@ function candidateDishes(){
     .sort((a,b) => b.local - a.local);
 }
 
+/*-------------------
+Purpose: Suggest a daily menu: best shop contribution first, at most 3 per family.
+On Input: maxN - Number, maximum dishes.
+On Output: Array of candidate rows ({key, d, price, fc, local, fcPct, ...}).
+Notes: minimum contributions come from kitchen book settings.pricing
+       (menuMinContrib, then menuFallbackContrib to fill up to 6 dishes).
+---------------------*/
 function suggestDailyMenu(maxN){
   const pool = candidateDishes();
   const byType = {};
   const picked = [];
   for (const d of pool) {
     if (picked.length >= maxN) break;
-    if (d.local < 2.2) continue;
+    if (d.local < planSetting("pricing.menuMinContrib")) continue;
     const t = d.d.type || d.d.category || "x";
     byType[t] = byType[t] || 0;
     if (byType[t] >= 3) continue;
@@ -2467,14 +2617,19 @@ function suggestDailyMenu(maxN){
   if (picked.length < 6) {
     pool.forEach(d => {
       if (picked.length >= maxN) return;
-      if (!picked.some(p => p.key === d.key) && d.local >= 1.8) picked.push(d);
+      if (!picked.some(p => p.key === d.key) && d.local >= planSetting("pricing.menuFallbackContrib")) picked.push(d);
     });
   }
   return picked;
 }
 
+/*-------------------
+Purpose: Best dish of the day per channel (highest net = portions × price after commission − food).
+On Input: none.
+On Output: { shop, efood, wolt } each { key, name, qty, unit, score, price } or null.
+---------------------*/
 function highlightsByPlatform(){
-  const comm = { shop: 0, efood: 0.34, wolt: 0.37 };
+  const comm = { shop: CH_COMM.local, efood: CH_COMM.efood, wolt: CH_COMM.wolt };
   const best = { shop: null, efood: null, wolt: null };
   Object.keys(menuCatalog).forEach(key => {
     const d = menuCatalog[key];
@@ -2530,6 +2685,11 @@ function renderDailyHighlights(){
   return h;
 }
 
+/*-------------------
+Purpose: Draw the suggested daily menu with shop / platform prices and portions for the goal.
+On Input: none (reads #targetProfit, #fixedDaily; empty fields use kitchen book planner settings).
+On Output: none.
+---------------------*/
 function renderDailyMenuPlan(){
   let box = document.getElementById("menuPlan");
   if (!box) {
@@ -2540,8 +2700,8 @@ function renderDailyMenuPlan(){
     audit.parentNode.insertBefore(box, audit);
   }
 
-  const target = Number(document.getElementById("targetProfit")?.value || 650);
-  const fixed  = Number(document.getElementById("fixedDaily")?.value || 260);
+  const target = Number(document.getElementById("targetProfit")?.value || planSetting("planner.targetProfit"));
+  const fixed  = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
   const plan = suggestDailyMenu(10);
   const avg  = plan.length ? plan.reduce((s,d) => s + d.local, 0) / plan.length : 0;
   const need = avg > 0.05 ? Math.ceil((fixed + target) / avg) : 0;
@@ -2609,6 +2769,12 @@ function renderDailyMenuPlan(){
 
 
 
+/*-------------------
+Purpose: Draw the menu audit table (food %, heaviest ingredient, shop / e-food / Wolt net, tip).
+On Input: none.
+On Output: none.
+Notes: platform net uses CH_COMM (kitchen book settings.commissions).
+---------------------*/
 function renderMenuAudit(){
   const { audit } = ensureOptBoxes();
   if (!audit) return;
@@ -2641,8 +2807,8 @@ function renderMenuAudit(){
     const top = parts[0];
     const topShare = (recipeCost && top) ? top.cost / recipeCost : 0;
     const shop = r.price - fc;
-    const efood = r.price * 0.66 - fc;
-    const wolt = r.price * 0.63 - fc;
+    const efood = r.price * (1 - CH_COMM.efood) - fc;
+    const wolt = r.price * (1 - CH_COMM.wolt) - fc;
     const noRec = !Object.keys(rec).length;
 
     let tip = "Κατάστημα";
@@ -2701,15 +2867,21 @@ function renderMenuAudit(){
 }
 
 
+/*-------------------
+Purpose: Draw the "Κέρδος / Ημέρα" tab: KPIs, goal ladder, dishes of the day, highlights.
+On Input: none (reads the planner inputs; empty fields use kitchen book planner settings).
+On Output: none.
+Notes: commission labels and goals (€ per day) come from kitchen book settings.
+---------------------*/
 function renderProfitPlanner(){
   if (typeof renderFixedCostTable === "function") renderFixedCostTable();
   if (typeof syncFixedDaily === "function") syncFixedDaily();
   if (typeof setFavFromOrders === "function") setFavFromOrders();
 
-  const target  = Number(document.getElementById("targetProfit")?.value || 50);
-  const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
-  const ticket  = Number(document.getElementById("avgTicket")?.value || 10);
-  const foodPct = Number(document.getElementById("avgFoodPct")?.value || 32) / 100;
+  const target  = Number(document.getElementById("targetProfit")?.value || planSetting("planner.targetProfit"));
+  const fixed   = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
+  const ticket  = Number(document.getElementById("avgTicket")?.value || planSetting("planner.avgTicket"));
+  const foodPct = Number(document.getElementById("avgFoodPct")?.value || planSetting("planner.avgFoodPct")) / 100;
   const food    = ticket * foodPct;
 
   const rows = selectedDailyKeys().map(dishEconomics).filter(r => r.price > 0)
@@ -2762,7 +2934,7 @@ function renderProfitPlanner(){
       <div class="value">${fmt(foodDay)}</div>
       <div class="sub">${useSold ? (soldQty + " μετρημένες μερίδες") : (p + " × " + fmt(selFood))}</div></div>
     <div class="kpi"><div class="label">Προμήθειες e-food + Wolt</div>
-      <div class="value">${fmt(commDay)}</div><div class="sub">34% / 37% · ${mixTxt}</div></div>
+      <div class="value">${fmt(commDay)}</div><div class="sub">${pctTxt(CH_COMM.efood)} / ${pctTxt(CH_COMM.wolt)} · ${mixTxt}</div></div>
     <div class="kpi">
       <div class="label">Πωλήσεις με ΦΠΑ</div>
       <div class="value">${fmt(sales)}</div>
@@ -2810,7 +2982,7 @@ function renderProfitPlanner(){
     <p class="note">Αυτά μένουν στη βιτρίνα. Οι εναλλαγές πλατφόρμας αφορούν τα υπόλοιπα πιάτα.</p>`;
 
   const ladder = document.getElementById("targetLadder");
-  if (ladder) ladder.innerHTML = [650,800,1000,1200].map(tg => {
+  if (ladder) ladder.innerHTML = planGoals().map(tg => {
     const n = portionsFor(ticket - food, fixed, tg) || 0;
     return `<div class="target-card">
       <div class="t">Στόχος €${tg}/ημέρα</div>
@@ -2838,7 +3010,7 @@ function renderProfitPlanner(){
       <thead><tr>
         <th>Πιάτο</th><th>Κατάστημα</th><th>e-food</th><th>Wolt</th>
         <th>Τιμή</th><th>Food</th><th>Τζίρος</th><th>Προμήθεια</th><th>Καθαρό</th>
-        <th>Στόχος €${target}</th><th>€650</th><th>€800</th><th>€1000</th><th>€1200</th>
+        <th>Στόχος €${target}</th>${planGoals().map(g => "<th>€" + g + "</th>").join("")}
       </tr></thead>
       <tbody>
         ${rows.map(r => {
@@ -2857,16 +3029,13 @@ function renderProfitPlanner(){
             <td>${e.n ? fmt(e.comm) : "—"}</td>
             <td><strong>${e.n ? fmt(e.net) : "—"}</strong></td>
             <td><strong>${portionsFor(r.contrib, fixed, target) ?? "—"}</strong></td>
-            <td>${portionsFor(r.contrib, fixed, 650) ?? "—"}</td>
-            <td>${portionsFor(r.contrib, fixed, 800) ?? "—"}</td>
-            <td>${portionsFor(r.contrib, fixed, 1000) ?? "—"}</td>
-            <td>${portionsFor(r.contrib, fixed, 1200) ?? "—"}</td>
+            ${planGoals().map(g => "<td>" + (portionsFor(r.contrib, fixed, g) ?? "—") + "</td>").join("")}
           </tr>`;
         }).join("")}
       </tbody>
     </table></div>
     <p class="note">
-      Κατάστημα 0% · e-food −34% · Wolt −37%.
+      Κατάστημα ${pctTxt(CH_COMM.local)} · e-food −${pctTxt(CH_COMM.efood)} · Wolt −${pctTxt(CH_COMM.wolt)}.
       Κέρδος προ ΦΠΑ = πωλήσεις − σταθερά − food − προμήθειες.
       Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
@@ -2880,6 +3049,12 @@ function renderProfitPlanner(){
   }
 
 
+/*-------------------
+Purpose: Save the recorded day (sales, food, commissions, fixed, net, dishes) to matzourana_days.
+On Input: none (reads the planner inputs and the portions table).
+On Output: Promise<void>.
+Notes: unchanged except that empty fixed / target fields use the kitchen book planner settings.
+---------------------*/
 async function pushToFirebase(){
   const db = getDb();
   if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
@@ -2891,10 +3066,10 @@ async function pushToFirebase(){
   }
 
   const date    = (document.getElementById("planDay")?.value) || new Date().toISOString().slice(0,10);
-  const fixed   = Number(document.getElementById("fixedDaily")?.value || 260);
+  const fixed   = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
   const ticket  = Number(document.getElementById("avgTicket")?.value || 0);
   const foodPct = Number(document.getElementById("avgFoodPct")?.value || 0);
-  const target  = Number(document.getElementById("targetProfit")?.value || 650);
+  const target  = Number(document.getElementById("targetProfit")?.value || planSetting("planner.targetProfit"));
   const sales   = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
   const foodDay = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
   const comm    = sold.reduce((s,r) => s + (r.commDay || 0), 0);
@@ -3146,9 +3321,11 @@ Purpose: Load and draw everything in the admin once the owner is signed in: nati
 On Input: none. Must only be called by the admin gate after onAuthStateChanged reports
           the owner UID.
 On Output: Promise<void> (resolves when the first render is done).
-Side effects: reads matzourana_kitchenbook and matzourana_daily from Firebase; renders all tabs.
+Side effects: reads matzourana_kitchenbook and matzourana_daily from Firebase; renders all tabs
+          (the settings texts start neutral until the kitchen book is applied).
 ---------------------*/
 async function afterAdminUnlock() {
+  renderSettingsText();
   loadNationalPrices();
   await loadKitchenBook();
   recalcAll();
@@ -3483,7 +3660,8 @@ Purpose: Take a full copy of the admin's current costing data in kitchen-book sh
          for saving to Firebase or downloading as a file.
 On Input: source - String label stored with the copy (e.g. 'live', 'file').
 On Output: Object { updatedAt, source, dishes, ingredients, national, recipes, fixed,
-           rules:{categoryRules, otherCost}, overrides }.
+           rules:{categoryRules, otherCost}, settings:{commissions, planner, pricing,
+           channelCards, popularity}, overrides }.
 ---------------------*/
 function kitchenSnapshot(source){
   return {
@@ -3495,6 +3673,7 @@ function kitchenSnapshot(source){
     recipes: JSON.parse(JSON.stringify(recipes)),
     fixed: currentFixedMap(),
     rules: { categoryRules: JSON.parse(JSON.stringify(categoryRules)), otherCost: OTHER_COST },
+    settings: JSON.parse(JSON.stringify(planSettings)),
     overrides: { ...(typeof manualOverrides !== "undefined" ? manualOverrides : {}) }
   };
 }
@@ -3503,16 +3682,18 @@ function kitchenSnapshot(source){
 Purpose: Put the kitchen book's data into the admin: business rules, national and current
          ingredient prices, recipes, fixed costs, dish price overrides.
 On Input: book - kitchen-book Object (any section may be missing);
-          parts - optional { dishes, ingredients, recipes, fixed, rules } flags (default: all).
+          parts - optional { dishes, ingredients, recipes, fixed, rules, settings } flags (default: all).
 On Output: none.
-Side effects: fills categoryRules, OTHER_COST, NATIONAL_PRICES, ingredientPrices, recipes,
+Side effects: fills planner settings (applyPlannerSettings), categoryRules, OTHER_COST,
+          NATIONAL_PRICES, ingredientPrices, recipes,
           defaultFixedCosts (+ fixedCostOverrides), menuCatalog prices, manualOverrides;
           syncs the daily fixed-cost total. Same override order as before step S2:
           national prices first, then the book's own ingredient prices on top.
 ---------------------*/
 function applyKitchenBook(book, parts){
   if (!book) return;
-  parts = parts || { dishes:true, ingredients:true, recipes:true, fixed:true, rules:true };
+  parts = parts || { dishes:true, ingredients:true, recipes:true, fixed:true, rules:true, settings:true };
+  if (parts.settings !== false && book.settings) applyPlannerSettings(book.settings);
   if (parts.rules !== false && book.rules) {
     const cr = book.rules.categoryRules || {};
     Object.keys(cr).forEach(k => {
@@ -3658,18 +3839,21 @@ function resetFixedHtml(){
    Moves the private costing data that used to be hard-coded here into the kitchen book.
    Owner-only (needs sign-in), merges ONLY missing keys, never overwrites existing data.
    ========================================================= */
-const SEED_SECTIONS = ["rules", "national", "ingredients", "recipes", "fixed"];
+const SEED_SECTIONS = ["rules", "national", "ingredients", "recipes", "fixed", "settings"];
 const SEED_LABELS = {
   rules: "Κανόνες τιμολόγησης (rules)",
   national: "Εθνικές τιμές υλικών (national)",
   ingredients: "Τιμές υλικών (ingredients)",
   recipes: "Συνταγές (recipes)",
-  fixed: "Σταθερά κόστη (fixed)"
+  fixed: "Σταθερά κόστη (fixed)",
+  settings: "Ρυθμίσεις: προμήθειες, στόχοι, δημοφιλία (settings)"
 };
+const SETTINGS_PARTS = ["commissions", "planner", "pricing", "channelCards", "popularity"];
 let pendingSeedPlan = null;
 
 /*-------------------
-Purpose: List which private sections are missing or empty in a kitchen book.
+Purpose: List which private sections are missing or empty in a kitchen book
+         ("settings" counts as missing if any of its five parts is missing or empty).
 On Input: book - kitchen-book Object or null.
 On Output: Array of section names from SEED_SECTIONS (e.g. ['rules','national']);
            all of them when book is null.
@@ -3678,6 +3862,7 @@ function kitchenMissingSections(book){
   return SEED_SECTIONS.filter(sec => {
     const v = book && book[sec];
     if (sec === "rules") return !(v && v.categoryRules && Object.keys(v.categoryRules).length && v.otherCost != null);
+    if (sec === "settings") return !(v && SETTINGS_PARTS.every(p => v[p] && typeof v[p] === "object" && Object.keys(v[p]).length));
     return !(v && typeof v === "object" && Object.keys(v).length);
   });
 }
@@ -3720,7 +3905,8 @@ On Input: book - current kitchen-book Object (or null); seed - parsed seed Objec
 On Output: { patch:{ "section/key": value, ... }, counts:{ section:{ add, keep } }, total }
            where patch holds ONLY keys missing from the book (multi-path update format).
 Notes: numbers are checked (non-numbers skipped); recipe lines must be numeric quantities;
-       an existing fixed cost stored as a bare number only gains its label.
+       an existing fixed cost stored as a bare number only gains its label; settings are
+       merged per leaf value (e.g. settings/commissions/wolt, settings/popularity/moussakas).
 ---------------------*/
 function planSeedMerge(book, seed){
   book = book || {};
@@ -3770,6 +3956,20 @@ function planSeedMerge(book, seed){
       if (book.rules && book.rules.otherCost != null) bump("rules", "keep");
       else { patch["rules/otherCost"] = seed.rules.otherCost; bump("rules", "add"); }
     }
+  }
+  { // settings: leaf-by-leaf (commissions/efood, planner/goals, popularity/<dish>, ...)
+    const src = seed.settings || {}, cur = book.settings || {};
+    const okVal = v => isNum(v) || (Array.isArray(v) && v.length && v.every(isNum));
+    const walk = (s, c, path) => {
+      Object.keys(s || {}).forEach(k => {
+        if (!keyOk(k)) return;
+        const v = s[k], here = c && typeof c === "object" ? c[k] : undefined;
+        if (v && typeof v === "object" && !Array.isArray(v)) { walk(v, here, path + "/" + k); return; }
+        if (!okVal(v)) return;
+        if (here != null) bump("settings", "keep"); else { patch["settings" + path + "/" + k] = v; bump("settings", "add"); }
+      });
+    };
+    SETTINGS_PARTS.forEach(part => { if (src[part]) walk(src[part], cur[part], "/" + part); });
   }
   const total = Object.keys(patch).length;
   return { patch, counts, total };
