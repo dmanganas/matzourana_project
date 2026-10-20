@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261020c'; // bust caches when assets/titles change
+const ASSET_V = '20261020d'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -135,6 +135,163 @@ function imageSize(file) {
 const slugOf = key => key.toLowerCase().replace(/_/g, '-');
 
 /*-------------------
+Purpose: Explicit per-dish data for the local-search FAQ "Πού θα φάω … στην Καλλιθέα;".
+         q  = the natural Greek question phrase, already in the ACCUSATIVE with the adjective
+              agreeing in gender/number (καλό μουσακά, καλή φασολάδα, καλά παπουτσάκια …).
+              Written by hand on purpose: no automatic declension.
+         review = RegExp of words that mean a customer review really mentions this dish
+              (Greek + Latin spellings); used only to pick an exact quote, never to rewrite one.
+         Keys without an entry simply get no "Πού θα φάω" FAQ (the generator warns).
+On Input: none (static table, keyed by menuCatalog key).
+On Output: Object { [catalogKey]: { q: String, review: RegExp } }.
+---------------------*/
+const DISH_FAQ = {
+  katsikaki_naxou:                     { q: 'καλό κατσικάκι φούρνου',              review: /κατσικ|katsik|kid goat/i },
+  pastitsio:                           { q: 'καλό παστίτσιο',                      review: /παστίτσ|παστιτσ|pastits|pastich/i },
+  moussakas:                           { q: 'καλό μουσακά',                        review: /μουσακ|mousak|moussak/i },
+  papoutsakia:                         { q: 'καλά παπουτσάκια',                    review: /παπουτσ|papouts/i },
+  moschari_stifado:                    { q: 'καλό μοσχαράκι στιφάδο',              review: /μοσχ\S* στιφάδ|beef stifad/i },
+  moschari_kokkinisto:                 { q: 'καλό μοσχάρι κοκκινιστό',             review: /κοκκινιστ|kokkinist/i },
+  moschari_giouvesti:                  { q: 'καλό μοσχάρι γιουβέτσι',              review: /γιουβέτσ|γιουβετσ|giouvets|youvets|yiouvets/i },
+  moschari_lemonato:                   { q: 'καλό μοσχαράκι λεμονάτο',             review: /μοσχ\S* λεμονάτ|lemony beef|beef lemonato/i },
+  rolo_moscharisio:                    { q: 'καλό ρολό κιμά',                      review: /ρολό|rolo\b|meat ?loaf|beef roll/i },
+  moscharaki_noua:                     { q: 'καλό μοσχαράκι νουά',                 review: /νουά|noua\b/i },
+  moscharaki_noua_with_fried_potatoes: { q: 'καλό μοσχαράκι νουά με τηγανητές πατάτες', review: /νουά|noua\b/i },
+  moscharaki_noua_with_rice:           { q: 'καλό μοσχαράκι νουά με ρύζι',         review: /νουά|noua\b/i },
+  keftedakia_tiganita:                 { q: 'καλά κεφτεδάκια',                     review: /κεφτεδ|keftedak|keftede|meatballs/i },
+  kotopoulo_bouti:                     { q: 'καλό κοτόπουλο φούρνου με πατάτες',    review: /κοτόπουλ|κοτοπουλ|kotopoul|chicken/i },
+  choirines_brizoles:                  { q: 'καλές χοιρινές μπριζόλες',            review: /μπριζόλ|brizol|pork chop/i },
+  kokoras_krasatos:                    { q: 'καλό κόκορα κρασάτο',                 review: /κόκορ|κοκορ|kokora|rooster/i },
+  soutzoukakia:                        { q: 'καλά σουτζουκάκια σμυρνέικα',         review: /σουτζουκ|soutzouk|soutsouk|soudzouk/i },
+  lachanontolmades:                    { q: 'καλούς λαχανοντολμάδες',              review: /λαχανοντολμ|lachanontolm|cabbage roll/i },
+  kolokythakia_gemista:                { q: 'καλά κολοκυθάκια γεμιστά με κιμά',     review: /κολοκυθάκια γεμιστ|stuffed zucchini|stuffed courgette/i },
+  briam:                               { q: 'καλό μπριάμ',                         review: /μπριάμ|μπριαμ|briam/i },
+  giantes:                             { q: 'καλούς γίγαντες πλακί',               review: /γίγαντ|γιγαντ|gigant|giant beans/i },
+  melitzanes_imam:                     { q: 'καλές μελιτζάνες ιμάμ',               review: /ιμάμ|ιμαμ|imam/i },
+  gemista:                             { q: 'καλά γεμιστά',                        review: /(^|[^ά-ώα-ω])γεμιστά|gemista|yemista|stuffed (tomato|pepper|vegetable)/i },
+  arakas_lemonatos:                    { q: 'καλό αρακά λεμονάτο',                 review: /αρακά|αρακα|arakas|\bpeas\b/i },
+  bakaliaros_spetsiota:                { q: 'καλό μπακαλιάρο σπετσιώτα',           review: /μπακαλιάρ|μπακαλιαρ|bakaliar|\bcod\b/i },
+  oktapodi_stifado:                    { q: 'καλό χταπόδι στιφάδο',                review: /χταπόδ|χταποδ|oktapod|octopus/i },
+  kritharoto_garides:                  { q: 'καλό κριθαρότο με γαρίδες',           review: /κριθαρότ|κριθαροτ|kritharot|orzo/i },
+  mydopilafo:                          { q: 'καλό μυδοπίλαφο',                     review: /μυδοπίλαφ|μυδοπιλαφ|mydopilaf|mussel/i },
+  gavros_plaki:                        { q: 'καλό γαύρο πλακί',                    review: /γαύρ|γαυρ|gavro|anchov/i },
+  ksifias_lemonatos:                   { q: 'καλό ξιφία λεμονάτο',                 review: /ξιφία|ξιφια|ksifia|xifia|swordfish/i },
+  glossa_lemonati:                     { q: 'καλή γλώσσα λεμονάτη',                review: /γλώσσα λεμον|glossa|\bsole\b/i },
+  giouvarlakia:                        { q: 'καλά γιουβαρλάκια',                   review: /γιουβαρλ|giouvarl|youvarl/i },
+  fasolada:                            { q: 'καλή φασολάδα',                       review: /φασολάδ|φασολαδ|fasolad|bean soup/i }
+};
+
+/*-------------------
+Purpose: Load the real customer reviews: exact text from reviewsData (matzourana_data.js) and
+         the reviewer name / source exactly as shown on matzourana_reviews.html (matched by
+         data-review index). A review is kept only when its original text is also the text
+         shown on the reviews page, so nothing is paraphrased or invented.
+On Input: none (reads matzourana_data.js source + matzourana_reviews.html).
+On Output: Array<{ text: String, lang: String, name: String, sourceEl: String, sourceEn: String }>.
+---------------------*/
+function loadReviews() {
+  if (html.indexOf('const reviewsData =') < 0) return [];
+  const data = extractObject('reviewsData');
+  const rvFile = path.join(ROOT, 'matzourana_reviews.html');
+  const rv = fs.existsSync(rvFile) ? fs.readFileSync(rvFile, 'utf8') : '';
+  const cards = rv.split('<figure class="rv-card">').slice(1);
+  const strip = s => String(s || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  const out = [];
+  cards.forEach(card => {
+    const idx = (card.match(/<blockquote[^>]*data-review="(\d+)"/) || [])[1];
+    const shown = strip((card.match(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/) || [])[1]);
+    const name = strip((card.match(/<p class="rv-name">([\s\S]*?)<\/p>/) || [])[1]);
+    const src = s => strip(((card.match(new RegExp(s + '="[^"]*?<span class=\'rv-src\'>([^<]*)<')) || [])[1]));
+    const r = idx != null ? data.reviews[+idx] : null;
+    if (!r || !name) return;
+    const text = r.text[r.origLang];
+    if (strip(text) !== shown) return;                 // must be the exact text shown publicly
+    out.push({ text, lang: r.origLang, name, sourceEl: src('data-el'), sourceEn: src('data-en') });
+  });
+  return out;
+}
+const REVIEWS = loadReviews();
+
+/*-------------------
+Purpose: Find a real customer review that actually names this dish.
+On Input: key - String catalog key.
+On Output: { text, lang, name, sourceEl, sourceEn } of the first matching review, or null.
+---------------------*/
+function dishReview(key) {
+  const f = DISH_FAQ[key];
+  if (!f || !f.review) return null;
+  return REVIEWS.find(r => f.review.test(r.text)) || null;
+}
+
+/*-------------------
+Purpose: End a sentence fragment with a full stop unless it already ends with . ! ? or …
+On Input: s - String.
+On Output: String.
+---------------------*/
+const endSentence = s => /[.!?…]$/.test(s.trim()) ? s.trim() : s.trim() + '.';
+
+/*-------------------
+Purpose: Build the dish page FAQ once, so the visible <dl> and the FAQPage JSON-LD are
+         rendered from the same question/answer text (they always match).
+On Input: key - String catalog key; el, en - { name, desc } from split().
+On Output: Array<{ q: String, a: String, lang: 'el'|'en' }> plain-text Q&A, in page order.
+---------------------*/
+function dishFaq(key, el, en) {
+  const f = DISH_FAQ[key];
+  const faq = [];
+  if (f) {
+    faq.push({
+      lang: 'el',
+      q: `Πού θα φάω ${f.q} στην Καλλιθέα;`,
+      a: `Στη Matzourana Καλλιθέα (μαγειρείο Ματζουράνα), Δημοσθένους 48, 176 71 Καλλιθέα. ` +
+         (el.desc ? `${el.name} – τι κάνει το πιάτο ξεχωριστό: ${endSentence(el.desc)} ` : '') +
+         `Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας: απολαύστε το στο κατάστημα, πάρτε το σε πακέτο ` +
+         `ή παραγγείλτε το με delivery απευθείας από το μαγειρείο ή μέσω efood / Wolt. ` +
+         `Τηλέφωνο: 210 9577 846. Ωράριο: Τρίτη–Κυριακή 12:00–19:30, Δευτέρα κλειστά.`
+    });
+  }
+  faq.push({
+    lang: 'el',
+    q: `Πότε σερβίρετε το πιάτο ${el.name};`,
+    a: `Όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.`
+  });
+  faq.push({
+    lang: 'el',
+    q: 'Κάνετε delivery στην Καλλιθέα;',
+    a: 'Ναι – απευθείας από το μαγειρείο στην Καλλιθέα και την ευρύτερη περιοχή, και μέσω efood / Wolt. Παραγγελίες στο 210 9577 846. Ωράριο 12:00–19:30, Δευτέρα κλειστά.'
+  });
+  faq.push({ lang: 'el', q: 'Τι ώρα είστε ανοιχτά;', a: 'Τρίτη έως Κυριακή 12:00–19:30. Δευτέρα κλειστά.' });
+  if (f) {
+    faq.push({
+      lang: 'en',
+      q: `Where can I eat good ${en.name} in Kallithea?`,
+      a: `At Matzourana Eatery, Dimosthenous 48, 176 71 Kallithea. ` +
+         (en.desc ? `What makes it special: ${endSentence(en.desc)} ` : '') +
+         `It is served when it is on the daily menu: eat in, take away, or order delivery directly from the kitchen or via efood / Wolt. ` +
+         `Phone: +30 210 9577 846. Hours: Tuesday–Sunday 12:00–19:30, closed on Mondays.`
+    });
+  }
+  faq.push({ lang: 'en', q: 'What are your opening hours?', a: 'Tuesday–Sunday 12:00–19:30. Closed on Mondays.' });
+  return faq;
+}
+
+/*-------------------
+Purpose: Render the FAQ Q&A list as visible HTML; phone numbers become tel: links and the
+         words "σημερινό μενού" link to the daily menu, without changing the visible text.
+On Input: faq - Array from dishFaq().
+On Output: String, <dt>/<dd> lines for the FAQ <dl>.
+---------------------*/
+function faqHtml(faq) {
+  const link = s => esc(s)
+    .replace(/(\+30 )?210 9577 846/g, m => `<a href="tel:+302109577846">${m}</a>`)
+    .replace('σημερινό μενού', `<a href="${SITE}matzourana_menu.html#daily-dishes">σημερινό μενού</a>`);
+  return faq.map(x => {
+    const l = x.lang === 'en' ? ' lang="en"' : '';
+    return `<dt${l}>${esc(x.q)}</dt>\n        <dd${l}>${link(x.a)}</dd>`;
+  }).join('\n        ');
+}
+
+/*-------------------
 Purpose: Build a public-safe ingredient list from the dish's own menu description
          (never from admin recipes / costs / grams).
 On Input: descEl - String Greek description; descEn - String English description;
@@ -179,6 +336,27 @@ function clipMeta(text, maxLen) {
 }
 
 /*-------------------
+Purpose: Keep as many whole words of a text as fit in maxLen chars, preferring to end at a
+         comma (whole phrase), never ending inside a capitalised name ("Κρέατα [Αστακού]"),
+         dropping a dangling joining word (και/με/and/with …) and trailing punctuation, without adding "…".
+On Input: text - String (may start with " – "); maxLen - Number.
+On Output: String (possibly ''), never longer than maxLen.
+---------------------*/
+function fitWords(text, maxLen) {
+  let t = String(text || '').replace(/\s+/g, ' ').replace(/\s+$/, '');
+  if (t.length > maxLen) {
+    t = t.slice(0, Math.max(0, maxLen + 1));
+    t = t.slice(0, Math.max(0, t.lastIndexOf(' ')));
+    const comma = t.lastIndexOf(',');
+    if (comma > 0 && comma >= t.length * 0.5) t = t.slice(0, comma);   // end on a whole phrase
+    else t = t.replace(/(\s+[Α-ΩΆ-ΏA-Z]\S*)+$/, '');                    // don't end inside a proper name
+    t = t.replace(/(\s+(και|με|σε|από|στη|στο|στην|του|της|τα|τη|το|η|ο|and|with|of|in|the|a))+$/i, '');
+  }
+  t = t.replace(/[\s,;:.!—–-]+$/, '');
+  return /^\s*–?\s*$/.test(t) ? '' : t;
+}
+
+/*-------------------
 Purpose: Build the absolute image URLs (WebP + JPG fallback) for a dish photo.
 On Input: imgFile - String relative path from dishImageMap.file (e.g. "web/greek-dish-4.webp"),
           or null/'' for a dish page without a photo.
@@ -212,7 +390,10 @@ function dishImageUrls(imgFile) {
 }
 
 /*-------------------
-Purpose: Render one full static HTML dish page (bilingual EL/EN, JSON-LD, girl logo).
+Purpose: Render one full static HTML dish page (bilingual EL/EN, JSON-LD, girl logo), with
+         the local-search FAQ ("Πού θα φάω … στην Καλλιθέα;") shown on the page and in the
+         FAQPage JSON-LD from the same text, address + hours, and a real customer quote only
+         when a review on the reviews page names the dish.
 On Input: key - String catalog key; allKeys - String[] of keys being generated (related links).
 On Output: String, the full HTML document. Dishes without a dishImageMap photo get no dish
           <img> (og:image / JSON-LD image fall back to the site OG image).
@@ -231,16 +412,22 @@ function page(key, allKeys) {
   const catEn = CATEGORY_EN[d.category] || 'Home-cooked';
 
   // Titles ~50–60 chars, descriptions ≤155
-  const title = clipMeta(`${el.name} Καλλιθέα | Matzourana`, 60);
-  const desc = clipMeta(
-    `${el.name}${el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : ''}. Matzourana Καλλιθέα, Δημοσθένους 48. 210 9577 846.` +
-    (price ? ` Από €${price.replace('.', ',')}.` : ''),
-    155
-  );
+  // Prefer "<Πιάτο> στην Καλλιθέα | Matzourana"; very long names keep the shorter form.
+  const titleFull = `${el.name} στην Καλλιθέα | Matzourana`;
+  const title = titleFull.length <= 60 ? titleFull : clipMeta(`${el.name} Καλλιθέα | Matzourana`, 60);
+  // "<Πιάτο> στην Καλλιθέα – <description>. Matzourana Καλλιθέα, address, phone, price": only the
+  // description is shortened, so address, phone and price always stay in the meta description.
+  const descTail = ` Matzourana Καλλιθέα, Δημοσθένους 48. 210 9577 846.` + (price ? ` Από €${price.replace('.', ',')}.` : '');
+  const descHead = `${el.name} στην Καλλιθέα`;
+  const descBody = el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : '';
+  const desc = clipMeta(descHead + fitWords(descBody, 155 - descHead.length - descTail.length - 1) + '.' + descTail, 155);
 
   const ings = publicIngredients(el.desc, en.desc, d.category);
   const ingListEl = ings.el.map(i => `<li>${esc(i)}</li>`).join('\n          ');
   const ingListEn = ings.en.map(i => `<li>${esc(i)}</li>`).join('\n          ');
+
+  const faq = dishFaq(key, el, en);
+  const review = dishReview(key);
 
   const ld = {
     '@context': 'https://schema.org',
@@ -248,10 +435,12 @@ function page(key, allKeys) {
       {
         '@type': 'Restaurant', '@id': SITE + '#restaurant', name: 'Matzourana Eatery', url: SITE,
         telephone: '+302109577846', servesCuisine: 'Ελληνική',
-        address: { '@type': 'PostalAddress', streetAddress: 'Δημοσθένους 48', addressLocality: 'Καλλιθέα', postalCode: '17671', addressCountry: 'GR' },
+        address: { '@type': 'PostalAddress', streetAddress: 'Δημοσθένους 48', addressLocality: 'Καλλιθέα', addressRegion: 'Αττική', postalCode: '17671', addressCountry: 'GR' },
+        geo: { '@type': 'GeoCoordinates', latitude: 37.95662, longitude: 23.71068 },
+        areaServed: 'Καλλιθέα',
         openingHoursSpecification: [
           { '@type': 'OpeningHoursSpecification', dayOfWeek: 'https://schema.org/Monday', opens: '00:00', closes: '00:00' },
-          { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '12:00', closes: '19:30' }
+          { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(d => 'https://schema.org/' + d), opens: '12:00', closes: '19:30' }
         ]
       },
       Object.assign({
@@ -268,23 +457,7 @@ function page(key, allKeys) {
       },
       {
         '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: `Πότε σερβίρετε το πιάτο ${el.name};`,
-            acceptedAnswer: { '@type': 'Answer', text: `Το ${el.name} σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Ωράριο διανομής Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.` }
-          },
-          {
-            '@type': 'Question',
-            name: `Κάνετε delivery ${el.name} στην Καλλιθέα;`,
-            acceptedAnswer: { '@type': 'Answer', text: `Ναι. Η Ματζουράνα κάνει delivery μαγειρευτών στην Καλλιθέα και την ευρύτερη περιοχή (Δημοσθένους 48). Παραγγελίες στο 210 9577 846 ή μέσω efood / Wolt.` }
-          },
-          {
-            '@type': 'Question',
-            name: 'Τι ώρα είστε ανοιχτά;',
-            acceptedAnswer: { '@type': 'Answer', text: 'Τρίτη έως Κυριακή 12:00–19:30. Δευτέρα κλειστά.' }
-          }
-        ]
+        mainEntity: faq.map(x => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } }))
       }
     ]
   };
@@ -340,6 +513,9 @@ function page(key, allKeys) {
     @media (max-width: 600px) { .info .brand-img { flex-basis: 100%; } }
     .cta { display: inline-block; margin-top: 1.2em; background: #4A5D4A; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; }
     a { color: #4A5D4A; }
+    .review { background: #fffefd; border-radius: 12px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-top: 1.2em; }
+    .review blockquote { margin: 0.4em 0; font-size: 1.1rem; font-style: italic; }
+    .review-by { margin: 0; color: #555; }
     .ingredients, .faq, .areas { background: #fffefd; border-radius: 12px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-top: 1.2em; }
     .ingredients ul, .faq ul, .areas ul { margin: 0.4em 0 0; padding-left: 1.2em; }
     .faq dt { font-weight: 700; margin-top: 0.8em; color: #4A5D4A; }
@@ -353,7 +529,7 @@ ${JSON.stringify(ld, null, 2)}
 <body>
   <header><a href="${SITE}">Matzourana Eatery – Μαγειρείο Καλλιθέα</a></header>
   <main>
-    <h1>${esc(el.name)} Matzourana Καλλιθέα</h1>
+    <h1>${esc(el.name)} στην Καλλιθέα – Matzourana</h1>
     ${picture}
     ${el.desc ? `<p>${esc(el.desc)}.</p>` : ''}
     <p>Σπιτικό ${esc(el.name.toLowerCase())} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>${esc(el.name)} Matzourana Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
@@ -374,21 +550,23 @@ ${JSON.stringify(ld, null, 2)}
     </section>
 
     <section class="areas" aria-labelledby="areas-title">
-      <h2 id="areas-title">Matzourana Καλλιθέα &amp; περιοχή</h2>
-      <p>Διανομή μαγειρευτών στην <strong>Καλλιθέα</strong> και την ευρύτερη περιοχή. Διεύθυνση καταστήματος: Δημοσθένους 48, 176 71 Καλλιθέα.</p>
+      <h2 id="areas-title">Matzourana Καλλιθέα: διεύθυνση &amp; ωράριο</h2>
+      <p>Διεύθυνση καταστήματος: <strong>Δημοσθένους 48, 176 71 Καλλιθέα</strong> · Τηλ.: <a href="tel:+302109577846">210 9577 846</a>. Διανομή μαγειρευτών στην <strong>Καλλιθέα</strong> και την ευρύτερη περιοχή.</p>
       <p class="en" lang="en">Delivery of home-cooked dishes across Kallithea and the wider area. Shop: Dimosthenous 48, 176 71 Kallithea.</p>
-      <p>Ωράριο διανομής: <strong>Τρίτη–Κυριακή 12:00–19:30</strong> · <strong>Δευτέρα κλειστά</strong>.</p>
+      <p>Ωράριο: <strong>Τρίτη–Κυριακή 12:00–19:30</strong> · <strong>Δευτέρα κλειστά</strong>.</p>
+      <p class="en" lang="en">Hours: Tuesday–Sunday 12:00–19:30 · Closed on Mondays.</p>
     </section>
-
+${review ? `
+    <section class="review" aria-labelledby="review-title">
+      <h2 id="review-title">Τι λένε οι πελάτες μας <span class="en" lang="en">/ What customers say</span></h2>
+      <blockquote lang="${review.lang}">«${esc(review.text)}»</blockquote>
+      <p class="review-by">– ${esc(review.name)}${review.sourceEl ? ', ' + esc(review.sourceEl) : ''} · <a href="${SITE}matzourana_reviews.html">Όλες οι κριτικές</a></p>
+    </section>
+` : ''}
     <section class="faq" aria-labelledby="faq-title">
       <h2 id="faq-title">Συχνές ερωτήσεις</h2>
       <dl>
-        <dt>Πότε σερβίρετε το πιάτο ${esc(el.name)};</dt>
-        <dd>Όταν υπάρχει στο μενού ημέρας. Καλέστε στο <a href="tel:+302109577846">210 9577 846</a> ή δείτε το <a href="${SITE}matzourana_menu.html#daily-dishes">σημερινό μενού</a>.</dd>
-        <dt>Κάνετε delivery στην Καλλιθέα;</dt>
-        <dd>Ναι – απευθείας από το μαγειρείο, και μέσω efood / Wolt. Ωράριο 12:00–19:30, Δευτέρα κλειστά.</dd>
-        <dt lang="en">What are your opening hours?</dt>
-        <dd lang="en">Tuesday–Sunday 12:00–19:30. Closed on Mondays.</dd>
+        ${faqHtml(faq)}
       </dl>
     </section>
 
@@ -510,6 +688,8 @@ function selectDishPageKeys() {
     (dishImageMap[k] || (dishPagesNoPhoto.includes(k) && /\(/.test(menuCatalog[k].el))));
 }
 if (args.includes('--all')) keys = selectDishPageKeys();
+const noFaq = keys.filter(k => !DISH_FAQ[k]);
+if (noFaq.length) console.warn('No DISH_FAQ question phrase for: ' + noFaq.join(', '));
 if (!keys.length) { console.error('Give catalog keys (e.g. pastitsio) or --all'); process.exit(1); }
 for (const k of keys) if (!menuCatalog[k] || !menuCatalog[k].el) { console.error('Unknown dish key: ' + k); process.exit(1); }
 
