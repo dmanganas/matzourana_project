@@ -57,6 +57,9 @@ const currentHighlights = [
     "keftedakia_tiganita",
 
     "kotopoulo_bouti",
+
+    "bakaliaros_lemonatos",
+
     "kotosoupa",
     "giouvarlakia",
 
@@ -776,6 +779,11 @@ const highlightsCatalog = {
         icons: ["fish-logo.png", "cotoven-logo.png"],
         el: "Μπακαλιάρος <br> α λα σπετσιώτα",
         en: "Salted Cod <br> Spetsiota"
+    },
+    "bakaliaros_lemonatos": {
+        icons: ["fish-logo.png", "lemon-logo.png"],
+        el: "Μπακαλιάρος <br> λεμονάτος",
+        en: "Cod <br> with Lemon"
     },
     "oktapodi_makaroni": {
         icons: ["octapus-logo.png", "macaroni-logo.png"],
