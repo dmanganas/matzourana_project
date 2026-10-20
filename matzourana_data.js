@@ -17,59 +17,52 @@
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
     // Freshly Cooked
-    
+
 
     //Meat
-    "arni_paidaki",
-    "moschari_stifado",
-    "moschari_lemonato",
-    "bifteki_moscharisia", 
-    "soutzoukakia",
-    
-    "pastitsio",
-    "lachanontolmades",
-    "kolokythakia_gemista",
+    "moschari_kokkinisto",
+    "bifteki_moscharisia",
+    "moussakas",
     "makaronia_kima",
+    "keftedakia_tiganita",
+    "lachanontolmades",
 
-    //Chicken 
-   "kotopoulo_bouti",
-   
-   
-   //SeaFoods
-   
-  
-   //Veggy
-    "spanakorizo", 
+    //Chicken
+    "kotopoulo_bouti",
+
+    //SeaFoods
+    "bakaliaros_lemonatos",
+
+    //Veggy
     "giantes",
+    "arakas_lemonatos",
+    "spanakorizo",
 
     // Soups
-     "kotosoupa",
-     "giouvarlakia",
-    
+    "kotosoupa",
+    "giouvarlakia",
+
     // Legumes
-     "fasolada",
-     "revithia",
-     "fakes",
-     "fava"
+    "revithia",
+    "fakes"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
 
     "line",
-    "arni_paidaki",
-    "moschari_lemonato",
-    "moschari_stifado",
-    "bifteki_moscharisia", 
+    "moschari_kokkinisto",
+    "bifteki_moscharisia",
+    "moussakas",
+    "keftedakia_tiganita",
 
-    "pastitsio",
-    
     "kotopoulo_bouti",
     "kotosoupa",
-    
-    "giantes",
-    "spanakorizo",
+    "giouvarlakia",
 
+    "giantes",
+    "arakas",
+    "spanakorizo"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -95,7 +88,7 @@ const menuCatalog = {
     "pastitsio": { category: "meat-cooked", el: "Παστίτσιο <br><br> (Με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι)", en: "Pastitsio <br><br> (With handmade béchamel, 100% beef mince and rigatoni)", price: "€9.00" },
     "krepes_zampon_tyri": { category: "meat-cooked", el: "Κρέπες ζαμπόν-τυρί <br><br> (Κρέπες με ζαμπόν και κεφαλοτύρι στο φούρνο)", en: "Ham-Cheese Crepes <br><br> (Crepes with ham and kefalotyri baked in the oven)", price: "€7.50" },
     "krepes_kima": { category: "meat-cooked", el: "Κρέπες με κιμά και μπεσαμέλ <br><br> (Κρέπες με κιμά και μπεσαμέλ στο φούρνο)", en: "Crepes with Mince and Béchamel <br><br> (Crepes with mince and béchamel baked in the oven)", price: "€8.00" },
-    "moussakas": { category: "meat-cooked", el: "Μουσακάς <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ και ψητές μελιτζάνες)", en: "Moussaka <br><br> (With 100% beef mince from Astakou Meats, rich béchamel and roasted eggplants)", price: "€8.50" },
+    "moussakas": { category: "meat-cooked", el: "Μουσακάς <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ και ψητές μελιτζάνες)", en: "Moussaka <br><br> (With 100% beef mince from Astakou Meats, rich béchamel and roasted eggplants)", price: "€10.00" },
     "gioulmpasi": { category: "meat-cooked", el: "Γιούλμπασι στην λαδόκολλα", en: "Gioulmpasi in Greaseproof Paper", price: "€12.00" },
     "kleftiko": { category: "meat-cooked", el: "Κλέφτικο στη λαδόκολλα <br><br> (Αργοψημένο με πατάτες, πιπεριές και αρωματικά)", en: "Kleftiko in Parchment <br><br> (Slow-roasted with potatoes, peppers and Greek herbs)", price: "€9.00" },
     "papoutsakia": { category: "meat-cooked", el: "Μελιτζάνες παπουτσάκια <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και βελούδινη μπεσαμέλ)", en: "Stuffed Eggplants (Papoutsakia) <br><br> (With 100% beef mince from Astakou Meats and velvety béchamel)", price: "€8.90" },
@@ -130,7 +123,7 @@ const menuCatalog = {
     "spetzofai": { category: "meat-cooked", el: "Σπετζοφάϊ με βόειο λουκάνικο <br><br> (Με χωριάτικο λουκάνικο Σερρών, ντομάτα και πιπεριές)", en: "Spetzofai with Beef Sausage <br><br> (With rustic Serres sausage, tomato and peppers)", price: "€8.00" },
     "lachanontolmades": { category: "meat-cooked", el: "Λαχανοντολμάδες <br><br> (Χειροποίητοι με κρεμώδες αυγολέμονο)", en: "Cabbage Rolls <br><br> (Handmade with creamy egg-lemon sauce)", price: "€9.00" },
     "kolokythakia_gemista": { category: "meat-cooked", el: "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Stuffed Zucchini with Meat & Egg-Lemon Sauce <br><br> (With 100% beef mince from Astakou Meats)", price: "€9.50" },
-    "makaronia_kima": { category: "meat-cooked", el: "Μακαρόνια με κιμά (Μπολονέζ) <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Spaghetti with Minced Meat (Bolognese) <br><br> (With 100% beef mince from Astakou Meats)", price: "€8.50" },
+    "makaronia_kima": { category: "meat-cooked", el: "Μακαρόνια με κιμά (Μπολονέζ) <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Spaghetti with Minced Meat (Bolognese) <br><br> (With 100% beef mince from Astakou Meats)", price: "€9.00" },
     "carbonara": { category: "meat-cooked", el: "Καρμπονάρα <br><br> (Με αυγά, κρέμα γάλακτος, μπέικον και παρμεζάνα)", en: "Carbonara <br><br> (With eggs, cream, bacon and parmesan)", price: "€8.00" },
 
     // ==================== ΠΙΑΤΑ ΛΑΧΑΝΙΚΩΝ ====================
@@ -209,9 +202,9 @@ const menuCatalog = {
     "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€8.00" },
 
     // ==================== ΟΣΠΡΙΑ ====================
-    "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.50" },
+    "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
     "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.50" },
-    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.00" },
+    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
 
