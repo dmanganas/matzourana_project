@@ -232,7 +232,7 @@ const dishImageMap = {
         alt: "Μοσχάρι κοκκινιστό - Τρυφερό μοσχαράκι χτένι (κρέατα Αστακού) με γαρνιτούρα | Beef in Red Sauce - Tender beef shank from Astakou Meats"
     },
     "lachanontolmades": {
-        file: "web/greek-dish-2.webp",
+        file: "web/greek-dish-40.webp",
         alt: "Λαχανοντολμάδες - Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο | Cabbage Rolls - Handmade with creamy egg-lemon sauce and fresh dill"
     },
     "moussakas": {
@@ -323,6 +323,14 @@ const dishImageMap = {
     "gemista": {
         file: "web/greek-dish-39.webp",
         alt: "Γεμιστά - Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες | Stuffed Vegetables - Tomato and pepper with bulgur, herbs and potatoes"
+    },
+    "mydopilafo": {
+        file: "web/greek-dish-41.webp",
+        alt: "Μυδοπίλαφο - Με φρέσκα μύδια, ρύζι και άνηθο | Mussel Pilaf - With fresh mussels, rice and dill"
+    },
+    "katsikaki_naxou": {
+        file: "web/greek-dish-43.webp",
+        alt: "Κατσικάκι (Νάξου) στο φούρνο - Λεμονάτο ψητό κατσικάκι | Roast Kid Goat (from Naxos) - Lemony oven-roasted kid goat"
     },
     "ksifias_lemonatos": {
         file: "web/greek-dish-38.webp",
@@ -810,7 +818,9 @@ const imageList = [
     'DishImages/web/greek-dish-28.webp', 'DishImages/web/greek-dish-29.webp', 'DishImages/web/greek-dish-30.webp',
     'DishImages/web/greek-dish-31.webp', 'DishImages/web/greek-dish-33.webp', 'DishImages/web/greek-dish-34.webp',
     'DishImages/web/greek-dish-35.webp', 'DishImages/web/greek-dish-36.webp',
-    'DishImages/web/greek-dish-37.webp', 'DishImages/web/greek-dish-38.webp', 'DishImages/web/greek-dish-39.webp'
+    'DishImages/web/greek-dish-37.webp', 'DishImages/web/greek-dish-38.webp', 'DishImages/web/greek-dish-39.webp',
+    'DishImages/web/greek-dish-40.webp', 'DishImages/web/greek-dish-41.webp', 'DishImages/web/greek-dish-42.webp',
+    'DishImages/web/greek-dish-43.webp'
 ];
 
 const dishAlts = {
@@ -851,7 +861,11 @@ const dishAlts = {
     'DishImages/web/greek-dish-36.webp': "Χταπόδι στιφάδο από φρέσκο χταπόδι - (Με κρεμμυδάκια και σάλτσα ντομάτας) Matzourana Eatery Καλλιθέα | Octopus Stifado with Fresh Octopus - (With small onions and tomato sauce) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-37.webp': "Χόρτα Εποχής - (Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι) Matzourana Eatery Καλλιθέα | Seasonal Greens - (Boiled seasonal greens with olive oil and lemon) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-38.webp': "Ξιφίας λεμονάτος - (Τρυφερός ξιφίας με λεμόνι, ελαιόλαδο και αρωματικά, με πατάτες και ψητή ντομάτα) Matzourana Eatery Καλλιθέα | Swordfish in Lemon Sauce - (Tender swordfish with lemon, olive oil and aromatic herbs, with potatoes and roasted tomato) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-39.webp': "Γεμιστά - (Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες) Matzourana Eatery Καλλιθέα | Stuffed Vegetables - (Tomato and pepper with bulgur, herbs and potatoes) Matzourana Eatery Kallithea"
+    'DishImages/web/greek-dish-39.webp': "Γεμιστά - (Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες) Matzourana Eatery Καλλιθέα | Stuffed Vegetables - (Tomato and pepper with bulgur, herbs and potatoes) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-40.webp': "Λαχανοντολμάδες αυγολέμονο - (Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο) Matzourana Eatery Καλλιθέα | Cabbage Rolls with Egg-Lemon Sauce - (Handmade with creamy egg-lemon sauce and fresh dill) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-41.webp': "Μυδοπίλαφο - (Με φρέσκα μύδια, ρύζι και άνηθο) Matzourana Eatery Καλλιθέα | Mussel Pilaf - (With fresh mussels, rice and dill) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-42.webp': "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - (Μπιφτέκια στη σχάρα με τηγανητές πατάτες, σαλάτα και λεμόνι) Matzourana Eatery Καλλιθέα | Homemade Beef Patty - (Grilled beef patties with fries, salad and lemon) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-43.webp': "Κατσικάκι (Νάξου) στο φούρνο - (Λεμονάτο ψητό κατσικάκι) Matzourana Eatery Καλλιθέα | Roast Kid Goat (from Naxos) - (Lemony oven-roasted kid goat) Matzourana Eatery Kallithea"
  
 };
 

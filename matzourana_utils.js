@@ -252,12 +252,21 @@ function stripHtml(t) {
 }
 
 /*-------------------
-Purpose: Split a menu text "Name (description)" into its two parts.
-On Input: t - String, e.g. "Παστίτσιο (Με χειροποίητη μπεσαμέλ)".
+Purpose: Split a menu text "Name (description)" into its two parts. When the text has a
+         <br> ("Name <br><br> (description)"), the name is the part before it, so names with
+         their own brackets (e.g. "Κατσικάκι (Νάξου) στο φούρνο") stay whole.
+On Input: t - String, e.g. "Παστίτσιο <br><br> (Με χειροποίητη μπεσαμέλ)".
 On Output: Object { name, desc }; desc is '' when there are no brackets.
 ---------------------*/
 function splitDishText(t) {
-    const c = stripHtml(t);
+    const raw = String(t || '');
+    const br = raw.search(/<br\s*\/?>/i);
+    if (br >= 0) {
+        const rest = stripHtml(raw.slice(br));
+        const mb = rest.match(/^\((.*)\)$/);
+        return { name: stripHtml(raw.slice(0, br)), desc: (mb ? mb[1] : rest).trim() };
+    }
+    const c = stripHtml(raw);
     const m = c.match(/^(.*?)\s*\((.*)\)\s*$/);
     return m ? { name: m[1].trim(), desc: m[2].trim() } : { name: c, desc: '' };
 }

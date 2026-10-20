@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261020a'; // bust caches when assets/titles change
+const ASSET_V = '20261020b'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -79,11 +79,21 @@ const clean = t => String(t || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>
 
 /*-------------------
 Purpose: Split a bilingual catalog string "Name <br><br> (description)" into name + desc.
+         When the string has a <br>, the name is the part before it, so names that contain
+         their own parentheses (e.g. "Κατσικάκι (Νάξου) στο φούρνο") stay whole.
 On Input: t - String from menuCatalog.el or .en.
 On Output: { name: String, desc: String } (desc may be empty).
 ---------------------*/
 function split(t) {
-  const c = clean(t);
+  const raw = String(t || '');
+  const br = raw.search(/<br\s*\/?>/i);
+  if (br >= 0) {
+    const name = clean(raw.slice(0, br));
+    const rest = clean(raw.slice(br));
+    const m = rest.match(/^\((.*)\)$/);
+    return { name, desc: (m ? m[1] : rest).trim() };
+  }
+  const c = clean(raw);
   const m = c.match(/^(.*?)\s*\((.*)\)\s*$/);
   return m ? { name: m[1].trim(), desc: m[2].trim() } : { name: c, desc: '' };
 }
