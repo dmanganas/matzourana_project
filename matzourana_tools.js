@@ -305,12 +305,15 @@ function dishPagePath(key) {
 }
 
 /*-------------------
-Purpose: Tell whether a catalog key has a crawlable dish SEO page (photo + page).
+Purpose: Tell whether a catalog key has a crawlable dish SEO page.
 On Input: key - String, catalog key.
-On Output: Boolean - true when dishImageMap has an entry for that key.
+On Output: Boolean - true when dishImageMap has an entry for that key (page with photo),
+          or the key is listed in dishPagesNoPhoto (page kept, no correct photo yet).
 ---------------------*/
 function hasDishPage(key) {
-    return !!(typeof dishImageMap !== 'undefined' && key && dishImageMap[key]);
+    if (!key) return false;
+    if (typeof dishImageMap !== 'undefined' && dishImageMap[key]) return true;
+    return typeof dishPagesNoPhoto !== 'undefined' && dishPagesNoPhoto.includes(key);
 }
 
 /*-------------------

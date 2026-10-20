@@ -7,7 +7,7 @@
  *
  * Usage:
  *   node tools/generate-dish-pages.js pastitsio            # one or more catalog keys
- *   node tools/generate-dish-pages.js --all                # every dish that has a description AND a photo
+ *   node tools/generate-dish-pages.js --all                # every dish with a photo, plus dishPagesNoPhoto dishes
  *   node tools/generate-dish-pages.js --sitemap pastitsio  # also print <url> entries (with <image:image>) for sitemap.xml
  *   node tools/generate-dish-pages.js --all --sitemap      # also rewrite sitemap.xml: dish <url>s + Google image entries
  *
@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261019h'; // bust caches when assets/titles change
+const ASSET_V = '20261020a'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -54,6 +54,16 @@ function extractObject(name) {
 const menuCatalog = extractObject('menuCatalog');
 const dishImageMap = extractObject('dishImageMap');
 const imageList = extractObject('imageList');
+
+/*-------------------
+Purpose: Read the optional dishPagesNoPhoto list (dish pages kept without a correct photo).
+On Input: none (matzourana_data.js source already loaded in `html`).
+On Output: String[] catalog keys; [] when the list is not defined in the data file.
+---------------------*/
+function readNoPhotoKeys() {
+  return html.indexOf('const dishPagesNoPhoto =') >= 0 ? extractObject('dishPagesNoPhoto') : [];
+}
+const dishPagesNoPhoto = readNoPhotoKeys();
 
 const CATEGORY = {
   'freshly-cooked': 'Φρεσκομαγειρεμένα', 'meat-cooked': 'Πιάτα Κρεατικών', 'veg-cooked': 'Πιάτα Λαχανικών',
@@ -160,17 +170,19 @@ function clipMeta(text, maxLen) {
 
 /*-------------------
 Purpose: Build the absolute image URLs (WebP + JPG fallback) for a dish photo.
-On Input: imgFile - String relative path from dishImageMap.file (e.g. "web/greek-dish-4.webp").
-On Output: { webp: String|null, jpg: String, filePath: String local path for sizing }.
+On Input: imgFile - String relative path from dishImageMap.file (e.g. "web/greek-dish-4.webp"),
+          or null/'' for a dish page without a photo.
+On Output: { webpAbs, jpgAbs, webp, jpg, filePath }. Without a photo: the site OG image
+          (MatzouranaImages/matzourana-og-1200.jpg) for og:image / JSON-LD, webp = null.
 ---------------------*/
 function dishImageUrls(imgFile) {
   if (!imgFile) {
     return {
-      webpAbs: SITE + 'MatzouranaImages/matzourana-girl-logo-800.webp',
-      jpgAbs: SITE + 'MatzouranaImages/matzourana-girl-logo-800.jpg',
-      webp: '../../MatzouranaImages/matzourana-girl-logo-800.webp',
-      jpg: '../../MatzouranaImages/matzourana-girl-logo-800.jpg',
-      filePath: path.join(ROOT, 'MatzouranaImages/matzourana-girl-logo-800.jpg')
+      webpAbs: null,
+      jpgAbs: SITE + 'MatzouranaImages/matzourana-og-1200.jpg',
+      webp: null,
+      jpg: '../../MatzouranaImages/matzourana-og-1200.jpg',
+      filePath: path.join(ROOT, 'MatzouranaImages/matzourana-og-1200.jpg')
     };
   }
   const base = imgFile.replace(/\.webp$/i, '').replace(/\.jpg$/i, '').replace(/\.png$/i, '');
@@ -192,7 +204,8 @@ function dishImageUrls(imgFile) {
 /*-------------------
 Purpose: Render one full static HTML dish page (bilingual EL/EN, JSON-LD, girl logo).
 On Input: key - String catalog key; allKeys - String[] of keys being generated (related links).
-On Output: String, the full HTML document.
+On Output: String, the full HTML document. Dishes without a dishImageMap photo get no dish
+          <img> (og:image / JSON-LD image fall back to the site OG image).
 ---------------------*/
 function page(key, allKeys) {
   const d = menuCatalog[key];
@@ -269,7 +282,8 @@ function page(key, allKeys) {
   const others = allKeys.filter(k => k !== key).map(k =>
     `<li><a href="../${slugOf(k)}/">${esc(split(menuCatalog[k].el).name)}</a></li>`).join('\n          ');
 
-  const picture = urls.webp
+  const picture = !img ? ''
+    : urls.webp
     ? `<picture>
       <source srcset="${urls.webp}" type="image/webp">
       <img class="dish-img" src="${urls.jpg}" alt="${esc(imgAlt)}" width="${size[0]}" height="${size[1]}" fetchpriority="high" decoding="async">
@@ -473,9 +487,19 @@ function writeSitemap(keys, today) {
 const args = process.argv.slice(2);
 const wantSitemap = args.includes('--sitemap');
 let keys = args.filter(a => !a.startsWith('--'));
-if (args.includes('--all')) {
-  keys = Object.keys(menuCatalog).filter(k => menuCatalog[k].el && /\(/.test(menuCatalog[k].el) && dishImageMap[k]);
+
+/*-------------------
+Purpose: Choose which catalog dishes get a dish page with --all.
+On Input: none (menuCatalog, dishImageMap, dishPagesNoPhoto).
+On Output: String[] catalog keys, in menuCatalog order: every dish with a dishImageMap photo
+          (even when its name has no "(description)", e.g. choirines_brizoles), plus the
+          dishPagesNoPhoto keys that have a description.
+---------------------*/
+function selectDishPageKeys() {
+  return Object.keys(menuCatalog).filter(k => menuCatalog[k].el &&
+    (dishImageMap[k] || (dishPagesNoPhoto.includes(k) && /\(/.test(menuCatalog[k].el))));
 }
+if (args.includes('--all')) keys = selectDishPageKeys();
 if (!keys.length) { console.error('Give catalog keys (e.g. pastitsio) or --all'); process.exit(1); }
 for (const k of keys) if (!menuCatalog[k] || !menuCatalog[k].el) { console.error('Unknown dish key: ' + k); process.exit(1); }
 
