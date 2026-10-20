@@ -73,7 +73,9 @@ header {
     background-repeat: no-repeat;
     background-position: center calc(50% + 170px);
     border-radius: 8px; /* Optional: slight rounding for harmony */
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2)); /* Additional glow effect */
+    /* No CSS filter on the sticky header (2026-10-20): a filter here made iOS Safari render the
+       header PLUS the falling leaves (which reach ~100vh below it) into one huge offscreen layer,
+       which showed as a white blank band while scrolling. The box-shadow above keeps the shadow. */
     background-image: opacity 0.4;
     
 
@@ -253,6 +255,7 @@ p { font-size: 1em; line-height: 1.4; }
     100% {
         transform: translateY(100vh) rotate(360deg);
         opacity: 0;
+        visibility: hidden;   /* fallen leaves stop painting (they stay 100vh below the header) */
     }
 }
 

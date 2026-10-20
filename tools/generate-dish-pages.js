@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261020f'; // bust caches when assets/titles change
+const ASSET_V = '20261020g'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -252,7 +252,7 @@ function dishFaq(key, el, en) {
   }
   faq.push({
     lang: 'el',
-    q: `Πότε σερβίρετε το πιάτο ${el.name};`,
+    q: `Πότε σερβίρεται το πιάτο ${el.name};`,
     a: `Όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.`
   });
   faq.push({
