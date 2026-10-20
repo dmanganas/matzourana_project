@@ -332,6 +332,26 @@ const dishImageMap = {
         file: "web/greek-dish-43.webp",
         alt: "Κατσικάκι (Νάξου) στο φούρνο - Λεμονάτο ψητό κατσικάκι | Roast Kid Goat (from Naxos) - Lemony oven-roasted kid goat"
     },
+    "papoutsakia": {
+        file: "web/greek-dish-44.webp",
+        alt: "Μελιτζάνες παπουτσάκια - Με 100% μοσχαρίσιο κιμά και βελούδινη μπεσαμέλ, Matzourana Καλλιθέα | Stuffed Eggplants (Papoutsakia) - With 100% beef mince and velvety béchamel, Matzourana Kallithea"
+    },
+    "fasolada": {
+        file: "web/greek-dish-45.webp",
+        alt: "Φασολάδα - Χυλωμένη παραδοσιακή φασολάδα, Matzourana Καλλιθέα | Fasolada (Bean Soup) - Creamy traditional Greek bean soup, Matzourana Kallithea"
+    },
+    "kolokythakia_gemista": {
+        file: "web/greek-dish-46.webp",
+        alt: "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο - Με 100% μοσχαρίσιο κιμά, πατάτες και άνηθο, Matzourana Καλλιθέα | Stuffed Zucchini with Meat & Egg-Lemon Sauce - With 100% beef mince, potatoes and dill, Matzourana Kallithea"
+    },
+    "moschari_stifado": {
+        file: "web/greek-dish-47.webp",
+        alt: "Μοσχαράκι Στιφάδο - Τρυφερό μοσχάρι με κρεμμυδάκια σε κόκκινη σάλτσα, Matzourana Καλλιθέα | Beef Stifado - Tender beef with small onions in red sauce, Matzourana Kallithea"
+    },
+    "gavros_plaki": {
+        file: "web/greek-dish-48.webp",
+        alt: "Γαύρος φρέσκος πλακί - Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά, Matzourana Καλλιθέα | Fresh Baked Anchovies - With fresh tomato, olive oil and herbs, Matzourana Kallithea"
+    },
     "ksifias_lemonatos": {
         file: "web/greek-dish-38.webp",
         alt: "Ξιφίας λεμονάτος - Τρυφερός ξιφίας με λεμόνι, ελαιόλαδο και αρωματικά, με πατάτες και ψητή ντομάτα | Swordfish in Lemon Sauce - Tender swordfish with lemon, olive oil and aromatic herbs, with potatoes and roasted tomato"
@@ -820,7 +840,8 @@ const imageList = [
     'DishImages/web/greek-dish-35.webp', 'DishImages/web/greek-dish-36.webp',
     'DishImages/web/greek-dish-37.webp', 'DishImages/web/greek-dish-38.webp', 'DishImages/web/greek-dish-39.webp',
     'DishImages/web/greek-dish-40.webp', 'DishImages/web/greek-dish-41.webp', 'DishImages/web/greek-dish-42.webp',
-    'DishImages/web/greek-dish-43.webp'
+    'DishImages/web/greek-dish-43.webp', 'DishImages/web/greek-dish-44.webp', 'DishImages/web/greek-dish-45.webp',
+    'DishImages/web/greek-dish-46.webp', 'DishImages/web/greek-dish-47.webp', 'DishImages/web/greek-dish-48.webp'
 ];
 
 const dishAlts = {
@@ -865,7 +886,12 @@ const dishAlts = {
     'DishImages/web/greek-dish-40.webp': "Λαχανοντολμάδες αυγολέμονο - (Χειροποίητοι με κρεμώδες αυγολέμονο και φρέσκο άνηθο) Matzourana Eatery Καλλιθέα | Cabbage Rolls with Egg-Lemon Sauce - (Handmade with creamy egg-lemon sauce and fresh dill) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-41.webp': "Μυδοπίλαφο - (Με φρέσκα μύδια, ρύζι και άνηθο) Matzourana Eatery Καλλιθέα | Mussel Pilaf - (With fresh mussels, rice and dill) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-42.webp': "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - (Μπιφτέκια στη σχάρα με τηγανητές πατάτες, σαλάτα και λεμόνι) Matzourana Eatery Καλλιθέα | Homemade Beef Patty - (Grilled beef patties with fries, salad and lemon) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-43.webp': "Κατσικάκι (Νάξου) στο φούρνο - (Λεμονάτο ψητό κατσικάκι) Matzourana Eatery Καλλιθέα | Roast Kid Goat (from Naxos) - (Lemony oven-roasted kid goat) Matzourana Eatery Kallithea"
+    'DishImages/web/greek-dish-43.webp': "Κατσικάκι (Νάξου) στο φούρνο - (Λεμονάτο ψητό κατσικάκι) Matzourana Eatery Καλλιθέα | Roast Kid Goat (from Naxos) - (Lemony oven-roasted kid goat) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-44.webp': "Μελιτζάνες παπουτσάκια - (Με 100% μοσχαρίσιο κιμά και βελούδινη μπεσαμέλ) Matzourana Eatery Καλλιθέα | Stuffed Eggplants (Papoutsakia) - (With 100% beef mince and velvety béchamel) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-45.webp': "Φασολάδα - (Χυλωμένη και ασυναγώνιστη) Matzourana Eatery Καλλιθέα | Fasolada (Bean Soup) - (Creamy and unrivaled) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-46.webp': "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο - (Με 100% μοσχαρίσιο κιμά, πατάτες και άνηθο) Matzourana Eatery Καλλιθέα | Stuffed Zucchini with Meat & Egg-Lemon Sauce - (With 100% beef mince, potatoes and dill) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-47.webp': "Μοσχαράκι Στιφάδο - (Τρυφερό μοσχάρι με κρεμμυδάκια, παραδοσιακό και μοσχομυριστό) Matzourana Eatery Καλλιθέα | Beef Stifado - (Tender beef with small onions, traditional and fragrant) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-48.webp': "Γαύρος φρέσκος πλακί - (Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά) Matzourana Eatery Καλλιθέα | Fresh Baked Anchovies - (With fresh tomato, olive oil and herbs) Matzourana Eatery Kallithea"
  
 };
 
