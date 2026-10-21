@@ -553,62 +553,62 @@ const highlightsCatalog = {
     },
     // ==================== MEAT ====================
     "moschari_giouvesti": {
-        icons: ["meat-logo.png", "ozro-logo.png"],
+        icons: ["dish/meat.png", "dish/ozro.png"],
         el: "Μοσχάρι <br> Γιουβέτσι",
         en: "Beef <br> Giouvetsi"
     },
     "moschari_lemonato": {
-        icons: ["meat-logo.png", "lemonbeef-logo.png"],
+        icons: ["dish/meat.png", "dish/lemonbeef.png"],
         el: "Μοσχαράκι <br> Λεμονάτο",
         en: "Lemony <br> Beef Stew"
     },
     "moschari_kokkinisto": {
-        icons: ["meat-logo.png", "redbeef-logo.png"],
+        icons: ["dish/meat.png", "dish/redbeef.png"],
         el: "Μοσχάρι <br> Κοκκινιστό",
         en: "Beef <br> in Red Sauce"
     },
     "moschari_stifado": {
-        icons: ["meat-logo.png", "onion-logo.png"],
+        icons: ["dish/meat.png", "dish/onion.png"],
         el: "Μοσχάρι <br> Στιφάδο",
         en: "Beef <br> Stifado"
     },
     "arnaki_galaktos": {
-        icons: ["sheep-logo.png", "oven-logo.png"],
+        icons: ["dish/sheep.png", "dish/oven.png"],
         el: "Αρνάκι <br> γάλακτος",
         en: "Milk-Fed <br> Lamb"
     },
     "bifteki_moscharisia": {
-        icons: ["patties-logo.png", "pattiesoven-logo.png"],
+        icons: ["dish/patties.png", "dish/pattiesoven.png"],
         el: "Μπιφτέκια <br> Μοσχαρίσια",
         en: "Oven-Baked <br> Beef Patties"
     },
     "soutzoukakia": {
-        icons: ["meat-logo.png", "patties-logo.png"],
+        icons: ["dish/meat.png", "dish/patties.png"],
         el: "Σουτζουκάκια <br> Σμυρνέικα",
         en: "Smyrna-Style <br> Soutzoukakia"
     },
     "keftedakia_saltsa": {
-        icons: ["meatballsred-logo.png", "tomato-logo.png"],
+        icons: ["dish/meatballsred.png", "dish/tomato.png"],
         el: "Κεφτεδάκια <br> με σάλτσα",
         en: "Meatballs <br> in Tomato Sauce"
     },
     "keftedakia_tiganita": {
-        icons: ["meat-logo.png", "pan-logo.png"],
+        icons: ["dish/meat.png", "dish/pan.png"],
         el: "Κεφτεδάκια  <br> τηγανιτά",
         en: "Fried <br> Meatballs"
     },
     "moscharaki_noua": {
-        icons: ["meat-logo.png", "ragout-logo.png"],
+        icons: ["dish/meat.png", "dish/ragout.png"],
         el: "Μοσχαράκι <br> νουά",
         en: "Beef  <br> Tenderloin <br> Roast"
     },
     "choirino_lemonato": {
-        icons: ["meat-logo.png", "lemon-logo.png"],
+        icons: ["dish/meat.png", "dish/lemon.png"],
         el: "Χοιρινό <br> Λεμονάτο",
         en: "Lemony <br> Pork Stew"
     },
     "arni_paidaki": {
-        icons: ["sheep-logo.png", "oven-logo.png"],
+        icons: ["dish/sheep.png", "dish/oven.png"],
         el: "Αρνί <br> παϊδάκι <br> στο φούρνο",
         en: "Roast <br> Lamb Ribs"
     },
@@ -619,27 +619,27 @@ const highlightsCatalog = {
 
     // ==================== POULTRY ====================
     "kotopoulo_bouti": {
-        icons: ["chicken-logo.png", "lemon-logo.png"],
+        icons: ["dish/chicken.png", "dish/lemon.png"],
         el: "Κοτόπουλο <br> μπούτι <br> λεμονάτο",
         en: "Lemon <br> Chicken Leg"
     },
     "kotopoulo_kokkinisto": {
-        icons: ["chicken-logo.png", "tomato-logo.png"],
+        icons: ["dish/chicken.png", "dish/tomato.png"],
         el: "Κοτόπουλο <br> κοκκινιστό",
         en: "Free-Range Chicken <br> in Red Sauce"
     },
     "kotopoulo_fournou": {
-        icons: ["chicken-logo.png", "oven-logo.png"],
+        icons: ["dish/chicken.png", "dish/oven.png"],
         el: "Κοτόπουλο <br> στο φούρνο",
         en: "Roast <br> Chicken"
     },
     "kokoras_krasatos": {
-        icons: ["chicken-logo.png", "wine-logo.png"],
+        icons: ["dish/chicken.png", "dish/wine.png"],
         el: "Κόκορας <br> κρασάτος",
         en: "Rooster <br> in Wine Sauce"
     },
     "kotopoulo_frikase": {
-        icons: ["chicken-logo.png", "frikase-logo.png"],
+        icons: ["dish/chicken.png", "dish/frikase.png"],
         el: "Κοτόπουλο <br> φρικασέ",
         en: "Chicken <br> Fricassee"
     },
@@ -647,95 +647,95 @@ const highlightsCatalog = {
 
     // ==================== VEGETARIAN ====================
     "papoutsakia": {
-        icons: ["eggplant-logo.png", "shoes-logo.png"],
+        icons: ["dish/eggplant.png", "dish/shoes.png"],
         el: "Μελιτζάνες <br> παπουτσάκια",
         en: "Stuffed <br> Eggplants"
     },
     "melitzanes_imam": {
-        icons: ["eggplant-logo.png", "imam-logo.png"],
+        icons: ["dish/eggplant.png", "dish/imam.png"],
         el: "Μελιτζάνες <br> ιμάμ",
         en: "Imam <br> Eggplants"
     },
     "gemista_superfoods": {
-        icons: ["tomatopepper-logo.png", "stuffed-logo.png"],
+        icons: ["dish/tomatopepper.png", "dish/stuffed.png"],
         el: "Γεμιστά <br> με superfoods",
         en: "Stuffed Vegetables <br> with Superfoods"
     },
     "spanakorizo": {
-        icons: ["plant-logo.png", "spinachrice-logo.png"],
+        icons: ["dish/plant.png", "dish/spinachrice.png"],
         el: "Σπανακόρυζο",
         en: "Spinach <br> Rice"
     },
     "fasolakia": {
-        icons: ["beans-logo.png", "oliveoil-logo.png"],
+        icons: ["dish/beans.png", "dish/oliveoil.png"],
         el: "Φρέσκα <br> Φασολάκια",
         en: "Fresh <br> Green Beans"
     },
     "giantes": {
-        icons: ["giants-logo.png", "tomato-logo.png"],
+        icons: ["dish/giants.png", "dish/tomato.png"],
         el: "Γίγαντες <br> Φασόλια",
         en: "Giant <br> Beans"
     },
     "briam": {
-        icons: ["eggplant-logo.png", "briam-logo.png"],
+        icons: ["dish/eggplant.png", "dish/briam.png"],
         el: "Μπριάμ",
         en: "Briam"
     },
     "arakas": {
-        icons: ["beans-logo.png", "oliveoil-logo.png"],
+        icons: ["dish/peas.png", "dish/oliveoil.png"],
         el: "Αρακάς <br> λεμονάτος",
         en: "Lemony <br> Peas"
     },
     "moussakas_nistisimos": {
-        icons: ["mousakas-logo.png", "plant-logo.png"],
+        icons: ["dish/mousakas.png", "dish/plant.png"],
         el: "Μουσακάς <br> Νηστίσιμος",
         en: "Vegan <br> Moussaka"
     },
     "moussakas": {
-        icons: ["mousakas-logo.png", "meat-logo.png"],
+        icons: ["dish/mousakas.png", "dish/meat.png"],
        el: "Μουσακάς",
        en: "Moussakas"
     },
     "pastitsio": {
-        icons: ["mousakas-logo.png", "macaroni-logo.png"],
+        icons: ["dish/pastitsio.png", "dish/macaroni.png"],
         el: "Παστίτσιο",
         en: "Pastitsio"
     },
      "bamies_fournou": {
-        icons: ["okra-logo.png", "okraoven-logo.png"],
+        icons: ["dish/okra.png", "dish/okraoven.png"],
         el: "Μπάμιες <br> στο Φούρνο ",
         en: "Baked  <br> Okra"
     },
 
     // ==================== SOUP ====================
     "kotosoupa": {
-        icons: ["chicken-logo.png", "soup-logo.png"],
+        icons: ["dish/chicken.png", "dish/girl-soup-tight.png"],
         el: "Κοτόσουπα",
         en: "Chicken <br> Soup"
     },
     "giouvarlakia": {
-        icons: ["meat-logo.png", "soup-logo.png"],
+        icons: ["dish/meat.png", "dish/girl-soup-tight.png"],
         el: "Γιουβαρλάκια",
         en: "Meatball <br> Egg-Lemon Soup"
     },
     "patsas_vrastos": {
-        icons: ["meat-logo.png", "soup-logo.png"],
+        icons: ["dish/meat.png", "dish/girl-soup-tight.png"],
         el: "Πατσάς <br> βραστός",
         en: "Boiled <br> Tripe Soup"
     },
     "magiritsa": {
-        icons: ["meat-logo.png", "soup-logo.png"],
+        icons: ["dish/meat.png", "dish/girl-soup-tight.png"],
         el: "Μαγειρίτσα",
         en: "Magiritsa"
     },
     "psarosoupa": {
-        icons: ["fish-logo.png", "soup-logo.png"],
+        icons: ["dish/fish.png", "dish/girl-soup-tight.png"],
         el: "Ψαρόσουπα",
         en: "Fish <br> Soup"
     },
 
     "kreatosoupa": {
-        icons: ["meat-logo.png", "soup-logo.png"],
+        icons: ["dish/meat.png", "dish/girl-soup-tight.png"],
         el: "Κρεατόσουπα",
         en: "Meat <br> Soup"
     },
@@ -743,65 +743,65 @@ const highlightsCatalog = {
    
     // ==================== FISH / SEAFOOD ====================
     "garidoma": {
-        icons: ["schrimp-logo.png", "spagetti-logo.png"],
+        icons: ["dish/schrimp.png", "dish/spagetti.png"],
         el: "Γαριδο- <br> μακαρονάδα",
         en: "Shrimps <br> Spaghetti"
     },
     "spaghetti_garides_egaio": {
-        icons: ["schrimp-logo.png", "spagetti-logo.png"],
+        icons: ["dish/schrimp.png", "dish/spagetti.png"],
         el: "Γαριδο- <br> μακαρονάδα",
         en: "Shrimps <br> Spaghetti"
     },
    
     "kritharoto_garides": {
-        icons: ["schrimp-logo.png", "ozro-logo.png"],
+        icons: ["dish/schrimp.png", "dish/ozro.png"],
         el: "Κριθαρότο <br> με γαρίδες",
         en: "Shrimp <br> Orzo"
     },
     "oktapodi_stifado": {
-        icons: ["octapus-logo.png", "tomato-logo.png"],
+        icons: ["dish/octapus.png", "dish/tomato.png"],
         el: "Χταπόδι <br> Στιφάδο",
         en: "Octopus <br> Stifado"
     },
     "oktapodi_giouvesti": {
-        icons: ["octapus-logo.png", "ozro-logo.png"],
+        icons: ["dish/octapus.png", "dish/ozro.png"],
         el: "Χταπόδι <br> Γιουβέτσι",
         en: "Octopus <br> Giouvetsi"
     },
 
     "soupies_yiahni": {
-        icons: ["cuttlefishstew-logo.png", "tomato-logo.png"],
+        icons: ["dish/cuttlefishstew.png", "dish/tomato.png"],
         el: "Φρέσκες <br> Σουπιές <br> γιαχνί",
         en: "Fresh <br> Cuttlefish <br> Yiahni"
     },
     "mydopilafo": {
-        icons: ["mussels-logo.png", "musselspan-logo.png"],
+        icons: ["dish/mussels.png", "dish/musselspan.png"],
         el: "Μυδοπίλαφο",
         en: "Mussel <br> Pilaf"
     },
     "bakaliaros_spetsiota": {
-        icons: ["fish-logo.png", "cotoven-logo.png"],
+        icons: ["dish/fish.png", "dish/cotoven.png"],
         el: "Μπακαλιάρος <br> α λα σπετσιώτα",
         en: "Salted Cod <br> Spetsiota"
     },
     "bakaliaros_lemonatos": {
-        icons: ["fish-logo.png", "lemon-logo.png"],
+        icons: ["dish/fish.png", "dish/lemon.png"],
         el: "Μπακαλιάρος <br> λεμονάτος",
         en: "Cod <br> with Lemon"
     },
     "oktapodi_makaroni": {
-        icons: ["octapus-logo.png", "macaroni-logo.png"],
+        icons: ["dish/octapus.png", "dish/macaroni.png"],
         el: "Χταπόδι <br> με κοφτό <br> μακαρονάκι",
         en: "Octopus <br> with Short <br> Pasta"
     },
      
     "ksifias_lemonatos": {
-        icons: ["fish-logo.png", "tomato-logo.png"],
+        icons: ["dish/fish.png", "dish/tomato.png"],
         el: "Ξιφίας <br> λεμονάτος",
         en: "Swordfish   <br> in Lemon <br> Sauce"
     },
     "perka_lemonati": {
-        icons: ["fish-logo.png", "lemon-logo.png"],
+        icons: ["dish/fish.png", "dish/lemon.png"],
         el: "Πέρκα <br> λεμονάτη",
         en: "Perch   <br> in Lemon <br> Sauce"
     },
@@ -811,17 +811,17 @@ const highlightsCatalog = {
     //    en: "Have a Great <br> Summer!"
     //},
     "kalo_kalokairi": {
-        icons: ["sun-logo.png"],
+        icons: ["dish/sun.png"],
         el: "Ας φύγουμε <br> διακοπές! <br> Καλό <br> Καλοκαίρι! <br><br> Πάλι μαζί από τις 25/8",
         en: "Time for <br> Holidays! <br> Have a Great <br> Summer! <br><br> Back together from 25/8"
     },
     "galeos_spetsiota": {
-        icons: ["fish-logo.png", "cotoven-logo.png"],
+        icons: ["dish/fish.png", "dish/cotoven.png"],
         el: "Γαλέος <br> α λα σπετσιώτα",
         en: "Galeos <br> Spetsiota"
     },
     "galeos_lemonatos": {
-        icons: ["fish-logo.png", "lemon-logo.png"],
+        icons: ["dish/fish.png", "dish/lemon.png"],
         el: "Γαλέος <br> λεμονάτος",
         en: "Galeos <br> in Lemon <br> Sauce"
     },
