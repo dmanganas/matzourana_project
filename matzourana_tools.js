@@ -19,6 +19,13 @@ const firebaseConfig = {
     appId: "1:396072691292:web:39c93ba4db33ff5991e899"
 };
 
+// ===== DISH VIEW COUNTER (public, Firebase 'matzourana_dish_views/<dishKey>' = Number) =====
+// The dish pages (dishes/<slug>/) count their own views (tools/generate-dish-pages.js);
+// home + menu only read the counts once to mark the most viewed dishes.
+const DISH_VIEWS_MIN_SHOWN = 30;   // counts below this are never shown / never "most popular"
+const DISH_VIEWS_TOP_N = 3;        // how many dishes get the "Πιο δημοφιλές" badge
+let dishViewCounts = null;         // { dishKey: Number } after loadDishViewCounts, else null
+
 // ===== RUNTIME STATE =====
 let isPlaying = false;          // background music (music panel is off: load_music_menu = false)
 let zoomableImages = [];        // images the lightbox can step through
@@ -389,6 +396,81 @@ function renderDailyMenuTable() {
     });
     table.innerHTML = html;
     updateDailyDishesDate(lang);
+    markPopularDishes();
+}
+
+/*-------------------
+Purpose: Read all public dish view counts in ONE small request (Firebase REST, no SDK),
+         after the page has loaded, then mark the most viewed dishes.
+On Input: none. Uses firebaseConfig.databaseURL.
+On Output: none.
+Side effects: sets dishViewCounts ({ dishKey: Number }, {} on any error) and calls
+          markPopularDishes. Runs once per page view, when the browser is idle, so it never
+          competes with the first paint. Read only: the counting itself happens on the dish
+          pages.
+---------------------*/
+function loadDishViewCounts() {
+    if (dishViewCounts || typeof fetch !== 'function') return;
+    const run = () => fetch(firebaseConfig.databaseURL + '/matzourana_dish_views.json')
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null)
+        .then(data => {
+            dishViewCounts = (data && typeof data === 'object') ? data : {};
+            markPopularDishes();
+        });
+    const idle = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : setTimeout(run, 1500));
+    if (document.readyState === 'complete') idle(); else window.addEventListener('load', idle, { once: true });
+}
+
+/*-------------------
+Purpose: Pick the most viewed dishes among the dishes shown on this page.
+On Input: keys - String[] catalog keys that are on the page (today's menu / highlights).
+On Output: Set<String> of up to DISH_VIEWS_TOP_N keys, each with at least
+           DISH_VIEWS_MIN_SHOWN views, most viewed first; empty Set before the counts load.
+---------------------*/
+function popularDishKeys(keys) {
+    if (!dishViewCounts) return new Set();
+    const seen = new Set();
+    const ranked = (keys || []).filter(k => {
+        if (!k || seen.has(k)) return false;
+        seen.add(k);
+        return Number(dishViewCounts[k]) >= DISH_VIEWS_MIN_SHOWN;
+    }).sort((a, b) => Number(dishViewCounts[b]) - Number(dishViewCounts[a]));
+    return new Set(ranked.slice(0, DISH_VIEWS_TOP_N));
+}
+
+/*-------------------
+Purpose: Put a small "Πιο δημοφιλές / Most popular" badge (hand-drawn Matzourana icon)
+         next to the top viewed dishes in the daily table (menu page) and the highlights
+         notebook (home page).
+On Input: none. Uses dishViewCounts, currentDailyMenu, currentHighlights, getLang().
+On Output: none.
+Side effects: removes old .popular-badge spans, then adds one after the dish link of each
+          popular dish. Each list ranks its own dishes. The badge is a sibling of the link, so
+          the link text stays the dish name. Safe to call before the counts arrive
+          (does nothing).
+---------------------*/
+function markPopularDishes() {
+    if (!dishViewCounts) return;
+    const lang = getLang();
+    const label = lang === 'en' ? 'Most popular' : 'Πιο δημοφιλές';
+    const lists = [
+        { box: document.getElementById('daily-menu-table'), keys: typeof currentDailyMenu !== 'undefined' ? currentDailyMenu : [] },
+        { box: document.getElementById('daily-highlights-body'), keys: typeof currentHighlights !== 'undefined' ? currentHighlights : [] }
+    ];
+    lists.forEach(({ box, keys }) => {
+        if (!box) return;
+        box.querySelectorAll('.popular-badge').forEach(b => b.remove());
+        popularDishKeys(keys.filter(hasDishPage)).forEach(key => {
+            const link = box.querySelector('a.dish-page-link[href="' + dishPagePath(key) + '"]');
+            if (!link) return;
+            const badge = document.createElement('span');
+            badge.className = 'popular-badge';
+            badge.title = label + ' – ' + dishViewCounts[key] + (lang === 'en' ? ' views' : ' προβολές');
+            badge.innerHTML = '<img class="popular-icon" src="Logos/dish/views.webp" alt="" width="17" height="12" decoding="async">' + label;
+            link.insertAdjacentElement('afterend', badge);
+        });
+    });
 }
 
 /*-------------------
@@ -1006,6 +1088,7 @@ function renderDailyHighlights() {
             (lang === 'en' ? t.en : t.el) + '</td></tr>';
     }
     tbody.innerHTML = html;
+    markPopularDishes();
     scheduleMusicStoriesFit();
 }
 
@@ -1395,6 +1478,8 @@ Side effects: sets currentLang / <html lang>; renders the daily table, highlight
           on 'menu' the tab from the address + Menu JSON-LD; on 'home' also
           old-#anchor redirects, the rating widget, the daily Firebase publish (D5)
           and the Music Stories fit (initMusicStoriesFit).
+          On 'home' and 'menu' reads the dish view counts once (loadDishViewCounts) for the
+          "Πιο δημοφιλές" badges.
           Registers the 'languageChange' re-renderers. Starts the header logo video after
           page load (playLogoVideoWhenReady).
 ---------------------*/
@@ -1424,6 +1509,8 @@ function initPage(pageName) {
     playLogoVideoWhenReady();
 
     updateDailyDishesDate(currentLang);
+
+    if (page === 'home' || page === 'menu') loadDishViewCounts();
 
     if (page === 'home') {
         initRatingWidget();

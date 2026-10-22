@@ -2494,6 +2494,41 @@ header .nav-menu {
     text-decoration-color: #4A5D4A;
 }
 
+/* "Πιο δημοφιλές" badge next to the most viewed dishes (markPopularDishes).
+   Small and inline: the dish logos and row layout stay as they are on phones. */
+.popular-badge {
+    display: inline-block;
+    margin-left: 0.45em;
+    padding: 0.05em 0.55em 0.05em 0.3em;
+    border-radius: 999px;
+    background: #fff7e6;
+    border: 1px solid rgba(139, 58, 58, 0.35);
+    color: #8B3A3A;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.72em;          /* relative to the dish name, so it scales with the list */
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.popular-badge img.popular-icon {   /* 2 classes + later: beats .hero .image-panel img (margin 20px, max-height 60%) */
+    display: inline-block;
+    max-height: none;
+    max-width: none;
+    width: auto;
+    height: 1.15em;
+    margin: 0 0.25em 0 0;       /* the site's global img rules add a bottom margin */
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    vertical-align: -0.2em;
+}
+/* Home notebook (narrow, right-aligned column): badge on its own line under the name */
+.highlight-name .popular-badge {
+    display: table;
+    margin: 0.15em 0 0 auto;
+}
+
 .dish-index-list a { display:inline-block; min-height:24px; padding:2px 0; }
 @media (max-width:600px){ .dish-index-list { columns:1 !important; } }
 

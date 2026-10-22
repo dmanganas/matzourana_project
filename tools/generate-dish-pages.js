@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261022a'; // bust caches when assets/titles change
+const ASSET_V = '20261022b'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -49,6 +49,86 @@ function extractObject(name) {
     else if (c === close && --depth === 0) break;
   }
   return vm.runInNewContext('(' + html.slice(from, i + 1) + ')');
+}
+
+/*-------------------
+Purpose: Read the public Firebase Realtime Database URL from matzourana_tools.js
+         (firebaseConfig.databaseURL), so the dish-page view counter uses the same database
+         as the rest of the site without a second copy of the config.
+On Input: none (reads matzourana_tools.js).
+On Output: String database URL without a trailing slash.
+---------------------*/
+function readDatabaseUrl() {
+  const src = fs.readFileSync(path.join(ROOT, 'matzourana_tools.js'), 'utf8');
+  const m = src.match(/databaseURL:\s*"([^"]+)"/);
+  if (!m) throw new Error('databaseURL not found in matzourana_tools.js');
+  return m[1].replace(/\/+$/, '');
+}
+const DB_URL = readDatabaseUrl();
+const VIEWS_MIN_SHOWN = 30; // same as DISH_VIEWS_MIN_SHOWN in matzourana_tools.js
+// Handwritten font for the number on Dimitris' notepad drawing. Mynerve has a Greek subset;
+// &text= makes Google send only these glyphs (~20 KB woff2), and only once the card is shown.
+const VIEWS_FONT_CSS = 'https://fonts.googleapis.com/css2?family=Mynerve&display=swap&text=' +
+  encodeURIComponent('0123456789.προβολές');
+
+/*-------------------
+Purpose: The small inline script of a dish page that counts the view and shows
+         "N προβολές" on the notepad card (public Firebase node matzourana_dish_views/<dishKey>).
+On Input: key - String catalog key of the dish (also the Firebase child name).
+On Output: String "<script>…</script>". In the page the script:
+          - waits for window 'load' + idle time (never delays the first paint / LCP);
+          - counts at most once per browser, per dish, per Athens day (localStorage
+            'mz_views_<key>' = YYYY-MM-DD), only on www.matzourana.gr, never for bots
+            (navigator.webdriver or a bot user agent), with an atomic server-side
+            increment: PUT {".sv":{"increment":1}} (Firebase REST);
+          - otherwise only reads the count (GET);
+          - shows the #dish-views card (Dimitris' notepad drawing, the number written on its
+            white page in Mynerve, loaded only then) only when the count is at least
+            VIEWS_MIN_SHOWN.
+          Any network / rules error leaves the line hidden; the page works without it.
+---------------------*/
+function viewsScript(key) {
+  const cfg = JSON.stringify({ db: DB_URL, key, min: VIEWS_MIN_SHOWN, font: VIEWS_FONT_CSS });
+  return `<script>
+  (function (c) {
+    var el = document.getElementById('dish-views');
+    if (!el || !window.fetch) return;
+    var url = c.db + '/matzourana_dish_views/' + c.key + '.json';
+    var bot = navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|bingpreview|pagespeed|gtmetrix|pingdom/i.test(navigator.userAgent);
+    var live = /(^|\\.)matzourana\\.gr$/.test(location.hostname);
+    var day = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Athens' });
+    var seenKey = 'mz_views_' + c.key, seen = null;
+    try { seen = localStorage.getItem(seenKey); } catch (e) {}
+    var count = live && !bot && seen !== day;
+    function show(n) {
+      n = Number(n);
+      if (!(n >= c.min)) return;
+      if (!document.getElementById('mz-note-font')) {
+        var f = document.createElement('link');
+        f.id = 'mz-note-font'; f.rel = 'stylesheet'; f.href = c.font;
+        document.head.appendChild(f);
+      }
+      var t = n.toLocaleString('el-GR'), num = el.querySelector('.vn-num');
+      num.textContent = t;
+      if (t.length > 5) num.className = 'vn-num vn-long';   // 10.000+ still fits on the page
+      el.hidden = false;
+    }
+    function read() { return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).then(show); }
+    function run() {
+      (count
+        ? fetch(url, { method: 'PUT', body: '{".sv":{"increment":1}}', keepalive: true })
+            .then(function (r) {
+              if (!r.ok) return read();
+              try { localStorage.setItem(seenKey, day); } catch (e) {}
+              return r.json().then(show);
+            })
+        : read()
+      ).catch(function () {});
+    }
+    function idle() { window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : setTimeout(run, 1200); }
+    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+  })(${cfg});
+  </script>`;
 }
 
 const menuCatalog = extractObject('menuCatalog');
@@ -505,6 +585,14 @@ function page(key, allKeys) {
     .dish-img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
     .price { font-size: 1.4rem; font-weight: bold; color: #8B3A3A; margin: 0.6em 0 0.2em; }
     .note { font-size: 0.9rem; color: #666; margin-top: 0; }
+    .views-note { position: relative; width: 176px; margin: 0.5em 0 0.8em; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.12); line-height: 1; }
+    .views-note[hidden] { display: none; }
+    .views-note img { display: block; width: 100%; height: auto; }
+    .views-note .vn-text { position: absolute; left: 49%; right: 2%; top: 15%; bottom: 4%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f4d2b; font-family: 'Mynerve', 'Open Sans', cursive; text-align: center; transform: rotate(-3deg); }
+    .views-note .vn-num { font-size: 30px; font-weight: 400; letter-spacing: 0.5px; }
+    .views-note .vn-word { font-size: 15px; margin-top: 4px; }
+    .views-note .vn-num.vn-long { font-size: 22px; }
+    @media (max-width: 600px) { .views-note { width: 156px; } .views-note .vn-num { font-size: 27px; } .views-note .vn-word { font-size: 14px; } .views-note .vn-num.vn-long { font-size: 20px; } }
     .en { color: #555; font-style: italic; }
     .info { background: #fffefd; border-radius: 12px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-top: 1.4em; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
     .info .info-text { flex: 1 1 260px; }
@@ -535,6 +623,7 @@ ${JSON.stringify(ld, null, 2)}
     <p>Σπιτικό ${esc(el.name.toLowerCase())} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>${esc(el.name)} Matzourana Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
     <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea. Order for delivery across the wider Kallithea area.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
+    <p class="views-note" id="dish-views" hidden><img src="../../Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async"><span class="vn-text"><span class="vn-num"></span> <span class="vn-word">προβολές</span></span></p>
     <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
     <a class="cta" href="${SITE}matzourana_menu.html#daily-dishes">Δείτε το σημερινό μενού</a>
 
@@ -586,6 +675,7 @@ ${review ? `
     </section>
     ${others ? `<section class="related"><h2>Άλλα πιάτα της Ματζουράνας</h2>\n        <ul>\n          ${others}\n        </ul>\n    </section>` : ''}
   </main>
+  ${viewsScript(key)}
 </body>
 </html>
 `;

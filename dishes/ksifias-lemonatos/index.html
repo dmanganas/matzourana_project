@@ -30,6 +30,14 @@
     .dish-img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
     .price { font-size: 1.4rem; font-weight: bold; color: #8B3A3A; margin: 0.6em 0 0.2em; }
     .note { font-size: 0.9rem; color: #666; margin-top: 0; }
+    .views-note { position: relative; width: 176px; margin: 0.5em 0 0.8em; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.12); line-height: 1; }
+    .views-note[hidden] { display: none; }
+    .views-note img { display: block; width: 100%; height: auto; }
+    .views-note .vn-text { position: absolute; left: 49%; right: 2%; top: 15%; bottom: 4%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f4d2b; font-family: 'Mynerve', 'Open Sans', cursive; text-align: center; transform: rotate(-3deg); }
+    .views-note .vn-num { font-size: 30px; font-weight: 400; letter-spacing: 0.5px; }
+    .views-note .vn-word { font-size: 15px; margin-top: 4px; }
+    .views-note .vn-num.vn-long { font-size: 22px; }
+    @media (max-width: 600px) { .views-note { width: 156px; } .views-note .vn-num { font-size: 27px; } .views-note .vn-word { font-size: 14px; } .views-note .vn-num.vn-long { font-size: 20px; } }
     .en { color: #555; font-style: italic; }
     .info { background: #fffefd; border-radius: 12px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-top: 1.4em; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
     .info .info-text { flex: 1 1 260px; }
@@ -203,6 +211,7 @@
     <p>Σπιτικό ξιφίας λεμονάτος από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (Πιάτα Θαλασσινών), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>Ξιφίας λεμονάτος Matzourana Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
     <p class="en" lang="en">Swordfish in Lemon Sauce – Tender swordfish cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor. Home-style Greek seafood at Matzourana Eatery, Dimosthenous 48, Kallithea. Order for delivery across the wider Kallithea area.</p>
     <p class="price">€15,50</p>
+    <p class="views-note" id="dish-views" hidden><img src="../../Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async"><span class="vn-text"><span class="vn-num"></span> <span class="vn-word">προβολές</span></span></p>
     <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
     <a class="cta" href="https://www.matzourana.gr/matzourana_menu.html#daily-dishes">Δείτε το σημερινό μενού</a>
 
@@ -304,5 +313,45 @@
         </ul>
     </section>
   </main>
+  <script>
+  (function (c) {
+    var el = document.getElementById('dish-views');
+    if (!el || !window.fetch) return;
+    var url = c.db + '/matzourana_dish_views/' + c.key + '.json';
+    var bot = navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|bingpreview|pagespeed|gtmetrix|pingdom/i.test(navigator.userAgent);
+    var live = /(^|\.)matzourana\.gr$/.test(location.hostname);
+    var day = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Athens' });
+    var seenKey = 'mz_views_' + c.key, seen = null;
+    try { seen = localStorage.getItem(seenKey); } catch (e) {}
+    var count = live && !bot && seen !== day;
+    function show(n) {
+      n = Number(n);
+      if (!(n >= c.min)) return;
+      if (!document.getElementById('mz-note-font')) {
+        var f = document.createElement('link');
+        f.id = 'mz-note-font'; f.rel = 'stylesheet'; f.href = c.font;
+        document.head.appendChild(f);
+      }
+      var t = n.toLocaleString('el-GR'), num = el.querySelector('.vn-num');
+      num.textContent = t;
+      if (t.length > 5) num.className = 'vn-num vn-long';   // 10.000+ still fits on the page
+      el.hidden = false;
+    }
+    function read() { return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).then(show); }
+    function run() {
+      (count
+        ? fetch(url, { method: 'PUT', body: '{".sv":{"increment":1}}', keepalive: true })
+            .then(function (r) {
+              if (!r.ok) return read();
+              try { localStorage.setItem(seenKey, day); } catch (e) {}
+              return r.json().then(show);
+            })
+        : read()
+      ).catch(function () {});
+    }
+    function idle() { window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : setTimeout(run, 1200); }
+    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+  })({"db":"https://matzouranaeatery-ratings-default-rtdb.europe-west1.firebasedatabase.app","key":"ksifias_lemonatos","min":30,"font":"https://fonts.googleapis.com/css2?family=Mynerve&display=swap&text=0123456789.%CF%80%CF%81%CE%BF%CE%B2%CE%BF%CE%BB%CE%AD%CF%82"});
+  </script>
 </body>
 </html>
