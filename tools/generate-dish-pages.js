@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261022b'; // bust caches when assets/titles change
+const ASSET_V = '20261022c'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -65,7 +65,7 @@ function readDatabaseUrl() {
   return m[1].replace(/\/+$/, '');
 }
 const DB_URL = readDatabaseUrl();
-const VIEWS_MIN_SHOWN = 30; // same as DISH_VIEWS_MIN_SHOWN in matzourana_tools.js
+const VIEWS_MIN_SHOWN = 10; // same as DISH_VIEWS_MIN_SHOWN in matzourana_tools.js
 // Handwritten font for the number on Dimitris' notepad drawing. Mynerve has a Greek subset;
 // &text= makes Google send only these glyphs (~20 KB woff2), and only once the card is shown.
 const VIEWS_FONT_CSS = 'https://fonts.googleapis.com/css2?family=Mynerve&display=swap&text=' +

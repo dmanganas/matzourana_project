@@ -22,7 +22,7 @@ const firebaseConfig = {
 // ===== DISH VIEW COUNTER (public, Firebase 'matzourana_dish_views/<dishKey>' = Number) =====
 // The dish pages (dishes/<slug>/) count their own views (tools/generate-dish-pages.js);
 // home + menu only read the counts once to mark the most viewed dishes.
-const DISH_VIEWS_MIN_SHOWN = 30;   // counts below this are never shown / never "most popular"
+const DISH_VIEWS_MIN_SHOWN = 10;   // counts below this are never shown / never "most popular"
 const DISH_VIEWS_TOP_N = 3;        // how many dishes get the "Πιο δημοφιλές" badge
 let dishViewCounts = null;         // { dishKey: Number } after loadDishViewCounts, else null
 
