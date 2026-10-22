@@ -1529,12 +1529,15 @@ stroke-dashoffset: 0;
 
 /* Media query for laptop screens (769px to 1200px) */
 @media (min-width: 769px) and (max-width: 1200px) {
+    /* Tablets / iPads (769-1200px), fixed 2026-10-22: the header used to be shrunk with
+       transform: scale(0.60). A transform only shrinks what is painted, not the layout box, so the
+       header showed as a centred box ~60% wide with a big empty band under it (the unshrunk height).
+       Now the header keeps its real full width/height and only its contents are sized for tablets
+       (logo below, greeting via body font-size 16px); the snow/hearts strip sits under the greeting. */
     header {
-        transform: scale(0.60); /* Zoom out effect (~50% reduction) */
-        transform-origin: top center;
-        background-position: center calc(50% + 70px)
-
+        background-position: center calc(50% + 100px);
     }
+    .language-toggle span { font-size: 22px; }
     .branch.left {
         width: 75px;
         height: 90px;
@@ -1571,7 +1574,7 @@ stroke-dashoffset: 0;
         max-width: 30%;
     }
     .logo-video {
-       max-width: 30%;
+       max-width: 160px; /* fixed size: same header height on every iPad, so the snow strip stays under the greeting */
     }
     .section-container {
         padding: 2px;
@@ -1580,12 +1583,18 @@ stroke-dashoffset: 0;
         padding: 4px;
         width: 90%;
     }
+    /* The two columns stretch to the taller one; centring the shorter one left a big empty
+       block at its top on iPads (home: the welcome texts; gallery: the text next to the photo grid;
+       menu: the Έκθεση Πιάτων column next to a long Πιάτα Ημέρας list). Start them at the top instead. */
+    .section-container > .text-panel, .about .right-panel { justify-content: flex-start; }
+    .about .right-panel .text-panel { justify-content: flex-start; min-height: 0; }
+    .menu .image-panel, .gallery .image-panel { align-content: start; }
     .hero .text-panel-info, .hero .image-panel-info, .gallery .text-panel-info, .contact .text-panel-info, .about .text-panel-info, .hero .star-rating-container {
         padding: 10px;
         font-size: 10px;
     }
     .hamburger {
-        font-size: 22px;
+        font-size: 28px;
     }
     .contact .text-panel {
         padding: 15px;
