@@ -21,7 +21,14 @@ const currentDailyMenu = [
 
     //Meat
     "moschari_kokkinisto",
-    "moschari_lemonato",
+
+    //SeaFoods
+    "galeos_fournou",
+
+    // Soups
+    "psarosoupa",
+
+    //Meat
     "bifteki_moscharisia",
 
     //Chicken
@@ -31,21 +38,20 @@ const currentDailyMenu = [
     "pastitsio",
     "makaronia_kima",
     "lachanontolmades",
-    "keftedakia_tiganita",
 
     // Soups
     "giouvarlakia",
     "kotosoupa",
+    "manitarosoupa",
 
     //Veggy
-    "giantes",
-    "melitzanes_imam",
     "fasolakia",
     "spanakorizo",
 
     // Legumes
+    "revithia",
     "fasolada",
-    "fava"
+    "fakes"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
@@ -53,19 +59,17 @@ const currentHighlights = [
 
     "line",
     "moschari_kokkinisto",
-    "moschari_lemonato",
+    "galeos_fournou",
+    "psarosoupa",
     "bifteki_moscharisia",
 
     "kotopoulo_bouti",
 
     "pastitsio",
-    "keftedakia_tiganita",
 
     "giouvarlakia",
     "kotosoupa",
 
-    "giantes",
-    "melitzanes_imam",
     "fasolakia",
     "spanakorizo"
 ];
@@ -148,7 +152,7 @@ const menuCatalog = {
     "fasolakia": { category: "veg-cooked", el: "Φρέσκα Φασολάκια λαδερά <br><br> (Με ντοματούλα και πατάτες)", en: "Fresh Green Beans in Olive Oil <br><br> (With tomato and potatoes)", price: "€6.50" },
     "bamies_fournou": { category: "veg-cooked", el: "Μπάμιες στο Φούρνο <br><br> (Φρέσκες με ντοματούλα)", en: "Baked Okra <br><br> (Fresh with tomato)", price: "€7.50" },
     "bamies_yiahni": { category: "veg-cooked", el: "Μπάμιες Γιαχνί <br><br> (Φρέσκες μαγειρεμένες με ντοματούλα)", en: "Okra Stew <br><br> (Fresh slow-cooked with tomato)", price: "€7.50" },
-    "spanakorizo": { category: "veg-cooked", el: "Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα και φρέσκο άνηθο)", en: "Spinach Rice <br><br> (Lemony with tomato and fresh dill)", price: "€5.50" },
+    "spanakorizo": { category: "veg-cooked", el: "Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα και φρέσκο άνηθο)", en: "Spinach Rice <br><br> (Lemony with tomato and fresh dill)", price: "€6.50" },
     "kounoupidi_yiahni": { category: "veg-cooked", el: "Κουνουπίδι Γιαχνί <br><br> (Με ντοματούλα και κανέλα)", en: "Stewed Cauliflower Yiahni <br><br> (With tomato and cinnamon)", price: "€6.00" },
     "manitaria_stifado": { category: "veg-cooked", el: "Μανιτάρια Στιφάδο <br><br> (Ένας μοναδικός τρόπος να απολαύσετε τα μανιτάρια)", en: "Mushroom Stifado <br><br> (A unique way to enjoy mushrooms)", price: "€8.50" },
     "makaronia_vegan": { category: "veg-cooked", el: "Μακαρόνια με φυτικό κιμά vegan (Vegan Μπολονέζ)", en: "Vegan Spaghetti with Plant-Based Mince", price: "€8.00" },
@@ -162,6 +166,7 @@ const menuCatalog = {
     "galeos_spetsiota": { category: "seafood", el: "Γαλέος α λα σπετσιώτα με πατάτες <br><br> (Φρέσκος γαλέος μαγειρεμένος με πατάτες, φρέσκια ντομάτα και ματζουράνα. Ένα ξεχωριστό πιάτο για τους λάτρεις των θαλασσινών)", en: "Galeos Spetsiota with Potatoes <br><br> (Fresh galeos cooked with potatoes, fresh tomato, and marjoram. A unique dish for seafood lovers)", price: "€9.50" },
     "bakaliaros_lemonatos": { category: "seafood", el: "Μπακαλιάρος λεμονάτος <br><br> (Τρυφερός μπακαλιάρος μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Lemon Cod <br><br> (Tender cod cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€12.50" },
     "galeos_lemonatos": { category: "seafood", el: "Γαλέος λεμονάτος <br><br> (Τρυφερός φρέσκος γαλέος μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Lemon Galeos <br><br> (Tender fresh galeos cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€11.00" },
+    "galeos_fournou": { category: "seafood", el: "Γαλέος στο φούρνο <br><br> (Φρέσκος γαλέος ψημένος στο φούρνο)", en: "Oven-baked Galeos <br><br> (Fresh galeos baked in the oven)", price: "€11.00" },
 
     "bakaliaros_plaki": { category: "seafood", el: "Μπακαλιάρος Πλακί <br><br> (Με πατάτες, φρέσκια ντομάτα, κρεμμύδι και μυρωδικά ψημένα στον φούρνο. Παραδοσιακό ελληνικό πιάτο θαλασσινών)", en: "Bakaliaros Plaki (Baked Cod) <br><br> (With potatoes, fresh tomato, onion, and herbs baked in the oven. A traditional Greek seafood dish)", price: "€12.50" },
     "bakaliaros_skordalia": { category: "seafood", el: "Μπακαλιάρος με σκορδαλιά <br><br> (Τραγανός τηγανητός μπακαλιάρος, σερβιρισμένος με παραδοσιακή σκορδαλιά. Κλασική ελληνική γεύση της 25ης Μαρτίου)", en: "Fried Cod with Garlic Dip <br><br> (Crispy fried cod served with traditional garlic dip. A classic Greek flavor for March 25th)", price: "€12.80" },
@@ -200,16 +205,16 @@ const menuCatalog = {
     "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.00" },
     "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.00" },
     "borscht": { category: "soups", el: "Σούπα Μπορς (Μπόρστ) <br><br> (Με μοσχάρι, λάχανο και παντζάρι)", en: "Borscht Soup <br><br> (With beef, cabbage and beetroot)", price: "€8.00" },
-    "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€9.00" },
+    "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.50" },
     "magiritsa": { category: "soups", el: "Μαγειρίτσα <br><br> (Κλασική πασχαλινή σούπα με αρνί και αυγολέμονο)", en: "Magiritsa <br><br> (Classic Easter soup with lamb and egg-lemon sauce)", price: "€10.00" },
     "giouvarlakia": { category: "soups", el: "Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά)", en: "Meatball Egg-Lemon Soup", price: "€8.50" },
     "hortosoupa_trahanas": { category: "soups", el: "Χορτόσουπα με τραχανά", en: "Vegetable Soup with Trahana", price: "€5.50" },
-    "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€8.00" },
+    "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€7.00" },
 
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
     "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.00" },
-    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.00" },
+    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€5.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
 
@@ -826,6 +831,11 @@ const highlightsCatalog = {
         icons: ["dish/fish.png", "dish/lemon.png"],
         el: "Γαλέος <br> λεμονάτος",
         en: "Galeos <br> in Lemon <br> Sauce"
+    },
+    "galeos_fournou": {
+        icons: ["dish/fish.png", "dish/oven.png"],
+        el: "Γαλέος <br> στο φούρνο",
+        en: "Galeos <br> in the Oven"
     },
 
 };
