@@ -20,13 +20,12 @@ const currentDailyMenu = [
 
 
     //Meat
-    "moschari_kokkinisto",
+    "moschari_giouvesti",
+    "moschari_lemonato",
 
     //SeaFoods
     "galeos_fournou",
-
-    // Soups
-    "psarosoupa",
+    "mydopilafo",
 
     //Meat
     "bifteki_moscharisia",
@@ -42,15 +41,14 @@ const currentDailyMenu = [
     // Soups
     "giouvarlakia",
     "kotosoupa",
-    "manitarosoupa",
+
 
     //Veggy
-    "fasolakia",
+    "arakas",
     "spanakorizo",
 
     // Legumes
     "revithia",
-    "fasolada",
     "fakes"
 ];
 
@@ -58,9 +56,7 @@ const currentDailyMenu = [
 const currentHighlights = [
 
     "line",
-    "moschari_kokkinisto",
-    "galeos_fournou",
-    "psarosoupa",
+    "moschari_giouvetsi",
     "bifteki_moscharisia",
 
     "kotopoulo_bouti",
@@ -69,8 +65,11 @@ const currentHighlights = [
 
     "giouvarlakia",
     "kotosoupa",
+   
+    "galeos_fournou",
+    "mydopilafo",
 
-    "fasolakia",
+    "arakas_lemonatos",
     "spanakorizo"
 ];
 
