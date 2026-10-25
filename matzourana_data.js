@@ -20,12 +20,13 @@ const currentDailyMenu = [
 
 
     //Meat
-    "moschari_giouvesti",
+    "moschari_kokkinisto",
     "moschari_lemonato",
+    "keftedakia_tiganita",
+
 
     //SeaFoods
-    "galeos_fournou",
-    "mydopilafo",
+
 
     //Meat
     "bifteki_moscharisia",
@@ -37,6 +38,7 @@ const currentDailyMenu = [
     "pastitsio",
     "makaronia_kima",
     "lachanontolmades",
+    "kolokythakia_gemista",
 
     // Soups
     "giouvarlakia",
@@ -45,10 +47,10 @@ const currentDailyMenu = [
 
     //Veggy
     "arakas",
-    "spanakorizo",
+    "giantes",
+    "briam",
 
     // Legumes
-    "revithia",
     "fakes"
 ];
 
@@ -56,7 +58,9 @@ const currentDailyMenu = [
 const currentHighlights = [
 
     "line",
-    "moschari_giouvetsi",
+    "moschari_kokkinisto",
+    "moschari_lemonato",
+    "keftedakia_tiganita",
     "bifteki_moscharisia",
 
     "kotopoulo_bouti",
@@ -66,11 +70,10 @@ const currentHighlights = [
     "giouvarlakia",
     "kotosoupa",
    
-    "galeos_fournou",
-    "mydopilafo",
 
     "arakas_lemonatos",
-    "spanakorizo"
+    "giantes",
+    "briam",
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
