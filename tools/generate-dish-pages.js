@@ -22,7 +22,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261023c'; // bust caches when assets/titles change
+const ASSET_V = '20261027a'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -259,7 +259,8 @@ const DISH_FAQ = {
   glossa_lemonati:                     { q: 'καλή γλώσσα λεμονάτη',                review: /γλώσσα λεμον|glossa|\bsole\b/i },
   giouvarlakia:                        { q: 'καλά γιουβαρλάκια',                   review: /γιουβαρλ|giouvarl|youvarl/i },
   fasolada:                            { q: 'καλή φασολάδα',                       review: /φασολάδ|φασολαδ|fasolad|bean soup/i },
-  spanakorizo:                         { q: 'καλό σπανακόρυζο',                    review: /σπανακόρυζ|σπανακορυζ|spanakoriz|spinach rice/i }
+  spanakorizo:                         { q: 'καλό σπανακόρυζο',                    review: /σπανακόρυζ|σπανακορυζ|spanakoriz|spinach rice/i },
+  fasolakia:                           { q: 'καλά φρέσκα φασολάκια',               review: /φασολάκ|φασολακ|fasolak|green beans/i }
 };
 
 /*-------------------
@@ -621,7 +622,7 @@ ${JSON.stringify(ld, null, 2)}
     <h1>${esc(el.name)} στην Καλλιθέα – Matzourana</h1>
     ${picture}
     ${el.desc ? `<p>${esc(el.desc)}.</p>` : ''}
-    <p>Σπιτικό ${esc(el.name.toLowerCase())} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}), μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Ideal για <strong>${esc(el.name)} Matzourana Καλλιθέα</strong> – παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
+    <p>${esc(el.name)} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}): σπιτικό φαγητό, μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Αναζητάτε <strong>${esc(el.name)} Matzourana Καλλιθέα</strong>; Παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
     <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea. Order for delivery across the wider Kallithea area.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
     <p class="views-note" id="dish-views" hidden><img src="../../Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async"><span class="vn-text"><span class="vn-num"></span> <span class="vn-word">προβολές</span></span></p>

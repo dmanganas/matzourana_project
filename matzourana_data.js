@@ -365,6 +365,10 @@ const dishImageMap = {
         file: "web/greek-dish-49.webp",
         alt: "Σπανακόρυζο - Λεμονάτο με ντομάτα και φρέσκο άνηθο, Matzourana Καλλιθέα | Spinach Rice - Lemony with tomato and fresh dill, Matzourana Kallithea"
     },
+    "fasolakia": {
+        file: "web/greek-dish-50.webp",
+        alt: "Φρέσκα φασολάκια λαδερά - Με ντοματούλα και πατάτες, Matzourana Καλλιθέα | Fresh Green Beans in Olive Oil - With tomato and potatoes, Matzourana Kallithea"
+    },
     
     // Add more mappings here when you add new photos
 };
@@ -861,7 +865,7 @@ const imageList = [
     'DishImages/web/greek-dish-40.webp', 'DishImages/web/greek-dish-41.webp', 'DishImages/web/greek-dish-42.webp',
     'DishImages/web/greek-dish-43.webp', 'DishImages/web/greek-dish-44.webp', 'DishImages/web/greek-dish-45.webp',
     'DishImages/web/greek-dish-46.webp', 'DishImages/web/greek-dish-47.webp', 'DishImages/web/greek-dish-48.webp',
-    'DishImages/web/greek-dish-49.webp'
+    'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp'
 ];
 
 const dishAlts = {
@@ -912,7 +916,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-46.webp': "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο - (Με 100% μοσχαρίσιο κιμά, πατάτες και άνηθο) Matzourana Eatery Καλλιθέα | Stuffed Zucchini with Meat & Egg-Lemon Sauce - (With 100% beef mince, potatoes and dill) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-47.webp': "Μοσχαράκι Στιφάδο - (Τρυφερό μοσχάρι με κρεμμυδάκια, παραδοσιακό και μοσχομυριστό) Matzourana Eatery Καλλιθέα | Beef Stifado - (Tender beef with small onions, traditional and fragrant) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-48.webp': "Γαύρος φρέσκος πλακί - (Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά) Matzourana Eatery Καλλιθέα | Fresh Baked Anchovies - (With fresh tomato, olive oil and herbs) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-49.webp': "Σπανακόρυζο - (Λεμονάτο με ντομάτα και φρέσκο άνηθο) Matzourana Καλλιθέα | Spinach Rice - (Lemony with tomato and fresh dill) Matzourana Kallithea"
+    'DishImages/web/greek-dish-49.webp': "Σπανακόρυζο - (Λεμονάτο με ντομάτα και φρέσκο άνηθο) Matzourana Καλλιθέα | Spinach Rice - (Lemony with tomato and fresh dill) Matzourana Kallithea",
+    'DishImages/web/greek-dish-50.webp': "Φρέσκα φασολάκια λαδερά - (Με ντοματούλα και πατάτες) Matzourana Καλλιθέα | Fresh Green Beans in Olive Oil - (With tomato and potatoes) Matzourana Kallithea"
  
 };
 
