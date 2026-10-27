@@ -620,7 +620,7 @@ const highlightsCatalog = {
 
     // ==================== POULTRY ====================
     "kotopoulo_bouti": {
-        icons: ["dish/chicken.png", "dish/lemon.png"],
+        icons: ["dish/chicken.png", "dish/oven.png"],
         el: "Κοτόπουλο <br> μπούτι <br> με πατάτες",
         en: "Chicken Thigh <br> with Potatoes"
     },
