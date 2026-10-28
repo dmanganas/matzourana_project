@@ -19,24 +19,28 @@ const currentDailyMenu = [
     // Freshly Cooked
 
 
+    //Seafood
+    "bakaliaros_lemonatos",
+
     //Meat
     "moschari_kokkinisto",
-    "bifteki_moscharisia",
 
-    //Chicken
-    "kotopoulo_bouti",
+    //Seafood
+    "galeos_lemonatos",
 
     //Meat
+    "bifteki_moscharisia",
     "pastitsio",
+    "makaronia_kima",
     "keftedakia_tiganita",
     "lachanontolmades",
 
     // Soups
-    "giouvarlakia",
     "kotosoupa",
 
     //Veggy
-    "briam",
+    "giantes",
+    "melitzanes_imam",
     "spanakorizo",
 
     // Legumes
@@ -52,16 +56,16 @@ const currentHighlights = [
     "moschari_kokkinisto",
     "bifteki_moscharisia",
 
-    "kotopoulo_bouti",
+    "bakaliaros_lemonatos",
+    "galeos_lemonatos",
 
     "pastitsio",
     "keftedakia_tiganita",
 
-    "giouvarlakia",
     "kotosoupa",
 
-    "briam",
-    "spanakorizo"
+    "giantes",
+    "melitzanes_imam"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -128,10 +132,10 @@ const menuCatalog = {
     // ==================== ΠΙΑΤΑ ΛΑΧΑΝΙΚΩΝ ====================
     "moussakas_nistisimos": { category: "veg-cooked", el: "Μουσακάς Νηστίσιμος <br><br> (Μουσακάς χωρίς κρέας, με κιμά σόγιας, ψητές μελιτζάνες και πατάτες)", en: "Vegan Moussaka <br><br> (Made without meat, using soy mince, roasted eggplants and potatoes)", price: "€8.50" },
     "briam": { category: "veg-cooked", el: "Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές και πατάτες)", en: "Briam <br><br> (With eggplants, courgettes, colorful peppers and potatoes)", price: "€6.50" },
-    "giantes": { category: "veg-cooked", el: "Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα)", en: "Giant Beans <br><br> (Gigantes Plaki - Baked in a clay pot)", price: "€7.50" },
+    "giantes": { category: "veg-cooked", el: "Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα)", en: "Giant Beans <br><br> (Gigantes Plaki - Baked in a clay pot)", price: "€8.00" },
     "melitzanes_yiahni": { category: "veg-cooked", el: "Μελιτζάνες και πατάτες Γιαχνί <br><br> (Μελιτζάνες και πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Eggplants and Potatoes Yiahni <br><br> (Eggplants and potatoes cooked in tomato sauce)", price: "€6.00" },
     "patates_yiahni": { category: "veg-cooked", el: "Πατάτες Γιαχνί <br><br> (Πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Potatoes Yiahni <br><br> (Potatoes cooked in tomato sauce)", price: "€5.50" },
-    "melitzanes_imam": { category: "veg-cooked", el: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ <br><br> (Τσακώνικες μελιτζάνες με σάλτσα ντομάτας και τριμμένη φέτα)", en: "Imam Eggplants with PDO Feta <br><br> (Tsakonian eggplants with tomato sauce and grated PDO feta)", price: "€7.00" },
+    "melitzanes_imam": { category: "veg-cooked", el: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ <br><br> (Τσακώνικες μελιτζάνες με σάλτσα ντομάτας και τριμμένη φέτα)", en: "Imam Eggplants with PDO Feta <br><br> (Tsakonian eggplants with tomato sauce and grated PDO feta)", price: "€7.50" },
     "gemista": { category: "veg-cooked", el: "Γεμιστά <br><br> (Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες)", en: "Stuffed Vegetables <br><br> (Tomato and pepper with bulgur, herbs and potatoes)", price: "€8.00" },
     "gemista_rice": { category: "veg-cooked", el: "Γεμιστά με ρύζι <br><br> (Ντομάτα και πιπεριά με ρύζι, μυρωδικά και πατατούλες)", en: "Stuffed Vegetables with Rice <br><br> (Tomato and pepper with rice, herbs and potatoes)", price: "€7.50" },
     "gemista_superfoods": { category: "veg-cooked", el: "Γεμιστά με superfoods <br><br> (Σταφίδες, κουκουνάρι, κράνμπερι, καρύδια)", en: "Stuffed Vegetables with Superfoods <br><br> (Raisins, pine nuts, cranberries, walnuts)", price: "€8.50" },
