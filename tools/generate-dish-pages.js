@@ -4,6 +4,11 @@
  * ----------------------------------------
  * Reads menuCatalog + dishImageMap from matzourana_data.js and writes one small static,
  * crawlable page per dish:  dishes/<slug>/index.html  (URL: https://www.matzourana.gr/dishes/<slug>/)
+ * Also writes pages for the fixed menu tables (Ψητά της Ώρας, Σαλάτες, dips): the keys come
+ * from fixedMenuDishPages (matzourana_data.js), name / description / price from the table rows
+ * of matzourana_menu.html. With --all it also links those table rows to their pages and
+ * rewrites the grouped "Τα πιάτα μας" list (between <!-- @dish-index --> markers) in
+ * index.html and matzourana_menu.html.
  *
  * Usage:
  *   node tools/generate-dish-pages.js pastitsio            # one or more catalog keys
@@ -22,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261027c'; // bust caches when assets/titles change
+const ASSET_V = '20261028c'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -147,11 +152,43 @@ const dishPagesNoPhoto = readNoPhotoKeys();
 
 const CATEGORY = {
   'freshly-cooked': 'Φρεσκομαγειρεμένα', 'meat-cooked': 'Πιάτα Κρεατικών', 'veg-cooked': 'Πιάτα Λαχανικών',
-  'seafood': 'Πιάτα Θαλασσινών', 'soups': 'Σούπες', 'legumes': 'Όσπρια/Σούπες', 'sweets': 'Γλυκά'
+  'seafood': 'Πιάτα Θαλασσινών', 'soups': 'Σούπες', 'legumes': 'Όσπρια/Σούπες', 'sweets': 'Γλυκά',
+  'grill': 'Ψητά της Ώρας', 'salads': 'Σαλάτες', 'dips': 'Ορεκτικά'
 };
 const CATEGORY_EN = {
   'freshly-cooked': 'Freshly cooked', 'meat-cooked': 'Meat dishes', 'veg-cooked': 'Vegetable dishes',
-  'seafood': 'Seafood', 'soups': 'Soups', 'legumes': 'Legumes / soups', 'sweets': 'Sweets'
+  'seafood': 'Seafood', 'soups': 'Soups', 'legumes': 'Legumes / soups', 'sweets': 'Sweets',
+  'grill': 'Grilled dishes', 'salads': 'Salads', 'dips': 'Appetizers'
+};
+
+/*-------------------
+Purpose: Headings of the grouped dish links ("Άλλα πιάτα" on every dish page and the
+         "Τα πιάτα μας" list on index.html / matzourana_menu.html), in display order.
+         Labels as on the site (DAILY_CATEGORY_LABELS in matzourana_tools.js, menu buttons).
+On Input: none (static table).
+On Output: Array<{ cats: String[], el: String, en: String }>.
+---------------------*/
+const LINK_GROUPS = [
+  { cats: ['meat-cooked'], el: 'Πιάτα Κρεατικών', en: 'Meat Dishes' },
+  { cats: ['seafood'], el: 'Πιάτα Θαλασσινών', en: 'Seafood Dishes' },
+  { cats: ['veg-cooked'], el: 'Πιάτα Λαχανικών', en: 'Vegetable Dishes' },
+  { cats: ['legumes', 'soups'], el: 'Όσπρια & Σούπες', en: 'Legumes & Soups' },
+  { cats: ['freshly-cooked'], el: 'Φρεσκομαγειρεμένα', en: 'Freshly Cooked Dishes' },
+  { cats: ['sweets'], el: 'Γλυκά', en: 'Sweets' },
+  { cats: ['grill'], el: 'Ψητά της Ώρας', en: 'Grilled Dishes' },
+  { cats: ['salads', 'dips'], el: 'Σαλάτες & Dips', en: 'Salads & Dips' }
+];
+
+/*-------------------
+Purpose: Per fixed-menu group: where the dish sits on the menu page and how the dish page
+         says when it is served (always on the fixed menu, every opening day).
+On Input: none (static table keyed by fixedMenuDishPages group).
+On Output: Object { [group]: { hash, menuEl, menuEn, ctaEl } }.
+---------------------*/
+const FIXED_INFO = {
+  grill:  { hash: 'grilled-dishes', menuEl: 'στα Ψητά της Ώρας', menuEn: 'Grilled Dishes', ctaEl: 'Δείτε τα Ψητά της Ώρας στο μενού' },
+  salads: { hash: 'salads',         menuEl: 'στις Σαλάτες',      menuEn: 'Salads',         ctaEl: 'Δείτε τις Σαλάτες στο μενού' },
+  dips:   { hash: 'appetizers',     menuEl: 'στα Ορεκτικά',      menuEn: 'Appetizers',     ctaEl: 'Δείτε τα Ορεκτικά στο μενού' }
 };
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -179,6 +216,69 @@ function split(t) {
 }
 
 const priceNum = p => { const m = String(p || '').replace(',', '.').match(/(\d+(?:\.\d+)?)/); return m ? Number(m[1]).toFixed(2) : null; };
+
+const MENU_FILE = path.join(ROOT, 'matzourana_menu.html');
+
+/*-------------------
+Purpose: Read the active (not commented out) rows of one fixed price table on the menu page.
+On Input: tableId - String id of the .menu-content box (e.g. 'grilled-dishes', 'salads').
+On Output: Array<{ el: String, en: String, price: String }> - the row's data-el / data-en
+          (exact text, may contain "<br><br> (description)") and its price cell ("€9.50").
+---------------------*/
+function readMenuTableRows(tableId) {
+  const src = fs.readFileSync(MENU_FILE, 'utf8');
+  const start = src.indexOf('id="' + tableId + '"');
+  if (start < 0) throw new Error('#' + tableId + ' not found in matzourana_menu.html');
+  const box = src.slice(start, src.indexOf('</table>', start)).replace(/<!--[\s\S]*?-->/g, '');
+  const rows = [];
+  const re = /<tr>\s*<td((?:\s+[\w-]+="[^"]*")*)\s*>[\s\S]*?<\/td>\s*<td>([^<]*)<\/td>\s*<\/tr>/g;
+  let m;
+  while ((m = re.exec(box))) {
+    const attr = n => ((m[1].match(new RegExp('\\s' + n + '="([^"]*)"')) || [])[1]);
+    if (attr('data-el') != null) rows.push({ el: attr('data-el').trim(), en: (attr('data-en') || '').trim(), price: m[2].trim() });
+  }
+  return rows;
+}
+
+/*-------------------
+Purpose: Build the catalog entries of the fixed-menu dish pages (grill, salads, dips):
+         keys + photo from fixedMenuDishPages, name / description / price from the menu table row.
+On Input: none (matzourana_data.js source + matzourana_menu.html).
+On Output: Object { [key]: { category, el, en, price, fixed: true, table, pageEl, pageEn, photo } }.
+          Exits with an error when a configured row is missing from its table (menu changed)
+          or a key is also a menuCatalog key.
+---------------------*/
+function readFixedDishes() {
+  if (html.indexOf('const fixedMenuDishPages =') < 0) return {};
+  const conf = extractObject('fixedMenuDishPages');
+  const cache = {}, out = {};
+  for (const [key, c] of Object.entries(conf)) {
+    if (menuCatalog[key]) { console.error('fixedMenuDishPages key is also a menuCatalog key: ' + key); process.exit(1); }
+    const rows = cache[c.table] = cache[c.table] || readMenuTableRows(c.table);
+    const row = rows.find(r => clean(r.el) === c.row || split(r.el).name === c.row);
+    if (!row) { console.error('Row "' + c.row + '" not found in #' + c.table + ' of matzourana_menu.html (key ' + key + ')'); process.exit(1); }
+    out[key] = { category: c.group, el: row.el, en: row.en, price: row.price, fixed: true, table: c.table,
+      pageEl: c.pageEl || null, pageEn: c.pageEn || null, photo: c.photo || null };
+  }
+  return out;
+}
+const FIXED = readFixedDishes();
+const DISHES = Object.assign({}, menuCatalog, FIXED);       // every key that can get a dish page
+const photoOf = key => (FIXED[key] ? FIXED[key].photo : dishImageMap[key]) || null;
+
+/*-------------------
+Purpose: Name + description of a dish for its page (fixed-menu dishes may carry a clearer
+         page title, e.g. "Σαλάτα Ματζουράνα" for the menu row "Ματζουράνα").
+On Input: key - String DISHES key.
+On Output: { el: { name, desc }, en: { name, desc } }.
+---------------------*/
+function dishNames(key) {
+  const d = DISHES[key];
+  const el = split(d.el), en = split(d.en);
+  if (d.pageEl) el.name = d.pageEl;
+  if (d.pageEn) en.name = d.pageEn;
+  return { el, en };
+}
 
 /*-------------------
 Purpose: Read PNG / JPEG / WebP pixel size from a local image file header / IHDR.
@@ -260,7 +360,27 @@ const DISH_FAQ = {
   giouvarlakia:                        { q: 'καλά γιουβαρλάκια',                   review: /γιουβαρλ|giouvarl|youvarl/i },
   fasolada:                            { q: 'καλή φασολάδα',                       review: /φασολάδ|φασολαδ|fasolad|bean soup/i },
   spanakorizo:                         { q: 'καλό σπανακόρυζο',                    review: /σπανακόρυζ|σπανακορυζ|spanakoriz|spinach rice/i },
-  fasolakia:                           { q: 'καλά φρέσκα φασολάκια',               review: /φασολάκ|φασολακ|fasolak|green beans/i }
+  fasolakia:                           { q: 'καλά φρέσκα φασολάκια',               review: /φασολάκ|φασολακ|fasolak|green beans/i },
+  kreatosoupa:                         { q: 'καλή κρεατόσουπα',                    review: /κρεατόσουπ|κρεατοσουπ|kreatosoup|meat soup|beef soup/i },
+  kotosoupa:                           { q: 'καλή κοτόσουπα',                      review: /κοτόσουπ|κοτοσουπ|kotosoup|chicken soup/i },
+  soupies_yiahni:                      { q: 'καλές σουπιές γιαχνί',                review: /σουπιές|σουπιες|soupies|cuttlefish/i },
+  bifteki_moscharisia:                 { q: 'καλά μπιφτέκια φούρνου',              review: /μπιφτέκ|μπιφτεκ|bifteki|beef patt|burger/i },
+  // fixed menu: Ψητά της Ώρας, Σαλάτες, dips
+  fileto_kotopoulo:                    { q: 'καλό φιλέτο κοτόπουλο ψητό',          review: /φιλέτο κοτόπουλ|φιλετο κοτοπουλ|chicken fillet/i },
+  bifteki_scharas:                     { q: 'καλό μπιφτέκι μοσχαρίσιο ψητό',       review: /μπιφτέκ|μπιφτεκ|bifteki|beef patt|burger/i },
+  brizola_choirini:                    { q: 'καλή χοιρινή μπριζόλα ψητή',          review: /μπριζόλ|μπριζολ|brizol|pork chop/i },
+  brizolakia_choirina:                 { q: 'καλά χοιρινά μπριζολάκια ψητά',       review: /μπριζολάκ|μπριζολακ|brizolak|pork chop/i },
+  loukaniko_choriatiko:                { q: 'καλό χωριάτικο λουκάνικο',            review: /λουκάνικ|λουκανικ|loukanik|sausage/i },
+  loukaniko_moscharisio:               { q: 'καλό μοσχαρίσιο λουκάνικο',           review: /λουκάνικ|λουκανικ|loukanik|sausage/i },
+  salata_matzourana:                   { q: 'καλή σαλάτα Ματζουράνα',              review: /σαλάτα ματζουράν|matzourana salad/i },
+  salata_chaloumi:                     { q: 'καλή σαλάτα με χαλούμι',              review: /σαλάτα (με )?χαλούμ|halloumi salad/i },
+  ntakos:                              { q: 'καλό ντάκο',                          review: /ντάκο|ντακο|dakos/i },
+  choriatiki:                          { q: 'καλή χωριάτικη σαλάτα',               review: /χωριάτικ|χωριατικ|choriatik|greek salad|village salad/i },
+  salata_marouli:                      { q: 'καλή σαλάτα μαρούλι',                 review: /σαλάτα μαρούλ|μαρουλοσαλάτ|lettuce salad/i },
+  salata_lachano_karoto:               { q: 'καλή σαλάτα λάχανο - καρότο',         review: /λάχανο|λαχανοσαλάτ|cabbage salad|coleslaw/i },
+  chorta_epochis:                      { q: 'καλά χόρτα εποχής',                   review: /χόρτα|χορτα|horta|seasonal greens/i },
+  tzatziki:                            { q: 'καλό τζατζίκι',                       review: /τζατζίκ|τζατζικ|tzatzik/i },
+  fava_orektiko:                       { q: 'καλή φάβα',                           review: /φάβα|φαβα|\bfava\b/i }
 };
 
 /*-------------------
@@ -315,11 +435,14 @@ const endSentence = s => /[.!?…]$/.test(s.trim()) ? s.trim() : s.trim() + '.';
 /*-------------------
 Purpose: Build the dish page FAQ once, so the visible <dl> and the FAQPage JSON-LD are
          rendered from the same question/answer text (they always match).
-On Input: key - String catalog key; el, en - { name, desc } from split().
+On Input: key - String catalog key; el, en - { name, desc } from split() / dishNames().
 On Output: Array<{ q: String, a: String, lang: 'el'|'en' }> plain-text Q&A, in page order.
+          Fixed-menu dishes (grill, salads, dips) say they are on the fixed menu every
+          opening day instead of "when it is on the daily menu".
 ---------------------*/
 function dishFaq(key, el, en) {
   const f = DISH_FAQ[key];
+  const fx = FIXED[key] ? FIXED_INFO[FIXED[key].category] : null;
   const faq = [];
   if (f) {
     faq.push({
@@ -327,7 +450,9 @@ function dishFaq(key, el, en) {
       q: `Πού θα φάω ${f.q} στην Καλλιθέα;`,
       a: `Στη Matzourana Καλλιθέα (μαγειρείο Ματζουράνα), Δημοσθένους 48, 176 71 Καλλιθέα. ` +
          (el.desc ? `${el.name} – τι κάνει το πιάτο ξεχωριστό: ${endSentence(el.desc)} ` : '') +
-         `Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας: απολαύστε το στο κατάστημα, πάρτε το σε πακέτο ` +
+         (fx ? `Είναι ${fx.menuEl} του σταθερού μας μενού, κάθε μέρα που είμαστε ανοιχτά: `
+             : `Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας: `) +
+         `απολαύστε το στο κατάστημα, πάρτε το σε πακέτο ` +
          `ή παραγγείλτε το με delivery απευθείας από το μαγειρείο ή μέσω efood / Wolt. ` +
          `Τηλέφωνο: 210 9577 846. Ωράριο: Τρίτη–Κυριακή 12:00–19:30, Δευτέρα κλειστά.`
     });
@@ -335,7 +460,10 @@ function dishFaq(key, el, en) {
   faq.push({
     lang: 'el',
     q: `Πότε σερβίρεται το πιάτο ${el.name};`,
-    a: `Όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.`
+    a: fx
+      ? `Κάθε μέρα που είμαστε ανοιχτά: Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά. Είναι ${fx.menuEl} του σταθερού μας μενού. Δείτε όλο το μενού ή καλέστε στο 210 9577 846.`
+      : `Όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε στο 210 9577 846. Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά.`,
+    menuHash: fx ? fx.hash : null
   });
   faq.push({
     lang: 'el',
@@ -349,7 +477,9 @@ function dishFaq(key, el, en) {
       q: `Where can I eat good ${en.name} in Kallithea?`,
       a: `At Matzourana Eatery, Dimosthenous 48, 176 71 Kallithea. ` +
          (en.desc ? `What makes it special: ${endSentence(en.desc)} ` : '') +
-         `It is served when it is on the daily menu: eat in, take away, or order delivery directly from the kitchen or via efood / Wolt. ` +
+         (fx ? `It is on our fixed menu (${fx.menuEn}) every opening day: `
+             : `It is served when it is on the daily menu: `) +
+         `eat in, take away, or order delivery directly from the kitchen or via efood / Wolt. ` +
          `Phone: +30 210 9577 846. Hours: Tuesday–Sunday 12:00–19:30, closed on Mondays.`
     });
   }
@@ -359,7 +489,8 @@ function dishFaq(key, el, en) {
 
 /*-------------------
 Purpose: Render the FAQ Q&A list as visible HTML; phone numbers become tel: links and the
-         words "σημερινό μενού" link to the daily menu, without changing the visible text.
+         words "σημερινό μενού" link to the daily menu ("όλο το μενού" to the dish's fixed menu
+         table, when the entry has menuHash), without changing the visible text.
 On Input: faq - Array from dishFaq().
 On Output: String, <dt>/<dd> lines for the FAQ <dl>.
 ---------------------*/
@@ -369,9 +500,22 @@ function faqHtml(faq) {
     .replace('σημερινό μενού', `<a href="${SITE}matzourana_menu.html#daily-dishes">σημερινό μενού</a>`);
   return faq.map(x => {
     const l = x.lang === 'en' ? ' lang="en"' : '';
-    return `<dt${l}>${esc(x.q)}</dt>\n        <dd${l}>${link(x.a)}</dd>`;
+    let a = link(x.a);
+    if (x.menuHash) a = a.replace('όλο το μενού', `<a href="${SITE}matzourana_menu.html#${x.menuHash}">όλο το μενού</a>`);
+    return `<dt${l}>${esc(x.q)}</dt>\n        <dd${l}>${a}</dd>`;
   }).join('\n        ');
 }
+
+/*-------------------
+Purpose: Hand-written public ingredient lists for dishes whose menu description lists the
+         serving options instead of the ingredients (taken from the dish's earlier public
+         menu text and photo, never from admin recipes).
+On Input: none (static table keyed by menuCatalog key).
+On Output: Object { [key]: Array<[el, en]> }.
+---------------------*/
+const PUBLIC_INGREDIENTS = {
+  soupies_yiahni: [['Φρέσκες σουπιές', 'Fresh cuttlefish'], ['Σάλτσα ντομάτας', 'Tomato sauce'], ['Πατάτες ή πλιγούρι/ρύζι', 'Potatoes or bulgur/rice']]
+};
 
 /*-------------------
 Purpose: Build a public-safe ingredient list from the dish's own menu description
@@ -388,7 +532,15 @@ function publicIngredients(descEl, descEn, category) {
   // Split description on common Greek/English separators into short phrases
   const partsEl = String(descEl || '').split(/,| και | με /i).map(s => s.trim()).filter(s => s.length > 2 && s.length < 60);
   const partsEn = String(descEn || '').split(/,| and | with /i).map(s => s.trim()).filter(s => s.length > 2 && s.length < 60);
-  const n = Math.min(partsEl.length, partsEn.length, 6);
+  if (FIXED_INFO[category]) {
+    // Fixed-menu dishes: the Greek and English lists are shown separately, so each keeps its
+    // own phrases (the two descriptions do not always split into the same number of parts).
+    const fine = (t, re, lead) => String(t || '').split(re).map(x => x.trim().replace(lead, '').trim())
+      .filter(x => x.length > 2 && x.length < 60);
+    fine(descEl, /,| και | κ’ | με /i, /^με\s+/i).slice(0, 6).forEach(p => el.push(p));
+    fine(descEn, /,| and | with /i, /^with\s+/i).slice(0, 6).forEach(p => en.push(p));
+  }
+  const n = el.length ? 0 : Math.min(partsEl.length, partsEn.length, 6);
   for (let i = 0; i < n; i++) el.push(partsEl[i]), en.push(partsEn[i] || partsEl[i]);
   if (!el.length && partsEl.length) {
     partsEl.slice(0, 5).forEach((p, i) => { el.push(p); en.push(partsEn[i] || p); });
@@ -399,6 +551,9 @@ function publicIngredients(descEl, descEn, category) {
     else if (category === 'veg-cooked' || category === 'legumes') pushPairs([['Φρέσκα λαχανικά', 'Fresh vegetables'], ['Έξτρα παρθένο ελαιόλαδο', 'Extra-virgin olive oil'], ['Αρωματικά μυρωδικά', 'Aromatic herbs']]);
     else if (category === 'seafood') pushPairs([['Φρέσκο ψάρι / θαλασσινά', 'Fresh fish / seafood'], ['Λεμόνι & ελαιόλαδο', 'Lemon & olive oil']]);
     else if (category === 'soups') pushPairs([['Ζωμός ημέρας', 'Day’s broth'], ['Φρέσκα υλικά', 'Fresh ingredients']]);
+    else if (category === 'grill') pushPairs([['Φρέσκο κρέας', 'Fresh meat']]);
+    else if (category === 'salads') pushPairs([['Φρέσκα λαχανικά', 'Fresh vegetables']]);
+    else if (category === 'dips') pushPairs([['Φρέσκα υλικά', 'Fresh ingredients']]);
     else pushPairs([['Φρέσκα υλικά ημέρας', 'Fresh ingredients of the day'], ['Έξτρα παρθένο ελαιόλαδο', 'Extra-virgin olive oil']]);
   }
   return { el, en };
@@ -472,24 +627,83 @@ function dishImageUrls(imgFile) {
 }
 
 /*-------------------
+Purpose: Group dish keys under the LINK_GROUPS headings (keys keep their given order;
+         a category that no group names goes into a last "Άλλα πιάτα" group).
+On Input: keys - String[] DISHES keys.
+On Output: Array<{ el: String, en: String, keys: String[] }> non-empty groups, in display order.
+---------------------*/
+function groupKeys(keys) {
+  const groups = LINK_GROUPS.map(g => ({ el: g.el, en: g.en, cats: g.cats, keys: [] }));
+  const rest = { el: 'Άλλα πιάτα', en: 'More dishes', cats: [], keys: [] };
+  keys.forEach(k => (groups.find(g => g.cats.includes(DISHES[k].category)) || rest).keys.push(k));
+  return groups.concat([rest]).filter(g => g.keys.length);
+}
+
+/*-------------------
+Purpose: Split the category groups, in their order, into n contiguous columns of about
+         equal height (a group never splits), for the 3-column desktop layout.
+On Input: groups - Object[] from groupKeys (each with .keys); n - Number of columns.
+On Output: Array of n arrays of groups (some may be empty when there are few groups).
+         Height of a group = its links + 2 (the heading); minimises the tallest column.
+---------------------*/
+function splitColumns(groups, n) {
+  const h = groups.map(g => g.keys.length + 2);
+  let best = null;
+  const walk = (start, left, cols) => {
+    if (left === 1) {
+      const all = cols.concat([groups.slice(start)]);
+      const tall = Math.max(...all.map(c => c.reduce((t, g) => t + h[groups.indexOf(g)], 0)));
+      if (!best || tall < best.tall) best = { tall, all };
+      return;
+    }
+    for (let end = start; end <= groups.length; end++) walk(end, left - 1, cols.concat([groups.slice(start, end)]));
+  };
+  walk(0, n, []);
+  return best.all;
+}
+
+/*-------------------
+Purpose: The grouped "Άλλα πιάτα της Ματζουράνας" links at the end of a dish page:
+         one bilingual <h3> per category (e.g. "Πιάτα Θαλασσινών / Seafood Dishes") + its <ul>.
+On Input: key - String current dish (left out); allKeys - String[] keys being generated.
+On Output: String HTML ('' when there are no other dishes).
+---------------------*/
+function relatedHtml(key, allKeys) {
+  const one = g =>
+    `<div class="link-group">\n          <h3>${esc(g.el)} <span class="en" lang="en">/ ${esc(g.en)}</span></h3>\n          <ul>\n            ` +
+    g.keys.map(k => `<li><a href="../${slugOf(k)}/">${esc(dishNames(k).el.name)}</a></li>`).join('\n            ') +
+    `\n          </ul>\n        </div>`;
+  const groups = groupKeys(allKeys.filter(k => k !== key));
+  if (!groups.length) return '';
+  const cols = splitColumns(groups, 3).filter(c => c.length)
+    .map(c => `<div class="link-col">\n        ${c.map(one).join('\n        ')}\n        </div>`).join('\n        ');
+  return `<div class="link-groups">\n        ${cols}\n        </div>`;
+}
+
+/*-------------------
 Purpose: Render one full static HTML dish page (bilingual EL/EN, JSON-LD, girl logo), with
          the local-search FAQ ("Πού θα φάω … στην Καλλιθέα;") shown on the page and in the
          FAQPage JSON-LD from the same text, address + hours, and a real customer quote only
          when a review on the reviews page names the dish.
 On Input: key - String catalog key; allKeys - String[] of keys being generated (related links).
-On Output: String, the full HTML document. Dishes without a dishImageMap photo get no dish
-          <img> (og:image / JSON-LD image fall back to the site OG image).
+On Output: String, the full HTML document. Dishes without a photo get no dish <img>
+          (og:image / JSON-LD image fall back to the site OG image). Fixed-menu dishes (grill,
+          salads, dips) never say "when it is on the daily menu"; their note and button point
+          to their own menu table.
 ---------------------*/
 function page(key, allKeys) {
-  const d = menuCatalog[key];
-  const img = dishImageMap[key];
-  const el = split(d.el), en = split(d.en);
+  const d = DISHES[key];
+  const img = photoOf(key);
+  const fx = d.fixed ? FIXED_INFO[d.category] : null;
+  const { el, en } = dishNames(key);
+  if (fx && el.desc) el.desc = el.desc.charAt(0).toUpperCase() + el.desc.slice(1);
+  if (fx && en.desc) en.desc = en.desc.charAt(0).toUpperCase() + en.desc.slice(1);
   const price = priceNum(d.price);
   const slug = slugOf(key);
   const url = SITE + 'dishes/' + slug + '/';
   const urls = dishImageUrls(img ? img.file : null);
   const size = imageSize(urls.filePath) || [800, 800];
-  const imgAlt = (img ? img.alt.split('|')[0].trim() : el.name) + ' – Matzourana Καλλιθέα';
+  const imgAlt = (img ? img.alt.split('|')[0].trim().replace(/,?\s*Matzourana Καλλιθέα$/, '') : el.name) + ' – Matzourana Καλλιθέα';
   const catEl = CATEGORY[d.category] || 'Μαγειρευτά';
   const catEn = CATEGORY_EN[d.category] || 'Home-cooked';
 
@@ -504,7 +718,9 @@ function page(key, allKeys) {
   const descBody = el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : '';
   const desc = clipMeta(descHead + fitWords(descBody, 155 - descHead.length - descTail.length - 1) + '.' + descTail, 155);
 
-  const ings = publicIngredients(el.desc, en.desc, d.category);
+  const ings = PUBLIC_INGREDIENTS[key]
+    ? { el: PUBLIC_INGREDIENTS[key].map(x => x[0]), en: PUBLIC_INGREDIENTS[key].map(x => x[1]) }
+    : publicIngredients(el.desc, en.desc, d.category);
   const ingListEl = ings.el.map(i => `<li>${esc(i)}</li>`).join('\n          ');
   const ingListEn = ings.en.map(i => `<li>${esc(i)}</li>`).join('\n          ');
 
@@ -544,8 +760,7 @@ function page(key, allKeys) {
     ]
   };
 
-  const others = allKeys.filter(k => k !== key).map(k =>
-    `<li><a href="../${slugOf(k)}/">${esc(split(menuCatalog[k].el).name)}</a></li>`).join('\n          ');
+  const others = relatedHtml(key, allKeys);
 
   const picture = !img ? ''
     : urls.webp
@@ -610,7 +825,19 @@ function page(key, allKeys) {
     .ingredients ul, .faq ul, .areas ul { margin: 0.4em 0 0; padding-left: 1.2em; }
     .faq dt { font-weight: 700; margin-top: 0.8em; color: #4A5D4A; }
     .faq dd { margin: 0.25em 0 0 0; }
-    .related a { display: inline-block; padding: 4px 0; min-height: 24px; }
+    .related a { display: inline-block; vertical-align: top; padding: 4px 0; min-height: 24px; }
+    .related h3 { font-family: 'Montserrat', sans-serif; color: #4A5D4A; font-size: 1.05rem; margin: 1.1em 0 0.2em; }
+    .related h3 .en { font-family: 'Open Sans', sans-serif; font-weight: 400; font-size: 0.95rem; }
+    .related ul { margin: 0.2em 0 0; padding-left: 1.1em; }
+    /* category groups in columns (3 desktop, 2 iPad / phone); a group never splits */
+    /* desktop: 3 balanced column boxes (built by splitColumns); iPad / phone: the boxes dissolve
+       (display: contents) and the groups flow in 2 CSS columns */
+    .link-groups { display: flex; gap: 1.4em; align-items: flex-start; }
+    .link-col { flex: 1 1 0; min-width: 0; }
+    .link-group { break-inside: avoid; page-break-inside: avoid; display: inline-block; width: 100%; margin-bottom: 0.4em; }
+    .link-group h3 { margin-top: 0.6em; }
+    @media (max-width: 1023px) { .link-groups { display: block; columns: 2; column-gap: 1.4em; } .link-col { display: contents; } }
+    @media (max-width: 600px) { .link-groups { column-gap: 1em; } .related h3 { font-size: 0.98rem; } .related h3 .en { display: block; font-size: 0.85rem; } .related li { font-size: 0.92rem; } }
   </style>
   <script type="application/ld+json">
 ${JSON.stringify(ld, null, 2)}
@@ -622,12 +849,13 @@ ${JSON.stringify(ld, null, 2)}
     <h1>${esc(el.name)} στην Καλλιθέα – Matzourana</h1>
     ${picture}
     ${el.desc ? `<p>${esc(el.desc)}.</p>` : ''}
-    <p>${esc(el.name)} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}): σπιτικό φαγητό, μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Αναζητάτε <strong>${esc(el.name)} Matzourana Καλλιθέα</strong>; Παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
-    <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea. Order for delivery across the wider Kallithea area.</p>
+    <p>${esc(el.name)} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}): ${fx ? 'από τον σταθερό κατάλογο του μενού μας, με φρέσκα, προσεκτικά επιλεγμένα υλικά' : 'σπιτικό φαγητό, μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά'}. Αναζητάτε <strong>${esc(el.name)} Matzourana Καλλιθέα</strong>; Παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
+    <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea${fx ? ', on our fixed menu every opening day' : ''}. Order for delivery across the wider Kallithea area.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
     <p class="views-note" id="dish-views" hidden><img src="../../Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async"><span class="vn-text"><span class="vn-num"></span> <span class="vn-word">προβολές</span></span></p>
-    <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
-    <a class="cta" href="${SITE}matzourana_menu.html#daily-dishes">Δείτε το σημερινό μενού</a>
+${fx ? `    <p class="note">Είναι ${fx.menuEl} του σταθερού μας μενού, κάθε μέρα που είμαστε ανοιχτά (Τρίτη–Κυριακή 12:00–19:30). Για απορίες, καλέστε μας.</p>
+    <a class="cta" href="${SITE}matzourana_menu.html#${fx.hash}">${fx.ctaEl}</a>` : `    <p class="note">Το πιάτο σερβίρεται όταν υπάρχει στο μενού ημέρας. Δείτε το σημερινό μενού ή καλέστε μας.</p>
+    <a class="cta" href="${SITE}matzourana_menu.html#daily-dishes">Δείτε το σημερινό μενού</a>`}
 
     <section class="ingredients" aria-labelledby="ing-title">
       <h2 id="ing-title">Υλικά <span class="en" lang="en">/ Ingredients</span></h2>
@@ -675,7 +903,7 @@ ${review ? `
            Διανομή: Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά</p>
       </div>
     </section>
-    ${others ? `<section class="related"><h2>Άλλα πιάτα της Ματζουράνας</h2>\n        <ul>\n          ${others}\n        </ul>\n    </section>` : ''}
+    ${others ? `<section class="related" aria-labelledby="related-title"><h2 id="related-title">Άλλα πιάτα της Ματζουράνας <span class="en" lang="en">/ More dishes</span></h2>\n        ${others}\n    </section>` : ''}
   </main>
   ${viewsScript(key)}
 </body>
@@ -716,7 +944,7 @@ On Input: key - String catalog key; lastmod - String YYYY-MM-DD; skipped - Strin
 On Output: String, the <url>…</url> block.
 ---------------------*/
 function dishSitemapBlock(key, lastmod, skipped) {
-  const img = dishImageMap[key];
+  const img = photoOf(key);
   const imgs = img ? imageTags([dishImageUrls(img.file).jpgAbs], skipped) : '';
   return `<url>\n  <loc>${SITE}dishes/${slugOf(key)}/</loc>\n  <lastmod>${lastmod}</lastmod>\n  <priority>0.8</priority>` +
     (imgs ? '\n' + imgs : '') + `\n</url>`;
@@ -763,6 +991,75 @@ function writeSitemap(keys, today) {
   return { urls: out.length, images: (body.match(/<image:image>/g) || []).length, skipped };
 }
 
+/*-------------------
+Purpose: Link every fixed-menu table row of matzourana_menu.html to its dish page.
+         The <td> keeps data-el / data-en (buildMenuSchema in matzourana_tools.js reads them)
+         but loses class "lang"; the class moves to the inner <a>, so the language switch
+         swaps the link text and the link itself survives.
+On Input: keys - String[] dish keys being generated (only FIXED keys are linked).
+On Output: Number of rows changed. Side effect: rewrites matzourana_menu.html when needed.
+          Idempotent: an already linked row is rewritten to the same text.
+---------------------*/
+function linkMenuRows(keys) {
+  let src = fs.readFileSync(MENU_FILE, 'utf8'), changed = 0;
+  for (const k of keys.filter(k => FIXED[k])) {
+    const d = FIXED[k];
+    const start = src.indexOf('id="' + d.table + '"'), end = src.indexOf('</table>', start);
+    let box = src.slice(start, end);
+    const re = /(<tr>\s*)<td((?:\s+[\w-]+="[^"]*")*)\s*>([\s\S]*?)<\/td>/g;
+    box = box.replace(re, (all, tr, attrs, inner, off) => {
+      const before = box.slice(0, off);
+      if (before.lastIndexOf('<!--') > before.lastIndexOf('-->')) return all;   // commented-out row
+      const a = n => ((attrs.match(new RegExp('\\s' + n + '="([^"]*)"')) || [])[1]);
+      if (a('data-el') == null || a('data-el').trim() !== d.el) return all;
+      const text = inner.replace(/^\s*<a(?:\s+[\w-]+="[^"]*")*\s*>([\s\S]*)<\/a>\s*$/, '$1');   // attribute values may hold <br>
+      const out = `${tr}<td data-el="${a('data-el')}" data-en="${a('data-en')}"><a class="dish-page-link lang" href="/dishes/${slugOf(k)}/" data-el="${a('data-el')}" data-en="${a('data-en')}">${text}</a></td>`;
+      if (out !== all) changed++;
+      return out;
+    });
+    src = src.slice(0, start) + box + src.slice(end);
+  }
+  if (changed) fs.writeFileSync(MENU_FILE, src);
+  return changed;
+}
+
+/*-------------------
+Purpose: Rewrite the crawlable "Τα πιάτα μας (σελίδες)" list of a root page, grouped under the
+         LINK_GROUPS headings, between <!-- @dish-index --> and <!-- @/dish-index -->.
+         Link labels already in the list (short names, e.g. "Σουπιές γιαχνί") are kept;
+         new pages get their page name.
+On Input: file - String root page (index.html, matzourana_menu.html); keys - String[] dish keys.
+On Output: { file, links: Number, dropped: String[] } (dropped = old links with no page).
+          Side effect: rewrites the file when the list changed; no markers = nothing done.
+---------------------*/
+function writeDishIndex(file, keys) {
+  const fp = path.join(ROOT, file);
+  const src = fs.readFileSync(fp, 'utf8');
+  const a = src.indexOf('<!-- @dish-index'), b = src.indexOf('<!-- @/dish-index -->');
+  if (a < 0 || b < 0) return { file, links: 0, dropped: [], missing: true };
+  const open = src.indexOf('-->', a) + 3;
+  const old = src.slice(open, b);
+  const labels = {};
+  old.replace(/<a [^>]*href="\/dishes\/([^"\/]+)\/"[^>]*data-el="([^"]*)" data-en="([^"]*)"/g, (m, slug, e, n) => { labels[slug] = { el: e, en: n }; });
+  const slugs = new Set(keys.map(slugOf));
+  const dropped = Object.keys(labels).filter(sl => !slugs.has(sl));
+  const ind = '          ';
+  const one = g => {
+    const items = g.keys.map(k => {
+      const l = labels[slugOf(k)] || { el: esc(dishNames(k).el.name), en: esc(dishNames(k).en.name) };
+      return `${ind}<li><a class="dish-page-link lang" href="/dishes/${slugOf(k)}/" data-el="${l.el}" data-en="${l.en}">${l.el}</a></li>`;
+    }).join('\n');
+    return `${ind}<div class="dish-index-group-box">\n` +
+      `${ind}<h3 class="dish-index-group lang" data-el="${esc(g.el)}" data-en="${esc(g.en)}">${esc(g.el)}</h3>\n` +
+      `${ind}<ul class="dish-index-list">\n${items}\n${ind}</ul>\n${ind}</div>`;
+  };
+  const body = splitColumns(groupKeys(keys), 3).filter(c => c.length)
+    .map(c => `${ind}<div class="dish-index-col">\n${c.map(one).join('\n')}\n${ind}</div>`).join('\n');
+  const next = src.slice(0, open) + '\n' + ind + '<div class="dish-index-groups">\n' + body + '\n' + ind + '</div>\n' + ind + src.slice(b);
+  if (next !== src) fs.writeFileSync(fp, next);
+  return { file, links: keys.length, dropped };
+}
+
 // ---- CLI ----
 const args = process.argv.slice(2);
 const wantSitemap = args.includes('--sitemap');
@@ -771,19 +1068,21 @@ let keys = args.filter(a => !a.startsWith('--'));
 /*-------------------
 Purpose: Choose which catalog dishes get a dish page with --all.
 On Input: none (menuCatalog, dishImageMap, dishPagesNoPhoto).
-On Output: String[] catalog keys, in menuCatalog order: every dish with a dishImageMap photo
+On Output: String[] keys, in menuCatalog order: every dish with a dishImageMap photo
           (even when its name has no "(description)", e.g. choirines_brizoles), plus the
-          dishPagesNoPhoto keys that have a description.
+          dishPagesNoPhoto keys that have a description; then every fixedMenuDishPages key
+          (grill, salads, dips - with or without a photo).
 ---------------------*/
 function selectDishPageKeys() {
   return Object.keys(menuCatalog).filter(k => menuCatalog[k].el &&
-    (dishImageMap[k] || (dishPagesNoPhoto.includes(k) && /\(/.test(menuCatalog[k].el))));
+    (dishImageMap[k] || (dishPagesNoPhoto.includes(k) && /\(/.test(menuCatalog[k].el))))
+    .concat(Object.keys(FIXED));
 }
 if (args.includes('--all')) keys = selectDishPageKeys();
 const noFaq = keys.filter(k => !DISH_FAQ[k]);
 if (noFaq.length) console.warn('No DISH_FAQ question phrase for: ' + noFaq.join(', '));
 if (!keys.length) { console.error('Give catalog keys (e.g. pastitsio) or --all'); process.exit(1); }
-for (const k of keys) if (!menuCatalog[k] || !menuCatalog[k].el) { console.error('Unknown dish key: ' + k); process.exit(1); }
+for (const k of keys) if (!DISHES[k] || !DISHES[k].el) { console.error('Unknown dish key: ' + k); process.exit(1); }
 
 const today = new Date().toISOString().slice(0, 10);
 for (const k of keys) {
@@ -791,6 +1090,15 @@ for (const k of keys) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), page(k, keys));
   console.log('wrote dishes/' + slugOf(k) + '/index.html');
+}
+if (args.includes('--all')) {
+  const n = linkMenuRows(keys);
+  console.log(`matzourana_menu.html: ${n} fixed-menu row(s) linked/updated`);
+  for (const f of ['index.html', 'matzourana_menu.html']) {
+    const r = writeDishIndex(f, keys);
+    console.log(r.missing ? `${f}: no <!-- @dish-index --> markers, list not touched`
+      : `${f}: dish index ${r.links} links` + (r.dropped.length ? `, dropped (no page): ${r.dropped.join(', ')}` : ''));
+  }
 }
 if (wantSitemap && args.includes('--all')) {
   const r = writeSitemap(keys, today);

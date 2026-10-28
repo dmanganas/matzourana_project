@@ -166,7 +166,7 @@ const menuCatalog = {
     "tsipoures_pelagisies": { category: "seafood", el: "Πελαγίσιες Τσιπούρες <br><br> (Με φρέσκο ψάρι στο φούρνο με πατάτες)", en: "Wild Gilthead Seabream <br><br> (Fresh fish oven-baked with potatoes)", price: "€13.00" },
     "spaghetti_calamari_sauce": { category: "seafood", el: "Σπαγγέτι με σάλτσα καλαμαριών <br><br> (Με φρέσκα καλαμάρια και πλούσια σάλτσα ντομάτας)", en: "Spaghetti with Calamari Sauce <br><br> (Made with fresh calamari and a rich tomato sauce)", price: "€8.00" },
     "spaghetti_garida": { category: "seafood", el: "Σπαγγέτι με σάλτσα γαρίδας <br><br> (Με φρέσκες γαρίδες και πλούσια σάλτσα ντομάτας)", en: "Spaghetti with Shrimp Sauce <br><br> (Made with fresh shrimp and a rich tomato sauce)", price: "€9.50" },
-    "soupies_yiahni": { category: "seafood", el: "Φρέσκες Σουπιές γιαχνί <br><br> (Με φρέσκες σουπιές, πατάτες και ντομάτα. Μια νοστιμιά απλότητας σε ένα πιάτο)", en: "Fresh Cuttlefish Yiahni <br><br> (With fresh cuttlefish, potatoes, and tomato. A delicious simplicity in one dish)", price: "€10.00" },
+    "soupies_yiahni": { category: "seafood", el: "Φρέσκες σουπιές γιαχνί <br><br> (Με πατάτες ή πλιγούρι/ρύζι ή με γαρνιτούρα της επιλογής σας από τα διαθέσιμα πιάτα ημέρας)", en: "Fresh Cuttlefish Yiahni <br><br> (With potatoes, or bulgur/rice, or a side of your choice from the day's dishes)", price: "€10.00" },
     "soupies_krasates": { category: "seafood", el: "Σουπιές Κρασάτες <br><br> (Φρέσκες σουπιές μαγειρεμένες με λευκό ή κόκκινο κρασί, κρεμμύδι και αρωματικά μυρωδικά. Ένα παραδοσιακό πιάτο θαλασσινών με πλούσια γεύση)", en: "Cuttlefish in White Wine <br><br> (Fresh cuttlefish cooked with white or red wine, onion, and aromatic herbs. A traditional seafood dish with rich flavor)", price: "€10.00" },
     "soupies_spanaki": { category: "seafood", el: "Σουπιές με σπανάκι <br><br> (Τρυφερές σουπιές μαγειρεμένες με φρέσκο σπανάκι, μυρωδικά και λεμόνι. Ένα παραδοσιακό, νηστίσιμο πιάτο γεμάτο γεύση και άρωμα θάλασσας)", en: "Cuttlefish with Spinach <br><br> (Tender cuttlefish cooked with fresh spinach, herbs and a hint of lemon. A traditional seafood dish full of flavor)", price: "€10.00" },
     "oktapodi_stifado": { category: "seafood", el: "Χταπόδι στιφάδο από φρέσκο χταπόδι <br><br> (Παραδοσιακό και γεμάτο αρώματα! Με φρέσκο χταπόδι, κρεμμυδάκια και σάλτσα ντομάτας)", en: "Octopus Stifado with Fresh Octopus <br><br> (Traditional and full of aromas! With fresh octopus, small onions, and tomato sauce)", price: "€13.00" },
@@ -358,6 +358,22 @@ const dishImageMap = {
         alt: "Φρέσκα φασολάκια λαδερά - Με ντοματούλα και πατάτες, Matzourana Καλλιθέα | Fresh Green Beans in Olive Oil - With tomato and potatoes, Matzourana Kallithea"
     },
     
+    "kreatosoupa": {
+        file: "web/greek-dish-51.webp",
+        alt: "Κρεατόσουπα - Με μοσχάρι, πατάτα, καρότο και σέλινο, Matzourana Καλλιθέα | Meat Soup - With beef, potato, carrot and celery, Matzourana Kallithea"
+    },
+    "kotosoupa": {
+        file: "web/greek-dish-52.webp",
+        alt: "Κοτόσουπα - Θρεπτική και πολύ νόστιμη, Matzourana Καλλιθέα | Chicken Soup - Nutritious and very tasty, Matzourana Kallithea"
+    },
+    "soupies_yiahni": {
+        file: "web/greek-dish-53.webp",
+        alt: "Φρέσκες σουπιές γιαχνί - Σε σάλτσα ντομάτας, με πλιγούρι, Matzourana Καλλιθέα | Fresh Cuttlefish Yiahni - In tomato sauce, with bulgur, Matzourana Kallithea"
+    },
+    "bifteki_moscharisia": {
+        file: "web/greek-dish-54.webp",
+        alt: "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - Χειροποίητα 300γρ, Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - Handmade 300g beef patties, Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -368,6 +384,39 @@ const dishImageMap = {
 const dishPagesNoPhoto = [
     "moscharaki_noua_with_rice"   // greek-dish-32 was a copy of 28 (no rice) - removed 2026-10-20
 ];
+
+// ==================== DISH PAGES FOR THE FIXED MENU TABLES ====================
+// Dish pages (dishes/<slug>/) for rows of the fixed price tables on matzourana_menu.html:
+// Ψητά της Ώρας (#grilled-dishes), Σαλάτες (#salads) and the dips of Ορεκτικά (#appetizers).
+// Read only by tools/generate-dish-pages.js. Name, description and price are NOT copied here:
+// the generator reads them from the table row whose data-el is `row`, so the dish page always
+// matches the menu. These keys are never part of currentDailyMenu or the highlights.
+//   table  - id of the menu table          row    - exact data-el of the row (name part)
+//   group  - "grill" | "salads" | "dips"   pageEl/pageEn - optional page title (when the
+//            row name alone is unclear, e.g. "Ματζουράνα" -> "Σαλάτα Ματζουράνα")
+//   photo  - optional { file, alt } like dishImageMap; without it the page has no dish photo
+const fixedMenuDishPages = {
+    "fileto_kotopoulo": { table: "grilled-dishes", group: "grill", row: "Φιλέτο Κοτόπουλο",
+        photo: { file: "web/greek-dish-15.webp", alt: "Φιλέτο Κοτόπουλο - Ψητό, απαλό και γευστικό, Matzourana Καλλιθέα | Chicken Fillet - Grilled, tender and tasty, Matzourana Kallithea" } },
+    "bifteki_scharas": { table: "grilled-dishes", group: "grill", row: "Μπιφτέκι Μοσχαρίσιο Χειροποίητο",
+        photo: { file: "web/greek-dish-55.webp", alt: "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - Ψητά μπιφτέκια με τηγανητές πατάτες, σαλάτα και λεμόνι, Matzourana Καλλιθέα | Homemade Beef Patty - Grilled beef patties with fries, salad and lemon, Matzourana Kallithea" } },
+    "brizola_choirini": { table: "grilled-dishes", group: "grill", row: "Μπριζόλα Χοιρινή" },
+    "brizolakia_choirina": { table: "grilled-dishes", group: "grill", row: "Μπριζολάκια Χοιρινά, χωρίς κόκαλο",
+        photo: { file: "web/greek-dish-19.webp", alt: "Μπριζολάκια Χοιρινά χωρίς κόκαλο - Ζουμερά και γευστικά, Matzourana Καλλιθέα | Boneless Pork Chops - Juicy and flavourful, Matzourana Kallithea" } },
+    "loukaniko_choriatiko": { table: "grilled-dishes", group: "grill", row: "Λουκάνικο Χωριάτικο Χοιρινό" },
+    "loukaniko_moscharisio": { table: "grilled-dishes", group: "grill", row: "Λουκάνικο Μοσχαρίσιο Χειροποίητο" },
+    "salata_matzourana": { table: "salads", group: "salads", row: "Ματζουράνα", pageEl: "Σαλάτα Ματζουράνα" },
+    "salata_chaloumi": { table: "salads", group: "salads", row: "Χαλούμι", pageEl: "Σαλάτα Χαλούμι" },
+    "ntakos": { table: "salads", group: "salads", row: "Ντάκος",
+        photo: { file: "web/greek-dish-21.webp", alt: "Ντάκος - Κριθαροκούλουρο με φέτα ΠΟΠ και τριμμένη ντομάτα, Matzourana Καλλιθέα | Dakos - Cretan rusk with PDO feta and grated tomato, Matzourana Kallithea" } },
+    "choriatiki": { table: "salads", group: "salads", row: "Χωριάτικη", pageEl: "Χωριάτικη σαλάτα" },
+    "salata_marouli": { table: "salads", group: "salads", row: "Μαρούλι", pageEl: "Σαλάτα Μαρούλι" },
+    "salata_lachano_karoto": { table: "salads", group: "salads", row: "Λαχανό - Καρότο", pageEl: "Σαλάτα Λάχανο - Καρότο" },
+    "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
+        photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
+    "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο" },
+    "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" }
+};
 
 // ==================== DISH VIDEOS ====================
 // Daily-dish videos by catalog key (menu page exhibition, left panel)
@@ -853,7 +902,9 @@ const imageList = [
     'DishImages/web/greek-dish-40.webp', 'DishImages/web/greek-dish-41.webp', 'DishImages/web/greek-dish-42.webp',
     'DishImages/web/greek-dish-43.webp', 'DishImages/web/greek-dish-44.webp', 'DishImages/web/greek-dish-45.webp',
     'DishImages/web/greek-dish-46.webp', 'DishImages/web/greek-dish-47.webp', 'DishImages/web/greek-dish-48.webp',
-    'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp'
+    'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp',
+    'DishImages/web/greek-dish-51.webp', 'DishImages/web/greek-dish-52.webp', 'DishImages/web/greek-dish-53.webp', 'DishImages/web/greek-dish-54.webp',
+    'DishImages/web/greek-dish-55.webp'
 ];
 
 const dishAlts = {
@@ -905,7 +956,12 @@ const dishAlts = {
     'DishImages/web/greek-dish-47.webp': "Μοσχαράκι Στιφάδο - (Τρυφερό μοσχάρι με κρεμμυδάκια, παραδοσιακό και μοσχομυριστό) Matzourana Eatery Καλλιθέα | Beef Stifado - (Tender beef with small onions, traditional and fragrant) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-48.webp': "Γαύρος φρέσκος πλακί - (Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά) Matzourana Eatery Καλλιθέα | Fresh Baked Anchovies - (With fresh tomato, olive oil and herbs) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-49.webp': "Σπανακόρυζο - (Λεμονάτο με ντομάτα και φρέσκο άνηθο) Matzourana Καλλιθέα | Spinach Rice - (Lemony with tomato and fresh dill) Matzourana Kallithea",
-    'DishImages/web/greek-dish-50.webp': "Φρέσκα φασολάκια λαδερά - (Με ντοματούλα και πατάτες) Matzourana Καλλιθέα | Fresh Green Beans in Olive Oil - (With tomato and potatoes) Matzourana Kallithea"
+    'DishImages/web/greek-dish-50.webp': "Φρέσκα φασολάκια λαδερά - (Με ντοματούλα και πατάτες) Matzourana Καλλιθέα | Fresh Green Beans in Olive Oil - (With tomato and potatoes) Matzourana Kallithea",
+    'DishImages/web/greek-dish-51.webp': "Κρεατόσουπα - (Με μοσχάρι, πατάτα, καρότο και σέλινο) Matzourana Καλλιθέα | Meat Soup - (With beef, potato, carrot and celery) Matzourana Kallithea",
+    'DishImages/web/greek-dish-52.webp': "Κοτόσουπα - (Θρεπτική και πολύ νόστιμη) Matzourana Καλλιθέα | Chicken Soup - (Nutritious and very tasty) Matzourana Kallithea",
+    'DishImages/web/greek-dish-53.webp': "Φρέσκες σουπιές γιαχνί - (Σε σάλτσα ντομάτας, με πλιγούρι) Matzourana Καλλιθέα | Fresh Cuttlefish Yiahni - (In tomato sauce, with bulgur) Matzourana Kallithea",
+    'DishImages/web/greek-dish-54.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties) Matzourana Kallithea",
+    'DishImages/web/greek-dish-55.webp': "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - (Ψητά μπιφτέκια με τηγανητές πατάτες, σαλάτα και λεμόνι) Matzourana Καλλιθέα | Homemade Beef Patty - (Grilled beef patties with fries, salad and lemon) Matzourana Kallithea"
  
 };
 

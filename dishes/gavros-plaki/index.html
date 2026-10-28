@@ -53,7 +53,19 @@
     .ingredients ul, .faq ul, .areas ul { margin: 0.4em 0 0; padding-left: 1.2em; }
     .faq dt { font-weight: 700; margin-top: 0.8em; color: #4A5D4A; }
     .faq dd { margin: 0.25em 0 0 0; }
-    .related a { display: inline-block; padding: 4px 0; min-height: 24px; }
+    .related a { display: inline-block; vertical-align: top; padding: 4px 0; min-height: 24px; }
+    .related h3 { font-family: 'Montserrat', sans-serif; color: #4A5D4A; font-size: 1.05rem; margin: 1.1em 0 0.2em; }
+    .related h3 .en { font-family: 'Open Sans', sans-serif; font-weight: 400; font-size: 0.95rem; }
+    .related ul { margin: 0.2em 0 0; padding-left: 1.1em; }
+    /* category groups in columns (3 desktop, 2 iPad / phone); a group never splits */
+    /* desktop: 3 balanced column boxes (built by splitColumns); iPad / phone: the boxes dissolve
+       (display: contents) and the groups flow in 2 CSS columns */
+    .link-groups { display: flex; gap: 1.4em; align-items: flex-start; }
+    .link-col { flex: 1 1 0; min-width: 0; }
+    .link-group { break-inside: avoid; page-break-inside: avoid; display: inline-block; width: 100%; margin-bottom: 0.4em; }
+    .link-group h3 { margin-top: 0.6em; }
+    @media (max-width: 1023px) { .link-groups { display: block; columns: 2; column-gap: 1.4em; } .link-col { display: contents; } }
+    @media (max-width: 600px) { .link-groups { column-gap: 1em; } .related h3 { font-size: 0.98rem; } .related h3 .en { display: block; font-size: 0.85rem; } .related li { font-size: 0.92rem; } }
   </style>
   <script type="application/ld+json">
 {
@@ -205,7 +217,7 @@
     <h1>Γαύρος φρέσκος πλακί στην Καλλιθέα – Matzourana</h1>
     <picture>
       <source srcset="../../DishImages/web/greek-dish-48.webp" type="image/webp">
-      <img class="dish-img" src="../../DishImages/web/greek-dish-48.jpg" alt="Γαύρος φρέσκος πλακί - Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά, Matzourana Καλλιθέα – Matzourana Καλλιθέα" width="1024" height="768" fetchpriority="high" decoding="async">
+      <img class="dish-img" src="../../DishImages/web/greek-dish-48.jpg" alt="Γαύρος φρέσκος πλακί - Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά – Matzourana Καλλιθέα" width="1024" height="768" fetchpriority="high" decoding="async">
     </picture>
     <p>Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!.</p>
     <p>Γαύρος φρέσκος πλακί από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (Πιάτα Θαλασσινών): σπιτικό φαγητό, μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά. Αναζητάτε <strong>Γαύρος φρέσκος πλακί Matzourana Καλλιθέα</strong>; Παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
@@ -270,43 +282,98 @@
            Διανομή: Τρίτη–Κυριακή 12:00–19:30 · Δευτέρα κλειστά</p>
       </div>
     </section>
-    <section class="related"><h2>Άλλα πιάτα της Ματζουράνας</h2>
-        <ul>
-          <li><a href="../katsikaki-naxou/">Κατσικάκι (Νάξου) στο φούρνο</a></li>
-          <li><a href="../pastitsio/">Παστίτσιο</a></li>
-          <li><a href="../moussakas/">Μουσακάς</a></li>
-          <li><a href="../papoutsakia/">Μελιτζάνες παπουτσάκια</a></li>
-          <li><a href="../moschari-stifado/">Μοσχαράκι Στιφάδο</a></li>
-          <li><a href="../moschari-kokkinisto/">Μοσχάρι κοκκινιστό</a></li>
-          <li><a href="../moschari-giouvesti/">Μοσχάρι Γιουβέτσι</a></li>
-          <li><a href="../moschari-lemonato/">Μοσχαράκι λεμονάτο</a></li>
-          <li><a href="../rolo-moscharisio/">Ρολό μοσχαρίσιου κιμά</a></li>
-          <li><a href="../moscharaki-noua/">Μοσχαράκι νουά</a></li>
-          <li><a href="../moscharaki-noua-with-fried-potatoes/">Μοσχαράκι νουά με τηγανητές πατάτες</a></li>
-          <li><a href="../moscharaki-noua-with-rice/">Μοσχαράκι νουά με ρύζι</a></li>
-          <li><a href="../keftedakia-tiganita/">Κεφτεδάκια τηγανιτά</a></li>
-          <li><a href="../kotopoulo-bouti/">Κοτόπουλο μπούτι στο φούρνο, με πατάτες</a></li>
-          <li><a href="../choirines-brizoles/">Χοιρινές Μπριζόλες με πατάτες</a></li>
-          <li><a href="../kokoras-krasatos/">Κόκορας κρασάτος</a></li>
-          <li><a href="../soutzoukakia/">Σουτζουκάκια Σμυρνέικα</a></li>
-          <li><a href="../lachanontolmades/">Λαχανοντολμάδες</a></li>
-          <li><a href="../kolokythakia-gemista/">Κολοκυθάκια γεμιστά με κιμά αυγολέμονο</a></li>
-          <li><a href="../briam/">Μπριάμ</a></li>
-          <li><a href="../giantes/">Γίγαντες φασόλια</a></li>
-          <li><a href="../melitzanes-imam/">Μελιτζάνες ιμάμ με φέτα ΠΟΠ</a></li>
-          <li><a href="../gemista/">Γεμιστά</a></li>
-          <li><a href="../arakas-lemonatos/">Αρακάς λεμονάτος</a></li>
-          <li><a href="../fasolakia/">Φρέσκα Φασολάκια λαδερά</a></li>
-          <li><a href="../spanakorizo/">Σπανακόρυζο</a></li>
-          <li><a href="../bakaliaros-spetsiota/">Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες</a></li>
-          <li><a href="../oktapodi-stifado/">Χταπόδι στιφάδο από φρέσκο χταπόδι</a></li>
-          <li><a href="../kritharoto-garides/">Κριθαρότο με γαρίδες</a></li>
-          <li><a href="../mydopilafo/">Μυδοπίλαφο</a></li>
-          <li><a href="../ksifias-lemonatos/">Ξιφίας λεμονάτος</a></li>
-          <li><a href="../glossa-lemonati/">Γλώσσα Λεμονάτη με πατάτες</a></li>
-          <li><a href="../giouvarlakia/">Γιουβαρλάκια</a></li>
-          <li><a href="../fasolada/">Φασολάδα</a></li>
-        </ul>
+    <section class="related" aria-labelledby="related-title"><h2 id="related-title">Άλλα πιάτα της Ματζουράνας <span class="en" lang="en">/ More dishes</span></h2>
+        <div class="link-groups">
+        <div class="link-col">
+        <div class="link-group">
+          <h3>Πιάτα Κρεατικών <span class="en" lang="en">/ Meat Dishes</span></h3>
+          <ul>
+            <li><a href="../katsikaki-naxou/">Κατσικάκι (Νάξου) στο φούρνο</a></li>
+            <li><a href="../pastitsio/">Παστίτσιο</a></li>
+            <li><a href="../moussakas/">Μουσακάς</a></li>
+            <li><a href="../papoutsakia/">Μελιτζάνες παπουτσάκια</a></li>
+            <li><a href="../bifteki-moscharisia/">Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο</a></li>
+            <li><a href="../moschari-stifado/">Μοσχαράκι Στιφάδο</a></li>
+            <li><a href="../moschari-kokkinisto/">Μοσχάρι κοκκινιστό</a></li>
+            <li><a href="../moschari-giouvesti/">Μοσχάρι Γιουβέτσι</a></li>
+            <li><a href="../moschari-lemonato/">Μοσχαράκι λεμονάτο</a></li>
+            <li><a href="../rolo-moscharisio/">Ρολό μοσχαρίσιου κιμά</a></li>
+            <li><a href="../moscharaki-noua/">Μοσχαράκι νουά</a></li>
+            <li><a href="../moscharaki-noua-with-fried-potatoes/">Μοσχαράκι νουά με τηγανητές πατάτες</a></li>
+            <li><a href="../moscharaki-noua-with-rice/">Μοσχαράκι νουά με ρύζι</a></li>
+            <li><a href="../keftedakia-tiganita/">Κεφτεδάκια τηγανιτά</a></li>
+            <li><a href="../kotopoulo-bouti/">Κοτόπουλο μπούτι στο φούρνο, με πατάτες</a></li>
+            <li><a href="../choirines-brizoles/">Χοιρινές Μπριζόλες με πατάτες</a></li>
+            <li><a href="../kokoras-krasatos/">Κόκορας κρασάτος</a></li>
+            <li><a href="../soutzoukakia/">Σουτζουκάκια Σμυρνέικα</a></li>
+            <li><a href="../lachanontolmades/">Λαχανοντολμάδες</a></li>
+            <li><a href="../kolokythakia-gemista/">Κολοκυθάκια γεμιστά με κιμά αυγολέμονο</a></li>
+          </ul>
+        </div>
+        </div>
+        <div class="link-col">
+        <div class="link-group">
+          <h3>Πιάτα Θαλασσινών <span class="en" lang="en">/ Seafood Dishes</span></h3>
+          <ul>
+            <li><a href="../bakaliaros-spetsiota/">Μπακαλιάρος παστός α λα σπετσιώτα με πατάτες</a></li>
+            <li><a href="../soupies-yiahni/">Φρέσκες σουπιές γιαχνί</a></li>
+            <li><a href="../oktapodi-stifado/">Χταπόδι στιφάδο από φρέσκο χταπόδι</a></li>
+            <li><a href="../kritharoto-garides/">Κριθαρότο με γαρίδες</a></li>
+            <li><a href="../mydopilafo/">Μυδοπίλαφο</a></li>
+            <li><a href="../ksifias-lemonatos/">Ξιφίας λεμονάτος</a></li>
+            <li><a href="../glossa-lemonati/">Γλώσσα Λεμονάτη με πατάτες</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <h3>Πιάτα Λαχανικών <span class="en" lang="en">/ Vegetable Dishes</span></h3>
+          <ul>
+            <li><a href="../briam/">Μπριάμ</a></li>
+            <li><a href="../giantes/">Γίγαντες φασόλια</a></li>
+            <li><a href="../melitzanes-imam/">Μελιτζάνες ιμάμ με φέτα ΠΟΠ</a></li>
+            <li><a href="../gemista/">Γεμιστά</a></li>
+            <li><a href="../arakas-lemonatos/">Αρακάς λεμονάτος</a></li>
+            <li><a href="../fasolakia/">Φρέσκα Φασολάκια λαδερά</a></li>
+            <li><a href="../spanakorizo/">Σπανακόρυζο</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <h3>Όσπρια &amp; Σούπες <span class="en" lang="en">/ Legumes &amp; Soups</span></h3>
+          <ul>
+            <li><a href="../kotosoupa/">Κοτόσουπα</a></li>
+            <li><a href="../kreatosoupa/">Κρεατόσουπα</a></li>
+            <li><a href="../giouvarlakia/">Γιουβαρλάκια</a></li>
+            <li><a href="../fasolada/">Φασολάδα</a></li>
+          </ul>
+        </div>
+        </div>
+        <div class="link-col">
+        <div class="link-group">
+          <h3>Ψητά της Ώρας <span class="en" lang="en">/ Grilled Dishes</span></h3>
+          <ul>
+            <li><a href="../fileto-kotopoulo/">Φιλέτο Κοτόπουλο</a></li>
+            <li><a href="../bifteki-scharas/">Μπιφτέκι Μοσχαρίσιο Χειροποίητο</a></li>
+            <li><a href="../brizola-choirini/">Μπριζόλα Χοιρινή</a></li>
+            <li><a href="../brizolakia-choirina/">Μπριζολάκια Χοιρινά, χωρίς κόκαλο</a></li>
+            <li><a href="../loukaniko-choriatiko/">Λουκάνικο Χωριάτικο Χοιρινό</a></li>
+            <li><a href="../loukaniko-moscharisio/">Λουκάνικο Μοσχαρίσιο Χειροποίητο</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <h3>Σαλάτες &amp; Dips <span class="en" lang="en">/ Salads &amp; Dips</span></h3>
+          <ul>
+            <li><a href="../salata-matzourana/">Σαλάτα Ματζουράνα</a></li>
+            <li><a href="../salata-chaloumi/">Σαλάτα Χαλούμι</a></li>
+            <li><a href="../ntakos/">Ντάκος</a></li>
+            <li><a href="../choriatiki/">Χωριάτικη σαλάτα</a></li>
+            <li><a href="../salata-marouli/">Σαλάτα Μαρούλι</a></li>
+            <li><a href="../salata-lachano-karoto/">Σαλάτα Λάχανο - Καρότο</a></li>
+            <li><a href="../chorta-epochis/">Χόρτα Εποχής</a></li>
+            <li><a href="../tzatziki/">Τζατζίκι χειροποίητο</a></li>
+            <li><a href="../fava-orektiko/">Φάβα</a></li>
+          </ul>
+        </div>
+        </div>
+        </div>
     </section>
   </main>
   <script>

@@ -69,6 +69,11 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-48.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-49.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-50.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-51.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-52.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-53.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-54.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-55.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -117,6 +122,12 @@
   <lastmod>2026-10-20</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-44.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/bifteki-moscharisia/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-54.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/moschari-stifado/</loc>
@@ -256,6 +267,12 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-34.jpg</image:loc></image:image>
 </url>
 <url>
+  <loc>https://www.matzourana.gr/dishes/soupies-yiahni/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-53.jpg</image:loc></image:image>
+</url>
+<url>
   <loc>https://www.matzourana.gr/dishes/oktapodi-stifado/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
@@ -292,6 +309,18 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-27.jpg</image:loc></image:image>
 </url>
 <url>
+  <loc>https://www.matzourana.gr/dishes/kotosoupa/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-52.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/kreatosoupa/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-51.jpg</image:loc></image:image>
+</url>
+<url>
   <loc>https://www.matzourana.gr/dishes/giouvarlakia/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
@@ -302,5 +331,85 @@
   <lastmod>2026-10-20</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-45.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/fileto-kotopoulo/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-15.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/bifteki-scharas/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-55.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/brizola-choirini/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/brizolakia-choirina/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-19.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/loukaniko-choriatiko/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/loukaniko-moscharisio/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/salata-matzourana/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/salata-chaloumi/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/ntakos/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-21.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/choriatiki/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/salata-marouli/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/salata-lachano-karoto/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/chorta-epochis/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-37.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/tzatziki/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/fava-orektiko/</loc>
+  <lastmod>2026-10-28</lastmod>
+  <priority>0.8</priority>
 </url>
 </urlset>

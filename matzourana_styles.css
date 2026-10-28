@@ -2538,8 +2538,16 @@ header .nav-menu {
     margin: 0.15em 0 0 auto;
 }
 
-.dish-index-list a { display:inline-block; min-height:24px; padding:2px 0; }
-@media (max-width:600px){ .dish-index-list { columns:1 !important; } }
+.dish-index-list a { display:inline-block; vertical-align:top; min-height:24px; padding:2px 0; }
+/* "Τα πιάτα μας": category groups in columns (3 desktop, 2 iPad / phone); a group never splits */
+.dish-index-groups { display:flex; gap:1.5em; align-items:flex-start; }
+.dish-index-col { flex:1 1 0; min-width:0; }
+.dish-index-group-box { break-inside:avoid; page-break-inside:avoid; display:inline-block; width:100%; margin-bottom:0.6em; }
+#dish-index .dish-index-group { font-size:1.05rem; font-weight:700; margin:0.6em 0 0.2em; }
+#dish-index .dish-index-list li { font-size:0.95rem; line-height:1.35; }
+.dish-index-list { margin:0; padding-left:1.1em; }
+@media (max-width:1023px){ .dish-index-groups { display:block; columns:2; column-gap:1.5em; } .dish-index-col { display:contents; } }
+@media (max-width:600px){ .dish-index-groups { column-gap:1em; } #dish-index .dish-index-list li { font-size:0.9rem; } }
 
 /* ===== Speed / accessibility helpers (2026-10-19) ===== */
 /* Logos now carry width/height attributes (no layout shift); CSS sets the width, keep the ratio */
