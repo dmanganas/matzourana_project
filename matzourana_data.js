@@ -27,6 +27,7 @@ const currentDailyMenu = [
 
     //Seafood
     "galeos_lemonatos",
+    "kalamarakia_yiahni",
 
     //Meat
     "bifteki_moscharisia",
@@ -171,6 +172,7 @@ const menuCatalog = {
     "spaghetti_calamari_sauce": { category: "seafood", el: "Σπαγγέτι με σάλτσα καλαμαριών <br><br> (Με φρέσκα καλαμάρια και πλούσια σάλτσα ντομάτας)", en: "Spaghetti with Calamari Sauce <br><br> (Made with fresh calamari and a rich tomato sauce)", price: "€8.00" },
     "spaghetti_garida": { category: "seafood", el: "Σπαγγέτι με σάλτσα γαρίδας <br><br> (Με φρέσκες γαρίδες και πλούσια σάλτσα ντομάτας)", en: "Spaghetti with Shrimp Sauce <br><br> (Made with fresh shrimp and a rich tomato sauce)", price: "€9.50" },
     "soupies_yiahni": { category: "seafood", el: "Φρέσκες σουπιές γιαχνί <br><br> (Με πατάτες ή πλιγούρι/ρύζι ή με γαρνιτούρα της επιλογής σας από τα διαθέσιμα πιάτα ημέρας)", en: "Fresh Cuttlefish Yiahni <br><br> (With potatoes, or bulgur/rice, or a side of your choice from the day's dishes)", price: "€10.00" },
+    "kalamarakia_yiahni": { category: "seafood", el: "Καλαμαράκια γιαχνί <br><br> (Με πατάτες ή πλιγούρι/ρύζι ή με γαρνιτούρα της επιλογής σας από τα διαθέσιμα πιάτα ημέρας)", en: "Calamari Yiahni <br><br> (With potatoes, or bulgur/rice, or a side of your choice from the day's dishes)", price: "€11.00" },
     "soupies_krasates": { category: "seafood", el: "Σουπιές Κρασάτες <br><br> (Φρέσκες σουπιές μαγειρεμένες με λευκό ή κόκκινο κρασί, κρεμμύδι και αρωματικά μυρωδικά. Ένα παραδοσιακό πιάτο θαλασσινών με πλούσια γεύση)", en: "Cuttlefish in White Wine <br><br> (Fresh cuttlefish cooked with white or red wine, onion, and aromatic herbs. A traditional seafood dish with rich flavor)", price: "€10.00" },
     "soupies_spanaki": { category: "seafood", el: "Σουπιές με σπανάκι <br><br> (Τρυφερές σουπιές μαγειρεμένες με φρέσκο σπανάκι, μυρωδικά και λεμόνι. Ένα παραδοσιακό, νηστίσιμο πιάτο γεμάτο γεύση και άρωμα θάλασσας)", en: "Cuttlefish with Spinach <br><br> (Tender cuttlefish cooked with fresh spinach, herbs and a hint of lemon. A traditional seafood dish full of flavor)", price: "€10.00" },
     "oktapodi_stifado": { category: "seafood", el: "Χταπόδι στιφάδο από φρέσκο χταπόδι <br><br> (Παραδοσιακό και γεμάτο αρώματα! Με φρέσκο χταπόδι, κρεμμυδάκια και σάλτσα ντομάτας)", en: "Octopus Stifado with Fresh Octopus <br><br> (Traditional and full of aromas! With fresh octopus, small onions, and tomato sauce)", price: "€13.00" },
