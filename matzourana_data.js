@@ -59,6 +59,7 @@ const currentHighlights = [
 
     "bakaliaros_lemonatos",
     "galeos_lemonatos",
+    "kalamarakia_yiahni",
 
     "pastitsio",
     "keftedakia_tiganita",
@@ -829,6 +830,11 @@ const highlightsCatalog = {
         icons: ["dish/cuttlefishstew.png", "dish/tomato.png"],
         el: "Φρέσκες <br> Σουπιές <br> γιαχνί",
         en: "Fresh <br> Cuttlefish <br> Yiahni"
+    },
+    "kalamarakia_yiahni": {
+        icons: ["dish/cuttlefishstew.png", "dish/tomato.png"],
+        el: "Καλαμαράκια <br> γιαχνί",
+        en: "Calamari <br> Yiahni"
     },
     "mydopilafo": {
         icons: ["dish/mussels.png", "dish/musselspan.png"],
