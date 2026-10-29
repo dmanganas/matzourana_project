@@ -426,6 +426,8 @@ const fixedMenuDishPages = {
     "salata_lachano_karoto": { table: "salads", group: "salads", row: "Λαχανό - Καρότο", pageEl: "Σαλάτα Λάχανο - Καρότο" },
     "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
         photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
+    "pantzaria": { table: "salads", group: "salads", row: "Παντζάρια", pageEl: "Παντζάρια σαλάτα",
+        photo: { file: "web/greek-dish-10.webp", alt: "Παντζάρια - Φρέσκια και γευστική παντζαροσαλάτα, Matzourana Καλλιθέα | Beetroot Salad - Fresh and tasty beetroot salad, Matzourana Kallithea" } },
     "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο" },
     "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" },
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",

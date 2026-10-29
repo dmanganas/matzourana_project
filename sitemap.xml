@@ -414,6 +414,12 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-37.jpg</image:loc></image:image>
 </url>
 <url>
+  <loc>https://www.matzourana.gr/dishes/pantzaria/</loc>
+  <lastmod>2026-10-29</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-10.jpg</image:loc></image:image>
+</url>
+<url>
   <loc>https://www.matzourana.gr/dishes/tzatziki/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
