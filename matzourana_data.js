@@ -381,6 +381,10 @@ const dishImageMap = {
         file: "web/greek-dish-54.webp",
         alt: "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - Χειροποίητα 300γρ, Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - Handmade 300g beef patties, Matzourana Kallithea"
     },
+    "gemista_superfoods": {
+        file: "web/greek-dish-56.webp",
+        alt: "Γεμιστά με superfoods - Ντομάτες και πιπεριές γεμιστές στο ταψί, με πατάτες, Matzourana Καλλιθέα | Stuffed Vegetables with Superfoods - Stuffed tomatoes and peppers in the baking tray, with potatoes, Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -412,7 +416,8 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-19.webp", alt: "Μπριζολάκια Χοιρινά χωρίς κόκαλο - Ζουμερά και γευστικά, Matzourana Καλλιθέα | Boneless Pork Chops - Juicy and flavourful, Matzourana Kallithea" } },
     "loukaniko_choriatiko": { table: "grilled-dishes", group: "grill", row: "Λουκάνικο Χωριάτικο Χοιρινό" },
     "loukaniko_moscharisio": { table: "grilled-dishes", group: "grill", row: "Λουκάνικο Μοσχαρίσιο Χειροποίητο" },
-    "salata_matzourana": { table: "salads", group: "salads", row: "Ματζουράνα", pageEl: "Σαλάτα Ματζουράνα" },
+    "salata_matzourana": { table: "salads", group: "salads", row: "Ματζουράνα", pageEl: "Σαλάτα Ματζουράνα",
+        photo: { file: "web/greek-dish-58.webp", alt: "Σαλάτα Ματζουράνα - Mix μαρουλιών, ντοματίνια, αγγούρι, πράσινο μήλο, ρόδι, άνηθος & βαλσάμικο, Matzourana Καλλιθέα | Matzourana Salad - Mixed lettuces, cherry tomatoes, cucumber, green apple, pomegranate, dill & balsamic, Matzourana Kallithea" } },
     "salata_chaloumi": { table: "salads", group: "salads", row: "Χαλούμι", pageEl: "Σαλάτα Χαλούμι" },
     "ntakos": { table: "salads", group: "salads", row: "Ντάκος",
         photo: { file: "web/greek-dish-21.webp", alt: "Ντάκος - Κριθαροκούλουρο με φέτα ΠΟΠ και τριμμένη ντομάτα, Matzourana Καλλιθέα | Dakos - Cretan rusk with PDO feta and grated tomato, Matzourana Kallithea" } },
@@ -422,7 +427,9 @@ const fixedMenuDishPages = {
     "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
         photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
     "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο" },
-    "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" }
+    "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" },
+    "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
+        photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } }
 };
 
 // ==================== DISH VIDEOS ====================
@@ -916,7 +923,8 @@ const imageList = [
     'DishImages/web/greek-dish-46.webp', 'DishImages/web/greek-dish-47.webp', 'DishImages/web/greek-dish-48.webp',
     'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp',
     'DishImages/web/greek-dish-51.webp', 'DishImages/web/greek-dish-52.webp', 'DishImages/web/greek-dish-53.webp', 'DishImages/web/greek-dish-54.webp',
-    'DishImages/web/greek-dish-55.webp'
+    'DishImages/web/greek-dish-55.webp', 'DishImages/web/greek-dish-56.webp', 'DishImages/web/greek-dish-57.webp',
+    'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp'
 ];
 
 const dishAlts = {
@@ -928,7 +936,7 @@ const dishAlts = {
     'DishImages/web/greek-dish-6.webp': "Γίγαντες φασόλια - (Παραδοσιακοί πλακί, ψημένοι στη γάστρα) Matzourana Eatery Καλλιθέα | Giant Beans Plaki - (Traditional, baked in a clay pot) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-7.webp': "Ντολμαδάκια γιαλατζί χειροποίητα - (Δροσερά και γευστικά) Matzourana Eatery Καλλιθέα | Handmade Vegetarian Dolmades - (Fresh and delicious) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-8.webp': "Κόκορας κρασάτος - (Αργομαγειρεμένος, πλούσιος και παραδοσιακός) Matzourana Eatery Καλλιθέα | Rooster in Wine Sauce - (Slow-cooked, rich and traditional) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-9.webp': "Σαλάτα Mexicana - (Λόλα, μαρούλι, τόνος, κόκκινα φασόλια) Matzourana Eatery Καλλιθέα | Mexicana Salad - (Lola lettuce, romaine, tuna, red beans) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-9.webp': "Σαλάτα Mexicana - (Μαρούλι, τόνος, κόκκινα φασόλια, καλαμπόκι, ντοματίνια & πίτα) Matzourana Καλλιθέα | Mexicana Salad - (Lettuce, tuna, red beans, corn, cherry tomatoes & pita) Matzourana Kallithea",
     'DishImages/web/greek-dish-10.webp': "Παντζάρια - (Φρέσκια και γευστική παντζαροσαλάτα) Matzourana Eatery Καλλιθέα | Beetroot Salad - (Fresh and tasty beetroot salad) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-11.webp': "Μπριζόλα Μοσχαρίσια γάλακτος - (Τρυφερή και premium ψητή) Matzourana Eatery Καλλιθέα | Milk-Fed Veal Chop - (Tender premium grilled veal) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-12.webp': "Ψητά Λαχανικά - (Μελιτζάνες, κολοκυθάκια, πιπεριές και μανιτάρια) Matzourana Eatery Καλλιθέα | Grilled Vegetables - (Eggplant, courgettes, peppers & mushrooms) Matzourana Eatery Kallithea",
@@ -936,7 +944,7 @@ const dishAlts = {
     'DishImages/web/greek-dish-14.webp': "Κεφτεδάκια τηγανιτά - (Μυρωδάτα και τραγανά) Matzourana Eatery Καλλιθέα | Fried Meatballs - (Aromatic and crispy) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-15.webp': "Φιλέτο Κοτόπουλο - (Ψητό, απαλό και γευστικό) Matzourana Eatery Καλλιθέα | Chicken Fillet - (Grilled, tender and tasty) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-16.webp': "Γιουβαρλάκια - (Με 100% μοσχαρίσιο κιμά και αυγολέμονο) Matzourana Eatery Καλλιθέα | Giouvarlakia - (With 100% beef mince in egg-lemon sauce) Matzourana Eatery Kallithea",
-    'DishImages/web/greek-dish-17.webp': "Caesar's σαλάτα - (Iceberg, γαλλική σαλάτα, κοτόπουλο φιλέτο, μπέικον, καλαμπόκι, κρουτόν, παρμεζάνα & χειροποίητη σως) Matzourana Eatery Καλλιθέα | Caesar Salad - (Iceberg, romaine, chicken fillet, bacon, corn, croutons, parmesan & homemade Caesar sauce) Matzourana Eatery Kallithea",
+    'DishImages/web/greek-dish-17.webp': "Σαλάτα κοτόπουλο - (Μαρούλι, ψητό κοτόπουλο, καλαμπόκι, τυρί & σως) Matzourana Καλλιθέα | Chicken Salad - (Lettuce, grilled chicken, corn, cheese & dressing) Matzourana Kallithea",
     'DishImages/web/greek-dish-18.webp': "Κριθαρώτο με γαρίδες - (Αρωματικό και κρεμώδες) Matzourana Eatery Καλλιθέα | Shrimp Orzo - (Aromatic and creamy) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-19.webp': "Μπριζολάκια Χοιρινά χωρίς κόκαλο - (Ζουμερά και γευστικά) Matzourana Eatery Καλλιθέα | Boneless Pork Chops - (Juicy and flavourful) Matzourana Eatery Kallithea",
     'DishImages/web/greek-dish-20.webp': "Πανδαισία γεύσεων - (Κόκορας κρασάτος, κρητικός ντάκος, χαλούμι, λαχανοντολμάδες, τυροκαυτερή, ψητά μπιφτέκια) Matzourana Eatery Καλλιθέα | Feast of authentic flavors - (Rooster in wine sauce, Cretan dakos, halloumi, cabbage rolls, spicy cheese dip, grilled patties) Matzourana Eatery Kallithea",
@@ -973,7 +981,11 @@ const dishAlts = {
     'DishImages/web/greek-dish-52.webp': "Κοτόσουπα - (Θρεπτική και πολύ νόστιμη) Matzourana Καλλιθέα | Chicken Soup - (Nutritious and very tasty) Matzourana Kallithea",
     'DishImages/web/greek-dish-53.webp': "Φρέσκες σουπιές γιαχνί - (Σε σάλτσα ντομάτας, με πλιγούρι) Matzourana Καλλιθέα | Fresh Cuttlefish Yiahni - (In tomato sauce, with bulgur) Matzourana Kallithea",
     'DishImages/web/greek-dish-54.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties) Matzourana Kallithea",
-    'DishImages/web/greek-dish-55.webp': "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - (Ψητά μπιφτέκια με τηγανητές πατάτες, σαλάτα και λεμόνι) Matzourana Καλλιθέα | Homemade Beef Patty - (Grilled beef patties with fries, salad and lemon) Matzourana Kallithea"
+    'DishImages/web/greek-dish-55.webp': "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - (Ψητά μπιφτέκια με τηγανητές πατάτες, σαλάτα και λεμόνι) Matzourana Καλλιθέα | Homemade Beef Patty - (Grilled beef patties with fries, salad and lemon) Matzourana Kallithea",
+    'DishImages/web/greek-dish-56.webp': "Γεμιστά με superfoods - (Ντομάτες και πιπεριές γεμιστές στο ταψί, με πατάτες) Matzourana Καλλιθέα | Stuffed Vegetables with Superfoods - (Stuffed tomatoes and peppers in the baking tray, with potatoes) Matzourana Kallithea",
+    'DishImages/web/greek-dish-57.webp': "Γεμιστά με πλιγούρι - (Ντομάτα και πιπεριά γεμιστές με πλιγούρι, σε σάλτσα ντομάτας) Matzourana Καλλιθέα | Stuffed Vegetables with Bulgur - (Tomato and pepper stuffed with bulgur, in tomato sauce) Matzourana Kallithea",
+    'DishImages/web/greek-dish-58.webp': "Σαλάτα Ματζουράνα - (Mix μαρουλιών, ντοματίνια, αγγούρι, πράσινο μήλο, ρόδι, άνηθος & βαλσάμικο) Matzourana Καλλιθέα | Matzourana Salad - (Mixed lettuces, cherry tomatoes, cucumber, green apple, pomegranate, dill & balsamic) Matzourana Kallithea",
+    'DishImages/web/greek-dish-59.webp': "Χαλούμι ψητό - (Με σαλάτα, κόκκινη πιπεριά και λεμόνι) Matzourana Καλλιθέα | Grilled Halloumi - (With salad, red pepper and lemon) Matzourana Kallithea"
  
 };
 

@@ -74,6 +74,10 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-53.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-54.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-55.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-56.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-57.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-58.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-59.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -243,6 +247,12 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-39.jpg</image:loc></image:image>
 </url>
 <url>
+  <loc>https://www.matzourana.gr/dishes/gemista-superfoods/</loc>
+  <lastmod>2026-10-29</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-56.jpg</image:loc></image:image>
+</url>
+<url>
   <loc>https://www.matzourana.gr/dishes/arakas-lemonatos/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
@@ -369,6 +379,7 @@
   <loc>https://www.matzourana.gr/dishes/salata-matzourana/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-58.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/salata-chaloumi/</loc>
@@ -411,5 +422,11 @@
   <loc>https://www.matzourana.gr/dishes/fava-orektiko/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/chaloumi-psito/</loc>
+  <lastmod>2026-10-29</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-59.jpg</image:loc></image:image>
 </url>
 </urlset>
