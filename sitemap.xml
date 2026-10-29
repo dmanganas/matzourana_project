@@ -196,7 +196,6 @@
   <loc>https://www.matzourana.gr/dishes/choirines-brizoles/</loc>
   <lastmod>2026-10-20</lastmod>
   <priority>0.8</priority>
-  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-13.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/kokoras-krasatos/</loc>
@@ -358,6 +357,7 @@
   <loc>https://www.matzourana.gr/dishes/brizola-choirini/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-13.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/brizolakia-choirina/</loc>

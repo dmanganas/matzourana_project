@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261029b'; // bust caches when assets/titles change
+const ASSET_V = '20261029c'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -1069,13 +1069,13 @@ let keys = args.filter(a => !a.startsWith('--'));
 Purpose: Choose which catalog dishes get a dish page with --all.
 On Input: none (menuCatalog, dishImageMap, dishPagesNoPhoto).
 On Output: String[] keys, in menuCatalog order: every dish with a dishImageMap photo
-          (even when its name has no "(description)", e.g. choirines_brizoles), plus the
-          dishPagesNoPhoto keys that have a description; then every fixedMenuDishPages key
+          (even when its name has no "(description)"), plus every dishPagesNoPhoto key
+          (e.g. choirines_brizoles, kept while waiting for its own photo); then every fixedMenuDishPages key
           (grill, salads, dips - with or without a photo).
 ---------------------*/
 function selectDishPageKeys() {
   return Object.keys(menuCatalog).filter(k => menuCatalog[k].el &&
-    (dishImageMap[k] || (dishPagesNoPhoto.includes(k) && /\(/.test(menuCatalog[k].el))))
+    (dishImageMap[k] || dishPagesNoPhoto.includes(k)))
     .concat(Object.keys(FIXED));
 }
 if (args.includes('--all')) keys = selectDishPageKeys();

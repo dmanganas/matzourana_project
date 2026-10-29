@@ -316,10 +316,6 @@ const dishImageMap = {
         file: "web/greek-dish-36.webp",
         alt: "Χταπόδι στιφάδο από φρέσκο χταπόδι - Με κρεμμυδάκια και σάλτσα ντομάτας | Octopus Stifado with Fresh Octopus - With small onions and tomato sauce"
     },
-    "choirines_brizoles": {
-        file: "web/greek-dish-13.webp",
-        alt: "Χοιρινές Μπριζόλες με πατάτες - Ζουμερή ψητή χοιρινή μπριζόλα με πατάτες | Pork Chops with Potatoes - Juicy grilled pork chop with potatoes"
-    },
     "gemista": {
         file: "web/greek-dish-39.webp",
         alt: "Γεμιστά - Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες | Stuffed Vegetables - Tomato and pepper with bulgur, herbs and potatoes"
@@ -393,7 +389,8 @@ const dishImageMap = {
 // correct photo yet. The page shows no dish photo; og:image falls back to the site OG image.
 // When a real photo is added to dishImageMap, remove the key from here.
 const dishPagesNoPhoto = [
-    "moscharaki_noua_with_rice"   // greek-dish-32 was a copy of 28 (no rice) - removed 2026-10-20
+    "moscharaki_noua_with_rice",  // greek-dish-32 was a copy of 28 (no rice) - removed 2026-10-20
+    "choirines_brizoles"          // greek-dish-13 is the grilled chop - moved to brizola_choirini 2026-10-29
 ];
 
 // ==================== DISH PAGES FOR THE FIXED MENU TABLES ====================
@@ -411,7 +408,8 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-15.webp", alt: "Φιλέτο Κοτόπουλο - Ψητό, απαλό και γευστικό, Matzourana Καλλιθέα | Chicken Fillet - Grilled, tender and tasty, Matzourana Kallithea" } },
     "bifteki_scharas": { table: "grilled-dishes", group: "grill", row: "Μπιφτέκι Μοσχαρίσιο Χειροποίητο",
         photo: { file: "web/greek-dish-55.webp", alt: "Μπιφτέκι Μοσχαρίσιο Χειροποίητο - Ψητά μπιφτέκια με τηγανητές πατάτες, σαλάτα και λεμόνι, Matzourana Καλλιθέα | Homemade Beef Patty - Grilled beef patties with fries, salad and lemon, Matzourana Kallithea" } },
-    "brizola_choirini": { table: "grilled-dishes", group: "grill", row: "Μπριζόλα Χοιρινή" },
+    "brizola_choirini": { table: "grilled-dishes", group: "grill", row: "Μπριζόλα Χοιρινή",
+        photo: { file: "web/greek-dish-13.webp", alt: "Μπριζόλα Χοιρινή - Ζουμερή και τέλεια ψημένη στη σχάρα, Matzourana Καλλιθέα | Pork Chop - Juicy and perfectly grilled, Matzourana Kallithea" } },
     "brizolakia_choirina": { table: "grilled-dishes", group: "grill", row: "Μπριζολάκια Χοιρινά, χωρίς κόκαλο",
         photo: { file: "web/greek-dish-19.webp", alt: "Μπριζολάκια Χοιρινά χωρίς κόκαλο - Ζουμερά και γευστικά, Matzourana Καλλιθέα | Boneless Pork Chops - Juicy and flavourful, Matzourana Kallithea" } },
     "loukaniko_choriatiko": { table: "grilled-dishes", group: "grill", row: "Λουκάνικο Χωριάτικο Χοιρινό" },
