@@ -1242,6 +1242,8 @@ footer .social-logos img {
     font-size: 1.5em
 }
 /* Show caption when overlay is visible */
+.zoom-dish-link { color: #ffffff; text-decoration: underline; text-underline-offset: 4px; }
+.zoom-dish-link:hover, .zoom-dish-link:focus { color: #f3e6b0; }
 .zoom-maps-link { display: block; margin-top: 6px; font-size: 0.75em; color: #ffffff; text-decoration: underline; white-space: normal; }
 .zoom-maps-link[hidden] { display: none; }
 .zoom-overlay[style*="display: flex"] .zoom-caption {

@@ -108,6 +108,50 @@ function buildZoomCaption(altText, lang) {
 }
 
 /*-------------------
+Purpose: Find the dish (catalog key) whose dish page uses a given photo, so the
+         lightbox caption can link to that dish page.
+On Input: src - String, image path or URL (e.g. 'DishImages/web/greek-dish-13.webp').
+On Output: String catalog key (dishImageMap or fixedMenuDishPages) whose photo has the
+          same file name (any extension), or "" when no dish page uses that photo.
+---------------------*/
+function dishKeyForImage(src) {
+    if (!src) return '';
+    const base = f => String(f).split('?')[0].split('/').pop().replace(/\.[a-z0-9]+$/i, '');
+    const name = base(src);
+    if (typeof dishImageMap !== 'undefined') {
+        for (const k in dishImageMap) {
+            if (dishImageMap[k] && dishImageMap[k].file && base(dishImageMap[k].file) === name) return k;
+        }
+    }
+    if (typeof fixedMenuDishPages !== 'undefined') {
+        for (const k in fixedMenuDishPages) {
+            const ph = fixedMenuDishPages[k].photo;
+            if (ph && ph.file && base(ph.file) === name) return k;
+        }
+    }
+    return '';
+}
+
+/*-------------------
+Purpose: Build the lightbox caption and, when the photo belongs to a dish with its own
+         page, turn the bold dish name into a link to that page.
+On Input: src - String image path; altText - String "Greek | English"; lang - 'el' | 'en'.
+On Output: String of HTML for #caption-current.
+---------------------*/
+function buildZoomCaptionLinked(src, altText, lang) {
+    const html = buildZoomCaption(altText, lang);
+    const key = dishKeyForImage(src);
+    if (!key) return html;
+    const href = dishPagePath(key);
+    const title = lang === 'el' ? 'Δείτε τη σελίδα του πιάτου' : 'See the dish page';
+    const linkOpen = '<a class="zoom-dish-link" href="' + href + '" title="' + title + '" onclick="event.stopPropagation()" ontouchend="event.stopPropagation()">';
+    if (/<strong>/.test(html)) {
+        return html.replace(/<strong>([\s\S]*?)<\/strong>/, linkOpen + '<strong>$1</strong></a>');
+    }
+    return html + '\n' + linkOpen + title + ' →</a>';
+}
+
+/*-------------------
 Purpose: Open the full-screen lightbox with an enlarged menu or gallery photo,
          with caption, next/prev navigation and, for Google Maps album photos,
          a link to the photo on Google Maps.
@@ -132,7 +176,7 @@ function zoomImage(src, altText) {
 
     zoomedImage.src = src;
     zoomedImage.alt = altText || "Μεγενθυμένη φωτογραφία πιάτου από το Matzourana Eatery Καλλιθέα";
-    if (captionCurrent) captionCurrent.innerHTML = buildZoomCaption(altText, getLang());
+    if (captionCurrent) captionCurrent.innerHTML = buildZoomCaptionLinked(src, altText, getLang());
 
     const mapsLink = document.getElementById('zoom-maps-link');
     if (mapsLink) {
@@ -233,7 +277,7 @@ function updateZoomCaption() {
     const zoomedImage = document.querySelector('#zoomed-image');
     const captionCurrent = document.getElementById('caption-current');
     if (overlay && overlay.style.display === 'flex' && zoomedImage && captionCurrent && zoomedImage.alt) {
-        captionCurrent.innerHTML = buildZoomCaption(zoomedImage.alt, getLang());
+        captionCurrent.innerHTML = buildZoomCaptionLinked(zoomedImage.getAttribute('src'), zoomedImage.alt, getLang());
     }
 }
 
