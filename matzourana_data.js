@@ -58,7 +58,7 @@ const currentHighlights = [
     "giouvarlakia",
 
     "fasolakia",
-    "arakas"
+    "arakas_lemonatos"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -736,7 +736,7 @@ const highlightsCatalog = {
         el: "Μπριάμ",
         en: "Briam"
     },
-    "arakas": {
+    "arakas_lemonatos": {
         icons: ["dish/peas.png", "dish/oliveoil.png"],
         el: "Αρακάς <br> λεμονάτος",
         en: "Lemony <br> Peas"
