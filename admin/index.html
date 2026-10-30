@@ -337,9 +337,15 @@ tr:hover td { background: #fafcfb; }
   display: inline-block; font-size: .66rem; font-weight: 700; padding: 1px 6px; border-radius: 999px;
   background: var(--amber-soft); color: var(--amber); border: 1px solid #f1d3a2; white-space: nowrap;
 }
-.sales-add { width: 100%; margin-top: 6px; font-size: .85rem; }
+.sales-add { width: 100%; font-size: .85rem; min-width: 0; }
+.sales-tools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 4px 0 10px; }
+.sales-addbox { display: grid; grid-template-columns: minmax(8rem, 14rem) minmax(0, 22rem); gap: 6px; flex: 1 1 22rem; }
+.sales-find { font-size: 16px; padding: 4px 8px; min-width: 0; }
+.sales-all { font-size: .85rem; white-space: nowrap; display: inline-flex; gap: 4px; align-items: center; }
+.sales-empty { margin: 8px 0; }
 @media (max-width: 640px) {
   .sales-groups { grid-template-columns: 1fr; }
+  .sales-addbox { grid-template-columns: 1fr; }
   .sales-head, .sales-row { grid-template-columns: minmax(0, 1fr) repeat(3, 3rem); gap: 4px; }
 }
 
@@ -380,7 +386,7 @@ tr:hover td { background: #fafcfb; }
   <div class="sources-bar">
     <h2>Πηγές <span class="badge" id="kitchenStamp">—</span></h2>
     <button class="btn-primary" onclick="saveKitchenBook('live')">Αποθήκευση στην  Matzourana-Database</button>
-    <button class="btn-primary" onclick="loadKitchenBook()">Φόρτωση από την Matzourana-Database</button>
+    <button class="btn-primary" onclick="reloadFromDatabase()">Φόρτωση από την Matzourana-Database</button>
     <button class="btn-secondary" type="button" onclick="openSeedFile()">Εισαγωγή αρχικών δεδομένων</button>
     <input type="file" id="seedFile" accept="application/json,.json" hidden onchange="readSeedFile(this.files[0])">
     <div id="seedBanner" class="seed-banner" role="status" hidden></div>
@@ -440,6 +446,8 @@ tr:hover td { background: #fafcfb; }
       Πιάτα · Food cost · Προτεινόμενη τιμή
       <span class="badge" id="dishCountBadge">0</span>
     </h2>
+    <p class="note daily-lock-note" id="dailyPickNote" hidden>Προβολή παλιάς ημέρας: η στήλη «Σήμερα»
+      δείχνει τα πιάτα εκείνης της ημέρας και είναι κλειδωμένη· το μενού του site αλλάζει μόνο για σήμερα.</p>
     <div class="filters">
       <input type="search" id="searchBox" placeholder="Αναζήτηση κλειδιού / ονόματος..." oninput="renderDishTable()">
       <select id="categoryFilter" onchange="renderDishTable()">
@@ -499,7 +507,7 @@ tr:hover td { background: #fafcfb; }
   <div class="form-grid" style="margin-bottom:12px;">
     <div class="card-mini">
       <div class="section-title">Ημέρα</div>
-      <input type="date" id="planDay" onchange="renderProfitPlanner()">
+      <input type="date" id="planDay" onchange="loadDayFromLedger()">
     </div>
     <div class="card-mini">
       <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
@@ -1426,6 +1434,16 @@ function getFilteredKeys(){
   });
 }
 
+/*-------------------
+Purpose: Draw the "Πιάτα & Food Cost" table (Σήμερα checkbox, Κατάστημα / e-food / Wolt counts,
+         food cost, prices, margins) for the filtered dishes.
+On Input: none (reads menuCatalog, the filters, the current checkboxes and portionChannels).
+On Output: none. Side effects: fills #dishTable.
+Notes: the Σήμερα checkboxes are disabled ("Μόνο για σήμερα") while #planDay is not today.
+       The count inputs use the same key as the "Παραγγελίες ημέρας" card (salesKey: a legacy
+       admin key reads/writes its fixed-menu key), carry data-ch-key / data-ch for syncing and
+       call setCh().
+---------------------*/
 function renderDishTable(){
   const all = computeAll();
   const allow = new Set(getFilteredKeys());
@@ -1444,6 +1462,7 @@ function renderDishTable(){
   );
 
   document.getElementById("dishCountBadge").textContent = rows.length + " πιάτα";
+  updateDailyPickLock();
   document.getElementById("dishTable").innerHTML = rows.map(r => {
     const cls = r.diff>0?"up":r.diff<0?"down":"flat";
     const pct = r.mNow ? r.mNow.pct : 0;
@@ -1454,15 +1473,18 @@ function renderDishTable(){
       ? ` <span class="outlier-flag" title="${String(flag.msg).replace(/"/g, "&quot;")}">⚠</span>`
       : "";
     const on = checked.has(r.key) ? "checked" : "";
-    const c = (typeof chOf === "function") ? chOf(r.key) : { local:0, efood:0, wolt:0 };
+    const sk = (typeof salesKey === "function") ? salesKey(r.key) : r.key;   // same key as the entry card
+    const lock = isPlanDayToday() ? "" : 'disabled title="Μόνο για σήμερα"';
+    const c = (typeof chOf === "function") ? chOf(sk) : { local:0, efood:0, wolt:0 };
     return `<tr>
-      <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} onchange="onDailyPickChange()"></td>
+      <td><input type="checkbox" class="daily-pick" data-key="${r.key}" ${on} ${lock}
+                 onchange="onDailyPickChange()"></td>
       <td><input type="number" min="0" step="1" value="${c.local||""}" placeholder="0" style="width:3.4rem"
-                 onchange="setCh('${r.key}','local',this.value)"></td>
+                 data-ch-key="${sk}" data-ch="local" onchange="setCh('${sk}','local',this.value)"></td>
       <td><input type="number" min="0" step="1" value="${c.efood||""}" placeholder="0" style="width:3.4rem"
-                 onchange="setCh('${r.key}','efood',this.value)"></td>
+                 data-ch-key="${sk}" data-ch="efood" onchange="setCh('${sk}','efood',this.value)"></td>
       <td><input type="number" min="0" step="1" value="${c.wolt||""}" placeholder="0" style="width:3.4rem"
-                 onchange="setCh('${r.key}','wolt',this.value)"></td>
+                 data-ch-key="${sk}" data-ch="wolt" onchange="setCh('${sk}','wolt',this.value)"></td>
       <td><code>${r.key}</code></td>
       <td>${r.d.category}</td>
       <td>${r.d.el}</td>
@@ -1513,15 +1535,53 @@ function avgMenuFoodPct(){
 }
 
 let dailySaveTimer = null;
+
+/*-------------------
+Purpose: Is the day being edited (#planDay) today's local date?
+On Input: none.
+On Output: Boolean.
+---------------------*/
+function isPlanDayToday(){
+  return currentPlanDay() === localTodayISO();
+}
+
+/*-------------------
+Purpose: Lock the Σήμερα checkboxes while a past (or future) day is shown, so they cannot change
+         today's site menu (matzourana_daily); unlock them for today.
+On Input: none (reads #planDay).
+On Output: Boolean - true when locked. Side effects: disabled + title on .daily-pick, #dailyPickNote.
+---------------------*/
+function updateDailyPickLock(){
+  const locked = !isPlanDayToday();
+  document.querySelectorAll(".daily-pick").forEach(el => {
+    el.disabled = locked;
+    if (locked) el.title = "Μόνο για σήμερα"; else el.removeAttribute("title");
+  });
+  const note = document.getElementById("dailyPickNote");
+  if (note) note.hidden = !locked;
+  return locked;
+}
+
+/*-------------------
+Purpose: A Σήμερα checkbox changed: redraw the card and KPIs and (only for today) save today's menu.
+On Input: none.
+On Output: none. Side effects: renders; schedules saveDailyMenuToFirebase (today only).
+---------------------*/
 function onDailyPickChange(){
   if (typeof renderSalesEntry === "function") renderSalesEntry();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
   clearTimeout(dailySaveTimer);
+  if (!isPlanDayToday()) return;            // past day: never touch today's site menu
   dailySaveTimer = setTimeout(() => {
     if (typeof saveDailyMenuToFirebase === "function") saveDailyMenuToFirebase();
   }, 400);
 }
 
+/*-------------------
+Purpose: Tick exactly the given dishes in the Σήμερα column of the dish table.
+On Input: keys - Array of menuCatalog keys.
+On Output: none. Side effects: checkbox states only (does not save matzourana_daily).
+---------------------*/
 function applyDailyPicks(keys){
   const set = new Set((keys || []).filter(k => menuCatalog[k]));
   document.querySelectorAll(".daily-pick").forEach(el => {
@@ -1538,14 +1598,23 @@ async function loadDailyMenuFromFirebase(){
   return Array.isArray(keys) ? keys.filter(Boolean) : [];
 }
 
+/*-------------------
+Purpose: Save today's menu picks (Σήμερα column) to matzourana_daily for the public site.
+On Input: keys - optional Array of keys (default: the ticked checkboxes).
+On Output: Promise<Boolean> - true when written.
+Notes: refuses (no write) while #planDay is not today, so a loaded past day never changes the
+       site's menu.
+---------------------*/
 async function saveDailyMenuToFirebase(keys){
+  if (!isPlanDayToday()) { console.warn("matzourana_daily: not saved (#planDay is not today)"); return false; }
   const db = (typeof getDb === "function" && getDb()) || window.rtdb;
   const list = keys || [...document.querySelectorAll(".daily-pick:checked")].map(el => el.dataset.key);
-  if (!db) { alert("Firebase off"); return; }
+  if (!db) { alert("Firebase off"); return false; }
   await db.ref("matzourana_daily").set({
     updatedAt: new Date().toISOString(),
     keys: list.filter(k => menuCatalog[k])
   });
+  return true;
 }
 
 function selectedDailyKeys(){
@@ -1740,6 +1809,8 @@ const CH_EL   = { local: "Κατάστημα", efood: "e-food", wolt: "Wolt" };
 
 let portionChannels = JSON.parse(localStorage.getItem("mz_ch") || "{}");
 let dayLedger = JSON.parse(localStorage.getItem("mz_days") || "{}");
+let dayLoadSeq = 0;           // guards loadDayFromLedger against out-of-order date changes
+let siteDailyPicks = [];      // today's menu picks (matzourana_daily), used for dates without a record
 
 function chOf(key){
   const p = portionChannels[salesKey(key)] || {};
@@ -1755,6 +1826,15 @@ function totalPortions(key){
 }
 function portionsOf(key){ return totalPortions(key); }
 
+/*-------------------
+Purpose: Set the count of one item in one channel (from the dish table or the entry card).
+On Input: key - String (new or legacy key); ch - 'local' | 'efood' | 'wolt'; val - number or text.
+On Output: none.
+Side effects: updates portionChannels and localStorage mz_ch / mz_ch_date (the #planDay date the
+          counts belong to); copies the value into the other view's input (syncChInputs), re-draws
+          the card when the item is not shown there yet (typed in the dish table) and
+          redraws the KPIs, totals, favorites and highlights (renderProfitPlanner).
+---------------------*/
 function setCh(key, ch, val){
   key = salesKey(key);
   const n = Number(val);
@@ -1762,7 +1842,46 @@ function setCh(key, ch, val){
   portionChannels[key][ch] = (!n || n < 0) ? 0 : n;
   if (totalPortions(key) === 0) delete portionChannels[key];
   localStorage.setItem("mz_ch", JSON.stringify(portionChannels));
+  localStorage.setItem("mz_ch_date", currentPlanDay());
+  syncChInputs(key);
+  if (totalPortions(key) > 0 && !document.querySelector('#salesEntry input[data-ch-key="' + key + '"]')
+      && typeof renderSalesEntry === "function") renderSalesEntry();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+}
+
+/*-------------------
+Purpose: Copy the counts of one item into every count input that shows it (dish table and entry
+         card), so both views always show the same portionChannels values.
+On Input: key - String (sales key).
+On Output: none. Side effects: input values (the input being typed in is left alone).
+---------------------*/
+function syncChInputs(key){
+  const c = chOf(key);
+  document.querySelectorAll('input[data-ch-key="' + key + '"]').forEach(el => {
+    if (el === document.activeElement) return;
+    const v = c[el.dataset.ch] || "";
+    if (String(el.value) !== String(v)) el.value = v;
+  });
+}
+
+/*-------------------
+Purpose: Today's date in the browser's local time zone.
+On Input: none.
+On Output: String "YYYY-MM-DD".
+---------------------*/
+function localTodayISO(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+/*-------------------
+Purpose: The day being edited (#planDay), today when the picker is empty.
+On Input: none.
+On Output: String "YYYY-MM-DD".
+---------------------*/
+function currentPlanDay(){
+  const el = document.getElementById("planDay");
+  return (el && el.value) || localTodayISO();
 }
 function setPortions(key, val){ setCh(key, "local", val); }
 
@@ -2237,7 +2356,8 @@ let salesLegacyToKey = {};    // admin menuCatalog key → fixed-menu key (old s
 let salesSiteDaily = [];      // today's currentDailyMenu keys from matzourana_data.js
 let siteMenuPrices = {};      // key -> "€x.xx" from matzourana_data.js (wins over admin / kitchen-book prices)
 let salesItemsSource = "";    // "menu" (live matzourana_menu.html) or "admin" (fallback)
-const salesEntryExtraKeys = new Set(); // daily dishes added by hand to the entry list
+const salesEntryPinned = new Set();     // items added by hand: shown (even at 0) until the next card re-draw
+let salesEntryShowAll = false;          // "Εμφάνιση όλων": show every item, not only the ordered ones
 
 /*-------------------
 Purpose: Make the public site's menu prices (menuCatalog in matzourana_data.js) the source of truth
@@ -2363,7 +2483,7 @@ function salesDailyEntryKeys(){
   const picks = [...document.querySelectorAll(".daily-pick:checked")].map(el => el.dataset.key);
   const counted = Object.keys(portionChannels).filter(k => totalPortions(k) > 0);
   const out = [];
-  [...salesSiteDaily, ...picks, ...salesEntryExtraKeys, ...counted].forEach(k => {
+  [...salesSiteDaily, ...picks, ...salesEntryPinned, ...counted].forEach(k => {
     if (!menuCatalog[k] || salesItems[k] || salesLegacyToKey[k] || out.includes(k)) return;
     out.push(k);
   });
@@ -2384,7 +2504,8 @@ function salesEntryRowHtml(key){
     ? (fc == null ? ` <span class="nocost" title="Δεν υπάρχει συνταγή / κόστος: μετράει 0">χωρίς κόστος</span>` : "")
     : (!recipes[key] ? ` <span class="nocost" title="Χωρίς συνταγή στο kitchen book">χωρίς συνταγή</span>` : "");
   const inp = ch => `<input type="number" inputmode="numeric" min="0" step="1" placeholder="0"
-      aria-label="${CH_EL[ch]}" value="${c[ch] || ""}" onchange="setCh('${key}','${ch}',this.value)">`;
+      aria-label="${CH_EL[ch]}" value="${c[ch] || ""}" data-ch-key="${key}" data-ch="${ch}"
+      onchange="setCh('${key}','${ch}',this.value)">`;
   return `<div class="sales-row" data-key="${key}">
       <div class="sr-name"><span>${d.el}</span> <small>${d.price || ""}</small>${mark}
         ${d.detail ? `<div class="sr-detail">${d.detail}</div>` : ""}</div>
@@ -2393,54 +2514,122 @@ function salesEntryRowHtml(key){
 }
 
 /*-------------------
-Purpose: Draw the "Παραγγελίες ημέρας" entry box of the Κέρδος / Ημέρα tab, grouped by
+Purpose: Draw the "Παραγγελίες ημέρας ανά κανάλι" card of the Κέρδος / Ημέρα tab, grouped by
          category (Πιάτα ημέρας, Ψητά, Σαλάτες, Ορεκτικά, Πατάτες, Αναψυκτικά, Μπύρες, Κρασιά).
-On Input: none (reads salesItems, menuCatalog and portionChannels).
+On Input: none (reads salesItems, menuCatalog, portionChannels, salesEntryPinned, salesEntryShowAll).
 On Output: none.
-Side effects: fills #salesEntry; inputs call setCh(), which only re-draws the KPIs (the inputs
-          themselves are not re-drawn, so typing is never interrupted).
+Side effects: fills #salesEntry. By default only items with local+efood+wolt > 0 are shown, plus
+          items just added with "+ Προσθήκη είδους…" (salesEntryPinned, emptied here, so a row
+          left at 0 disappears on the next re-draw); groups without rows are hidden. "Εμφάνιση
+          όλων" shows every item. Inputs call setCh(), which does not re-draw the card, so a row
+          stays while it is being edited. Totals are always over all items.
 ---------------------*/
 function renderSalesEntry(){
   const box = document.getElementById("salesEntry");
   if (!box) return;
-  const dailyKeys = salesDailyEntryKeys();
-  const others = Object.keys(menuCatalog)
-    .filter(k => !salesItems[k] && !salesLegacyToKey[k] && !dailyKeys.includes(k))
-    .sort((a, b) => menuCatalog[a].el.localeCompare(menuCatalog[b].el, "el"));
+  const pinned = new Set(salesEntryPinned);
+  salesEntryPinned.clear();
+  const shown = k => salesEntryShowAll || totalPortions(k) > 0 || pinned.has(k);
+  const dailyAll = Object.keys(menuCatalog).filter(k => !salesItems[k] && !salesLegacyToKey[k]);
+  const dailyKeys = salesEntryShowAll
+    ? salesDailyEntryKeys()
+    : [...new Set([...salesDailyEntryKeys(), ...dailyAll])].filter(shown);
+  const groups = [{ id: SALES_DAILY_GROUP.id, el: SALES_DAILY_GROUP.el, keys: dailyKeys }]
+    .concat(SALES_GROUPS.map(g => ({ id: g.id, el: g.el,
+      keys: salesItemOrder.filter(k => salesItems[k].table === g.id && shown(k)) })))
+    .filter(g => g.keys.length);
   const head = `<div class="sales-head"><span></span><span>Κατ.</span><span>e-food</span><span>Wolt</span></div>`;
-  const group = (id, title, keys, extra) => `
-    <details class="sales-group" data-group="${id}" ${keys.length || extra ? "open" : ""}>
-      <summary><span>${title}</span><span class="sg-sum" data-sum="${id}">—</span></summary>
+  const group = g => `
+    <details class="sales-group" data-group="${g.id}" open>
+      <summary><span>${g.el}</span><span class="sg-sum" data-sum="${g.id}">—</span></summary>
       ${head}
-      ${keys.map(salesEntryRowHtml).join("")}
-      ${extra || ""}
+      ${g.keys.map(salesEntryRowHtml).join("")}
     </details>`;
-  const addSel = `<select class="sales-add" onchange="addSalesEntryKey(this.value)">
-      <option value="">+ άλλο πιάτο ημέρας…</option>
-      ${others.map(k => `<option value="${k}">${menuCatalog[k].el}</option>`).join("")}
-    </select>`;
+  const visible = new Set(groups.flatMap(g => g.keys));
   box.innerHTML = `
     <h2>Παραγγελίες ημέρας ανά κανάλι <span class="badge" id="salesEntryBadge">—</span></h2>
     <p class="note" style="margin-top:0">Γράψε τεμάχια ανά κανάλι (Κατάστημα / e-food / Wolt).
       Τιμές από τον κατάλογο του site${salesItemsSource === "admin" ? " (ο κατάλογος δεν φορτώθηκε: τιμές admin)" : ""}.
       «χωρίς κόστος» = δεν υπάρχει συνταγή, το κόστος μετράει 0.</p>
-    <div class="sales-groups">
-      ${group(SALES_DAILY_GROUP.id, SALES_DAILY_GROUP.el, dailyKeys, addSel)}
-      ${SALES_GROUPS.map(g => group(g.id, g.el, salesItemOrder.filter(k => salesItems[k].table === g.id))).join("")}
+    <div class="sales-tools">
+      ${salesAddControlHtml(visible)}
+      <label class="sales-all"><input type="checkbox" ${salesEntryShowAll ? "checked" : ""}
+        onchange="salesEntryShowAll = this.checked; renderSalesEntry()"> Εμφάνιση όλων</label>
     </div>
+    ${groups.length ? `<div class="sales-groups">${groups.map(group).join("")}</div>`
+      : `<p class="note sales-empty">Δεν υπάρχουν παραγγελίες για αυτή την ημέρα</p>`}
     <div class="note" id="salesEntryChannels"></div>`;
   updateSalesEntryTotals();
 }
 
 /*-------------------
-Purpose: Add one more daily dish (not on today's site menu) to the entry list.
-On Input: key - String, menuCatalog key ('' does nothing).
-On Output: none.
+Purpose: Options of the "+ Προσθήκη είδους…" list: every item not shown yet, grouped by category.
+On Input: visible - Set of keys already shown; q - optional search text (Greek / English / key).
+On Output: String (HTML <option>/<optgroup> elements).
+---------------------*/
+function salesAddOptionsHtml(visible, q){
+  const norm = t => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const nq = norm(q).trim();
+  const hit = k => {
+    const d = salesItemOf(k);
+    return d && (!nq || norm(d.el + " " + (d.en || "") + " " + (d.detail || "") + " " + k).includes(nq));
+  };
+  const opt = k => {
+    const d = salesItemOf(k);
+    return `<option value="${k}">${d.el}${d.detail ? " · " + d.detail : ""} ${d.price || ""}</option>`;
+  };
+  const daily = Object.keys(menuCatalog)
+    .filter(k => !salesItems[k] && !salesLegacyToKey[k] && !visible.has(k) && hit(k))
+    .sort((a, b) => menuCatalog[a].el.localeCompare(menuCatalog[b].el, "el"));
+  const parts = [{ el: SALES_DAILY_GROUP.el, keys: daily }].concat(SALES_GROUPS.map(g => ({
+    el: g.el, keys: salesItemOrder.filter(k => salesItems[k].table === g.id && !visible.has(k) && hit(k)) })));
+  return `<option value="">+ Προσθήκη είδους…</option>` + parts.filter(p => p.keys.length)
+    .map(p => `<optgroup label="${p.el}">${p.keys.map(opt).join("")}</optgroup>`).join("");
+}
+
+/*-------------------
+Purpose: The add control of the card: a search box that narrows a grouped list of all items.
+On Input: visible - Set of keys already shown.
+On Output: String (HTML).
+---------------------*/
+function salesAddControlHtml(visible){
+  return `<div class="sales-addbox">
+      <input type="search" class="sales-find" placeholder="Αναζήτηση είδους…" aria-label="Αναζήτηση είδους"
+        oninput="filterSalesAdd(this.value)">
+      <select class="sales-add" id="salesAddSelect" aria-label="Προσθήκη είδους"
+        onchange="addSalesEntryKey(this.value)">${salesAddOptionsHtml(visible)}</select>
+    </div>`;
+}
+
+/*-------------------
+Purpose: Narrow the "+ Προσθήκη είδους…" list while typing in its search box.
+On Input: q - String.
+On Output: none. Side effects: rebuilds the options of #salesAddSelect.
+---------------------*/
+function filterSalesAdd(q){
+  const sel = document.getElementById("salesAddSelect");
+  if (!sel) return;
+  const visible = new Set([...document.querySelectorAll("#salesEntry .sales-row")].map(r => r.dataset.key));
+  sel.innerHTML = salesAddOptionsHtml(visible, q);
+}
+
+/*-------------------
+Purpose: Show one more item in the card (any daily dish or fixed-menu item) and put the cursor in
+         its Κατάστημα input.
+On Input: key - String ('' does nothing).
+On Output: none. Side effects: salesEntryPinned, card re-drawn, focus moved.
 ---------------------*/
 function addSalesEntryKey(key){
-  if (!key || !menuCatalog[key]) return;
-  salesEntryExtraKeys.add(key);
+  key = key ? salesKey(key) : key;
+  if (!key || !salesItemOf(key)) return;
+  document.querySelectorAll("#salesEntry .sales-row").forEach(r => salesEntryPinned.add(r.dataset.key));
+  salesEntryPinned.add(key);
   renderSalesEntry();
+  const inp = document.querySelector(`#salesEntry input[data-ch-key="${key}"][data-ch="local"]`);
+  if (inp) {
+    inp.closest(".sales-row").scrollIntoView({ block: "center" });
+    inp.focus();
+  }
 }
 
 /*-------------------
@@ -3895,21 +4084,63 @@ function commitDay(){
   return pushToFirebase();
 }
 
+/*-------------------
+Purpose: Load the day of #planDay into BOTH views: the "Πιάτα & Food Cost" table (counts and
+         Σήμερα checkboxes) and the "Παραγγελίες ημέρας" card, plus KPIs, favorites, highlights.
+On Input: none (reads #planDay; empty = today).
+On Output: Promise<Object|null> - the loaded day record, or null when the date has none.
+Side effects: reads matzourana_days/<date> (fallback: the local dayLedger); sets portionChannels
+          from rec.channels (legacy keys migrated). A date without a record starts empty, except
+          unsaved counts typed earlier for that same date (localStorage mz_ch_date); counts of
+          another date are cleared. Checkboxes: daily dishes with portions or in rec.keys
+          (fixed-menu items are never ticked); without a record, today's menu picks.
+          Never writes to Firebase.
+---------------------*/
 async function loadDayFromLedger(){
-  const date = document.getElementById("planDay").value;
-  let rec = dayLedger[date];
+  const el = document.getElementById("planDay");
+  if (el && !el.value) el.value = localTodayISO();
+  const date = currentPlanDay();
+  const seq = ++dayLoadSeq;
+  let rec = null;
   const db = (typeof getDb === "function" && getDb()) || window.rtdb;
-  if (!rec && db) {
-    const snap = await db.ref("matzourana_days/" + date).once("value");
-    rec = snap.val();
-    if (rec) dayLedger[date] = rec;
+  if (db) {
+    try { rec = (await db.ref("matzourana_days/" + date).once("value")).val(); }
+    catch (e) { console.warn("Day load:", e); }
   }
-  if (!rec) { renderProfitPlanner(); return; }
-  portionChannels = migrateSalesChannels(rec.channels || {}, salesLegacyToKey);
-  if (rec.keys) applyDailyPicks(rec.keys);
-  renderDishTable();
+  if (!rec && dayLedger[date]) rec = dayLedger[date];
+  if (seq !== dayLoadSeq) return rec;          // a newer date was picked meanwhile
+  let channels = {};
+  if (rec) {
+    dayLedger[date] = rec;
+    channels = rec.channels || {};
+  } else if (localStorage.getItem("mz_ch_date") === date) {
+    try { channels = JSON.parse(localStorage.getItem("mz_ch") || "{}"); } catch (e) { channels = {}; }
+  }
+  portionChannels = migrateSalesChannels(channels, salesLegacyToKey);
+  localStorage.setItem("mz_ch", JSON.stringify(portionChannels));
+  localStorage.setItem("mz_ch_date", date);
+
+  const isDaily = k => menuCatalog[k] && !salesItems[k] && !salesLegacyToKey[k];
+  const picks = rec
+    ? [...new Set([...(rec.keys || []), ...Object.keys(portionChannels)])]
+        .filter(k => isDaily(k) && (totalPortions(k) > 0 || (rec.keys || []).includes(k)))
+    : siteDailyPicks.slice();
+  if (typeof renderDishTable === "function") renderDishTable();
+  applyDailyPicks(picks);
+  updateDailyPickLock();
   renderSalesEntry();
   renderProfitPlanner();
+  return rec;
+}
+
+/*-------------------
+Purpose: "Φόρτωση από την Matzourana-Database": reload the kitchen book, then the selected day.
+On Input: none.
+On Output: Promise<void>.
+---------------------*/
+async function reloadFromDatabase(){
+  await loadKitchenBook();
+  await loadDayFromLedger();
 }
 
 function monthRows(ym){
@@ -4084,7 +4315,8 @@ Purpose: Load and draw everything in the admin once the owner is signed in: nati
 On Input: none. Must only be called by the admin gate after onAuthStateChanged reports
           the owner UID.
 On Output: Promise<void> (resolves when the first render is done).
-Side effects: reads matzourana_kitchenbook and matzourana_daily from Firebase; renders all tabs
+Side effects: reads matzourana_kitchenbook, matzourana_daily and matzourana_days/<#planDay> from
+          Firebase (loadDayFromLedger); renders all tabs
           (the settings texts start neutral until the kitchen book is applied).
 ---------------------*/
 async function afterAdminUnlock() {
@@ -4094,9 +4326,9 @@ async function afterAdminUnlock() {
   await loadSalesItems();
   recalcAll();
   const dailyKeys = await loadDailyMenuFromFirebase();
+  siteDailyPicks = dailyKeys.slice();
   if (dailyKeys.length) applyDailyPicks(dailyKeys);
-  renderSalesEntry();
-  renderProfitPlanner();
+  await loadDayFromLedger();      // #planDay (today when empty) → both tables, KPIs, highlights
   renderChannels();
 }
 
