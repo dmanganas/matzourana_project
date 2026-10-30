@@ -304,6 +304,45 @@ tr:hover td { background: #fafcfb; }
   #tab-channels .form-grid { grid-template-columns: 1fr; }
 }
 
+/* Παραγγελίες ημέρας: every sold item per channel (phone / iPad / desktop) */
+.sales-entry { margin-bottom: 16px; }
+.sales-groups {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: start;
+}
+.sales-group { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 10px 8px; }
+.sales-group summary {
+  cursor: pointer; font-weight: 700; color: var(--green-dark); padding: 6px 0;
+  display: flex; justify-content: space-between; gap: 8px; list-style: none;
+}
+.sales-group summary::-webkit-details-marker { display: none; }
+.sales-group summary::before { content: "▸"; margin-right: 6px; }
+.sales-group[open] summary::before { content: "▾"; }
+.sales-group summary > span:first-child { flex: 1; }
+.sales-group .sg-sum { font-weight: 600; color: var(--muted); font-size: .82rem; white-space: nowrap; }
+.sales-head, .sales-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 3.4rem);
+  gap: 6px; align-items: center;
+}
+.sales-head { font-size: .72rem; color: var(--muted); text-align: center; padding: 2px 0 4px; }
+.sales-row { padding: 4px 0; border-top: 1px solid var(--line); }
+.sales-row .sr-name { font-size: .86rem; line-height: 1.25; min-width: 0; }
+.sales-row .sr-name small { color: var(--muted); white-space: nowrap; }
+.sales-row .sr-detail { color: var(--muted); font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sales-row input[type="number"] {
+  width: 100%; padding: 6px 2px; text-align: center; font-size: 16px; /* 16px: no iOS zoom */
+}
+.nocost {
+  display: inline-block; font-size: .66rem; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+  background: var(--amber-soft); color: var(--amber); border: 1px solid #f1d3a2; white-space: nowrap;
+}
+.sales-add { width: 100%; margin-top: 6px; font-size: .85rem; }
+@media (max-width: 640px) {
+  .sales-groups { grid-template-columns: 1fr; }
+  .sales-head, .sales-row { grid-template-columns: minmax(0, 1fr) repeat(3, 3rem); gap: 4px; }
+}
+
 </style>
 </head>
 <body class="admin-locked">
@@ -505,6 +544,8 @@ tr:hover td { background: #fafcfb; }
     <p class="note" id="fixedCostHint">Άλλαξε κελί → ενημερώνεται το σταθερό. Άδειασε για επαναφορά.</p>
   </div>
 
+  <div class="card-mini sales-entry" id="salesEntry"></div>
+
   <div class="kpi-grid" id="profitKpis"></div>
   <div class="targets" id="targetLadder"></div>
 
@@ -523,7 +564,7 @@ tr:hover td { background: #fafcfb; }
 
 
   <p class="note">
-    Μερίδες ανά κανάλι στον πίνακα πιάτων. Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
+    Μερίδες ανά κανάλι στις «Παραγγελίες ημέρας» (ή στον πίνακα πιάτων). Τα % πάνω μένουν 0 εκτός αν θέλεις να σπάσεις
     το σύνολο μερίδων (π.χ. 80 / 10 / 10). e-food −<span class="commEfood">—</span>, Wolt −<span class="commWolt">—</span>, κατάστημα χωρίς προμήθεια.
   </p>
 </section>
@@ -1473,6 +1514,7 @@ function avgMenuFoodPct(){
 
 let dailySaveTimer = null;
 function onDailyPickChange(){
+  if (typeof renderSalesEntry === "function") renderSalesEntry();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
   clearTimeout(dailySaveTimer);
   dailySaveTimer = setTimeout(() => {
@@ -1700,7 +1742,7 @@ let portionChannels = JSON.parse(localStorage.getItem("mz_ch") || "{}");
 let dayLedger = JSON.parse(localStorage.getItem("mz_days") || "{}");
 
 function chOf(key){
-  const p = portionChannels[key] || {};
+  const p = portionChannels[salesKey(key)] || {};
   return {
     local: Number(p.local || 0),
     efood: Number(p.efood || 0),
@@ -1714,6 +1756,7 @@ function totalPortions(key){
 function portionsOf(key){ return totalPortions(key); }
 
 function setCh(key, ch, val){
+  key = salesKey(key);
   const n = Number(val);
   if (!portionChannels[key]) portionChannels[key] = { local:0, efood:0, wolt:0 };
   portionChannels[key][ch] = (!n || n < 0) ? 0 : n;
@@ -1773,9 +1816,10 @@ function dishDayEconomics(key){
 }
 
 function dishDayEconomics(key){
-  const d = menuCatalog[key];
-  const price = parseEuro(d.price);
-  const fc = foodCost(key);
+  const d = salesItemOf(key) || { el: key, price: "€0", category: "", fixed: false, group: SALES_DAILY_GROUP.el };
+  const price = parseEuro(d.price) || 0;
+  const fcKnown = salesItemFoodCost(key);
+  const fc = fcKnown == null ? 0 : fcKnown;   // unknown cost ("χωρίς κόστος") counts as 0
   const raw = chOf(key);
   let qty = { ...raw };
   const tot = raw.local + raw.efood + raw.wolt;
@@ -1797,6 +1841,7 @@ function dishDayEconomics(key){
   const local = line("local"), efood = line("efood"), wolt = line("wolt");
   return {
     key, d, price, fc, qty,
+    noCost: fcKnown == null, fixed: !!d.fixed, group: d.group || SALES_DAILY_GROUP.el,
     n: local.n + efood.n + wolt.n,
     sales: local.sales + efood.sales + wolt.sales,
     comm:  local.comm  + efood.comm  + wolt.comm,
@@ -1828,8 +1873,17 @@ function dayTotals(keys){
   };
 }
 
+/*-------------------
+Purpose: Every item with counts today (daily dishes and fixed-menu items, each once) with its
+         day economics.
+On Input: none (reads portionChannels).
+On Output: Array of { key, d, price, fc, contrib, qty, foodDay, salesDay, contribDay, commDay,
+           group, fixed, isDrink, noCost, ch: { local|efood|wolt: { n, sales, comm, food, net } } },
+           most sold first.
+Notes: was menuCatalog-only; fixed-menu items (grill, salads, appetizers, potatoes, drinks) added.
+---------------------*/
 function dishesWithSales(){
-  return Object.keys(menuCatalog)
+  return allSalesKeys()
     .filter(k => portionsOf(k) > 0)
     .map(k => {
       const e = dishDayEconomics(k);
@@ -1837,11 +1891,598 @@ function dishesWithSales(){
         key: k, d: e.d, price: e.price, fc: e.fc,
         contrib: e.price - e.fc,
         qty: e.n, foodDay: e.food, salesDay: e.sales,
-        contribDay: e.net, commDay: e.comm
+        contribDay: e.net, commDay: e.comm,
+        group: e.group, fixed: e.fixed, noCost: e.noCost,
+        isDrink: !!(e.d && (e.d.category === "drinks" || e.d.type === "drinks")),
+        ch: { local: e.local, efood: e.efood, wolt: e.wolt }
       };
     })
     .sort((a,b) => b.qty - a.qty);
 }
+
+/* ===== SOLD ITEMS (whole menu) · PURE HELPERS (no DOM, no Firebase; tested with node) =====
+   Every sold item can be counted per channel (local / efood / wolt):
+     - daily cooked dishes   → menuCatalog keys (unchanged)
+     - fixed menu rows       → read live from /matzourana_menu.html tables below
+   Key of a fixed-menu row (stable, documented):
+     1. the site's fixedMenuDishPages key (matzourana_data.js) when that entry names the same
+        table + row (e.g. "bifteki_scharas", "salata_matzourana", "chaloumi_psito");
+     2. else the admin menuCatalog key of the same item (matched by name, e.g. "coca_cola",
+        "psomi_prozymeno", "beer_alpha", "wine_05") so kitchen-book recipes keep working;
+     3. else "fx_" + table id (dashes → _) + "__" + latin transliteration of the Greek row name
+        (text before the first <br>), e.g. "fx_salads__salata_kotopoulo".
+   An admin menuCatalog key replaced by rule 1 (e.g. "bifteki_grilled" → "bifteki_scharas") is a
+   legacy alias: its counts and recipe are read through the new key, never counted twice.
+   Only structure here: names and menu prices come from the public menu; no costs. */
+const SALES_GROUPS = [
+  { id:"grilled-dishes", el:"Ψητά",       cats:["grilled"],             category:"grilled" },
+  { id:"salads",         el:"Σαλάτες",    cats:["salads"],              category:"salads" },
+  { id:"appetizers",     el:"Ορεκτικά",   cats:["appetizers","sauces"], category:"appetizers" },
+  { id:"potatoes",       el:"Πατάτες",    cats:["potatoes"],            category:"potatoes" },
+  { id:"soft-drinks",    el:"Αναψυκτικά", cats:["drinks"],              category:"drinks" },
+  { id:"beers",          el:"Μπύρες",     cats:["drinks"],              category:"drinks" },
+  { id:"wines",          el:"Κρασιά",     cats:["drinks"],              category:"drinks" }
+];
+const SALES_DAILY_GROUP = { id:"daily", el:"Πιάτα ημέρας" };
+
+/*-------------------
+Purpose: Turn a dish / row name into comparable lowercase tokens (no accents, final σ, κ’ → και).
+On Input: s - String (may contain <br> and a description in brackets).
+On Output: Array of Strings, e.g. "Λαχανό - Καρότο" → ["λαχανο","καροτο"].
+---------------------*/
+function salesNameTokens(s){
+  return String(s || "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/(^|[\s(])κ[’'](?=\s)/g, "$1και")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ς/g, "σ")
+    .replace(/(\d)[.,](\d)/g, "$1_$2")
+    .split(/[^a-z0-9_\u0370-\u03ff]+/)
+    .filter(Boolean)
+    .map(t => t.replace(/λλ/g, "λ"));
+}
+
+/*-------------------
+Purpose: Short name of a menu row: the text before the first <br>, trimmed.
+On Input: s - String (data-el / data-en of a menu row).
+On Output: String.
+---------------------*/
+function salesShortName(s){
+  return String(s || "").split(/<br\s*\/?>/i)[0].replace(/\s+/g, " ").trim();
+}
+
+/*-------------------
+Purpose: Description part of a menu row (text after the first <br>, without brackets), used as a
+         small second line so rows with the same short name can be told apart.
+On Input: s - String (data-el of a menu row).
+On Output: String ("" when the row has no description).
+---------------------*/
+function salesDetail(s){
+  const parts = String(s || "").split(/<br\s*\/?>/i);
+  return parts.slice(1).join(" ").replace(/[()]/g, "").replace(/\s+/g, " ").trim();
+}
+
+/*-------------------
+Purpose: Latin transliteration of a Greek name, used for derived keys (rule 3).
+On Input: s - String.
+On Output: String of [a-z0-9_], at most 40 characters, e.g. "Σαλάτα κοτόπουλο" → "salata_kotopoulo".
+---------------------*/
+function salesTranslit(s){
+  const map = { α:"a",β:"v",γ:"g",δ:"d",ε:"e",ζ:"z",η:"i",θ:"th",ι:"i",κ:"k",λ:"l",μ:"m",ν:"n",
+    ξ:"x",ο:"o",π:"p",ρ:"r",σ:"s",τ:"t",υ:"y",φ:"f",χ:"ch",ψ:"ps",ω:"o" };
+  const base = String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/ς/g, "σ").replace(/ου/g, "ou");
+  let out = "";
+  for (const ch of base) out += (map[ch] != null) ? map[ch] : ch;
+  return out.replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 40).replace(/_+$/, "");
+}
+
+/*-------------------
+Purpose: Decode the few HTML entities that appear in data-el / data-en attributes.
+On Input: s - String.
+On Output: String.
+---------------------*/
+function salesDecodeHtml(s){
+  return String(s || "").replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+}
+
+/*-------------------
+Purpose: Read the sold rows of the fixed menu tables from the HTML of matzourana_menu.html.
+On Input: html - String, full page source.
+On Output: Array of { table, el, en, price } in menu order (commented-out rows are skipped);
+           price is the euro text of the price cell, e.g. "€9.50".
+---------------------*/
+function parseMenuSalesRows(html){
+  const clean = String(html || "").replace(/<!--[\s\S]*?-->/g, "");
+  const rows = [];
+  SALES_GROUPS.forEach(g => {
+    const start = clean.indexOf('class="menu-content" id="' + g.id + '"');
+    if (start < 0) return;
+    const end = clean.indexOf("</table>", start);
+    const chunk = clean.slice(start, end < 0 ? undefined : end);
+    const re = /<tr>\s*<td\b((?:[^>"]|"[^"]*")*)>[\s\S]*?<\/td>\s*<td[^>]*>\s*([^<]*?)\s*<\/td>\s*<\/tr>/g;
+    let m;
+    while ((m = re.exec(chunk))) {
+      const attrs = m[1];
+      const el = (attrs.match(/data-el="([^"]*)"/) || [])[1];
+      const en = (attrs.match(/data-en="([^"]*)"/) || [])[1];
+      if (!el) continue;
+      rows.push({ table: g.id, el: salesDecodeHtml(el).trim(), en: salesDecodeHtml(en || "").trim(), price: m[2].trim() });
+    }
+  });
+  return rows;
+}
+
+/*-------------------
+Purpose: Read the public site data the admin needs (no eval): fixedMenuDishPages rows,
+         menuCatalog names/prices and today's currentDailyMenu, from matzourana_data.js source.
+On Input: js - String, source of matzourana_data.js.
+On Output: { pages: { key: { table, row } }, catalog: { key: { category, el, en, price } },
+             daily: Array of keys }.
+---------------------*/
+function parseSiteSalesData(js){
+  const src = String(js || "");
+  const block = (name) => {
+    const i = src.indexOf("const " + name);
+    if (i < 0) return "";
+    const j = src.indexOf("\n};", i);
+    const k = src.indexOf("\n];", i);
+    const end = [j, k].filter(x => x > i).sort((a, b) => a - b)[0];
+    return src.slice(i, end > 0 ? end : undefined);
+  };
+  const unq = s => String(s).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  const pages = {};
+  const pRe = /"([a-z0-9_]+)"\s*:\s*\{\s*table:\s*"([^"]+)"\s*,\s*group:\s*"[^"]*"\s*,\s*row:\s*"((?:[^"\\]|\\.)*)"/g;
+  let m;
+  const pb = block("fixedMenuDishPages");
+  while ((m = pRe.exec(pb))) pages[m[1]] = { table: m[2], row: unq(m[3]) };
+  const catalog = {};
+  const cRe = /"([a-z0-9_]+)"\s*:\s*\{\s*category:\s*"([^"]*)"\s*,\s*el:\s*"((?:[^"\\]|\\.)*)"\s*,\s*en:\s*"((?:[^"\\]|\\.)*)"\s*,\s*price:\s*"([^"]*)"/g;
+  const cb = block("menuCatalog");
+  while ((m = cRe.exec(cb))) catalog[m[1]] = { category: m[2], el: unq(m[3]), en: unq(m[4]), price: m[5] };
+  const daily = [];
+  const db = block("currentDailyMenu").replace(/\/\/[^\n]*/g, "");
+  const dRe = /"([a-z0-9_]+)"/g;
+  while ((m = dRe.exec(db))) daily.push(m[1]);
+  return { pages, catalog, daily };
+}
+
+/*-------------------
+Purpose: Is every token of a candidate name contained in a row's tokens?
+On Input: cand - Array of tokens; row - Set of tokens.
+On Output: Number - the candidate's token count when all are contained, else 0.
+---------------------*/
+function salesTokenScore(cand, row){
+  if (!cand.length) return 0;
+  return cand.every(t => row.has(t)) ? cand.length : 0;
+}
+
+/*-------------------
+Purpose: Build the registry of fixed-menu sold items with stable keys (rules 1-3 above).
+On Input: rows - Array from parseMenuSalesRows; pages - fixedMenuDishPages rows
+          ({ key: { table, row } }); adminCatalog - the admin menuCatalog object.
+On Output: { items: { key: { key, table, group, el, en, price, legacy } }, order: Array of keys,
+             legacyToKey: { adminKey: key } } - legacy is the admin menuCatalog key of the same
+           item ("" when none), legacyToKey only lists admin keys that differ from the new key.
+---------------------*/
+function buildSalesItems(rows, pages, adminCatalog){
+  adminCatalog = adminCatalog || {};
+  const groupOf = id => SALES_GROUPS.find(g => g.id === id) || { cats: [] };
+  // admin catalog matches: best (most specific) name match, each admin key used once
+  const pairs = [];
+  rows.forEach((r, i) => {
+    const elSet = new Set(salesNameTokens(r.el));
+    const enSet = new Set(salesNameTokens(r.en));
+    Object.keys(adminCatalog).forEach(k => {
+      const d = adminCatalog[k];
+      if (!d || !groupOf(r.table).cats.includes(d.category)) return;
+      const score = Math.max(salesTokenScore(salesNameTokens(d.el), elSet),
+                             salesTokenScore(salesNameTokens(d.en), enSet));
+      if (score > 0) pairs.push({ i, k, score });
+    });
+  });
+  pairs.sort((a, b) => b.score - a.score || a.i - b.i);
+  const rowAdmin = {}, usedAdmin = new Set();
+  pairs.forEach(p => {
+    if (rowAdmin[p.i] != null || usedAdmin.has(p.k)) return;
+    rowAdmin[p.i] = p.k; usedAdmin.add(p.k);
+  });
+
+  const items = {}, order = [], legacyToKey = {};
+  const used = new Set();
+  rows.forEach((r, i) => {
+    const short = salesShortName(r.el);
+    const shortTok = salesNameTokens(short).join(" ");
+    const pageKey = Object.keys(pages || {}).find(k =>
+      pages[k].table === r.table && salesNameTokens(pages[k].row).join(" ") === shortTok && !used.has(k));
+    const legacy = (pageKey && adminCatalog[pageKey] && !usedAdmin.has(pageKey)) ? pageKey : (rowAdmin[i] || "");
+    let key = pageKey || legacy;
+    if (!key || used.has(key)) {
+      key = "fx_" + r.table.replace(/-/g, "_") + "__" + (salesTranslit(short) || ("row" + i));
+      let n = 2, base = key;
+      while (used.has(key)) key = base + "_" + (n++);
+    }
+    used.add(key);
+    items[key] = { key, table: r.table, group: groupOf(r.table).el || r.table,
+      el: short, en: salesShortName(r.en), detail: salesDetail(r.el), price: r.price, legacy };
+    if (legacy && legacy !== key) legacyToKey[legacy] = key;
+    order.push(key);
+  });
+  return { items, order, legacyToKey };
+}
+
+/*-------------------
+Purpose: Fallback registry when matzourana_menu.html cannot be read (e.g. offline copy):
+         the admin's own menuCatalog items of the fixed categories, with their admin keys.
+On Input: adminCatalog - the admin menuCatalog object.
+On Output: same shape as buildSalesItems (legacyToKey is empty).
+---------------------*/
+function salesItemsFromAdminCatalog(adminCatalog){
+  const items = {}, order = [];
+  const tableOf = (k, d) => {
+    if (d.category === "drinks") {
+      if (/^beer_/.test(k)) return "beers";
+      if (/^wine_|tsipouro|ouzo/.test(k)) return "wines";
+      return "soft-drinks";
+    }
+    const g = SALES_GROUPS.find(x => x.cats.includes(d.category));
+    return g ? g.id : "";
+  };
+  SALES_GROUPS.forEach(g => {
+    Object.keys(adminCatalog || {}).forEach(k => {
+      const d = adminCatalog[k];
+      if (!d || tableOf(k, d) !== g.id) return;
+      items[k] = { key: k, table: g.id, group: g.el, el: d.el, en: d.en || "", price: d.price, legacy: k };
+      order.push(k);
+    });
+  });
+  return { items, order, legacyToKey: {} };
+}
+
+/*-------------------
+Purpose: Move counts saved under legacy admin keys to their new fixed-menu keys (old days,
+         old localStorage) so nothing is counted twice.
+On Input: channels - { key: { local, efood, wolt } }; legacyToKey - { adminKey: key }.
+On Output: new channels Object (input is not changed); counts of both keys are added.
+---------------------*/
+function migrateSalesChannels(channels, legacyToKey){
+  const out = {};
+  Object.keys(channels || {}).forEach(k => {
+    const to = (legacyToKey || {})[k] || k;
+    const c = channels[k] || {};
+    const o = out[to] || (out[to] = { local: 0, efood: 0, wolt: 0 });
+    o.local += Number(c.local || 0); o.efood += Number(c.efood || 0); o.wolt += Number(c.wolt || 0);
+  });
+  return out;
+}
+
+/*-------------------
+Purpose: Per-channel and per-group totals of one day's sold rows.
+On Input: rows - Array of { key, group, isDrink, ch: { local|efood|wolt: { n, sales, comm } } }.
+On Output: { byChannel: { local|efood|wolt: { n, sales, comm } },
+             byGroup: { groupName: { n, sales } }, units, foodPortions }.
+---------------------*/
+function salesBreakdown(rows){
+  const byChannel = { local: { n:0, sales:0, comm:0 }, efood: { n:0, sales:0, comm:0 }, wolt: { n:0, sales:0, comm:0 } };
+  const byGroup = {};
+  let units = 0, foodPortions = 0;
+  (rows || []).forEach(r => {
+    const g = byGroup[r.group || SALES_DAILY_GROUP.el] || (byGroup[r.group || SALES_DAILY_GROUP.el] = { n:0, sales:0 });
+    ["local", "efood", "wolt"].forEach(c => {
+      const x = (r.ch && r.ch[c]) || {};
+      const n = Number(x.n || 0), s = Number(x.sales || 0), cm = Number(x.comm || 0);
+      byChannel[c].n += n; byChannel[c].sales += s; byChannel[c].comm += cm;
+      g.n += n; g.sales += s;
+      units += n;
+      if (!r.isDrink) foodPortions += n;
+    });
+  });
+  const r2 = v => Math.round(v * 100) / 100;
+  Object.values(byChannel).forEach(x => { x.sales = r2(x.sales); x.comm = r2(x.comm); });
+  Object.values(byGroup).forEach(x => { x.sales = r2(x.sales); });
+  return { byChannel, byGroup, units, foodPortions };
+}
+
+/*-------------------
+Purpose: Per-channel / per-group totals of a saved day record, old or new.
+On Input: d - day record from matzourana_days (new ones carry byChannel/byGroup; old ones only
+          dishes{ key: { price, local, efood, wolt, commDay } }).
+On Output: { byChannel, byGroup } like salesBreakdown (old records: commissions split by quantity).
+---------------------*/
+function dayBreakdownOf(d){
+  if (d && d.byChannel) return { byChannel: d.byChannel, byGroup: d.byGroup || {} };
+  const rows = Object.keys((d && d.dishes) || {}).map(k => {
+    const x = d.dishes[k] || {};
+    const price = Number(x.price || 0);
+    const qty = Number(x.qty || 0) || (Number(x.local||0) + Number(x.efood||0) + Number(x.wolt||0));
+    const ch = {};
+    ["local", "efood", "wolt"].forEach(c => {
+      const n = Number(x[c] || 0);
+      ch[c] = { n, sales: n * price, comm: (c !== "local" && qty) ? Number(x.commDay || 0) * n / qty : 0 };
+    });
+    return { key: k, group: x.group || SALES_DAILY_GROUP.el, isDrink: !!x.isDrink, ch };
+  });
+  const b = salesBreakdown(rows);
+  return { byChannel: b.byChannel, byGroup: b.byGroup };
+}
+
+/*-------------------
+Purpose: Add several byChannel / byGroup breakdowns together (month and year reports).
+On Input: list - Array of { byChannel, byGroup } (missing parts are skipped).
+On Output: { byChannel, byGroup }.
+---------------------*/
+function mergeBreakdowns(list){
+  const out = { byChannel: { local: { n:0, sales:0, comm:0 }, efood: { n:0, sales:0, comm:0 }, wolt: { n:0, sales:0, comm:0 } }, byGroup: {} };
+  (list || []).forEach(b => {
+    if (!b) return;
+    Object.keys(b.byChannel || {}).forEach(c => {
+      const x = b.byChannel[c] || {}, o = out.byChannel[c] || (out.byChannel[c] = { n:0, sales:0, comm:0 });
+      o.n += Number(x.n || 0); o.sales += Number(x.sales || 0); o.comm += Number(x.comm || 0);
+    });
+    Object.keys(b.byGroup || {}).forEach(g => {
+      const x = b.byGroup[g] || {}, o = out.byGroup[g] || (out.byGroup[g] = { n:0, sales:0 });
+      o.n += Number(x.n || 0); o.sales += Number(x.sales || 0);
+    });
+  });
+  return out;
+}
+/* ===== end SOLD ITEMS pure helpers ===== */
+
+/* ===== SOLD ITEMS · STATE + UI (admin page) ===== */
+let salesItems = {};          // fixed-menu items { key: { key, table, group, el, en, detail, price, legacy } }
+let salesItemOrder = [];      // menu order of salesItems keys
+let salesLegacyToKey = {};    // admin menuCatalog key → fixed-menu key (old saved counts)
+let salesSiteDaily = [];      // today's currentDailyMenu keys from matzourana_data.js
+let siteMenuPrices = {};      // key -> "€x.xx" from matzourana_data.js (wins over admin / kitchen-book prices)
+let salesItemsSource = "";    // "menu" (live matzourana_menu.html) or "admin" (fallback)
+const salesEntryExtraKeys = new Set(); // daily dishes added by hand to the entry list
+
+/*-------------------
+Purpose: Make the public site's menu prices (menuCatalog in matzourana_data.js) the source of truth
+         for daily-dish prices in the admin. Food costs / recipes are not touched.
+On Input: catalog - { key: { price:"€x.xx", ... } } parsed from matzourana_data.js.
+On Output: Number - how many admin prices changed. Side effects: menuCatalog[key].price,
+           HTML_DEFAULTS.dishes[key] and siteMenuPrices are updated for every key the site prices.
+---------------------*/
+function applySiteMenuPrices(catalog){
+  let changed = 0;
+  Object.keys(catalog || {}).forEach(k => {
+    const price = catalog[k] && catalog[k].price;
+    if (!price || !(parseEuro(price) > 0)) return;
+    siteMenuPrices[k] = price;
+    if (menuCatalog[k] && menuCatalog[k].price !== price) { menuCatalog[k].price = price; changed++; }
+    if (HTML_DEFAULTS.dishes) HTML_DEFAULTS.dishes[k] = price;
+  });
+  return changed;
+}
+
+/*-------------------
+Purpose: Load every sold item of the public menu into the admin: the fixed-menu tables of
+         matzourana_menu.html (grill, salads, appetizers, potatoes, soft drinks, beers, wines)
+         and the daily dishes of matzourana_data.js that the admin catalogue does not have yet.
+On Input: none (fetches /matzourana_menu.html and /matzourana_data.js from the same site).
+On Output: Promise<void>.
+Side effects: fills salesItems / salesItemOrder / salesLegacyToKey / salesSiteDaily; adds missing
+          daily dishes to menuCatalog (existing entries and prices are not touched); moves counts
+          saved under legacy keys (portionChannels, localStorage mz_ch) to the new keys. Falls back
+          to the admin's own catalogue when the menu page cannot be read.
+---------------------*/
+async function loadSalesItems(){
+  let reg = null;
+  try {
+    const [menuRes, dataRes] = await Promise.all([
+      fetch("/matzourana_menu.html", { cache: "no-store" }),
+      fetch("/matzourana_data.js",   { cache: "no-store" })
+    ]);
+    if (!menuRes.ok || !dataRes.ok) throw new Error("HTTP " + menuRes.status + "/" + dataRes.status);
+    const site = parseSiteSalesData(await dataRes.text());
+    const rows = parseMenuSalesRows(await menuRes.text());
+    if (!rows.length) throw new Error("no menu rows");
+    reg = buildSalesItems(rows, site.pages, menuCatalog);
+    salesSiteDaily = site.daily.filter(k => site.catalog[k]);
+    applySiteMenuPrices(site.catalog);
+    Object.keys(site.catalog).forEach(k => {
+      if (menuCatalog[k] || reg.items[k] || reg.legacyToKey[k]) return;
+      const c = site.catalog[k];
+      menuCatalog[k] = { category: c.category, type: c.category,
+        el: salesShortName(c.el), en: salesShortName(c.en), price: c.price, fromSite: true };
+    });
+    salesItemsSource = "menu";
+  } catch (e) {
+    console.warn("Sold items: menu page not readable, using the admin catalogue", e);
+    reg = salesItemsFromAdminCatalog(menuCatalog);
+    salesItemsSource = "admin";
+  }
+  salesItems = reg.items;
+  salesItemOrder = reg.order;
+  salesLegacyToKey = reg.legacyToKey;
+  portionChannels = migrateSalesChannels(portionChannels, salesLegacyToKey);
+  localStorage.setItem("mz_ch", JSON.stringify(portionChannels));
+}
+
+/*-------------------
+Purpose: The key counts are stored under (legacy admin keys point to their fixed-menu key).
+On Input: key - String, menuCatalog or fixed-menu key.
+On Output: String.
+---------------------*/
+function salesKey(key){
+  return salesLegacyToKey[key] || key;
+}
+
+/*-------------------
+Purpose: Name, price and category of any sold item (fixed-menu row first, then menuCatalog).
+On Input: key - String.
+On Output: { el, en, price, category, type, fixed:Boolean, group:String } or null when unknown.
+---------------------*/
+function salesItemOf(key){
+  const f = salesItems[key];
+  if (f) {
+    const g = SALES_GROUPS.find(x => x.id === f.table) || {};
+    return { el: f.el, en: f.en, detail: f.detail || "", price: f.price,
+      category: g.category || f.table, type: g.category || f.table, fixed: true, group: f.group };
+  }
+  const d = menuCatalog[key];
+  return d ? { ...d, fixed: false, group: SALES_DAILY_GROUP.el } : null;
+}
+
+/*-------------------
+Purpose: Food cost of one unit of a sold item, or null when it is unknown.
+On Input: key - String.
+On Output: Number (euro) for daily dishes (same as before: foodCost) and for fixed-menu items
+           that have a kitchen-book recipe under their key or legacy key; null for fixed-menu
+           items without recipe (shown as "χωρίς κόστος", counted as 0).
+---------------------*/
+function salesItemFoodCost(key){
+  const f = salesItems[key];
+  if (!f) return foodCost(key);
+  if (recipes[key]) return foodCost(key);
+  if (f.legacy && recipes[f.legacy]) return foodCost(f.legacy);
+  return null;
+}
+
+/*-------------------
+Purpose: All keys that can carry sales, each item once: daily dishes of menuCatalog (minus the
+         ones that are fixed-menu items or their legacy keys), then the fixed-menu items.
+On Input: none.
+On Output: Array of keys.
+---------------------*/
+function allSalesKeys(){
+  const daily = Object.keys(menuCatalog).filter(k => !salesItems[k] && !salesLegacyToKey[k]);
+  return daily.concat(salesItemOrder);
+}
+
+/*-------------------
+Purpose: Daily dishes shown in the entry list: today's site menu, the ticked daily picks, the
+         dishes added by hand and every dish that already has counts.
+On Input: none.
+On Output: Array of menuCatalog keys (no fixed-menu items), in that order, without repeats.
+---------------------*/
+function salesDailyEntryKeys(){
+  const picks = [...document.querySelectorAll(".daily-pick:checked")].map(el => el.dataset.key);
+  const counted = Object.keys(portionChannels).filter(k => totalPortions(k) > 0);
+  const out = [];
+  [...salesSiteDaily, ...picks, ...salesEntryExtraKeys, ...counted].forEach(k => {
+    if (!menuCatalog[k] || salesItems[k] || salesLegacyToKey[k] || out.includes(k)) return;
+    out.push(k);
+  });
+  return out;
+}
+
+/*-------------------
+Purpose: HTML of one entry row: name, price, cost marker and three compact channel inputs.
+On Input: key - String.
+On Output: String (HTML).
+---------------------*/
+function salesEntryRowHtml(key){
+  const d = salesItemOf(key);
+  if (!d) return "";
+  const c = chOf(key);
+  const fc = salesItemFoodCost(key);
+  const mark = d.fixed
+    ? (fc == null ? ` <span class="nocost" title="Δεν υπάρχει συνταγή / κόστος: μετράει 0">χωρίς κόστος</span>` : "")
+    : (!recipes[key] ? ` <span class="nocost" title="Χωρίς συνταγή στο kitchen book">χωρίς συνταγή</span>` : "");
+  const inp = ch => `<input type="number" inputmode="numeric" min="0" step="1" placeholder="0"
+      aria-label="${CH_EL[ch]}" value="${c[ch] || ""}" onchange="setCh('${key}','${ch}',this.value)">`;
+  return `<div class="sales-row" data-key="${key}">
+      <div class="sr-name"><span>${d.el}</span> <small>${d.price || ""}</small>${mark}
+        ${d.detail ? `<div class="sr-detail">${d.detail}</div>` : ""}</div>
+      ${inp("local")}${inp("efood")}${inp("wolt")}
+    </div>`;
+}
+
+/*-------------------
+Purpose: Draw the "Παραγγελίες ημέρας" entry box of the Κέρδος / Ημέρα tab, grouped by
+         category (Πιάτα ημέρας, Ψητά, Σαλάτες, Ορεκτικά, Πατάτες, Αναψυκτικά, Μπύρες, Κρασιά).
+On Input: none (reads salesItems, menuCatalog and portionChannels).
+On Output: none.
+Side effects: fills #salesEntry; inputs call setCh(), which only re-draws the KPIs (the inputs
+          themselves are not re-drawn, so typing is never interrupted).
+---------------------*/
+function renderSalesEntry(){
+  const box = document.getElementById("salesEntry");
+  if (!box) return;
+  const dailyKeys = salesDailyEntryKeys();
+  const others = Object.keys(menuCatalog)
+    .filter(k => !salesItems[k] && !salesLegacyToKey[k] && !dailyKeys.includes(k))
+    .sort((a, b) => menuCatalog[a].el.localeCompare(menuCatalog[b].el, "el"));
+  const head = `<div class="sales-head"><span></span><span>Κατ.</span><span>e-food</span><span>Wolt</span></div>`;
+  const group = (id, title, keys, extra) => `
+    <details class="sales-group" data-group="${id}" ${keys.length || extra ? "open" : ""}>
+      <summary><span>${title}</span><span class="sg-sum" data-sum="${id}">—</span></summary>
+      ${head}
+      ${keys.map(salesEntryRowHtml).join("")}
+      ${extra || ""}
+    </details>`;
+  const addSel = `<select class="sales-add" onchange="addSalesEntryKey(this.value)">
+      <option value="">+ άλλο πιάτο ημέρας…</option>
+      ${others.map(k => `<option value="${k}">${menuCatalog[k].el}</option>`).join("")}
+    </select>`;
+  box.innerHTML = `
+    <h2>Παραγγελίες ημέρας ανά κανάλι <span class="badge" id="salesEntryBadge">—</span></h2>
+    <p class="note" style="margin-top:0">Γράψε τεμάχια ανά κανάλι (Κατάστημα / e-food / Wolt).
+      Τιμές από τον κατάλογο του site${salesItemsSource === "admin" ? " (ο κατάλογος δεν φορτώθηκε: τιμές admin)" : ""}.
+      «χωρίς κόστος» = δεν υπάρχει συνταγή, το κόστος μετράει 0.</p>
+    <div class="sales-groups">
+      ${group(SALES_DAILY_GROUP.id, SALES_DAILY_GROUP.el, dailyKeys, addSel)}
+      ${SALES_GROUPS.map(g => group(g.id, g.el, salesItemOrder.filter(k => salesItems[k].table === g.id))).join("")}
+    </div>
+    <div class="note" id="salesEntryChannels"></div>`;
+  updateSalesEntryTotals();
+}
+
+/*-------------------
+Purpose: Add one more daily dish (not on today's site menu) to the entry list.
+On Input: key - String, menuCatalog key ('' does nothing).
+On Output: none.
+---------------------*/
+function addSalesEntryKey(key){
+  if (!key || !menuCatalog[key]) return;
+  salesEntryExtraKeys.add(key);
+  renderSalesEntry();
+}
+
+/*-------------------
+Purpose: Refresh the per-group, per-channel and total figures of the entry box in place.
+On Input: none.
+On Output: none.
+---------------------*/
+function updateSalesEntryTotals(){
+  const box = document.getElementById("salesEntry");
+  if (!box) return;
+  const sold = dishesWithSales();
+  const b = salesBreakdown(sold);
+  const ids = { [SALES_DAILY_GROUP.el]: SALES_DAILY_GROUP.id };
+  SALES_GROUPS.forEach(g => { ids[g.el] = g.id; });
+  box.querySelectorAll("[data-sum]").forEach(el => { el.textContent = "—"; });
+  Object.keys(b.byGroup).forEach(g => {
+    const el = box.querySelector(`[data-sum="${ids[g] || g}"]`);
+    if (el) el.textContent = b.byGroup[g].n + " τεμ. · " + fmt(b.byGroup[g].sales);
+  });
+  const total = sold.reduce((s, r) => s + (r.salesDay || 0), 0);
+  const badge = document.getElementById("salesEntryBadge");
+  if (badge) badge.textContent = b.units + " τεμ. · " + fmt(total);
+  const chEl = document.getElementById("salesEntryChannels");
+  if (chEl) chEl.textContent = CH_KEYS.map(c =>
+    CH_EL[c] + " " + b.byChannel[c].n + " τεμ. · " + fmt(b.byChannel[c].sales)).join("  |  ");
+}
+
+/*-------------------
+Purpose: Short "per channel" and "per category" text of a breakdown for the report KPIs.
+On Input: b - { byChannel, byGroup } (mergeBreakdowns / dayBreakdownOf).
+On Output: { ch: String, groups: String } (empty Strings when there is nothing to show).
+---------------------*/
+function breakdownText(b){
+  if (!b || !b.byChannel) return { ch: "", groups: "" };
+  const ch = CH_KEYS.map(c => CH_EL[c] + " " + fmt((b.byChannel[c] || {}).sales || 0)).join(" · ");
+  const groups = Object.keys(b.byGroup || {})
+    .filter(g => (b.byGroup[g].sales || 0) > 0)
+    .sort((x, y) => b.byGroup[y].sales - b.byGroup[x].sales)
+    .map(g => g + " " + fmt(b.byGroup[g].sales)).join(" · ");
+  return { ch, groups };
+}
+/* ===== end SOLD ITEMS state + UI ===== */
 
 
 /*-------------------
@@ -2014,7 +2655,19 @@ function fillKpis(id, rec){
       <div class="label">Καθαρό μετά ΦΠΑ</div>
       <div class="value">${fmt(p.after)}</div>
       <div class="sub">μετά την απόδοση στην εφορία</div>
+    </div>${(() => {
+      const t = breakdownText(rec);
+      if (!t.ch) return "";
+      return `
+    <div class="kpi">
+      <div class="label">Πωλήσεις ανά κανάλι</div>
+      <div class="sub">${t.ch}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Πωλήσεις ανά κατηγορία</div>
+      <div class="sub">${t.groups || "—"}</div>
     </div>`;
+    })()}`;
 }
 
 function fieldOf(d, kind){
@@ -2209,6 +2862,9 @@ function summarizeDays(days, label){
     rec.profitAfter  += x.profitAfter;
   });
 
+  const brk = mergeBreakdowns((days || []).map(dayBreakdownOf));
+  rec.byChannel = brk.byChannel;
+  rec.byGroup = brk.byGroup;
   rec.net = rec.profitBefore;
   rec.profit = rec.profitBefore;
   rec.salesNet = rec.sales / (1 + VAT_RATE);
@@ -2318,8 +2974,10 @@ async function closeYear(y){
   const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
   const portions = months.reduce((s,m) => s + Number(m.qty || m.portions || 0), 0);
   const nDays    = months.reduce((s,m) => s + Number(m.days || 0), 0);
+  const yb = mergeBreakdowns(months);
   const rec = withVatProfit({
     year: y, months: 12, days: nDays, portions, qty: portions,
+    byChannel: yb.byChannel, byGroup: yb.byGroup,
     sales: months.reduce((s,m) => s + Number(m.sales||0), 0),
     food:  months.reduce((s,m) => s + Number(m.food||0), 0),
     comm:  months.reduce((s,m) => s + Number(m.comm||0), 0),
@@ -2349,7 +3007,8 @@ async function renderYearSection(){
   const comm     = months.reduce((s,m) => s + Number(m.comm||0), 0);
   const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
   const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
-  const rec = { year: y, months: months.length, sales, food, comm, fixed, net, ...vatPack(sales, food) };
+  const rec = { year: y, months: months.length, sales, food, comm, fixed, net, ...vatPack(sales, food),
+    ...mergeBreakdowns(months) };
   const b2 = document.getElementById("yearBadge");
   if (b2) b2.textContent = closed ? y + " κλεισμένο" : y + " · εκκρεμεί κλείσιμο";
   const yk = document.getElementById("yearKpis");
@@ -3034,11 +3693,30 @@ function renderProfitPlanner(){
         }).join("")}
       </tbody>
     </table></div>
+    ${(() => {
+      const picked = new Set(rows.map(r => r.key));
+      const extra = sold.filter(r => !picked.has(r.key));
+      if (!extra.length) return "";
+      return `<h2>Λοιπά είδη ημέρας <span class="badge">${extra.reduce((s,r) => s + r.qty, 0)} τεμ.</span></h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Είδος</th><th>Κατηγορία</th><th>Κατάστημα</th><th>e-food</th><th>Wolt</th>
+          <th>Τιμή</th><th>Food</th><th>Τζίρος</th><th>Προμήθεια</th><th>Καθαρό</th></tr></thead>
+        <tbody>${extra.map(r => `<tr>
+          <td>${r.d.el}</td><td>${r.group}</td>
+          <td>${r.ch.local.n || "—"}</td><td>${r.ch.efood.n || "—"}</td><td>${r.ch.wolt.n || "—"}</td>
+          <td>${fmt(r.price)}</td>
+          <td>${r.noCost ? '<span class="nocost">χωρίς κόστος</span>' : fmt(r.fc)}</td>
+          <td>${fmt(r.salesDay)}</td><td>${fmt(r.commDay)}</td><td><strong>${fmt(r.contribDay)}</strong></td>
+        </tr>`).join("")}</tbody>
+      </table></div>`;
+    })()}
     <p class="note">
       Κατάστημα ${pctTxt(CH_COMM.local)} · e-food −${pctTxt(CH_COMM.efood)} · Wolt −${pctTxt(CH_COMM.wolt)}.
       Κέρδος προ ΦΠΑ = πωλήσεις − σταθερά − food − προμήθειες.
       Καθαρό μετά ΦΠΑ = κέρδος − (ΦΠΑ εκροών − ΦΠΑ εισροών food).
     </p>`;
+
+    if (typeof updateSalesEntryTotals === "function") updateSalesEntryTotals();
 
     if (typeof renderDailyHighlights === "function") renderDailyHighlights();
     const optOn = document.getElementById("tab-opt")?.classList.contains("active");
@@ -3061,7 +3739,7 @@ async function pushToFirebase(){
 
   const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
   if (!sold.length) {
-    alert("Δεν υπάρχουν μερίδες. Γράψε Κατάστημα / e-food / Wolt στον πίνακα πιάτων.");
+    alert("Δεν υπάρχουν μερίδες. Γράψε Κατάστημα / e-food / Wolt στις Παραγγελίες ημέρας.");
     return;
   }
 
@@ -3084,9 +3762,11 @@ async function pushToFirebase(){
       foodUnit: r.fc, foodDay: r.foodDay,
       salesDay: r.salesDay, contribDay: r.contribDay,
       commDay: r.commDay || 0,
-      local: c.local, efood: c.efood, wolt: c.wolt
+      local: c.local, efood: c.efood, wolt: c.wolt,
+      group: r.group || "", fixed: !!r.fixed, isDrink: !!r.isDrink, noCost: !!r.noCost
     };
   });
+  const brk = salesBreakdown(sold);
 
   const rec = withVatProfit({
     date,
@@ -3101,6 +3781,10 @@ async function pushToFirebase(){
     wEfood: Number(document.getElementById("wEfood")?.value || 0),
     wWolt:  Number(document.getElementById("wWolt")?.value || 0),
     channels: (typeof portionChannels !== "undefined") ? JSON.parse(JSON.stringify(portionChannels)) : {},
+    byChannel: brk.byChannel, byGroup: brk.byGroup,
+    units: brk.units, foodPortions: brk.foodPortions,
+    noCostKeys: sold.filter(r => r.noCost).map(r => r.key),
+    itemsSchema: 2,
     keys: sold.map(r => r.key),
     favorite: sold[0] ? sold[0].d.el : "",
     favorites: (typeof favorites !== "undefined")
@@ -3147,9 +3831,10 @@ async function loadDayFromLedger(){
     if (rec) dayLedger[date] = rec;
   }
   if (!rec) { renderProfitPlanner(); return; }
-  portionChannels = rec.channels || {};
+  portionChannels = migrateSalesChannels(rec.channels || {}, salesLegacyToKey);
   if (rec.keys) applyDailyPicks(rec.keys);
   renderDishTable();
+  renderSalesEntry();
   renderProfitPlanner();
 }
 
@@ -3328,9 +4013,11 @@ async function afterAdminUnlock() {
   renderSettingsText();
   loadNationalPrices();
   await loadKitchenBook();
+  await loadSalesItems();
   recalcAll();
   const dailyKeys = await loadDailyMenuFromFirebase();
   if (dailyKeys.length) applyDailyPicks(dailyKeys);
+  renderSalesEntry();
   renderProfitPlanner();
   renderChannels();
 }
@@ -3704,7 +4391,7 @@ function applyKitchenBook(book, parts){
   }
   if (parts.dishes && book.dishes) {
     Object.keys(book.dishes).forEach(k => {
-      if (menuCatalog[k]) menuCatalog[k].price = book.dishes[k];
+      if (menuCatalog[k] && !(typeof siteMenuPrices === "object" && siteMenuPrices[k])) menuCatalog[k].price = book.dishes[k];
     });
   }
   if (parts.ingredients && book.national) {
