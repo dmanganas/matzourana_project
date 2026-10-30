@@ -349,6 +349,29 @@ tr:hover td { background: #fafcfb; }
   .sales-head, .sales-row { grid-template-columns: minmax(0, 1fr) repeat(3, 3rem); gap: 4px; }
 }
 
+/* Μέθοδος Β · πραγματικά έξοδα */
+.method-b { margin-bottom: 16px; }
+.mb-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 16rem)); gap: 10px 16px; margin-bottom: 8px; }
+.mb-field { display: grid; gap: 4px; font-size: .85rem; font-weight: 600; }
+.mb-field input { font-size: 16px; padding: 6px 8px; }
+.mb-field small { color: var(--muted); font-weight: 400; font-size: .72rem; }
+.mb-lines { display: grid; gap: 6px; margin-bottom: 10px; max-width: 34rem; }
+.mb-line { display: grid; grid-template-columns: minmax(0, 1fr) 7rem 2.4rem; gap: 6px; }
+.mb-line input { font-size: 16px; padding: 5px 8px; min-width: 0; }
+.mb-add { justify-self: start; font-size: .85rem; }
+.mb-compare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mb-col { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+.mb-h { font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+.mb-row { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; border-top: 1px solid var(--line); }
+.mb-f { color: var(--muted); font-size: .74rem; margin-top: 6px; line-height: 1.35; }
+.mb-diff.pos strong { color: var(--green); }
+.mb-diff.neg strong { color: #c62828; }
+.mb-run { font-size: .62rem; }
+@media (max-width: 800px) {
+  .mb-compare { grid-template-columns: 1fr; }
+  .mb-inputs { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body class="admin-locked">
@@ -553,6 +576,12 @@ tr:hover td { background: #fafcfb; }
   </div>
 
   <div class="card-mini sales-entry" id="salesEntry"></div>
+
+  <div class="card-mini method-b" id="methodB">
+    <div class="section-title">Μέθοδος Β · πραγματικά έξοδα</div>
+    <div id="methodBInputs"></div>
+    <div id="methodBResults"></div>
+  </div>
 
   <div class="kpi-grid" id="profitKpis"></div>
   <div class="targets" id="targetLadder"></div>
@@ -1779,6 +1808,11 @@ function syncFixedDaily(){
   if (inp) inp.value = totalFixedDaily().toFixed(2);
 }
 
+/*-------------------
+Purpose: Draw the fixed-cost table (per working day, editable) and mark the running lines (λειτουργικό).
+On Input: none.
+On Output: none.
+---------------------*/
 function renderFixedCostTable(){
   const tb = document.getElementById("fixedCostRows");
   if (!tb) return;
@@ -1786,7 +1820,7 @@ function renderFixedCostTable(){
     const row = defaultFixedCosts[k];
     const val = dayFixedCost(k);
     return `<tr>
-      <td>${row.el}</td>
+      <td>${row.el}${isRunningCost(k) ? ' <span class="badge mb-run">λειτουργικό</span>' : ""}</td>
       <td><input type="number" step="0.01" min="0" value="${val.toFixed(2)}"
                  onchange="setFixedCost('${k}', this.value)"></td>
     </tr>`;
@@ -1800,6 +1834,315 @@ function renderFixedCostTable(){
     hint.textContent = "Σύνολο " + fmt(totalFixedDaily()) +
       " → σταθερά κόστη / ημέρα. Άδειασε κελί για επαναφορά στην τιμή του χαρτιού.";
   }
+}
+
+/* ===================== Μέθοδος Β · πραγματικά έξοδα =====================
+   B (προ ΦΠΑ) = πωλήσεις (όλα τα κανάλια) − προμηθευτές (με ΦΠΑ) − λειτουργικά ημέρας
+                 − προμήθειες Wolt/e-food − σταθερά (χωρίς τα λειτουργικά).
+   ΦΠΑ Β = ΦΠΑ εκροών (13% μέσα στις πωλήσεις) − 13% μέσα στους προμηθευτές (ποσό × 13/113).
+   Stored in matzourana_days/<date>: supplierTotal, supplierLines, runningDay, constantDay,
+   profitB_before, vatDueB, profitB_after, methodB (true only when a supplier total exists). */
+
+// Default "running" (λειτουργικά) lines by name; a boolean kitchen book flag fixed/<k>/running wins.
+const RUNNING_COST_NAMES = ["ΔΕΗ", "Φυσικό αέριο", "Νερό"];
+
+// Method B entry of the shown day: supplierTotal (null = not entered), lines, runningDay (null = share).
+let methodBState = { date: "", supplierTotal: null, supplierLines: [], runningDay: null };
+let methodBLastA = null;   // last method A numbers from renderProfitPlanner { sales, food, comm, fixed }
+
+/*-------------------
+Purpose: Is a fixed-cost line a running (λειτουργικό) cost?
+On Input: key - String, kitchen book fixed key.
+On Output: Boolean. Kitchen book flag "running" (boolean) if present, else default by line name.
+---------------------*/
+function isRunningCost(key){
+  const row = defaultFixedCosts[key];
+  if (!row) return false;
+  if (typeof row.running === "boolean") return row.running;
+  return RUNNING_COST_NAMES.includes(String(row.el || "").trim());
+}
+
+/*-------------------
+Purpose: Daily share of the running lines (ΔΕΗ, αέριο, νερό by default) from the fixed-cost table.
+On Input: none.
+On Output: Number (euro / day).
+---------------------*/
+function runningShareDaily(){
+  return Object.keys(defaultFixedCosts).filter(isRunningCost).reduce((s, k) => s + dayFixedCost(k), 0);
+}
+
+/*-------------------
+Purpose: Constant (σταθερά) cost of the day for method B = the fixed cost method A uses minus the
+         running lines' share (so running + constant = A's fixed when running is not edited).
+On Input: fixedA - Number, the fixed cost of method A (#fixedDaily).
+On Output: Number (euro / day, never negative).
+---------------------*/
+function constantShareDaily(fixedA){
+  return Math.max(0, Number(fixedA || 0) - runningShareDaily());
+}
+
+/*-------------------
+Purpose: Escape text for HTML (supplier names typed by the user).
+On Input: s - any.
+On Output: String.
+---------------------*/
+function mbEsc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+/*-------------------
+Purpose: Round to cents (stored and shown values).
+On Input: n - Number.
+On Output: Number with 2 decimals.
+---------------------*/
+function mbRound(n){ return Math.round(Number(n || 0) * 100) / 100; }
+
+/*-------------------
+Purpose: The supplier total of the day: the sum of the supplier lines when any line has an amount,
+         else the typed lump sum (null when nothing was entered).
+On Input: none (methodBState).
+On Output: Number | null (euro, VAT included).
+---------------------*/
+function methodBSupplierTotal(){
+  const withAmt = methodBState.supplierLines.filter(l => l.amount !== "" && l.amount != null && !isNaN(Number(l.amount)));
+  if (withAmt.length) return mbRound(withAmt.reduce((s, l) => s + Number(l.amount), 0));
+  return methodBState.supplierTotal == null ? null : mbRound(methodBState.supplierTotal);
+}
+
+/*-------------------
+Purpose: The running cost of the day: the typed value, else the running lines' share.
+On Input: none.
+On Output: Number (euro).
+---------------------*/
+function methodBRunningDay(){
+  return methodBState.runningDay == null ? mbRound(runningShareDaily()) : mbRound(methodBState.runningDay);
+}
+
+/*-------------------
+Purpose: Compute method B (and method A in the same VAT style) for given day numbers.
+On Input: a - { sales, food, comm, fixed } (method A numbers of the day);
+          supplierTotal - Number|null (VAT incl.); runningDay - Number; constantDay - Number.
+On Output: { A: {before, vatDue, after}, B: null | {before, vatOnSales, vatOnSup, vatDue, after},
+           diffBefore, diffAfter } (B and diffs null without a supplier total).
+---------------------*/
+function methodBCalc(a, supplierTotal, runningDay, constantDay){
+  const sales = Number(a.sales || 0), food = Number(a.food || 0), comm = Number(a.comm || 0);
+  const v = vatPack(sales, food);
+  const A = { before: sales - food - comm - Number(a.fixed || 0) };
+  A.vatDue = v.vatDue; A.after = A.before - v.vatDue;
+  if (supplierTotal == null) return { A, B: null, diffBefore: null, diffAfter: null };
+  const B = { before: sales - supplierTotal - runningDay - comm - constantDay };
+  B.vatOnSales = v.vatOnSales;
+  B.vatOnSup   = supplierTotal * VAT_RATE / (1 + VAT_RATE);
+  B.vatDue     = Math.max(0, B.vatOnSales - B.vatOnSup);
+  B.after      = B.before - B.vatDue;
+  return { A, B, diffBefore: B.before - A.before, diffAfter: B.after - A.after };
+}
+
+/*-------------------
+Purpose: The method B fields of the day record (matzourana_days/<date>).
+On Input: a - { sales, food, comm, fixed } of the day being saved.
+On Output: { supplierTotal, supplierLines, runningDay, constantDay, profitB_before, vatDueB,
+           profitB_after, methodB } (supplier/B values null when no supplier total → not stored).
+---------------------*/
+function methodBRecordFields(a){
+  const sup = methodBSupplierTotal();
+  const runningDay = methodBRunningDay();
+  const constantDay = mbRound(constantShareDaily(a.fixed));
+  const r = methodBCalc(a, sup, runningDay, constantDay);
+  const lines = methodBState.supplierLines
+    .filter(l => String(l.name || "").trim() || (l.amount !== "" && l.amount != null))
+    .map(l => ({ name: String(l.name || "").trim(), amount: mbRound(l.amount) }));
+  return {
+    supplierTotal: sup,
+    supplierLines: lines.length ? lines : null,
+    runningDay, constantDay,
+    profitB_before: r.B ? mbRound(r.B.before) : null,
+    vatDueB:        r.B ? mbRound(r.B.vatDue) : null,
+    profitB_after:  r.B ? mbRound(r.B.after)  : null,
+    methodB: !!r.B
+  };
+}
+
+/*-------------------
+Purpose: Keep the method B entry of the shown day in localStorage (mz_mb, with its date), like mz_ch.
+On Input: none.
+On Output: none.
+---------------------*/
+function saveMethodBLocal(){
+  localStorage.setItem("mz_mb", JSON.stringify({ ...methodBState, date: currentPlanDay() }));
+}
+
+/*-------------------
+Purpose: Set the method B entry for a loaded day: from its record, else from an unsaved local entry
+         of the same date, else empty (running prefilled with the share).
+On Input: date - "YYYY-MM-DD"; rec - day record or null.
+On Output: none. Side effects: methodBState, card inputs redrawn.
+---------------------*/
+function loadMethodBFor(date, rec){
+  let st = { date, supplierTotal: null, supplierLines: [], runningDay: null };
+  if (rec && (rec.supplierTotal != null || rec.runningDay != null || rec.supplierLines)) {
+    const lines = Array.isArray(rec.supplierLines) ? rec.supplierLines
+      : (rec.supplierLines ? Object.values(rec.supplierLines) : []);
+    st.supplierLines = lines.map(l => ({ name: (l && l.name) || "", amount: l && l.amount != null ? Number(l.amount) : "" }));
+    st.supplierTotal = st.supplierLines.length ? null : (rec.supplierTotal != null ? Number(rec.supplierTotal) : null);
+    st.runningDay = rec.runningDay != null ? Number(rec.runningDay) : null;
+  } else if (!rec) {
+    try {
+      const loc = JSON.parse(localStorage.getItem("mz_mb") || "null");
+      if (loc && loc.date === date) st = { ...st, ...loc, date };
+    } catch (e) {}
+  }
+  methodBState = st;
+  renderMethodBInputs();
+}
+
+/*-------------------
+Purpose: Draw the inputs of «Μέθοδος Β · πραγματικά έξοδα» (supplier total or lines, running cost).
+On Input: none (methodBState).
+On Output: none. Side effects: #methodBInputs, then the results.
+Notes: inputs are drawn only on load / line add / line remove so typing keeps focus.
+---------------------*/
+function renderMethodBInputs(){
+  const box = document.getElementById("methodBInputs");
+  if (!box) return;
+  const lines = methodBState.supplierLines;
+  const hasLines = lines.length > 0;
+  const sup = methodBSupplierTotal();
+  const share = runningShareDaily();
+  const runVal = methodBState.runningDay == null ? share.toFixed(2) : methodBState.runningDay;
+  const runNames = Object.keys(defaultFixedCosts).filter(isRunningCost).map(k => defaultFixedCosts[k].el).join(", ") || "—";
+  box.innerHTML = `
+    <div class="mb-inputs">
+      <label class="mb-field">Προμηθευτές σήμερα (€, με ΦΠΑ)
+        <input type="number" id="mbSupplier" step="0.01" min="0" inputmode="decimal" placeholder="—"
+               value="${sup == null ? "" : sup}" ${hasLines ? 'readonly title="Άθροισμα γραμμών"' : ""}
+               oninput="onMethodBInput('supplier', this.value)">
+        <small>${hasLines ? "άθροισμα γραμμών" : "ένα σύνολο ή γραμμές ανά προμηθευτή"}</small>
+      </label>
+      <label class="mb-field">Λειτουργικά ημέρας (€)
+        <input type="number" id="mbRunning" step="0.01" min="0" inputmode="decimal"
+               value="${runVal}" oninput="onMethodBInput('running', this.value)">
+        <small>${methodBState.runningDay == null ? "μερίδιο: " : "μερίδιο " + fmt(share) + ": "}${mbEsc(runNames)}</small>
+      </label>
+    </div>
+    <div class="mb-lines">
+      ${lines.map((l, i) => `
+        <div class="mb-line">
+          <input type="text" class="mb-name" placeholder="Προμηθευτής" value="${mbEsc(l.name)}"
+                 oninput="onMethodBLine(${i}, 'name', this.value)">
+          <input type="number" class="mb-amt" step="0.01" min="0" inputmode="decimal" placeholder="€"
+                 value="${l.amount === "" || l.amount == null ? "" : l.amount}"
+                 oninput="onMethodBLine(${i}, 'amount', this.value)">
+          <button type="button" class="btn-ghost mb-del" title="Αφαίρεση" onclick="removeMethodBLine(${i})">−</button>
+        </div>`).join("")}
+      <button type="button" class="btn-ghost mb-add" onclick="addMethodBLine()">+ Γραμμή προμηθευτή</button>
+    </div>`;
+  renderMethodBResults();
+}
+
+/*-------------------
+Purpose: A method B input changed (supplier lump sum or running cost of the day).
+On Input: field - "supplier" | "running"; value - String from the input ("" = empty).
+On Output: none. Side effects: methodBState, mz_mb, results redrawn.
+---------------------*/
+function onMethodBInput(field, value){
+  const v = value === "" || value == null || isNaN(Number(value)) ? null : Number(value);
+  if (field === "supplier") methodBState.supplierTotal = v;
+  if (field === "running")  methodBState.runningDay = v;
+  saveMethodBLocal();
+  renderMethodBResults();
+}
+
+/*-------------------
+Purpose: A supplier line changed; the total input shows the new sum.
+On Input: i - Number, line index; field - "name" | "amount"; value - String.
+On Output: none.
+---------------------*/
+function onMethodBLine(i, field, value){
+  const l = methodBState.supplierLines[i];
+  if (!l) return;
+  l[field] = field === "amount" ? (value === "" || isNaN(Number(value)) ? "" : Number(value)) : value;
+  const sup = methodBSupplierTotal();
+  const inp = document.getElementById("mbSupplier");
+  if (inp) inp.value = sup == null ? "" : sup;
+  saveMethodBLocal();
+  renderMethodBResults();
+}
+
+/*-------------------
+Purpose: Add a supplier line (the first line starts with the lump sum, if one was typed).
+On Input: none.
+On Output: none. Side effects: inputs redrawn, focus on the new line's name.
+---------------------*/
+function addMethodBLine(){
+  const first = !methodBState.supplierLines.length;
+  methodBState.supplierLines.push({ name: "", amount: first && methodBState.supplierTotal != null ? methodBState.supplierTotal : "" });
+  saveMethodBLocal();
+  renderMethodBInputs();
+  const names = document.querySelectorAll("#methodBInputs .mb-name");
+  if (names.length) names[names.length - 1].focus();
+}
+
+/*-------------------
+Purpose: Remove a supplier line (with the last line gone, the lump sum is their former sum).
+On Input: i - Number, line index.
+On Output: none.
+---------------------*/
+function removeMethodBLine(i){
+  methodBState.supplierLines.splice(i, 1);
+  if (!methodBState.supplierLines.length) methodBState.supplierTotal = null;
+  saveMethodBLocal();
+  renderMethodBInputs();
+}
+
+/*-------------------
+Purpose: Draw A vs B side by side (before / after VAT) and the difference B − A.
+On Input: a - optional { sales, food, comm, fixed } (default: last numbers of renderProfitPlanner).
+On Output: none. Side effects: #methodBResults. Without a supplier total B shows "—" and the formula.
+---------------------*/
+function renderMethodBResults(a){
+  if (a) methodBLastA = a;
+  a = methodBLastA;
+  const box = document.getElementById("methodBResults");
+  if (!box || !a) return;
+  const runInp = document.getElementById("mbRunning");
+  if (runInp && methodBState.runningDay == null && document.activeElement !== runInp) runInp.value = runningShareDaily().toFixed(2);
+  const sup = methodBSupplierTotal();
+  const run = methodBRunningDay();
+  const cons = constantShareDaily(a.fixed);
+  const r = methodBCalc(a, sup, run, cons);
+  const dash = "—";
+  const f = v => v == null ? dash : fmt(v);
+  const sign = v => v == null ? dash : (v >= 0 ? "+" : "−") + fmt(Math.abs(v));
+  box.innerHTML = `
+    <div class="mb-compare">
+      <div class="mb-col">
+        <div class="mb-h">Α · food cost συνταγών</div>
+        <div class="mb-row"><span>Κέρδος προ ΦΠΑ</span><strong>${fmt(r.A.before)}</strong></div>
+        <div class="mb-row"><span>Απόδοση ΦΠΑ</span><span>${fmt(r.A.vatDue)}</span></div>
+        <div class="mb-row"><span>Καθαρό μετά ΦΠΑ</span><strong>${fmt(r.A.after)}</strong></div>
+        <div class="mb-f">${fmt(a.sales)} − food ${fmt(a.food)} − προμήθειες ${fmt(a.comm)} − σταθερά ${fmt(a.fixed)}</div>
+      </div>
+      <div class="mb-col">
+        <div class="mb-h">Β · πραγματικά έξοδα</div>
+        <div class="mb-row"><span>Κέρδος προ ΦΠΑ</span><strong>${f(r.B && r.B.before)}</strong></div>
+        <div class="mb-row"><span>Απόδοση ΦΠΑ</span><span>${f(r.B && r.B.vatDue)}</span></div>
+        <div class="mb-row"><span>Καθαρό μετά ΦΠΑ</span><strong>${f(r.B && r.B.after)}</strong></div>
+        <div class="mb-f">${fmt(a.sales)} − προμηθευτές ${sup == null ? "<b>—</b>" : fmt(sup)} − λειτουργικά ${fmt(run)}
+          − προμήθειες ${fmt(a.comm)} − σταθερά ${fmt(cons)}</div>
+        <div class="mb-f">ΦΠΑ: εκροές ${fmt(vatPack(a.sales, 0).vatOnSales)} − εισροές προμηθευτών ${r.B ? fmt(r.B.vatOnSup) : "<b>—</b>"} (13/113)</div>
+      </div>
+      <div class="mb-col mb-diff ${r.B ? (r.diffBefore >= 0 ? "pos" : "neg") : ""}">
+        <div class="mb-h">Διαφορά Β − Α</div>
+        <div class="mb-row"><span>προ ΦΠΑ</span><strong>${sign(r.diffBefore)}</strong></div>
+        <div class="mb-row"><span>μετά ΦΠΑ</span><strong>${sign(r.diffAfter)}</strong></div>
+        <div class="mb-f">${r.B
+          ? "Θετικό: οι προμηθευτές κόστισαν λιγότερο από την εκτίμηση food cost (" + fmt(a.food) + ")."
+          : "Γράψε το σύνολο προμηθευτών της ημέρας για να υπολογιστεί η Β."}</div>
+      </div>
+    </div>`;
 }
 
 
@@ -2782,6 +3125,11 @@ function profitPair(rec){
   return { before, after };
 }
 
+/*-------------------
+Purpose: HTML of the month / year close report (VAT and A profit) with the method B tiles.
+On Input: title - String; rec - month or year record.
+On Output: String (HTML).
+---------------------*/
 function vatReportHtml(title, rec){
   const p = profitPair(rec);
   return `
@@ -2816,10 +3164,16 @@ function vatReportHtml(title, rec){
         <div class="label">Καθαρό μετά ΦΠΑ</div>
         <div class="value">${fmt(p.after)}</div>
         <div class="sub">κέρδος − απόδοση ΦΠΑ</div>
-      </div>
+      </div>${methodBKpiHtml(rec)}
     </div>`;
 }
 
+/*-------------------
+Purpose: Fill a KPI grid with a period's sales, VAT, A profit before/after VAT, the «Μέθοδος Β» tiles
+         («Β: x/y ημέρες») and the channel / category breakdown.
+On Input: id - String, container id; rec - period record.
+On Output: none.
+---------------------*/
 function fillKpis(id, rec){
   const el = document.getElementById(id);
   if (!el || !rec) return;
@@ -2844,7 +3198,7 @@ function fillKpis(id, rec){
       <div class="label">Καθαρό μετά ΦΠΑ</div>
       <div class="value">${fmt(p.after)}</div>
       <div class="sub">μετά την απόδοση στην εφορία</div>
-    </div>${(() => {
+    </div>${methodBKpiHtml(rec)}${(() => {
       const t = breakdownText(rec);
       if (!t.ch) return "";
       return `
@@ -3022,6 +3376,62 @@ function daysFor(ym){
   return Object.values(map).sort((a,b) => a.date.localeCompare(b.date));
 }
 
+/*-------------------
+Purpose: Method B totals over the days that have it (methodB true); other days are left out.
+On Input: days - Array of day records (or month records, which carry these sums already).
+On Output: { daysB, daysAll, supplierTotal, runningDay, constantDay, profitB_before, vatDueB,
+           profitB_after, profitA_beforeOnB, profitA_afterOnB } (A on the same days, to compare).
+---------------------*/
+function methodBSumOf(days){
+  const out = { daysB: 0, daysAll: 0, supplierTotal: 0, runningDay: 0, constantDay: 0,
+    profitB_before: 0, vatDueB: 0, profitB_after: 0, profitA_beforeOnB: 0, profitA_afterOnB: 0 };
+  (days || []).forEach(d => {
+    if (!d) return;
+    const n = d.daysB != null ? Number(d.daysB) : (d.methodB ? 1 : 0);   // month record or day
+    out.daysAll += d.daysAll != null ? Number(d.daysAll) : (d.month && d.days != null && !d.date ? Number(d.days) : 1);
+    if (!n) return;
+    out.daysB += n;
+    ["supplierTotal", "runningDay", "constantDay", "profitB_before", "vatDueB", "profitB_after"]
+      .forEach(f => { out[f] += Number(d[f] || 0); });
+    if (d.daysB != null) {
+      out.profitA_beforeOnB += Number(d.profitA_beforeOnB || 0);
+      out.profitA_afterOnB  += Number(d.profitA_afterOnB || 0);
+    } else {
+      const p = profitPair(d);
+      out.profitA_beforeOnB += p.before;
+      out.profitA_afterOnB  += p.after;
+    }
+  });
+  Object.keys(out).forEach(k => { out[k] = mbRound(out[k]); });
+  return out;
+}
+
+/*-------------------
+Purpose: KPI tile «Μέθοδος Β» for month / year views (B over its days vs A on the same days).
+On Input: rec - record with methodBSumOf fields.
+On Output: String (HTML), "" when rec has no B fields.
+---------------------*/
+function methodBKpiHtml(rec){
+  if (!rec || rec.daysB == null) return "";
+  const xy = "Β: " + rec.daysB + "/" + rec.daysAll + " ημέρες";
+  if (!rec.daysB) return `
+    <div class="kpi"><div class="label">Μέθοδος Β</div><div class="value">—</div>
+      <div class="sub">${xy} · χωρίς σύνολο προμηθευτών</div></div>`;
+  return `
+    <div class="kpi"><div class="label">Μέθοδος Β · προ ΦΠΑ</div>
+      <div class="value">${fmt(rec.profitB_before)}</div>
+      <div class="sub">${xy} · Α στις ίδιες ${fmt(rec.profitA_beforeOnB)} · προμηθευτές ${fmt(rec.supplierTotal)}</div></div>
+    <div class="kpi"><div class="label">Μέθοδος Β · μετά ΦΠΑ</div>
+      <div class="value">${fmt(rec.profitB_after)}</div>
+      <div class="sub">απόδοση ${fmt(rec.vatDueB)} · Α στις ίδιες ${fmt(rec.profitA_afterOnB)}</div></div>`;
+}
+
+/*-------------------
+Purpose: Sum day records into a period record (sales, food, comm, fixed, VAT, A profit, breakdowns) plus
+         the method B totals over the days that have it (methodBSumOf).
+On Input: days - Array of day records; label - String.
+On Output: Object (period record).
+---------------------*/
 function summarizeDays(days, label){
   const rec = {
     label,
@@ -3030,6 +3440,7 @@ function summarizeDays(days, label){
     vatOnSales:0, vatOnFood:0, vatDue:0,
     profitBefore:0, profitAfter:0
   };
+  Object.assign(rec, methodBSumOf(days));
 
   (days || []).forEach(d => {
     const x = withVatProfit({
@@ -3165,6 +3576,12 @@ async function closeMonth(ym){
   await renderYearSection();
 }
 
+/*-------------------
+Purpose: Close (store) a year from its 12 month records into matzourana_years/<y>, including the method B
+         sums of the months (daysB/daysAll, supplierTotal, profitB_*).
+On Input: y - "YYYY" (default: year of the report month).
+On Output: none (Promise). Side effects: #yearClose report, year section.
+---------------------*/
 async function closeYear(y){
   y = y || yNow();
   const box = document.getElementById("yearClose") || document.getElementById("monthClose");
@@ -3191,6 +3608,7 @@ async function closeYear(y){
     comm:  months.reduce((s,m) => s + Number(m.comm||0), 0),
     fixed: months.reduce((s,m) => s + Number(m.fixed||0), 0)
   });
+  Object.assign(rec, methodBSumOf(months));
   rec.closedAt = Date.now();
   const db = typeof getDb === "function" ? getDb() : null;
   if (db) {
@@ -3203,6 +3621,11 @@ async function closeYear(y){
   await renderYearSection();
 }
 
+/*-------------------
+Purpose: Draw the year view (month charts and KPIs incl. «Μέθοδος Β» over the months' B days).
+On Input: none.
+On Output: none (Promise).
+---------------------*/
 async function renderYearSection(){
   const y = yNow();
   const months = await monthsOfYear(y);
@@ -3216,7 +3639,7 @@ async function renderYearSection(){
   const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
   const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
   const rec = { year: y, months: months.length, sales, food, comm, fixed, net, ...vatPack(sales, food),
-    ...mergeBreakdowns(months) };
+    ...mergeBreakdowns(months), ...methodBSumOf(months) };
   const b2 = document.getElementById("yearBadge");
   if (b2) b2.textContent = closed ? y + " κλεισμένο" : y + " · εκκρεμεί κλείσιμο";
   const yk = document.getElementById("yearKpis");
@@ -3788,7 +4211,8 @@ function renderMenuAudit(){
 
 
 /*-------------------
-Purpose: Draw the "Κέρδος / Ημέρα" tab: KPIs, goal ladder, dishes of the day, highlights.
+Purpose: Draw the "Κέρδος / Ημέρα" tab: KPIs, goal ladder, dishes of the day, highlights and the
+         «Μέθοδος Β» comparison (renderMethodBResults with this day's A numbers).
 On Input: none (reads the planner inputs; empty fields use kitchen book planner settings).
 On Output: none.
 Notes: commission labels and goals (€ per day) come from kitchen book settings.
@@ -3845,6 +4269,9 @@ function renderProfitPlanner(){
   const mixTxt = mix
     ? Math.round(mix.local*100) + "/" + Math.round(mix.efood*100) + "/" + Math.round(mix.wolt*100)
     : "μερίδες πίνακα";
+
+  renderMethodBResults({ sales, food: foodDay, comm: commDay, fixed });
+  if (methodBState.date !== currentPlanDay()) loadMethodBFor(currentPlanDay(), dayLedger[currentPlanDay()] || null);
 
   const kpis = document.getElementById("profitKpis");
   if (kpis) kpis.innerHTML = `
@@ -3989,7 +4416,9 @@ function renderProfitPlanner(){
 
 
 /*-------------------
-Purpose: Save the recorded day (sales, food, commissions, fixed, net, dishes) to matzourana_days.
+Purpose: Save the recorded day (sales, food, commissions, fixed, net, dishes) to matzourana_days,
+         with the method B fields (methodBRecordFields: supplierTotal, supplierLines, runningDay,
+         constantDay, profitB_before, vatDueB, profitB_after, methodB).
 On Input: none (reads the planner inputs and the portions table).
 On Output: Promise<void>.
 Notes: empty fixed / target fields use the kitchen book planner settings. itemsSchema 2 adds
@@ -4057,7 +4486,8 @@ async function pushToFirebase(){
     ? highlightsByPlatform()
     : { shop: null, efood: null, wolt: null },
     createdAt: Date.now(),
-    dishes
+    dishes,
+    ...methodBRecordFields({ sales, food: foodDay, comm, fixed })
   });
 
   try {
@@ -4094,6 +4524,7 @@ Side effects: reads matzourana_days/<date> (fallback: the local dayLedger); sets
           unsaved counts typed earlier for that same date (localStorage mz_ch_date); counts of
           another date are cleared. Checkboxes: daily dishes with portions or in rec.keys
           (fixed-menu items are never ticked); without a record, today's menu picks.
+          Method B entry (supplier total / lines, running cost) from the record (loadMethodBFor).
           Never writes to Firebase.
 ---------------------*/
 async function loadDayFromLedger(){
@@ -4128,8 +4559,10 @@ async function loadDayFromLedger(){
   if (typeof renderDishTable === "function") renderDishTable();
   applyDailyPicks(picks);
   updateDailyPickLock();
+  methodBState.date = date;                    // planner must not reload B from the old ledger
   renderSalesEntry();
   renderProfitPlanner();
+  loadMethodBFor(date, rec);
   return rec;
 }
 
@@ -4150,7 +4583,7 @@ function monthRows(ym){
 }
 
 /*-------------------
-Purpose: Quick month totals for the month panel (display only).
+Purpose: Quick month totals for the month panel (display only), with method B sums (methodBSumOf).
 On Input: ym - "YYYY-MM" (default: month of #planDay).
 On Output: { month, days, sales, food, comm, fixed, profit, portions }.
 Notes: no longer writes matzourana_months (it overwrote the full record of closeMonth with this
@@ -4163,10 +4596,16 @@ function buildMonth(ym){
   return {
     month: ym, days: days.length,
     sales: sum("sales"), food: sum("food"), comm: sum("comm"),
-    fixed: sum("fixed"), profit: sum("profit"), portions: sum("portions")
+    fixed: sum("fixed"), profit: sum("profit"), portions: sum("portions"),
+    ...methodBSumOf(days)
   };
 }
 
+/*-------------------
+Purpose: Month panel of the report tab: quick totals of the #planDay month incl. «Μέθοδος Β» (x/y days).
+On Input: none.
+On Output: none.
+---------------------*/
 function renderMonthPanel(){
   const ym = monthISO(document.getElementById("planDay")?.value);
   const days = monthRows(ym);
@@ -4179,7 +4618,7 @@ function renderMonthPanel(){
     <div class="kpi"><div class="label">Κόστος πιάτων</div><div class="value">${fmt(m.food)}</div></div>
     <div class="kpi"><div class="label">Προμήθειες</div><div class="value">${fmt(m.comm)}</div></div>
     <div class="kpi"><div class="label">Σταθερά μήνα</div><div class="value">${fmt(m.fixed)}</div></div>
-    <div class="kpi good"><div class="label">Καθαρό μήνα</div><div class="value">${fmt(m.profit)}</div></div>`;
+    <div class="kpi good"><div class="label">Καθαρό μήνα</div><div class="value">${fmt(m.profit)}</div></div>${methodBKpiHtml(m)}`;
   drawFourCharts(days);
 }
 
@@ -4725,6 +5164,8 @@ function applyKitchenBook(book, parts){
       const el = (entry && typeof entry === "object" && entry.el) || (defaultFixedCosts[k] && defaultFixedCosts[k].el) || k;
       if (!defaultFixedCosts[k]) defaultFixedCosts[k] = { el, day };
       else defaultFixedCosts[k].el = el;
+      if (entry && typeof entry === "object" && typeof entry.running === "boolean") defaultFixedCosts[k].running = entry.running;
+      else delete defaultFixedCosts[k].running;   // default by line name (RUNNING_COST_NAMES)
       if (typeof fixedCostOverrides !== "undefined") fixedCostOverrides[k] = day;
       else defaultFixedCosts[k].day = day;
     });
