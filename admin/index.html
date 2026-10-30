@@ -2923,6 +2923,25 @@ async function monthsOfYear(y){
   return Object.values(map).sort((a,b) => String(a.month).localeCompare(String(b.month)));
 }
 
+/*-------------------
+Purpose: The complete month record stored in matzourana_months/<ym>.
+On Input: days - Array of day records of the month; ym - "YYYY-MM".
+On Output: Object = short fields { month, days, sales, food, comm, fixed, profit, portions } (same as
+           older month records) + summarizeDays fields (qty, net, VAT, profitBefore/After, salesNet,
+           foodNet, byChannel, byGroup, label) + closedAt.
+Notes: older month records (short fields only) still load: readers use profit/net and qty/portions.
+---------------------*/
+function monthRecordOf(days, ym){
+  const s = summarizeDays(days, ym);
+  return { ...s, month: ym, portions: s.qty, profit: s.profitBefore, closedAt: Date.now() };
+}
+
+/*-------------------
+Purpose: Close (store) a month: reload the days from Firebase, build the complete month record and
+         write it once to matzourana_months/<ym> (also kept in localStorage mz_month_<ym>).
+On Input: ym - "YYYY-MM" (default: current month).
+On Output: none (Promise). Side effects: #monthClose report, month panel and year section redrawn.
+---------------------*/
 async function closeMonth(ym){
   ym = ym || ymNow();
   const box = document.getElementById("monthClose");
@@ -2941,7 +2960,7 @@ async function closeMonth(ym){
     if (box) box.innerHTML = "<p class='note'>Δεν υπάρχουν ημέρες για " + ym + ".</p>";
     return;
   }
-  const rec = { ...summarizeDays(days, ym), closedAt: Date.now() };
+  const rec = monthRecordOf(days, ym);
   localStorage.setItem("mz_month_" + ym, JSON.stringify(rec));
   if (db) {
     try { await db.ref("matzourana_months/" + ym).set(rec); }
@@ -3172,13 +3191,77 @@ function channelPrices(key){
   };
 }
 
-function favList(plat){
-  if (typeof loadFavorites === "function") loadFavorites();
-  const src = (typeof favorites !== "undefined" && favorites[plat]) ? favorites[plat] : [];
-  return src.filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks");
+/*-------------------
+Purpose: Unit economics of any sold item (daily dish or fixed-menu row) on the same keys and prices
+         as the day entry: site prices, fixed-menu rows, legacy keys read through their new key.
+On Input: key - String (new or legacy key).
+On Output: { key, d, price, fc, contrib, noCost } or null when the item is unknown.
+---------------------*/
+function salesUnitEconomics(key){
+  key = salesKey(key);
+  const d = salesItemOf(key);
+  if (!d) return null;
+  const price = parseEuro(d.price) || 0;
+  const fcKnown = salesItemFoodCost(key);
+  const fc = fcKnown == null ? 0 : fcKnown;
+  return { key, d, price, fc, contrib: price - fc, noCost: fcKnown == null };
 }
 
+/*-------------------
+Purpose: Does an item count as a "dish" for favorites, highlights and the day's favorite?
+On Input: key - String; d - item from salesItemOf (optional).
+On Output: Boolean - false for drinks (soft drinks, beers, wines, spirits) and for bread (Ψωμί),
+           true for every other food item (daily dishes, grill, salads, appetizers, potatoes).
+---------------------*/
+function salesIsDish(key, d){
+  d = d || salesItemOf(key);
+  if (!d) return false;
+  if (d.category === "drinks" || d.type === "drinks") return false;
+  const name = String(d.el || "").toLowerCase();
+  if (/^psomi/.test(key) || /^ψωμ[ίι]/.test(name)) return false;
+  return true;
+}
+
+/*-------------------
+Purpose: Dishes of a channel ranked by portions sold (ties: higher net after commission and food).
+On Input: plat - 'shop' | 'efood' | 'wolt'.
+On Output: Array of { key, name, qty, unit, score, price }, best first (dishes only, see salesIsDish).
+Notes: uses the day-entry item list (allSalesKeys), so keys/prices match the new entry card.
+---------------------*/
+function salesChannelRanking(plat){
+  const field = plat === "shop" ? "local" : plat;
+  const comm = Number(CH_COMM[field] || 0);
+  return allSalesKeys()
+    .map(key => {
+      const n = Number(chOf(key)[field] || 0);
+      if (!(n > 0)) return null;
+      const r = salesUnitEconomics(key);
+      if (!r || !salesIsDish(r.key, r.d)) return null;
+      const unit = r.price * (1 - comm) - r.fc;
+      return { key: r.key, name: r.d.el, qty: n, unit, score: n * unit, price: r.price };
+    })
+    .filter(Boolean)
+    .sort((a,b) => b.qty - a.qty || b.score - a.score);
+}
+
+/*-------------------
+Purpose: Favorite dishes of one channel, read from the current favorites.
+On Input: plat - 'shop' | 'efood' | 'wolt'.
+On Output: Array of keys (legacy keys mapped to their new key; unknown items, drinks and bread left out).
+---------------------*/
+function favList(plat){
+  if (typeof loadFavorites === "function") loadFavorites();
+  const src = (typeof favorites !== "undefined" && favorites && favorites[plat]) ? favorites[plat] : [];
+  return src.map(k => salesKey(k)).filter(k => salesIsDish(k));
+}
+
+/*-------------------
+Purpose: Small badge listing the channels where a dish is a favorite.
+On Input: key - String (new or legacy key).
+On Output: HTML String (empty when the dish is no favorite).
+---------------------*/
 function favBadge(key){
+  key = salesKey(key);
   const marks = [];
   if (favList("shop").includes(key))  marks.push("κατ.");
   if (favList("efood").includes(key)) marks.push("e-food");
@@ -3186,14 +3269,19 @@ function favBadge(key){
   return marks.length ? ` <span class="badge">${marks.join(" · ")}</span>` : "";
 }
 
+/*-------------------
+Purpose: Card with the favorite dishes of one channel (name, price, contribution).
+On Input: plat - 'shop' | 'efood' | 'wolt'; title - String.
+On Output: HTML String.
+---------------------*/
 function favRowHtml(plat, title){
   const keys = favList(plat);
   if (!keys.length) return `<div class="note">${title}: δεν έχουν οριστεί</div>`;
   return `<div class="card-mini"><div class="section-title">${title}</div>
     ${keys.map((k,i) => {
-      const r = (typeof dishEconomics === "function") ? dishEconomics(k) : null;
-      const name = menuCatalog[k].el;
-      const price = r ? fmt(r.price) : (menuCatalog[k].price || "");
+      const r = salesUnitEconomics(k);
+      const name = r ? r.d.el : k;
+      const price = r ? fmt(r.price) : "";
       const contrib = r ? fmt(r.contrib) : "—";
       return `<div>${i+1}. ${name} · ${price} · συνεισφορά ${contrib}</div>`;
     }).join("")}
@@ -3203,25 +3291,11 @@ function favRowHtml(plat, title){
 /*-------------------
 Purpose: Top 3 dishes of a channel by recorded portions (ties by net value).
 On Input: plat - 'shop' | 'efood' | 'wolt'.
-On Output: Array of up to 3 dish keys.
+On Output: Array of up to 3 keys (same keys as the day entry; drinks and bread excluded).
 Notes: commission shares come from CH_COMM (kitchen book settings.commissions).
 ---------------------*/
 function top3FromOrders(plat){
-  const field = plat === "shop" ? "local" : plat;
-  const comm = { shop: CH_COMM.local, efood: CH_COMM.efood, wolt: CH_COMM.wolt }[plat] || 0;
-  return Object.keys(menuCatalog)
-    .filter(k => menuCatalog[k] && menuCatalog[k].category !== "drinks")
-    .map(key => {
-      const q = (typeof chOf === "function") ? chOf(key) : { local:0, efood:0, wolt:0 };
-      const n = Number(q[field] || 0);
-      const r = dishEconomics(key);
-      const unit = r.price * (1 - comm) - r.fc;
-      return { key, n, score: n * unit };
-    })
-    .filter(x => x.n > 0)
-    .sort((a,b) => b.n - a.n || b.score - a.score)
-    .slice(0, 3)
-    .map(x => x.key);
+  return salesChannelRanking(plat).slice(0, 3).map(x => x.key);
 }
 
 function setFavFromOrders(){
@@ -3286,29 +3360,27 @@ function suggestDailyMenu(maxN){
 Purpose: Best dish of the day per channel (highest net = portions × price after commission − food).
 On Input: none.
 On Output: { shop, efood, wolt } each { key, name, qty, unit, score, price } or null.
+Notes: same item list / keys / prices as the day entry; drinks and bread excluded.
 ---------------------*/
 function highlightsByPlatform(){
-  const comm = { shop: CH_COMM.local, efood: CH_COMM.efood, wolt: CH_COMM.wolt };
   const best = { shop: null, efood: null, wolt: null };
-  Object.keys(menuCatalog).forEach(key => {
-    const d = menuCatalog[key];
-    if (!d || d.category === "drinks") return;
-    const r = dishEconomics(key);
-    if (!r || !(r.price > 0)) return;
-    const q = (typeof chOf === "function") ? chOf(key) : { local:0, efood:0, wolt:0 };
-    const qty = { shop: q.local || 0, efood: q.efood || 0, wolt: q.wolt || 0 };
-    ["shop", "efood", "wolt"].forEach(p => {
-      const n = qty[p];
-      if (!n) return;
-      const unit = r.price * (1 - comm[p]) - r.fc;
-      const score = n * unit;
-      const cur = best[p];
-      if (!cur || score > cur.score) {
-        best[p] = { key, name: r.d.el, qty: n, unit, score, price: r.price };
-      }
-    });
+  ["shop", "efood", "wolt"].forEach(p => {
+    salesChannelRanking(p).forEach(x => { if (!best[p] || x.score > best[p].score) best[p] = x; });
   });
   return best;
+}
+
+/*-------------------
+Purpose: Name of the day's top-selling dish (all channels together) for the saved "favorite" field.
+On Input: sold - Array from dishesWithSales().
+On Output: String (Greek name) or "" when no dish was sold.
+Notes: drinks and bread are left out (salesIsDish); ties go to the higher sales value.
+---------------------*/
+function topFoodItemName(sold){
+  const top = (sold || [])
+    .filter(r => !r.isDrink && salesIsDish(r.key, r.d))
+    .sort((a,b) => b.qty - a.qty || b.salesDay - a.salesDay)[0];
+  return top ? top.d.el : "";
 }
 
 function renderDailyHighlights(){
@@ -3731,7 +3803,9 @@ function renderProfitPlanner(){
 Purpose: Save the recorded day (sales, food, commissions, fixed, net, dishes) to matzourana_days.
 On Input: none (reads the planner inputs and the portions table).
 On Output: Promise<void>.
-Notes: unchanged except that empty fixed / target fields use the kitchen book planner settings.
+Notes: empty fixed / target fields use the kitchen book planner settings. itemsSchema 2 adds
+       byChannel/byGroup/units/foodPortions/noCostKeys. "favorite" = top-selling dish by portions,
+       drinks and bread excluded (topFoodItemName). The month is stored once, by closeMonth.
 ---------------------*/
 async function pushToFirebase(){
   const db = getDb();
@@ -3786,7 +3860,7 @@ async function pushToFirebase(){
     noCostKeys: sold.filter(r => r.noCost).map(r => r.key),
     itemsSchema: 2,
     keys: sold.map(r => r.key),
-    favorite: sold[0] ? sold[0].d.el : "",
+    favorite: topFoodItemName(sold),
     favorites: (typeof favorites !== "undefined")
     ? JSON.parse(JSON.stringify(favorites))
     : { shop: [], efood: [], wolt: [] },
@@ -3844,18 +3918,22 @@ function monthRows(ym){
     .sort((a,b) => a.date.localeCompare(b.date));
 }
 
+/*-------------------
+Purpose: Quick month totals for the month panel (display only).
+On Input: ym - "YYYY-MM" (default: month of #planDay).
+On Output: { month, days, sales, food, comm, fixed, profit, portions }.
+Notes: no longer writes matzourana_months (it overwrote the full record of closeMonth with this
+       short one on every save); the stored month record is written only by closeMonth.
+---------------------*/
 function buildMonth(ym){
   ym = ym || monthISO(document.getElementById("planDay")?.value);
   const days = monthRows(ym);
   const sum = f => days.reduce((s,r) => s + Number(r[f] || 0), 0);
-  const rec = {
+  return {
     month: ym, days: days.length,
     sales: sum("sales"), food: sum("food"), comm: sum("comm"),
     fixed: sum("fixed"), profit: sum("profit"), portions: sum("portions")
   };
-  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
-  if (db) db.ref("matzourana_months/" + ym).set(rec);
-  return rec;
 }
 
 function renderMonthPanel(){
