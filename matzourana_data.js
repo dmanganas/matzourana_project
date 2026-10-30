@@ -18,36 +18,29 @@
 const currentDailyMenu = [
     // Freshly Cooked
 
-
-    //Seafood
-    "bakaliaros_lemonatos",
-
     //Meat
     "moschari_kokkinisto",
 
     //Seafood
     "galeos_lemonatos",
-    "kalamarakia_yiahni",
 
     //Meat
     "bifteki_moscharisia",
+    "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
     "lachanontolmades",
 
     // Soups
-    "kotosoupa",
+    "giouvarlakia",
 
     //Veggy
-    "giantes",
-    "melitzanes_imam",
-    "spanakorizo",
+    "fasolakia",
+    "arakas_lemonatos",
 
     // Legumes
-    "revithia",
     "fasolada",
-    "fakes"
+    "revithia"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
@@ -56,18 +49,16 @@ const currentHighlights = [
     "line",
     "moschari_kokkinisto",
     "bifteki_moscharisia",
+    "kotopoulo_bouti",
 
-    "bakaliaros_lemonatos",
     "galeos_lemonatos",
-    "kalamarakia_yiahni",
 
     "pastitsio",
-    "keftedakia_tiganita",
 
-    "kotosoupa",
+    "giouvarlakia",
 
-    "giantes",
-    "melitzanes_imam"
+    "fasolakia",
+    "arakas"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -145,7 +136,7 @@ const menuCatalog = {
     "manitaria_frikase": { category: "veg-cooked", el: "Μανιτάρια Φρικασέ <br><br> (Έκρηξη γεύσης με αρωματικά χόρτα)", en: "Mushroom Fricassee <br><br> (An explosion of flavor with aromatic herbs)", price: "€7.50" },
     "revithia_frikase": { category: "veg-cooked", el: "Ρεβύθια Φρικασέ <br><br> (Vegan συνταγή, εύκολη και πολύ υγιεινή)", en: "Chickpea Fricassee <br><br> (Vegan recipe, easy and very healthy)", price: "€7.50" },
     "arakas_lemonatos": { category: "veg-cooked", el: "Αρακάς λεμονάτος <br><br> (Με πατάτες, καρότο και άνιθο)", en: "Lemony Peas <br><br> (With potatoes, carrot and dill)", price: "€6.50" },
-    "fasolakia": { category: "veg-cooked", el: "Φρέσκα Φασολάκια λαδερά <br><br> (Με ντοματούλα και πατάτες)", en: "Fresh Green Beans in Olive Oil <br><br> (With tomato and potatoes)", price: "€6.50" },
+    "fasolakia": { category: "veg-cooked", el: "Φρέσκα Φασολάκια λαδερά <br><br> (Με ντοματούλα και πατάτες)", en: "Fresh Green Beans in Olive Oil <br><br> (With tomato and potatoes)", price: "€7.00" },
     "bamies_fournou": { category: "veg-cooked", el: "Μπάμιες στο Φούρνο <br><br> (Φρέσκες με ντοματούλα)", en: "Baked Okra <br><br> (Fresh with tomato)", price: "€7.50" },
     "bamies_yiahni": { category: "veg-cooked", el: "Μπάμιες Γιαχνί <br><br> (Φρέσκες μαγειρεμένες με ντοματούλα)", en: "Okra Stew <br><br> (Fresh slow-cooked with tomato)", price: "€7.50" },
     "spanakorizo": { category: "veg-cooked", el: "Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα και φρέσκο άνηθο)", en: "Spinach Rice <br><br> (Lemony with tomato and fresh dill)", price: "€6.50" },
@@ -210,7 +201,7 @@ const menuCatalog = {
 
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
-    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.50" },
+    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€6.50" },
     "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
