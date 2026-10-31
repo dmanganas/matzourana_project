@@ -20,27 +20,25 @@ const currentDailyMenu = [
 
     //Meat
     "moschari_kokkinisto",
-
-    //Seafood
-    "galeos_lemonatos",
-
-    //Meat
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
+    "keftedakia_tiganita",
     "lachanontolmades",
 
     // Soups
     "giouvarlakia",
+    "kotosoupa",
 
     //Veggy
-    "fasolakia",
     "arakas_lemonatos",
+    "spanakorizo",
 
     // Legumes
+    "revithia",
     "fasolada",
-    "revithia"
+    "fakes"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
@@ -50,14 +48,14 @@ const currentHighlights = [
     "moschari_kokkinisto",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
-
-    "galeos_lemonatos",
+    "keftedakia_tiganita",
 
     "pastitsio",
 
     "giouvarlakia",
+    "kotosoupa",
 
-    "fasolakia",
+    "spanakorizo",
     "arakas_lemonatos"
 ];
 
