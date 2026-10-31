@@ -349,6 +349,33 @@ tr:hover td { background: #fafcfb; }
   .sales-head, .sales-row { grid-template-columns: minmax(0, 1fr) repeat(3, 3rem); gap: 4px; }
 }
 
+/* Στόχος (target planner + live extrapolation) */
+.tgt-card { margin-bottom: 16px; }
+.tgt-row { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 10px; }
+.tgt-field { display: grid; gap: 4px; font-size: .85rem; font-weight: 600; }
+.tgt-field input, .tgt-field select { font-size: 16px; padding: 6px 8px; }
+.tgt-levers { display: grid; gap: 8px; margin: 6px 0 4px; }
+.tgt-lever { display: grid; grid-template-columns: minmax(10rem, 16rem) minmax(6rem, 1fr) 6rem auto; gap: 6px 10px; align-items: center; }
+.tgt-lever input[type="number"] { width: 6rem; font-size: 16px; padding: 5px 8px; }
+.tgt-lever-name { font-size: .85rem; font-weight: 600; }
+.tgt-solve-note { grid-column: 1 / -1; margin: 0; }
+.tgt-solve-note:empty { display: none; }
+.tgt-bad { color: var(--red); font-weight: 700; }
+.tgt-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
+.tgt-table { margin: 8px 0; }
+.tgt-table td, .tgt-table th { white-space: nowrap; }
+tr.tgt-below td { background: var(--red-soft); }
+.tgt-weights { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-bottom: 10px; }
+.tgt-w { display: grid; font-size: .75rem; gap: 2px; }
+.tgt-w input { width: 3.6rem; font-size: 16px; padding: 4px 6px; }
+.tgt-combos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 8px 0; }
+.tgt-combo ul { margin: 6px 0; padding-left: 18px; }
+@media (max-width: 640px) {
+  .tgt-lever { grid-template-columns: minmax(0, 1fr) 6rem auto; }
+  .tgt-lever input[type="range"] { grid-column: 1 / -1; grid-row: 2; }
+  .tgt-two, .tgt-combos { grid-template-columns: 1fr; }
+}
+
 /* Μέθοδος Β · πραγματικά έξοδα */
 .method-b { margin-bottom: 16px; }
 .mb-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 16rem)); gap: 10px 16px; margin-bottom: 8px; }
@@ -404,6 +431,7 @@ tr:hover td { background: #fafcfb; }
     <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
     <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κέρδος / Μήνας / Χρόνος</div>
     <div class="tab" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
+    <div class="tab" data-tab="target" onclick="switchTab('target')">Στόχος</div>
   </div>
 
   <div class="sources-bar">
@@ -652,6 +680,21 @@ tr:hover td { background: #fafcfb; }
     <div id="profitOpt"></div>
     <div id="menuAudit"></div>
  </section>
+
+  <!-- ΣΤΟΧΟΣ: target planner + live day extrapolation (admin only, nothing written to Firebase) -->
+  <section class="panel" id="tab-target">
+    <h2>Στόχος κέρδους ημέρας</h2>
+    <div class="card-mini tgt-card">
+      <div class="section-title">Σχεδιασμός στόχου · με βάση μια αποθηκευμένη ημέρα</div>
+      <div id="tgtControls"></div>
+      <div id="tgtPlan"></div>
+    </div>
+    <div class="card-mini tgt-card">
+      <div class="section-title">Δυναμικός στόχος ημέρας · πρόβλεψη από το μισοσυμπληρωμένο χαρτί</div>
+      <div id="tgtLiveControls"></div>
+      <div id="tgtLive"></div>
+    </div>
+  </section>
 </div>
 
 <div class="maps-modal" id="mapsModal">
@@ -1165,6 +1208,7 @@ function switchTab(id){
   }
   if (id === "profit" && typeof renderProfitPlanner === "function")
     renderProfitPlanner();
+  if (id === "target" && typeof renderTargetTab === "function") renderTargetTab();
 }
 
 
@@ -5533,6 +5577,706 @@ function importKitchenFile(file){
     recalcAll();
   };
   r.readAsText(file);
+}
+
+/* =========================================================
+   ΣΤΟΧΟΣ · target planner (part 1) and live day extrapolation (part 2)
+   Uses the admin economics: dishDayEconomics (price, food cost of every sold item, current kitchen
+   book), CH_COMM (commissions), withVatProfit (VAT 13 % and profit before / after VAT) and the
+   fixed cost of the day planner. Never writes to Firebase: settings live in localStorage mz_tgt.
+   ========================================================= */
+const TGT_LS = "mz_tgt";
+const TGT_PLATFORMS = ["efood", "wolt"];
+const TGT_LEVERS = [
+  { id:"plat",   el:"Αύξηση τιμών Wolt / e-food", unit:"%", min:0, max:150, step:1, solveMax:300 },
+  { id:"gen",    el:"Αύξηση όλων των τιμών",      unit:"%", min:0, max:60,  step:1, solveMax:200 },
+  { id:"shift",  el:"Παραγγελίες πλατφορμών → κατάστημα", unit:"%", min:0, max:100, step:1, solveMax:100 },
+  { id:"extra",  el:"Επιπλέον μερίδες καταστήματος", unit:"μερ.", min:0, max:80, step:1, solveMax:500 },
+  { id:"fixcut", el:"Μείωση σταθερών",            unit:"€",  min:0, max:200, step:1, solveMax:null }
+];
+/* Default hourly demand weights (12:00–19:30, delivery hours of the site; lunch peak 13–15). */
+const TGT_DEFAULT_WEIGHTS = { "12":8, "13":18, "14":20, "15":15, "16":10, "17":9, "18":10, "19":10 };
+
+let tgtState = tgtLoadState();
+let tgtBase = null;            // { date, rec, channels } of the base day
+let tgtUnitCache = {};         // key -> unit economics (cleared on every render)
+
+/*-------------------
+Purpose: Default settings of the «Στόχος» tab.
+On Input: none.
+On Output: Object { target, basis, date, lev:{plat,gen,shift,extra,fixcut}, live:{...} }.
+---------------------*/
+function tgtDefaults(){
+  return {
+    target: 50, basis: "after", date: "",
+    lev: { plat:0, gen:0, shift:0, extra:0, fixcut:0 },
+    live: { source:"card", simPct:40, now:"", open:"12:00", close:"19:30", shareMode:"profile",
+            sharePct:40, band:15, weights: { ...TGT_DEFAULT_WEIGHTS } }
+  };
+}
+
+/*-------------------
+Purpose: Read the saved «Στόχος» settings (localStorage mz_tgt) merged over the defaults.
+On Input: none.
+On Output: settings Object (see tgtDefaults).
+---------------------*/
+function tgtLoadState(){
+  const d = tgtDefaults();
+  try {
+    const s = JSON.parse(localStorage.getItem(TGT_LS) || "{}");
+    return { ...d, ...s, lev: { ...d.lev, ...(s.lev || {}) },
+      live: { ...d.live, ...(s.live || {}), weights: { ...d.live.weights, ...((s.live || {}).weights || {}) } } };
+  } catch (e) { return d; }
+}
+
+/*-------------------
+Purpose: Save the «Στόχος» settings to localStorage (never to Firebase).
+On Input: none.
+On Output: none.
+---------------------*/
+function tgtSaveState(){
+  localStorage.setItem(TGT_LS, JSON.stringify(tgtState));
+}
+
+/*-------------------
+Purpose: Short display name of a sold item (text before the first <br>).
+On Input: d - item Object from salesItemOf (may be null); key - String.
+On Output: String.
+---------------------*/
+function tgtName(d, key){
+  return String((d && d.el) || key).split(/<br\s*\/?>/i)[0].trim();
+}
+
+/*-------------------
+Purpose: Price, food cost and labels of ONE unit of an item, read through the admin's
+         dishDayEconomics (current kitchen book, site prices). portionChannels is swapped only
+         for the call and always restored.
+On Input: key - String (sales key).
+On Output: { key, name, price, fc, noCost, group, isDrink }.
+---------------------*/
+function tgtUnit(key){
+  key = salesKey(key);
+  if (tgtUnitCache[key]) return tgtUnitCache[key];
+  const saved = portionChannels;
+  let e;
+  try {
+    portionChannels = { [key]: { local:1, efood:0, wolt:0 } };
+    e = dishDayEconomics(key);
+  } finally { portionChannels = saved; }
+  const d = e.d || {};
+  const u = { key, name: tgtName(d, key), price: Number(e.price) || 0, fc: Number(e.fc) || 0,
+    noCost: !!e.noCost, group: e.group || "",
+    isDrink: d.category === "drinks" || d.type === "drinks" };
+  tgtUnitCache[key] = u;
+  return u;
+}
+
+/*-------------------
+Purpose: Daily fixed cost used by the planner (same source as the «Κέρδος / Ημέρα» tab).
+On Input: none.
+On Output: Number (euro per day).
+---------------------*/
+function tgtFixed(){
+  return Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily"));
+}
+
+/*-------------------
+Purpose: Economics of a list of order lines (method A): sales, food, commission, and through
+         withVatProfit the VAT and profit before / after VAT.
+On Input: lines - Array of { key, ch, n, mult?, price? } (price wins over price × mult);
+          fixed - Number (euro).
+On Output: { sales, food, comm, units, fixed, profitBefore, profitAfter, vatDue, ... }.
+---------------------*/
+function tgtEval(lines, fixed){
+  let sales = 0, food = 0, comm = 0, units = 0;
+  lines.forEach(l => {
+    if (!(l.n > 0)) return;
+    const u = tgtUnit(l.key);
+    const p = l.price != null ? l.price : u.price * (l.mult == null ? 1 : l.mult);
+    const s = l.n * p;
+    sales += s; comm += s * (CH_COMM[l.ch] || 0); food += l.n * u.fc; units += l.n;
+  });
+  return { ...withVatProfit({ sales, food, comm, fixed }), sales, food, comm, units, fixed };
+}
+
+/*-------------------
+Purpose: The profit the target is compared with (after or before VAT, as chosen).
+On Input: r - result of tgtEval.
+On Output: Number.
+---------------------*/
+function tgtMetric(r){
+  return tgtState.basis === "before" ? r.profitBefore : r.profitAfter;
+}
+
+/*-------------------
+Purpose: Apply the levers to a day's counts: move a share of platform orders to the shop, add
+         extra shop portions at the day's item mix, raise prices (all / platforms only).
+On Input: channels - { key: {local, efood, wolt} }; lev - { plat, gen, shift, extra } (%, %, %, portions).
+On Output: Array of order lines for tgtEval ({ key, ch, n, mult }).
+---------------------*/
+function tgtLines(channels, lev){
+  const keys = Object.keys(channels);
+  const tot = k => ["local","efood","wolt"].reduce((s,ch) => s + Number(channels[k][ch] || 0), 0);
+  const all = keys.reduce((s,k) => s + tot(k), 0);
+  const sh = (lev.shift || 0) / 100, g = 1 + (lev.gen || 0) / 100, pl = 1 + (lev.plat || 0) / 100;
+  const out = [];
+  keys.forEach(k => {
+    const c = channels[k];
+    const e = Number(c.efood || 0), w = Number(c.wolt || 0);
+    const extra = all > 0 ? (lev.extra || 0) * tot(k) / all : 0;
+    out.push({ key:k, ch:"local", n: Number(c.local || 0) + sh * (e + w) + extra, mult: g });
+    out.push({ key:k, ch:"efood", n: e * (1 - sh), mult: g * pl });
+    out.push({ key:k, ch:"wolt",  n: w * (1 - sh), mult: g * pl });
+  });
+  return out;
+}
+
+/*-------------------
+Purpose: Result of the base day with a set of levers (fixed-cost cut included).
+On Input: lev - lever Object.
+On Output: tgtEval result.
+---------------------*/
+function tgtScenario(lev){
+  return tgtEval(tgtLines(tgtBase.channels, lev), tgtFixed() - (lev.fixcut || 0));
+}
+
+/*-------------------
+Purpose: Smallest value of one monotone quantity that reaches the target (bisection).
+On Input: f - Function(value) → profit; lo, hi - Numbers; target - Number.
+On Output: Number, or null when even hi does not reach the target (0 when lo already does).
+---------------------*/
+function tgtBisect(f, lo, hi, target){
+  if (f(lo) >= target) return lo;
+  if (f(hi) < target) return null;
+  for (let i = 0; i < 60; i++) {
+    const m = (lo + hi) / 2;
+    if (f(m) < target) lo = m; else hi = m;
+  }
+  return hi;
+}
+
+/*-------------------
+Purpose: Value of one lever that alone reaches the target, the other levers held as given.
+On Input: id - lever id; others - lever Object (default: all 0).
+On Output: { value:Number|null, max:Number (profit at the lever's limit) }.
+---------------------*/
+function tgtSolveLever(id, others){
+  const base = { plat:0, gen:0, shift:0, extra:0, fixcut:0, ...(others || {}) };
+  const L = TGT_LEVERS.find(x => x.id === id);
+  const hi = L.solveMax != null ? L.solveMax : tgtFixed();
+  const f = v => tgtMetric(tgtScenario({ ...base, [id]: v }));
+  return { value: tgtBisect(f, 0, hi, Number(tgtState.target)), max: f(hi) };
+}
+
+/*-------------------
+Purpose: Suggested realistic combination for the target: platform prices +5…25 % and part of the
+         platform orders moved to the shop by the size of the gap, then the extra shop portions
+         that close the rest (smaller platform rise when it alone is enough).
+On Input: none (base day, target, basis).
+On Output: lever Object { plat, gen:0, shift, extra, fixcut:0 } or null when there is no gap.
+---------------------*/
+function tgtSuggestCombo(){
+  const gap = Number(tgtState.target) - tgtMetric(tgtScenario({}));
+  if (gap <= 0) return null;
+  const plat = Math.min(25, Math.max(5, Math.round((gap * 0.1 + 8) / 5) * 5));
+  const shift = gap < 80 ? 0 : (gap < 140 ? 20 : 30);
+  const alone = tgtSolveLever("plat", { shift });
+  if (alone.value != null && alone.value <= plat) return { plat: Math.ceil(alone.value), gen:0, shift, extra:0, fixcut:0 };
+  const ex = tgtSolveLever("extra", { plat, shift });
+  return { plat, gen:0, shift, extra: ex.value == null ? null : Math.ceil(ex.value * 10) / 10, fixcut:0 };
+}
+
+/*-------------------
+Purpose: Round a raised menu price up to a sensible step (€0.10 under €3, €0.50 from €3).
+On Input: p - Number (euro).
+On Output: Number.
+---------------------*/
+function tgtRoundPrice(p){
+  const step = p < 3 ? 0.1 : 0.5;
+  return Math.round(Math.ceil(p / step - 1e-9) * step * 100) / 100;
+}
+
+/*-------------------
+Purpose: Read the base day: matzourana_days/<date> (same source as loadDayFromLedger, fallback the
+         local dayLedger) WITHOUT touching the day being edited; empty date = latest saved day.
+On Input: date - "YYYY-MM-DD" or "".
+On Output: Promise<{ date, rec, channels } | null>. Read-only.
+---------------------*/
+async function tgtLoadBaseDay(date){
+  const db = (typeof getDb === "function" && getDb()) || window.rtdb;
+  if (!date) {
+    let keys = Object.keys(dayLedger || {});
+    if (db) {
+      try {
+        const v = (await db.ref("matzourana_days").orderByKey().limitToLast(1).once("value")).val() || {};
+        keys = keys.concat(Object.keys(v));
+      } catch (e) { console.warn("Target latest day:", e); }
+    }
+    date = keys.filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().pop() || "";
+    if (!date) return null;
+  }
+  let rec = null;
+  if (db) {
+    try { rec = (await db.ref("matzourana_days/" + date).once("value")).val(); }
+    catch (e) { console.warn("Target day load:", e); }
+  }
+  if (!rec && dayLedger[date]) rec = dayLedger[date];
+  if (!rec) return { date, rec: null, channels: {} };
+  return { date, rec, channels: migrateSalesChannels(rec.channels || {}, salesLegacyToKey) };
+}
+
+/*-------------------
+Purpose: Open / refresh the «Στόχος» tab: load the base day (once per date) and draw both parts.
+On Input: force - Boolean (reload the base day).
+On Output: Promise<void>.
+---------------------*/
+async function renderTargetTab(force){
+  if (force || !tgtBase || (tgtState.date && tgtBase.date !== tgtState.date)) {
+    tgtBase = await tgtLoadBaseDay(tgtState.date);
+    if (tgtBase && !tgtState.date) tgtState.date = tgtBase.date;
+  }
+  tgtRenderControls();
+  tgtRenderPlan();
+  tgtRenderLive();
+}
+
+/*-------------------
+Purpose: Change one setting of the tab from an input and redraw what depends on it.
+On Input: path - "target" | "basis" | "date" | "lev.<id>" | "live.<name>" | "w.<hour>"; val - value.
+On Output: none. Side effects: tgtState, localStorage mz_tgt, redraw.
+---------------------*/
+function tgtSet(path, val){
+  const [a, b] = String(path).split(".");
+  const num = v => (v === "" || v == null || !isFinite(Number(v))) ? 0 : Number(v);
+  if (a === "lev") tgtState.lev[b] = num(val);
+  else if (a === "w") tgtState.live.weights[b] = Math.max(0, num(val));
+  else if (a === "live") tgtState.live[b] = ["source","now","open","close","shareMode"].includes(b) ? val : num(val);
+  else if (a === "target") tgtState.target = num(val);
+  else tgtState[a] = val;
+  tgtSaveState();
+  if (a === "date") { renderTargetTab(true); return; }
+  if (a === "lev") {
+    const L = TGT_LEVERS.find(x => x.id === b);
+    document.querySelectorAll('[data-tgt-lev="' + b + '"]').forEach(el => {
+      if (el !== document.activeElement) el.value = tgtState.lev[b];
+    });
+    if (L) { tgtRenderPlan(); tgtRenderLive(); return; }
+  }
+  if (a === "live" && (b === "open" || b === "close")) tgtRenderControls();
+  tgtRenderPlan();
+  tgtRenderLive();
+}
+
+/*-------------------
+Purpose: Solve one lever alone (others kept as set) and put the value in its input.
+On Input: id - lever id.
+On Output: none. Side effects: tgtState.lev[id] (unchanged when unreachable), redraw.
+---------------------*/
+function tgtSolveClick(id){
+  const others = { ...tgtState.lev, [id]: 0 };
+  const r = tgtSolveLever(id, others);
+  const note = document.getElementById("tgtSolveNote-" + id);
+  if (r.value == null) {
+    if (note) note.innerHTML = '<span class="tgt-bad">Δεν φτάνει: ακόμα και στο όριο → ' + fmt(r.max) + "</span>";
+    return;
+  }
+  const v = id === "fixcut" ? Math.ceil(r.value * 100) / 100 : Math.ceil(r.value * 10) / 10;
+  tgtState.lev = others; tgtState.lev[id] = v;
+  tgtSaveState(); tgtRenderControls(); tgtRenderPlan(); tgtRenderLive();
+}
+
+/*-------------------
+Purpose: Put the suggested combination (tgtSuggestCombo) or all zeros into the levers.
+On Input: which - "combo" | "zero".
+On Output: none. Side effects: tgtState.lev, redraw.
+---------------------*/
+function tgtApplyPreset(which){
+  if (which === "combo") {
+    const c = tgtSuggestCombo();
+    if (!c || c.extra == null) return;
+    tgtState.lev = c;
+  } else tgtState.lev = { plat:0, gen:0, shift:0, extra:0, fixcut:0 };
+  tgtSaveState(); tgtRenderControls(); tgtRenderPlan(); tgtRenderLive();
+}
+
+/*-------------------
+Purpose: Draw the inputs of both parts (target, basis, base day, lever sliders, live settings).
+On Input: none.
+On Output: none. Side effects: #tgtControls and #tgtLiveControls HTML.
+---------------------*/
+function tgtRenderControls(){
+  const el = document.getElementById("tgtControls");
+  if (!el) return;
+  const s = tgtState;
+  el.innerHTML = `
+    <div class="tgt-row">
+      <label class="tgt-field">Στόχος κέρδους (€ / ημέρα)
+        <input type="number" id="tgtTarget" min="0" step="10" value="${s.target}" onchange="tgtSet('target',this.value)"></label>
+      <label class="tgt-field">Βάση
+        <select id="tgtBasis" onchange="tgtSet('basis',this.value)">
+          <option value="after"${s.basis === "after" ? " selected" : ""}>Μετά ΦΠΑ</option>
+          <option value="before"${s.basis === "before" ? " selected" : ""}>Πριν ΦΠΑ</option>
+        </select></label>
+      <label class="tgt-field">Ημέρα βάσης
+        <input type="date" id="tgtDate" value="${mbEsc(s.date)}" onchange="tgtSet('date',this.value)"></label>
+    </div>
+    <div class="tgt-levers">
+      ${TGT_LEVERS.map(L => `
+        <div class="tgt-lever">
+          <div class="tgt-lever-name">${L.el} <small>(${L.unit})</small></div>
+          <input type="range" min="${L.min}" max="${L.id === "fixcut" ? Math.ceil(tgtFixed()) : L.max}" step="${L.step}"
+            value="${s.lev[L.id] || 0}" data-tgt-lev="${L.id}" oninput="tgtSet('lev.${L.id}',this.value)">
+          <input type="number" min="0" step="any" value="${s.lev[L.id] || 0}" data-tgt-lev="${L.id}"
+            onchange="tgtSet('lev.${L.id}',this.value)">
+          <button type="button" class="btn-ghost" onclick="tgtSolveClick('${L.id}')">Λύση</button>
+          <div class="note tgt-solve-note" id="tgtSolveNote-${L.id}"></div>
+        </div>`).join("")}
+    </div>
+    <p>
+      <button type="button" class="btn-primary" onclick="tgtApplyPreset('combo')">Προτεινόμενος συνδυασμός</button>
+      <button type="button" class="btn-secondary" onclick="tgtApplyPreset('zero')">Μηδενισμός</button>
+    </p>`;
+
+  const lv = document.getElementById("tgtLiveControls");
+  if (!lv) return;
+  const L = s.live;
+  const hours = tgtHours();
+  lv.innerHTML = `
+    <div class="tgt-row">
+      <label class="tgt-field">Μερίδες μέχρι τώρα
+        <select onchange="tgtSet('live.source',this.value)">
+          <option value="card"${L.source === "card" ? " selected" : ""}>Παραγγελίες ημέρας (κάρτα)</option>
+          <option value="sim"${L.source === "sim" ? " selected" : ""}>Δοκιμή: % της ημέρας βάσης</option>
+        </select></label>
+      ${L.source === "sim" ? `<label class="tgt-field">% ημέρας βάσης
+        <input type="number" min="1" max="100" step="5" value="${L.simPct}" onchange="tgtSet('live.simPct',this.value)"></label>` : ""}
+      <label class="tgt-field">Ώρα τώρα
+        <input type="time" value="${mbEsc(L.now || tgtNowHHMM())}" onchange="tgtSet('live.now',this.value)"></label>
+      <label class="tgt-field">Ανοίγει
+        <input type="time" value="${mbEsc(L.open)}" onchange="tgtSet('live.open',this.value)"></label>
+      <label class="tgt-field">Κλείνει
+        <input type="time" value="${mbEsc(L.close)}" onchange="tgtSet('live.close',this.value)"></label>
+      <label class="tgt-field">Μερίδιο ημέρας
+        <select onchange="tgtSet('live.shareMode',this.value)">
+          <option value="profile"${L.shareMode === "profile" ? " selected" : ""}>Από το ωριαίο προφίλ</option>
+          <option value="manual"${L.shareMode === "manual" ? " selected" : ""}>Το γράφω (%)</option>
+        </select></label>
+      ${L.shareMode === "manual" ? `<label class="tgt-field">% ημέρας που πέρασε
+        <input type="number" min="1" max="100" step="5" value="${L.sharePct}" onchange="tgtSet('live.sharePct',this.value)"></label>` : ""}
+      <label class="tgt-field">Εύρος ±%
+        <input type="number" min="0" max="50" step="5" value="${L.band}" onchange="tgtSet('live.band',this.value)"></label>
+    </div>
+    <div class="tgt-weights">
+      <span class="note">Βάρη ζήτησης ανά ώρα:</span>
+      ${hours.map(h => `<label class="tgt-w">${h}:00
+        <input type="number" min="0" step="1" value="${L.weights[h] != null ? L.weights[h] : 10}"
+          onchange="tgtSet('w.${h}',this.value)"></label>`).join("")}
+    </div>`;
+}
+
+/*-------------------
+Purpose: Current local time as HH:MM.
+On Input: none.
+On Output: String.
+---------------------*/
+function tgtNowHHMM(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+}
+
+/*-------------------
+Purpose: "HH:MM" → minutes after midnight.
+On Input: s - String.
+On Output: Number (NaN when empty).
+---------------------*/
+function tgtMin(s){
+  const m = /^(\d{1,2}):(\d{2})/.exec(String(s || ""));
+  return m ? Number(m[1]) * 60 + Number(m[2]) : NaN;
+}
+
+/*-------------------
+Purpose: Opening hours as whole-hour slots (e.g. 12:00–19:30 → 12 … 19).
+On Input: none (tgtState.live.open / close).
+On Output: Array of hour Strings.
+---------------------*/
+function tgtHours(){
+  const o = tgtMin(tgtState.live.open), c = tgtMin(tgtState.live.close);
+  if (!(c > o)) return [];
+  const out = [];
+  for (let h = Math.floor(o / 60); h * 60 < c; h++) out.push(String(h));
+  return out;
+}
+
+/*-------------------
+Purpose: Share of the day's orders already taken at the chosen time: weighted open time that has
+         passed (each hour's weight spread evenly over its open minutes), or the typed %.
+On Input: none.
+On Output: Number 0…1.
+---------------------*/
+function tgtShareSoFar(){
+  const L = tgtState.live;
+  if (L.shareMode === "manual") return Math.min(1, Math.max(0, Number(L.sharePct) / 100));
+  const o = tgtMin(L.open), c = tgtMin(L.close), t = tgtMin(L.now || tgtNowHHMM());
+  let tot = 0, done = 0;
+  tgtHours().forEach(h => {
+    const w = Number(L.weights[h] != null ? L.weights[h] : 10);
+    const a = Math.max(o, h * 60), b = Math.min(c, h * 60 + 60);
+    if (b <= a) return;
+    tot += w;
+    done += w * Math.min(1, Math.max(0, (t - a) / (b - a)));
+  });
+  return tot > 0 ? done / tot : 0;
+}
+
+/*-------------------
+Purpose: Part 1 output: KPIs (base, levers, gap), the single-lever table and the day table with
+         orders, suggested prices per channel, sales, food, commission and contribution.
+On Input: none.
+On Output: none. Side effects: #tgtPlan HTML.
+---------------------*/
+function tgtRenderPlan(){
+  const el = document.getElementById("tgtPlan");
+  if (!el) return;
+  tgtUnitCache = {};
+  if (!tgtBase || !Object.keys(tgtBase.channels).length) {
+    el.innerHTML = '<p class="note">Δεν βρέθηκε αποθηκευμένη ημέρα με παραγγελίες για βάση.</p>';
+    return;
+  }
+  const T = Number(tgtState.target);
+  const basisEl = tgtState.basis === "before" ? "πριν ΦΠΑ" : "μετά ΦΠΑ";
+  const lev = tgtState.lev;
+  const base = tgtScenario({});
+  const exact = tgtScenario(lev);
+
+  // day table with rounded prices
+  const lines = tgtLines(tgtBase.channels, lev);
+  const byKey = {};
+  lines.forEach(l => { (byKey[l.key] = byKey[l.key] || {})[l.ch] = l; });
+  const tableLines = [];
+  const rows = Object.keys(byKey).map(k => {
+    const u = tgtUnit(k);
+    const pr = {};
+    ["local","efood","wolt"].forEach(ch => {
+      const m = byKey[k][ch].mult;
+      pr[ch] = Math.abs(m - 1) < 1e-9 ? u.price : tgtRoundPrice(u.price * m);
+      tableLines.push({ key:k, ch, n: byKey[k][ch].n, price: pr[ch] });
+    });
+    const r = tgtEval(["local","efood","wolt"].map(ch => ({ key:k, ch, n: byKey[k][ch].n, price: pr[ch] })), 0);
+    const below = ["local","efood","wolt"].filter(ch => byKey[k][ch].n > 0 &&
+      pr[ch] * (1 - (CH_COMM[ch] || 0)) < u.fc);
+    return { k, u, n: { local: byKey[k].local.n, efood: byKey[k].efood.n, wolt: byKey[k].wolt.n }, pr, r, below };
+  }).sort((a,b) => (b.n.local + b.n.efood + b.n.wolt) - (a.n.local + a.n.efood + a.n.wolt));
+  const rounded = tgtEval(tableLines, tgtFixed() - (lev.fixcut || 0));
+
+  const q = v => (Math.round(v * 10) / 10).toString().replace(".", ",");
+  const kpi = (label, v, sub, cls) =>
+    `<div class="kpi ${cls || ""}"><div class="label">${label}</div><div class="value">${v}</div><div class="sub">${sub || ""}</div></div>`;
+  const cls = v => v >= T ? "good" : "bad";
+  const gap = tgtMetric(rounded) - T;
+
+  // single levers alone
+  const single = TGT_LEVERS.map(L => {
+    const r = tgtSolveLever(L.id, {});
+    const val = r.value == null ? '<span class="tgt-bad">δεν φτάνει (όριο: ' + fmt(r.max) + ")</span>"
+      : (L.unit === "€" ? fmt(r.value) : q(r.value) + " " + L.unit);
+    return `<tr><td>${L.el}</td><td>${val}</td></tr>`;
+  }).join("");
+  const sc = tgtSuggestCombo();
+  const scTxt = !sc ? "Ο στόχος πιάνεται ήδη."
+    : (sc.extra == null ? "Δεν βρέθηκε συνδυασμός."
+      : `Wolt / e-food +${sc.plat}% · ${sc.shift}% πλατφορμών στο κατάστημα · +${q(sc.extra)} μερίδες καταστήματος`);
+
+  el.innerHTML = `
+    <div class="kpi-grid">
+      ${kpi("Ημέρα βάσης " + mbEsc(tgtBase.date), fmt(tgtMetric(base)), "κέρδος " + basisEl + " · πωλήσεις " + fmt(base.sales), cls(tgtMetric(base)))}
+      ${kpi("Με τους μοχλούς", fmt(tgtMetric(exact)), "ακριβή % · πριν ΦΠΑ " + fmt(exact.profitBefore) + " · μετά " + fmt(exact.profitAfter), cls(tgtMetric(exact)))}
+      ${kpi("Με στρογγυλές τιμές", fmt(tgtMetric(rounded)), "πριν ΦΠΑ " + fmt(rounded.profitBefore) + " · μετά " + fmt(rounded.profitAfter), cls(tgtMetric(rounded)))}
+      ${kpi("Απόσταση από στόχο " + fmt(T), (gap >= 0 ? "+" : "") + fmt(gap).replace("€-", "−€"), gap >= 0 ? "πιάνεται" : "λείπουν", cls(tgtMetric(rounded)))}
+    </div>
+    <div class="tgt-two">
+      <div class="card-mini">
+        <div class="section-title">Ένας μοχλός μόνος του για ${fmt(T)} ${basisEl}</div>
+        <table><tbody>${single}</tbody></table>
+      </div>
+      <div class="card-mini">
+        <div class="section-title">Προτεινόμενος συνδυασμός</div>
+        <p>${scTxt}</p>
+        <p class="note">Σταθερά ${fmt(tgtFixed())}/ημέρα · προμήθειες e-food ${Math.round(CH_COMM.efood * 100)}%, Wolt ${Math.round(CH_COMM.wolt * 100)}% ·
+          κόστη από το τρέχον βιβλίο κουζίνας${tgtBase.rec && Math.abs(Number(tgtBase.rec.food || 0) - base.food) > 0.01
+            ? " (αποθηκευμένο food της ημέρας " + fmt(tgtBase.rec.food) + ", τώρα " + fmt(base.food) + ")" : ""}.</p>
+      </div>
+    </div>
+    <div class="table-wrap tgt-table">
+      <table>
+        <thead><tr><th>Είδος</th><th>Κατ.</th><th>Wolt</th><th>e-food</th><th>Τιμή</th>
+          <th>Νέα τιμή κατ.</th><th>Νέα τιμή πλατφ.</th><th>Πωλήσεις</th><th>Food</th><th>Προμήθ.</th><th>Συνεισφορά</th></tr></thead>
+        <tbody>${rows.map(r => `<tr${r.below.length ? ' class="tgt-below"' : ""}>
+          <td>${mbEsc(r.u.name)}${r.below.length ? ' <span class="pill down" title="Τιμή μετά την προμήθεια κάτω από το κόστος">κάτω από κόστος: ' + r.below.map(ch => CH_EL[ch]).join(", ") + "</span>" : ""}${r.u.noCost ? ' <span class="note">χωρίς κόστος</span>' : ""}</td>
+          <td>${q(r.n.local)}</td><td>${q(r.n.wolt)}</td><td>${q(r.n.efood)}</td>
+          <td>${fmt(r.u.price)}</td>
+          <td>${r.pr.local !== r.u.price ? "<b>" + fmt(r.pr.local) + "</b>" : fmt(r.pr.local)}</td>
+          <td>${r.pr.wolt !== r.u.price ? "<b>" + fmt(r.pr.wolt) + "</b>" : fmt(r.pr.wolt)}</td>
+          <td>${fmt(r.r.sales)}</td><td>${fmt(r.r.food)}</td><td>${fmt(r.r.comm)}</td><td>${fmt(r.r.sales - r.r.food - r.r.comm)}</td>
+        </tr>`).join("")}</tbody>
+        <tfoot><tr><th>Σύνολα</th>
+          <th>${q(rows.reduce((s,r) => s + r.n.local, 0))}</th><th>${q(rows.reduce((s,r) => s + r.n.wolt, 0))}</th><th>${q(rows.reduce((s,r) => s + r.n.efood, 0))}</th>
+          <th></th><th></th><th></th><th>${fmt(rounded.sales)}</th><th>${fmt(rounded.food)}</th><th>${fmt(rounded.comm)}</th>
+          <th>${fmt(rounded.sales - rounded.food - rounded.comm)}</th></tr>
+          <tr><th colspan="7">− σταθερά ${fmt(rounded.fixed)} → κέρδος πριν ΦΠΑ · ΦΠΑ ${fmt(rounded.vatDue)} → μετά ΦΠΑ</th>
+          <th colspan="2">${fmt(rounded.profitBefore)}</th><th colspan="2">${fmt(rounded.profitAfter)}</th></tr></tfoot>
+      </table>
+    </div>
+    <p class="note">Οι νέες τιμές στρογγυλεύονται προς τα πάνω (€0,10 κάτω από €3, αλλιώς €0,50). Οι επιπλέον μερίδες μοιράζονται με το μείγμα της ημέρας βάσης.
+      Τίποτα δεν αλλάζει στην ιστοσελίδα ή στη βάση· είναι μόνο σχέδιο.</p>`;
+}
+
+/*-------------------
+Purpose: Counts of today so far for the live part: the order card (portionChannels) or, for a
+         test, a % of the base day.
+On Input: none.
+On Output: { channels: {key:{local,efood,wolt}}, label: String }.
+---------------------*/
+function tgtLiveCounts(){
+  const L = tgtState.live;
+  if (L.source === "sim" && tgtBase) {
+    const f = Number(L.simPct) / 100, out = {};
+    Object.entries(tgtBase.channels).forEach(([k, c]) => {
+      out[k] = { local: Number(c.local || 0) * f, efood: Number(c.efood || 0) * f, wolt: Number(c.wolt || 0) * f };
+    });
+    return { channels: out, label: L.simPct + "% της ημέρας " + tgtBase.date + " (δοκιμή)" };
+  }
+  const out = {};
+  Object.keys(portionChannels).forEach(k => { if (totalPortions(k) > 0) out[salesKey(k)] = chOf(k); });
+  return { channels: out, label: "Παραγγελίες ημέρας " + (localStorage.getItem("mz_ch_date") || currentPlanDay()) };
+}
+
+/*-------------------
+Purpose: Order lines of a live projection: what is sold so far plus the remaining projected orders
+         (scaled by bandF), with optional price rise on remaining platform orders, raised prices for
+         below-cost platform items and extra shop portions of chosen dishes.
+On Input: soFar, remain - channels Objects; o - { bandF, plat (%), fixKeys: {key: platform price},
+          extraShop: {key: portions} }.
+On Output: Array of order lines.
+---------------------*/
+function tgtLiveLines(soFar, remain, o){
+  const out = [];
+  const keys = [...new Set([...Object.keys(soFar), ...Object.keys(remain), ...Object.keys(o.extraShop || {})])];
+  keys.forEach(k => {
+    const a = soFar[k] || {}, r = remain[k] || {};
+    ["local","efood","wolt"].forEach(ch => {
+      out.push({ key:k, ch, n: Number(a[ch] || 0) });
+      const n = Number(r[ch] || 0) * (o.bandF == null ? 1 : o.bandF);
+      if (ch === "local") { out.push({ key:k, ch, n }); return; }
+      const fix = o.fixKeys && o.fixKeys[k];
+      const u = tgtUnit(k);
+      const p = fix != null ? fix : u.price;
+      out.push({ key:k, ch, n, price: p * (1 + (o.plat || 0) / 100) });
+    });
+    if (o.extraShop && o.extraShop[k]) out.push({ key:k, ch:"local", n: o.extraShop[k] });
+  });
+  return out;
+}
+
+/*-------------------
+Purpose: Part 2 output: share of day so far, full-day projection per item / channel with a ±band
+         range, and when short of the target 2–4 same-day move combinations that each reach it.
+On Input: none.
+On Output: none. Side effects: #tgtLive HTML. Suggestions only; nothing is changed on the site.
+---------------------*/
+function tgtRenderLive(){
+  const el = document.getElementById("tgtLive");
+  if (!el) return;
+  tgtUnitCache = {};
+  const T = Number(tgtState.target);
+  const share = tgtShareSoFar();
+  const live = tgtLiveCounts();
+  const soFar = live.channels;
+  const keys = Object.keys(soFar);
+  if (!keys.length) { el.innerHTML = '<p class="note">Δεν υπάρχουν ακόμα μερίδες για σήμερα (' + mbEsc(live.label) + ").</p>"; return; }
+  if (share < 0.05) { el.innerHTML = '<p class="note">Πέρασε μόνο ' + Math.round(share * 100) + "% της ημέρας· πολύ νωρίς για πρόβλεψη.</p>"; return; }
+  const remain = {};
+  keys.forEach(k => {
+    remain[k] = {};
+    ["local","efood","wolt"].forEach(ch => { remain[k][ch] = soFar[k][ch] * (1 / share - 1); });
+  });
+  const fixed = tgtFixed();
+  const band = Number(tgtState.live.band || 0) / 100;
+  const ev = o => tgtEval(tgtLiveLines(soFar, remain, o), fixed);
+  const mid = ev({}), lo = ev({ bandF: 1 - band }), hi = ev({ bandF: 1 + band });
+  const now = tgtEval(tgtLiveLines(soFar, {}, {}), fixed);
+  const q = v => (Math.round(v * 10) / 10).toString().replace(".", ",");
+  const basisEl = tgtState.basis === "before" ? "πριν ΦΠΑ" : "μετά ΦΠΑ";
+  const gap = T - tgtMetric(mid);
+
+  // dishes worth pushing in the shop: best after-VAT (or before) contribution per portion
+  const menuKeys = [...new Set([...(salesSiteDaily || []), ...keys])].filter(k => {
+    const u = tgtUnit(k); return u.price > 0 && !u.isDrink && !/psomi/.test(k);
+  });
+  const perShop = menuKeys.map(k => ({ k, u: tgtUnit(k),
+    c: tgtMetric(tgtEval([{ key:k, ch:"local", n:1 }], 0)) })).sort((a,b) => b.c - a.c);
+  const top = perShop.slice(0, 3);
+  const extraOf = n => { const o = {}; top.forEach((t, i) => { o[t.k] = (o[t.k] || 0) + Math.floor(n / top.length) + (i < n % top.length ? 1 : 0); }); return o; };
+
+  // below-cost platform items (e.g. bread): raise to break-even after commission and VAT
+  const k13 = VAT_RATE / (1 + VAT_RATE);
+  const fixKeys = {};
+  keys.forEach(k => {
+    const u = tgtUnit(k);
+    const comm = Math.max(CH_COMM.efood || 0, CH_COMM.wolt || 0);
+    if (u.fc > 0 && u.price * (1 - comm) < u.fc && (soFar[k].efood + soFar[k].wolt) > 0)
+      fixKeys[k] = tgtRoundPrice(u.fc * (1 - k13) / ((1 - k13) - comm));
+  });
+  const hasFix = Object.keys(fixKeys).length > 0;
+
+  const combos = [], unreachable = [];
+  if (gap > 0) {
+    const fPlat = (extra, fx) => tgtBisect(x => tgtMetric(ev({ plat:x, fixKeys: fx, extraShop: extraOf(extra) })), 0, 100, T);
+    const fShop = (plat, fx) => tgtBisect(n => tgtMetric(ev({ plat, fixKeys: fx, extraShop: extraOf(Math.ceil(n)) })), 0, 150, T);
+    const add = (title, plat, n, fx) => {
+      if (plat == null || n == null) { unreachable.push(title); return; }
+      const p = Math.ceil(plat), nn = Math.ceil(n);
+      const r = ev({ plat: p, fixKeys: fx, extraShop: extraOf(nn) });
+      const acts = [];
+      if (fx) acts.push("Ψωμί / κάτω από κόστος στις πλατφόρμες: " + Object.entries(fx).map(([k, p2]) => mbEsc(tgtUnit(k).name.split(" ")[0]) + " → " + fmt(p2)).join(", ") + " (ή παύση)");
+      if (p > 0) acts.push("Τιμές Wolt / e-food +" + p + "% για τις υπόλοιπες ώρες");
+      if (nn > 0) acts.push("+" + nn + " μερίδες καταστήματος: " + Object.entries(extraOf(nn)).filter(e => e[1] > 0).map(([k, c]) => c + "× " + mbEsc(tgtUnit(k).name)).join(", "));
+      combos.push({ title, acts, r, effort: p / 5 + nn / 3 + (fx ? 1 : 0) + acts.length * 0.5 });
+    };
+    add("Μόνο τιμές πλατφορμών", fPlat(0, null), 0, null);
+    add("Μόνο μερίδες καταστήματος", 0, fShop(0, null), null);
+    if (hasFix) add("Ψωμί σε τιμή κόστους + τιμές πλατφορμών", fPlat(0, fixKeys), 0, fixKeys);
+    const pMix = 10;
+    add("Συνδυασμός: πλατφόρμες +" + pMix + "% + μερίδες" + (hasFix ? " + ψωμί" : ""), pMix, fShop(pMix, hasFix ? fixKeys : null), hasFix ? fixKeys : null);
+    combos.sort((a,b) => a.effort - b.effort);
+  }
+
+  const rowsHtml = keys.map(k => ({ k, u: tgtUnit(k), a: soFar[k], p: { local: soFar[k].local / share, efood: soFar[k].efood / share, wolt: soFar[k].wolt / share } }))
+    .sort((x,y) => (y.p.local + y.p.efood + y.p.wolt) - (x.p.local + x.p.efood + x.p.wolt))
+    .map(r => `<tr><td>${mbEsc(r.u.name)}</td>
+      <td>${q(r.a.local)} → <b>${q(r.p.local)}</b></td><td>${q(r.a.wolt)} → <b>${q(r.p.wolt)}</b></td><td>${q(r.a.efood)} → <b>${q(r.p.efood)}</b></td></tr>`).join("");
+
+  el.innerHTML = `
+    <p class="note">${mbEsc(live.label)} · ώρα ${mbEsc(tgtState.live.now || tgtNowHHMM())} · έχει περάσει <b>${Math.round(share * 100)}%</b> της ημέρας
+      (${tgtState.live.shareMode === "manual" ? "δικό σου %" : "ωριαίο προφίλ " + mbEsc(tgtState.live.open) + "–" + mbEsc(tgtState.live.close)}).</p>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">Μέχρι τώρα</div><div class="value">${fmt(now.sales)}</div><div class="sub">${q(now.units)} μερίδες</div></div>
+      <div class="kpi"><div class="label">Πρόβλεψη πωλήσεων</div><div class="value">${fmt(mid.sales)}</div><div class="sub">${fmt(lo.sales)} – ${fmt(hi.sales)}</div></div>
+      <div class="kpi ${tgtMetric(mid) >= T ? "good" : "bad"}"><div class="label">Πρόβλεψη κέρδους ${basisEl}</div><div class="value">${fmt(tgtMetric(mid))}</div>
+        <div class="sub">εύρος ${fmt(tgtMetric(lo))} – ${fmt(tgtMetric(hi))} · πριν ΦΠΑ ${fmt(mid.profitBefore)}</div></div>
+      <div class="kpi ${gap <= 0 ? "good" : "bad"}"><div class="label">Στόχος ${fmt(T)}</div><div class="value">${gap <= 0 ? "Πιάνεται" : "−" + fmt(gap)}</div>
+        <div class="sub">${gap <= 0 ? "περιθώριο " + fmt(-gap) : "λείπουν στο μέσο σενάριο"}</div></div>
+    </div>
+    ${gap > 0 ? `<div class="section-title">Κινήσεις για σήμερα (κατά σειρά ευκολίας)</div>
+      <div class="tgt-combos">${combos.slice(0, 4).map((c, i) => `<div class="card-mini tgt-combo">
+        <b>${i + 1}. ${c.title}</b><ul>${c.acts.map(a => "<li>" + a + "</li>").join("")}</ul>
+        <div class="note">→ κέρδος ${basisEl} ${fmt(tgtMetric(c.r))} (πριν ΦΠΑ ${fmt(c.r.profitBefore)}, μετά ${fmt(c.r.profitAfter)})</div></div>`).join("")
+        || '<p class="note">Καμία λογική κίνηση δεν φτάνει τον στόχο σήμερα.</p>'}</div>
+      ${unreachable.length ? '<p class="note"><span class="tgt-bad">Δεν φτάνουν μόνα τους</span> (τιμές έως +100%, μερίδες έως +150): ' + unreachable.join(" · ") + ".</p>" : ""}` : ""}
+    <p class="note">Πρόταση για highlights (μόνο πρόταση, τίποτα δεν αλλάζει αυτόματα): ${top.map(t => mbEsc(t.u.name) + " (" + fmt(t.c) + "/μερίδα)").join(" · ")}.</p>
+    <div class="table-wrap tgt-table"><table>
+      <thead><tr><th>Είδος</th><th>Κατάστημα</th><th>Wolt</th><th>e-food</th></tr></thead>
+      <tbody>${rowsHtml}</tbody></table></div>
+    <p class="note">Μέχρι τώρα → πρόβλεψη ημέρας (μερίδες ÷ μερίδιο ημέρας). Οι αυξήσεις τιμών μετρούν μόνο στις υπόλοιπες προβλεπόμενες παραγγελίες.</p>`;
 }
 
 // Security step S: nothing is loaded on page open any more. All data (national prices,
