@@ -388,6 +388,17 @@ tr.tgt-below td { background: var(--red-soft); }
 .mb-add { justify-self: start; font-size: .85rem; }
 .mb-save { margin: 8px 0 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mb-save small { color: #777; }
+/* Χασάπης / Έλεγχος κρέατος */
+.meat-check { margin-bottom: 16px; }
+.meat-check table { font-size: .82rem; }
+.meat-check td, .meat-check th { vertical-align: top; }
+.meat-in input { width: 5.2rem; font-size: 16px; padding: 4px 6px; }
+.meat-dishes input { width: 5.6rem; font-size: 16px; padding: 4px 6px; }
+.meat-check small { color: var(--muted); font-size: .72rem; }
+.meat-check td.neg { color: #b3261e; }
+.meat-check td.pos, .meat-check th.pos { color: var(--green-dark); }
+.meat-check th.neg { color: #b3261e; }
+#meatTrend { margin-top: 10px; }
 .mb-compare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .mb-col { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
 .mb-h { font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
@@ -611,6 +622,14 @@ tr.tgt-below td { background: var(--red-soft); }
     <div class="section-title">Μέθοδος Β · πραγματικά έξοδα</div>
     <div id="methodBInputs"></div>
     <div id="methodBResults"></div>
+  </div>
+
+  <div class="card-mini meat-check" id="meatCheck">
+    <div class="section-title">Χασάπης / Έλεγχος κρέατος</div>
+    <div id="meatInputs"></div>
+    <div id="meatResults"></div>
+    <div id="meatDishes"></div>
+    <div id="meatTrend"></div>
   </div>
 
   <div class="kpi-grid" id="profitKpis"></div>
@@ -2098,9 +2117,10 @@ function loadMethodBFor(date, rec){
 }
 
 /*-------------------
-Purpose: «Αποθήκευση Μεθόδου Β»: store only the method B fields of the shown day in its existing record
-         (matzourana_days/<date>, update), with the day's saved sales / food / commissions / fixed,
-         then refresh the month (B days counted by methodB). Never writes matzourana_daily.
+Purpose: «Αποθήκευση Μεθόδου Β» / «Αποθήκευση Χασάπη & Μεθόδου Β»: store only the method B fields and the
+         meat check (meatLines, meatCheck) of the shown day in its existing record (matzourana_days/<date>,
+         update), with the day's saved sales / food / commissions / fixed / dishes, then refresh the month
+         (B and meat days counted). Never writes matzourana_daily.
 On Input: none (methodBState, #planDay).
 On Output: Promise<Boolean> - true when saved.
 ---------------------*/
@@ -2108,6 +2128,7 @@ async function saveMethodBOnly(){
   const db = getDb();
   if (!db) { alert("Λείπει το Firebase Realtime Database."); return false; }
   const date = currentPlanDay();
+  if (meatState.date && meatState.date !== date) { alert("Ο χασάπης δεν αντιστοιχεί στην ημέρα " + date + ". Φόρτωσε ξανά την ημέρα."); return false; }
   if (methodBState.date && methodBState.date !== date) { alert("Η Μέθοδος Β δεν αντιστοιχεί στην ημέρα " + date + ". Φόρτωσε ξανά την ημέρα."); return false; }
   let rec = null;
   try { rec = (await db.ref("matzourana_days/" + date).once("value")).val(); }
@@ -2115,7 +2136,7 @@ async function saveMethodBOnly(){
   if (!rec) { alert("Η ημέρα " + date + " δεν έχει αποθηκευτεί ακόμα. Πάτησε «Αποθήκευση ημέρας» (σώζει και τη Μέθοδο Β)."); return false; }
   const a = { sales: Number(rec.sales || 0), food: Number(rec.foodDay != null ? rec.foodDay : rec.food || 0),
               comm: Number(rec.comm || 0), fixed: Number(rec.fixed || 0) };
-  const fields = { ...methodBRecordFields(a), methodBSavedAt: Date.now() };
+  const fields = { ...methodBRecordFields(a), ...meatRecordFields(meatSoldOfRec(rec)), methodBSavedAt: Date.now() };
   try {
     await db.ref("matzourana_days/" + date).update(fields);   // null fields are removed
   } catch (err) { alert("Firebase: " + err.message); return false; }
@@ -2124,12 +2145,15 @@ async function saveMethodBOnly(){
   dayLedger[date] = merged;
   localStorage.setItem("mz_days", JSON.stringify(dayLedger));
   clearMethodBDraft(date);
+  clearMeatDraft(date);
   renderMethodBInputs();
+  renderMeatResults();
   if (typeof buildMonth === "function") buildMonth(date.slice(0,7));
   if (typeof renderMonthPanel === "function") renderMonthPanel();
   if (typeof loadProfitChart === "function") await loadProfitChart();
   if (typeof closeMonth === "function") await closeMonth(date.slice(0,7));
-  alert("Μέθοδος Β για " + date + " αποθηκεύτηκε" + (fields.methodB ? ": προμηθευτές " + fmt(fields.supplierTotal) + "." : " (χωρίς προμηθευτές)."));
+  alert("Μέθοδος Β για " + date + " αποθηκεύτηκε" + (fields.methodB ? ": προμηθευτές " + fmt(fields.supplierTotal) : " (χωρίς προμηθευτές)")
+    + (fields.meatCheck ? " · χασάπης " + fmt(fields.meatCheck.purchasedEur) + " vs συνταγές " + fmt(fields.meatCheck.needEur) + "." : "."));
   return true;
 }
 
@@ -2280,6 +2304,629 @@ function renderMethodBResults(a){
           : "Γράψε το σύνολο προμηθευτών της ημέρας για να υπολογιστεί η Β."}</div>
       </div>
     </div>`;
+}
+
+/* ===================== Χασάπης / Έλεγχος κρέατος =====================
+   Butcher purchase of the day per meat type vs the raw meat the recipes need for the portions sold.
+   Kitchen book prices are VAT included (same as the butcher bill); recipe grams are raw.
+   Stored in matzourana_days/<date>: meatLines (what was typed: lines, carryIn, carryOut, cooked)
+   and meatCheck (computed totals, byType, flagged). Unsaved entries: localStorage mz_meat (per date).
+   Only names / ingredient keys here; all prices come from the kitchen book after sign-in. */
+
+// Meat types of the card → kitchen book ingredient keys (first = price used for «ενημέρωση τιμής»).
+const MEAT_TYPES = [
+  { id: "mince",         el: "Κιμάς μοσχαρίσιος",      ings: ["beef_mince"] },
+  { id: "beef",          el: "Μοσχάρι (κότσι / άλλο)",  ings: ["beef_shank"] },
+  { id: "chicken_whole", el: "Κοτόπουλο ολόκληρο",      ings: ["chicken_whole"] },
+  { id: "chicken_leg",   el: "Κοτόπουλο μπούτι",        ings: ["chicken_leg"] },
+  { id: "pork",          el: "Χοιρινό",                 ings: ["pork", "bacon"] },
+  { id: "other",         el: "Άλλο (αρνί, κατσίκι, κόκορας)", ings: ["lamb", "goat_kid", "rooster"] }
+];
+const MEAT_UNSPLIT = "unsplit";   // a bill without a split per type: € only, counts in the totals
+const MEAT_BATCH_HINT = "6–8";    // portions per pot / batch (Dimitris)
+
+let meatState = { date: "", lines: {}, carryIn: {}, carryOut: {}, cooked: {}, carryInFrom: "" };
+
+/*-------------------
+Purpose: Number from an input value or stored value (null when empty / not a number).
+On Input: v - any.
+On Output: Number | null.
+---------------------*/
+function meatNum(v){
+  if (v === "" || v == null) return null;
+  const n = Number(String(v).replace(",", "."));
+  return isNaN(n) ? null : n;
+}
+
+/*-------------------
+Purpose: Meat type of a kitchen book ingredient key.
+On Input: ing - String, ingredient key.
+On Output: String type id, or null when the ingredient is not meat.
+---------------------*/
+function meatTypeOfIng(ing){
+  const t = MEAT_TYPES.find(x => x.ings.includes(ing));
+  return t ? t.id : null;
+}
+
+/*-------------------
+Purpose: Recipe of a sold item (own key, else the legacy admin key of a fixed-menu item).
+On Input: key - String, sold item key.
+On Output: Object { ingredientKey: qtyPerPortion } or null.
+---------------------*/
+function meatRecipeOf(key){
+  if (recipes[key]) return recipes[key];
+  const f = (typeof salesItems !== "undefined") ? salesItems[key] : null;
+  if (f && f.legacy && recipes[f.legacy]) return recipes[f.legacy];
+  return null;
+}
+
+/*-------------------
+Purpose: Does a sold item look like a meat dish by its type or name (to flag missing meat grams)?
+On Input: key - String; name - String.
+On Output: Boolean.
+---------------------*/
+function meatLooksLikeMeat(key, name){
+  const d = menuCatalog[key];
+  if (d && ["beef", "chicken", "goat_lamb"].includes(d.type)) return true;
+  const n = String(name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return /χοιρ|κοτοπ|κοτοσ|μοσχ|κιμα|μπιφτ|κεφτ|σουβλ|λουκαν|μπριζ|γυρο|παιδακ|αρν|κατσικ|κοκορ|σουτζουκ|γιουβαρλ|παστιτσ|μουσακ|pork|chicken|beef/.test(n);
+}
+
+/*-------------------
+Purpose: Raw meat the recipes need for given portions sold, per meat type and per dish.
+On Input: sold - Array of { key, name, qty } (portions sold, all platforms).
+On Output: { byType: { type: { kg, eurKb, portions } }, dishes: [{ key, name, qty, meat: {ing: kg},
+           kgPP, eurPP }], flagged: [{ key, name, qty }], portions } (portions = meat dish portions).
+---------------------*/
+function meatNeedOf(sold){
+  const byType = {}, dishes = [], flagged = [];
+  let portions = 0;
+  (sold || []).forEach(s => {
+    const qty = Number(s.qty || 0);
+    if (!(qty > 0)) return;
+    const r = meatRecipeOf(s.key) || {};
+    const meat = {};
+    Object.keys(r).forEach(ing => { if (meatTypeOfIng(ing) && Number(r[ing]) > 0) meat[ing] = Number(r[ing]); });
+    if (!Object.keys(meat).length) {
+      if (meatLooksLikeMeat(s.key, s.name)) flagged.push({ key: s.key, name: s.name, qty });
+      return;
+    }
+    let kgPP = 0, eurPP = 0;
+    const types = new Set();
+    Object.keys(meat).forEach(ing => {
+      const t = meatTypeOfIng(ing), p = Number(ingredientPrices[ing] || 0);
+      const o = byType[t] || (byType[t] = { kg: 0, eurKb: 0, portions: 0 });
+      o.kg += meat[ing] * qty; o.eurKb += meat[ing] * qty * p;
+      kgPP += meat[ing]; eurPP += meat[ing] * p;
+      types.add(t);
+    });
+    types.forEach(t => { byType[t].portions += qty; });
+    portions += qty;
+    dishes.push({ key: s.key, name: s.name, qty, meat, kgPP, eurPP, types: [...types] });
+  });
+  dishes.sort((a, b) => b.qty * b.eurPP - a.qty * a.eurPP);
+  return { byType, dishes, flagged, portions };
+}
+
+/*-------------------
+Purpose: Kitchen book €/kg of a meat type (weighted by what the recipes need, else its first priced ingredient).
+On Input: type - String; need - meatNeedOf result (optional).
+On Output: Number | null.
+---------------------*/
+function meatKbPrice(type, need){
+  const n = need && need.byType[type];
+  if (n && n.kg > 0 && n.eurKb > 0) return n.eurKb / n.kg;
+  const t = MEAT_TYPES.find(x => x.id === type);
+  const ing = t && t.ings.find(i => ingredientPrices[i] != null);
+  return ing ? Number(ingredientPrices[ing]) : null;
+}
+
+/*-------------------
+Purpose: Resolve a typed butcher line: any two of kg, €, €/kg give the third; € alone or kg alone
+         use the kitchen book €/kg (marked est).
+On Input: l - { kg, eur, ppk } as typed; kbPpk - Number|null.
+On Output: { kg, eur, ppk, est:Boolean, empty:Boolean }.
+---------------------*/
+function meatResolveLine(l, kbPpk){
+  l = l || {};
+  let kg = meatNum(l.kg), eur = meatNum(l.eur), ppk = meatNum(l.ppk), est = false;
+  if (kg == null && eur == null) return { kg: 0, eur: 0, ppk: ppk, est: false, empty: true };
+  if (kg != null && eur != null) ppk = kg > 0 ? eur / kg : ppk;
+  else if (eur != null && ppk) kg = eur / ppk;
+  else if (kg != null && ppk != null) eur = kg * ppk;
+  else if (eur != null) { ppk = kbPpk; kg = kbPpk ? eur / kbPpk : 0; est = true; }
+  else { ppk = kbPpk; eur = kbPpk ? kg * kbPpk : 0; est = true; }
+  return { kg: kg || 0, eur: eur || 0, ppk: ppk || null, est, empty: false };
+}
+
+/*-------------------
+Purpose: Compare the butcher purchase (± carried meat) with the recipe need, per type and in total.
+On Input: st - meatState-like { lines, carryIn, carryOut, cooked }; sold - Array of { key, name, qty }.
+On Output: { need, rows: [{ type, el, kbPpk, realPpk, line, carryIn, carryOut, usedKg, usedEur, needKg,
+           needEur, gapKg, gapEur, gapPct, qtyEffect, priceEffect, portions, eurPerPortion }],
+           dishes: [{ ...need dish, cooked, waste, wasteEur }], unsplitEur, total: {...} }.
+Notes: used = bought + from yesterday − for tomorrow; gap € = used € (real €/kg) − need € (kitchen book)
+       = qtyEffect (kg gap × real €/kg) + priceEffect (need kg × (real − book €/kg)).
+---------------------*/
+function meatCalc(st, sold){
+  const need = meatNeedOf(sold);
+  const rows = [];
+  const T = { purchasedEur: 0, purchasedKg: 0, usedKg: 0, usedEur: 0, needKg: 0, needEur: 0 };
+  const realOf = {};
+  MEAT_TYPES.forEach(t => {
+    const kb = meatKbPrice(t.id, need);
+    const line = meatResolveLine(st.lines && st.lines[t.id], kb);
+    const cin = meatNum(st.carryIn && st.carryIn[t.id]) || 0;
+    const cout = meatNum(st.carryOut && st.carryOut[t.id]) || 0;
+    const n = need.byType[t.id] || { kg: 0, eurKb: 0, portions: 0 };
+    if (line.empty && !cin && !cout && !n.kg) return;
+    const realPpk = line.ppk || kb || 0;
+    realOf[t.id] = realPpk;
+    const usedKg = line.kg + cin - cout;
+    const usedEur = usedKg * realPpk;
+    const r = { type: t.id, el: t.el, kbPpk: kb, realPpk: line.empty ? null : line.ppk, line, carryIn: cin, carryOut: cout,
+      usedKg, usedEur, needKg: n.kg, needEur: n.eurKb, gapKg: usedKg - n.kg, gapEur: usedEur - n.eurKb,
+      gapPct: n.eurKb > 0 ? (usedEur - n.eurKb) / n.eurKb : null,
+      qtyEffect: (usedKg - n.kg) * realPpk, priceEffect: n.kg * (realPpk - (kb || realPpk)),
+      portions: n.portions, eurPerPortion: n.portions > 0 ? usedEur / n.portions : null,
+      hasLine: !line.empty };
+    rows.push(r);
+    T.purchasedEur += line.eur; T.purchasedKg += line.kg;
+    T.usedKg += usedKg; T.usedEur += usedEur; T.needKg += n.kg; T.needEur += n.eurKb;
+  });
+  const unsplit = meatResolveLine(st.lines && st.lines[MEAT_UNSPLIT],
+    need.byType && T.needKg > 0 ? T.needEur / T.needKg : null);
+  if (!unsplit.empty) {
+    T.purchasedEur += unsplit.eur; T.purchasedKg += unsplit.kg; T.usedEur += unsplit.eur; T.usedKg += unsplit.kg;
+  }
+  let wastePortions = 0, wasteEur = 0;
+  const dishes = need.dishes.map(d => {
+    const cooked = meatNum(st.cooked && st.cooked[d.key]);
+    const waste = cooked != null ? Math.max(0, cooked - d.qty) : null;
+    const eurPPReal = Object.keys(d.meat).reduce((s, ing) => {
+      const t = meatTypeOfIng(ing);
+      return s + d.meat[ing] * (realOf[t] || Number(ingredientPrices[ing] || 0));
+    }, 0);
+    const we = waste != null ? waste * eurPPReal : null;
+    if (waste) { wastePortions += waste; wasteEur += we; }
+    return { ...d, cooked, waste, wasteEur: we, eurPPReal };
+  });
+  const anyLine = rows.some(r => r.hasLine) || !unsplit.empty;
+  const total = { ...T, anyLine, unsplitEur: unsplit.empty ? 0 : unsplit.eur,
+    gapKg: T.usedKg - T.needKg, gapEur: T.usedEur - T.needEur,
+    gapPct: T.needEur > 0 ? (T.usedEur - T.needEur) / T.needEur : null,
+    portions: need.portions,
+    eurPerPortion: need.portions > 0 ? T.usedEur / need.portions : null,
+    kgPer10: need.portions > 0 ? T.usedKg / need.portions * 10 : null,
+    avgPpk: T.purchasedKg > 0 ? T.purchasedEur / T.purchasedKg : null,
+    wastePortions, wasteEur };
+  return { need, rows, dishes, total };
+}
+
+/*-------------------
+Purpose: Portions sold of the shown day (all platforms) as meatCalc input.
+On Input: none (dishesWithSales).
+On Output: Array of { key, name, qty }.
+---------------------*/
+function meatSoldLive(){
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  return sold.filter(r => !r.isDrink).map(r => ({ key: r.key, name: (r.d && r.d.el) || r.key, qty: r.qty }));
+}
+
+/*-------------------
+Purpose: Portions sold of a saved day record as meatCalc input.
+On Input: rec - day record (dishes: { key: { name, qty } }).
+On Output: Array of { key, name, qty }.
+---------------------*/
+function meatSoldOfRec(rec){
+  return Object.keys((rec && rec.dishes) || {}).map(k => {
+    const d = rec.dishes[k] || {};
+    return { key: k, name: d.name || k, qty: Number(d.qty || 0), isDrink: !!d.isDrink };
+  }).filter(x => !x.isDrink);
+}
+
+/*-------------------
+Purpose: Round helper for stored meat numbers (3 decimals for kg, 2 for €; null stays null).
+On Input: n - Number|null; dp - decimals.
+On Output: Number | null.
+---------------------*/
+function meatR(n, dp){
+  if (n == null || isNaN(n)) return null;
+  const f = Math.pow(10, dp == null ? 2 : dp);
+  return Math.round(Number(n) * f) / f;
+}
+
+/*-------------------
+Purpose: The meat fields of the day record: meatLines (typed entry) and meatCheck (computed).
+On Input: sold - Array of { key, name, qty } of the day being saved.
+On Output: { meatLines, meatCheck } (both null when the card has no butcher line → not stored).
+---------------------*/
+function meatRecordFields(sold){
+  const clean = o => {
+    const out = {};
+    Object.keys(o || {}).forEach(k => {
+      const v = o[k];
+      if (v && typeof v === "object") {
+        const x = {}; ["kg", "eur", "ppk"].forEach(f => { const n = meatNum(v[f]); if (n != null) x[f] = n; });
+        if (Object.keys(x).length) out[k] = x;
+      } else { const n = meatNum(v); if (n != null && n !== 0) out[k] = n; }
+    });
+    return Object.keys(out).length ? out : null;
+  };
+  const lines = clean(meatState.lines);
+  if (!lines) return { meatLines: null, meatCheck: null };
+  const c = meatCalc(meatState, sold);
+  const t = c.total;
+  const byType = {};
+  c.rows.forEach(r => {
+    byType[r.type] = { needKg: meatR(r.needKg, 3), needEur: meatR(r.needEur), usedKg: meatR(r.usedKg, 3),
+      usedEur: meatR(r.usedEur), boughtKg: meatR(r.line.kg, 3), boughtEur: meatR(r.line.eur),
+      gapKg: meatR(r.gapKg, 3), gapEur: meatR(r.gapEur), gapPct: meatR(r.gapPct, 4),
+      realPpk: meatR(r.realPpk), kbPpk: meatR(r.kbPpk), portions: r.portions,
+      eurPerPortion: meatR(r.eurPerPortion), est: !!r.line.est };
+  });
+  return {
+    meatLines: { lines, carryIn: clean(meatState.carryIn), carryOut: clean(meatState.carryOut), cooked: clean(meatState.cooked) },
+    meatCheck: { meat: true, purchasedEur: meatR(t.purchasedEur), purchasedKg: meatR(t.purchasedKg, 3),
+      usedEur: meatR(t.usedEur), usedKg: meatR(t.usedKg, 3), needEur: meatR(t.needEur), needKg: meatR(t.needKg, 3),
+      gapEur: meatR(t.gapEur), gapKg: meatR(t.gapKg, 3), gapPct: meatR(t.gapPct, 4), unsplitEur: meatR(t.unsplitEur),
+      portions: t.portions, eurPerPortion: meatR(t.eurPerPortion), kgPer10: meatR(t.kgPer10, 3),
+      avgPpk: meatR(t.avgPpk), wastePortions: t.wastePortions, wasteEur: meatR(t.wasteEur),
+      byType, flagged: c.need.flagged.length ? c.need.flagged.map(f => f.key) : null }
+  };
+}
+
+/*-------------------
+Purpose: Read the unsaved meat drafts (localStorage mz_meat): { "YYYY-MM-DD": { lines, carryIn, carryOut, cooked } }.
+On Input: none.
+On Output: Object (empty when nothing is stored).
+---------------------*/
+function meatDrafts(){
+  try {
+    const m = JSON.parse(localStorage.getItem("mz_meat") || "null");
+    return m && typeof m === "object" && !Array.isArray(m) ? m : {};
+  } catch (e) { return {}; }
+}
+
+/*-------------------
+Purpose: Keep the unsaved meat entry of the shown day as that date's draft.
+On Input: none (meatState).
+On Output: none. Side effects: localStorage mz_meat.
+---------------------*/
+function saveMeatLocal(){
+  const date = meatState.date || currentPlanDay();
+  const m = meatDrafts();
+  m[date] = { lines: meatState.lines, carryIn: meatState.carryIn, carryOut: meatState.carryOut,
+              cooked: meatState.cooked, at: Date.now() };
+  localStorage.setItem("mz_meat", JSON.stringify(m));
+}
+
+/*-------------------
+Purpose: Drop the meat draft of a date (saved, or replaced by the record).
+On Input: date - "YYYY-MM-DD".
+On Output: none.
+---------------------*/
+function clearMeatDraft(date){
+  const m = meatDrafts();
+  if (!(date in m)) return;
+  delete m[date];
+  localStorage.setItem("mz_meat", JSON.stringify(m));
+}
+
+/*-------------------
+Purpose: Meat carried to the given date: "για αύριο" kg of the closest saved day before it (up to 3 days).
+On Input: date - "YYYY-MM-DD".
+On Output: { from: "YYYY-MM-DD"|"", carry: { type: kg } }.
+---------------------*/
+function meatCarryFromBefore(date){
+  const t0 = new Date(date + "T12:00:00").getTime();
+  const prev = Object.keys(dayLedger || {}).filter(d => d < date && (t0 - new Date(d + "T12:00:00").getTime()) <= 3 * 86400000)
+    .sort().reverse().find(d => dayLedger[d] && dayLedger[d].meatLines);
+  if (!prev) return { from: "", carry: {} };
+  return { from: prev, carry: { ...((dayLedger[prev].meatLines || {}).carryOut || {}) } };
+}
+
+/*-------------------
+Purpose: Set the meat entry for a loaded day: its record (meatLines) wins and drops the draft; else the
+         draft of that date; else empty, or the Μέθοδος Β «Χασάπης» amount as «σύνολο χωρίς ανάλυση».
+         "από χθες" is prefilled from the previous day's "για αύριο".
+On Input: date - "YYYY-MM-DD"; rec - day record or null.
+On Output: none. Side effects: meatState, mz_meat, card redrawn.
+---------------------*/
+function loadMeatFor(date, rec){
+  const draft = meatDrafts()[date];
+  let src = null;
+  if (rec && rec.meatLines && rec.meatLines.lines) { src = rec.meatLines; if (draft) clearMeatDraft(date); }
+  else if (draft) src = draft;
+  const copy = o => JSON.parse(JSON.stringify(o || {}));
+  meatState = { date, lines: copy(src && src.lines), carryIn: copy(src && src.carryIn),
+    carryOut: copy(src && src.carryOut), cooked: copy(src && src.cooked), carryInFrom: "", fromB: false };
+  if (!src && methodBState.date === date) {
+    const b = meatMethodBAmount();     // a «Χασάπης» line already in Μέθοδος Β → start from it (not split)
+    if (b != null && b > 0) { meatState.lines[MEAT_UNSPLIT] = { eur: b }; meatState.fromB = true; }
+  }
+  if (!src || !src.carryIn) {
+    const prev = meatCarryFromBefore(date);
+    if (Object.keys(prev.carry).length) { meatState.carryIn = prev.carry; meatState.carryInFrom = prev.from; }
+  }
+  renderMeatInputs();
+}
+
+/*-------------------
+Purpose: Draw the inputs of «Χασάπης / Έλεγχος κρέατος»: one row per meat type (kg, €, €/kg, from yesterday,
+         for tomorrow) and the «σύνολο χωρίς ανάλυση» row.
+On Input: none (meatState).
+On Output: none. Side effects: #meatInputs, then the results.
+---------------------*/
+function renderMeatInputs(){
+  const box = document.getElementById("meatInputs");
+  if (!box) return;
+  const v = x => x == null ? "" : mbEsc(x);
+  const L = meatState.lines || {};
+  const inp = (t, f, ph) => `<input type="number" step="0.01" min="0" inputmode="decimal" placeholder="${ph}"
+      value="${v(f === "carryIn" ? meatState.carryIn[t] : f === "carryOut" ? meatState.carryOut[t] : (L[t] || {})[f])}"
+      oninput="onMeatInput('${t}','${f}',this.value)">`;
+  box.innerHTML = `
+    <div class="table-wrap"><table class="meat-in">
+      <thead><tr><th>Είδος</th><th>kg</th><th>€ (με ΦΠΑ)</th><th>€/kg</th>
+        <th title="${meatState.carryInFrom ? "από " + mbEsc(meatState.carryInFrom) : ""}">από χθες kg</th><th>για αύριο kg</th></tr></thead>
+      <tbody>${MEAT_TYPES.map(t => `<tr><td>${mbEsc(t.el)}</td>
+          <td>${inp(t.id, "kg", "kg")}</td><td>${inp(t.id, "eur", "€")}</td><td>${inp(t.id, "ppk", "€/kg")}</td>
+          <td>${inp(t.id, "carryIn", "0")}</td><td>${inp(t.id, "carryOut", "0")}</td></tr>`).join("")}
+        <tr><td>Σύνολο χωρίς ανάλυση</td><td></td><td>${inp(MEAT_UNSPLIT, "eur", "€")}</td>
+          <td colspan="3"><small>όταν το χαρτί δεν δείχνει είδη (μετρά μόνο στο σύνολο)</small></td></tr>
+      </tbody></table></div>
+    <p class="mb-save"><button type="button" class="btn-ghost" onclick="saveMethodBOnly()">Αποθήκευση Χασάπη &amp; Μεθόδου Β</button>
+      <small>${meatState.fromB ? "σύνολο από Μέθοδο Β «Χασάπης» (σβήνει μόλις γράψεις είδη) · " : ""}${meatState.carryInFrom ? "«από χθες» από " + mbEsc(meatState.carryInFrom) + " · " : ""}γράψε δύο από kg / € / €/kg · μόνο € ή μόνο kg → τιμή βιβλίου</small></p>`;
+  renderMeatResults();
+}
+
+/*-------------------
+Purpose: A meat input changed (line kg / € / €/kg, from yesterday, for tomorrow).
+On Input: type - meat type id or "unsplit"; field - "kg"|"eur"|"ppk"|"carryIn"|"carryOut"; value - String.
+On Output: none. Side effects: meatState, mz_meat, Μέθοδος Β «Χασάπης» line, results redrawn.
+---------------------*/
+function onMeatInput(type, field, value){
+  const n = meatNum(value);
+  if (field === "carryIn" || field === "carryOut") {
+    if (n == null) delete meatState[field][type]; else meatState[field][type] = n;
+    if (field === "carryIn") meatState.carryInFrom = "";
+  } else {
+    if (meatState.fromB && type !== MEAT_UNSPLIT) {
+      delete meatState.lines[MEAT_UNSPLIT];       // the B total is replaced by the split lines
+      const u = document.querySelector(`#meatInputs input[oninput^="onMeatInput('${MEAT_UNSPLIT}'"]`);
+      if (u) u.value = "";
+    }
+    meatState.fromB = false;
+    const l = meatState.lines[type] || (meatState.lines[type] = {});
+    if (n == null) delete l[field]; else l[field] = n;
+    if (!Object.keys(l).length) delete meatState.lines[type];
+  }
+  saveMeatLocal();
+  if (field !== "carryIn" && field !== "carryOut") meatSyncMethodB();
+  renderMeatResults();
+}
+
+/*-------------------
+Purpose: A «μαγειρεύτηκαν» (portions cooked) input of a meat dish changed.
+On Input: key - dish key; value - String.
+On Output: none. Side effects: meatState.cooked, mz_meat, results redrawn (dish rows keep focus).
+---------------------*/
+function onMeatCooked(key, value){
+  const n = meatNum(value);
+  if (n == null) delete meatState.cooked[key]; else meatState.cooked[key] = n;
+  saveMeatLocal();
+  renderMeatResults();
+  const c = meatCalc(meatState, meatSoldLive());
+  const d = c.dishes.find(x => x.key === key);
+  const cell = document.getElementById("meatWaste_" + key);
+  if (cell && d) cell.innerHTML = meatWasteCell(d);
+}
+
+/*-------------------
+Purpose: Total butcher € typed in the card (all lines incl. the unsplit one).
+On Input: none (meatState).
+On Output: Number | null (null when no line has an amount).
+---------------------*/
+function meatPurchaseTotal(){
+  const c = meatCalc(meatState, []);
+  return c.total.anyLine ? mbRound(c.total.purchasedEur) : null;
+}
+
+/*-------------------
+Purpose: Keep the «Χασάπης» supplier line of Μέθοδος Β equal to the card total: update the line named
+         Χασάπης (any case / accents), else add it. A B lump sum without lines is left as it is.
+On Input: none.
+On Output: none. Side effects: methodBState, mz_mb, Μέθοδος Β inputs redrawn.
+---------------------*/
+function meatSyncMethodB(){
+  if (methodBState.date && methodBState.date !== meatState.date) return;
+  const total = meatPurchaseTotal();
+  if (total == null) return;
+  const norm = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const i = methodBState.supplierLines.findIndex(l => norm(l.name).includes("χασαπ"));
+  if (i >= 0) methodBState.supplierLines[i].amount = total;
+  else if (methodBState.supplierLines.length || methodBState.supplierTotal == null)
+    methodBState.supplierLines.push({ name: "Χασάπης", amount: total });
+  else return;
+  saveMethodBLocal();
+  renderMethodBInputs();
+}
+
+/*-------------------
+Purpose: The «Χασάπης» amount of Μέθοδος Β (to show whether it matches the card).
+On Input: none.
+On Output: Number | null.
+---------------------*/
+function meatMethodBAmount(){
+  const norm = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const l = methodBState.supplierLines.find(x => norm(x.name).includes("χασαπ"));
+  return l && l.amount !== "" && l.amount != null ? Number(l.amount) : null;
+}
+
+/*-------------------
+Purpose: HTML of the waste cell of a meat dish (portions cooked − sold, and its meat €).
+On Input: d - dish row of meatCalc.
+On Output: String.
+---------------------*/
+function meatWasteCell(d){
+  if (d.cooked == null) return '<span class="note">—</span>';
+  if (d.cooked < d.qty) return '<span class="pill down">μαγειρεύτηκαν λιγότερα από όσα πουλήθηκαν</span>';
+  return d.waste ? `${d.waste} μερ. · <strong>${fmt(d.wasteEur)}</strong>` : "0";
+}
+
+/*-------------------
+Purpose: Draw the comparison of «Χασάπης / Έλεγχος κρέατος»: per meat type, totals, dishes (cooked vs sold),
+         flags and the month trend.
+On Input: none (meatState, the day's portions sold).
+On Output: none. Side effects: #meatResults, #meatDishes (not while typing in it), #meatTrend.
+---------------------*/
+function renderMeatResults(){
+  const box = document.getElementById("meatResults");
+  if (!box) return;
+  const c = meatCalc(meatState, meatSoldLive());
+  const t = c.total;
+  const pct = v => v == null ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(1) + "%";
+  const sg = v => v == null ? "—" : (Math.abs(v) < 0.005 ? "" : v > 0 ? "+" : "−") + fmt(Math.abs(v));
+  const kg = v => v == null ? "—" : Number(v).toFixed(2) + " kg";
+  const sgKg = v => (Math.abs(v) < 0.005 ? "" : v > 0 ? "+" : "−") + Math.abs(v).toFixed(2) + " kg";
+  const cls = v => v == null ? "" : (v > 0.005 ? "neg" : "pos");
+  const bAmt = meatMethodBAmount();
+  const total = meatPurchaseTotal();
+  box.innerHTML = !c.rows.length && !t.anyLine
+    ? '<p class="note">Δεν υπάρχουν πιάτα με κρέας ούτε γραμμές χασάπη για αυτή την ημέρα.</p>'
+    : `<div class="table-wrap"><table class="meat-out">
+      <thead><tr><th>Είδος</th><th>Ανάγκη συνταγών</th><th>Αγορά ± μεταφορά</th><th>Διαφορά</th>
+        <th>€/kg πραγμ. · βιβλίο</th><th>€ κρέατος / μερίδα</th><th></th></tr></thead>
+      <tbody>${c.rows.map(r => `<tr>
+        <td>${mbEsc(r.el)}${r.line.est ? ' <span class="note">(εκτίμηση kg)</span>' : ""}</td>
+        <td>${kg(r.needKg)} · ${fmt(r.needEur)}<br><small>${r.portions} μερίδες</small></td>
+        <td>${kg(r.usedKg)} · ${fmt(r.usedEur)}${r.carryIn || r.carryOut ? "<br><small>αγορά " + kg(r.line.kg) + " + χθες " + kg(r.carryIn) + " − αύριο " + kg(r.carryOut) + "</small>" : ""}</td>
+        <td class="${r.hasLine || r.carryIn ? cls(r.gapEur) : ""}">${r.hasLine || r.carryIn ? sgKg(r.gapKg) + " · <strong>" + sg(r.gapEur) + "</strong> · " + pct(r.gapPct)
+            + "<br><small>ποσότητα " + sg(r.qtyEffect) + " · τιμή " + sg(r.priceEffect) + "</small>" : '<span class="note">χωρίς αγορά</span>'}</td>
+        <td>${r.realPpk ? fmt(r.realPpk) : "—"} · ${r.kbPpk ? fmt(r.kbPpk) : "—"}${r.realPpk && r.kbPpk ? "<br><small>Δ " + sg(r.realPpk - r.kbPpk) + "/kg</small>" : ""}</td>
+        <td>${r.eurPerPortion != null ? fmt(r.eurPerPortion) : "—"}<br><small>συνταγή ${r.portions ? fmt(r.needEur / r.portions) : "—"}</small></td>
+        <td>${r.realPpk && r.kbPpk && Math.abs(r.realPpk - r.kbPpk) >= 0.01 && !r.line.est
+            ? `<button type="button" class="btn-ghost" onclick="meatUpdateKbPrice('${r.type}')" title="Γράφει την τιμή στο βιβλίο κουζίνας μόνο μετά από επιβεβαίωση">Τιμή → βιβλίο</button>` : ""}</td>
+      </tr>`).join("")}
+      ${t.unsplitEur ? `<tr><td>Σύνολο χωρίς ανάλυση</td><td></td><td>${fmt(t.unsplitEur)}</td><td colspan="4"><small>μετρά μόνο στο σύνολο</small></td></tr>` : ""}
+      </tbody>
+      <tfoot><tr><th>Σύνολο</th><th>${kg(t.needKg)} · ${fmt(t.needEur)}</th><th>${kg(t.usedKg)} · ${fmt(t.usedEur)}</th>
+        <th class="${t.anyLine ? cls(t.gapEur) : ""}">${t.anyLine ? sgKg(t.gapKg) + " · " + sg(t.gapEur) + " · " + pct(t.gapPct) : "—"}</th>
+        <th>${t.avgPpk ? fmt(t.avgPpk) + " μέσο" : "—"}</th><th>${t.eurPerPortion != null && t.anyLine ? fmt(t.eurPerPortion) : "—"}</th><th></th></tr></tfoot>
+    </table></div>
+    <p class="note">Χασάπης ${total == null ? "—" : fmt(total)} · ${t.portions} μερίδες με κρέας · ${t.kgPer10 != null && t.anyLine ? t.kgPer10.toFixed(2) + " kg / 10 μερίδες" : ""}
+      ${t.wastePortions ? " · περίσσευμα " + t.wastePortions + " μερ. = " + fmt(t.wasteEur) : ""}
+      · Μέθοδος Β «Χασάπης»: ${bAmt == null ? "—" : fmt(bAmt)}${total != null && bAmt != null && Math.abs(total - bAmt) >= 0.01
+        ? ' <span class="pill down">διαφέρει από την κάρτα</span> <button type="button" class="btn-ghost" onclick="meatSyncMethodB();renderMeatResults()">Συγχρονισμός</button>' : ""}</p>
+    ${c.need.flagged.length ? `<p class="note">⚠ Χωρίς γραμμάρια κρέατος στη συνταγή: ${c.need.flagged.map(f => mbEsc(f.name) + " ×" + f.qty).join(", ")} (δεν μετρούν στην ανάγκη).</p>` : ""}`;
+  const dbox = document.getElementById("meatDishes");
+  if (dbox && !dbox.contains(document.activeElement)) {
+    dbox.innerHTML = c.dishes.length ? `<div class="table-wrap"><table class="meat-dishes">
+      <thead><tr><th>Πιάτο με κρέας</th><th>Πουλήθηκαν</th><th>Κρέας / μερίδα</th><th>Μαγειρεύτηκαν</th><th>Περίσσευμα</th></tr></thead>
+      <tbody>${c.dishes.map(d => `<tr><td>${mbEsc(d.name)}</td><td>${d.qty}</td>
+        <td>${Math.round(d.kgPP * 1000)} g · ${fmt(d.eurPP)}</td>
+        <td><input type="number" step="1" min="0" inputmode="numeric" placeholder="${MEAT_BATCH_HINT}/κατσ."
+             value="${d.cooked == null ? "" : d.cooked}" oninput="onMeatCooked('${d.key}', this.value)"></td>
+        <td id="meatWaste_${d.key}">${meatWasteCell(d)}</td></tr>`).join("")}</tbody>
+    </table></div>
+    <p class="note">Μία κατσαρόλα ≈ ${MEAT_BATCH_HINT} μερίδες. Περίσσευμα € = (μαγειρεύτηκαν − πουλήθηκαν) × κρέας/μερίδα στην πραγματική τιμή.</p>` : "";
+  }
+  renderMeatTrend();
+}
+
+/*-------------------
+Purpose: Month trend of the #planDay month: one row per day with meatCheck and the month total.
+On Input: none (dayLedger).
+On Output: none. Side effects: #meatTrend.
+---------------------*/
+function renderMeatTrend(){
+  const box = document.getElementById("meatTrend");
+  if (!box) return;
+  const ym = monthISO(document.getElementById("planDay")?.value || localTodayISO());
+  const days = daysFor(ym).filter(d => d.meatCheck && d.meatCheck.meat);
+  if (!days.length) { box.innerHTML = '<p class="note">Τάση ' + ym + ': καμία αποθηκευμένη ημέρα με χασάπη ακόμα.</p>'; return; }
+  const s = meatSumOf(days);
+  const pct = v => v == null ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(1) + "%";
+  const row = (lbl, m) => `<tr><td>${lbl}</td><td>${fmt(m.purchasedEur)}</td><td>${fmt(m.needEur)}</td>
+    <td>${pct(m.gapPct)}</td><td>${m.kgPer10 != null ? Number(m.kgPer10).toFixed(2) : "—"}</td><td>${m.avgPpk ? fmt(m.avgPpk) : "—"}</td></tr>`;
+  box.innerHTML = `<div class="section-title">Τάση μήνα ${ym} <span class="badge">${s.daysMeat} ημέρες με χασάπη</span></div>
+    <div class="table-wrap"><table class="meat-trend"><thead><tr><th>Ημέρα</th><th>Χασάπης</th><th>Συνταγές</th>
+      <th>Διαφορά</th><th>kg / 10 μερ.</th><th>€/kg</th></tr></thead>
+      <tbody>${days.map(d => row(d.date.slice(8) + "/" + d.date.slice(5, 7), d.meatCheck)).join("")}</tbody>
+      <tfoot>${row("Μήνας", { purchasedEur: s.meatButcherEur, needEur: s.meatNeedEur, gapPct: s.meatGapPct, kgPer10: s.meatKgPer10, avgPpk: s.meatAvgPpk })}</tfoot>
+    </table></div>`;
+}
+
+/*-------------------
+Purpose: Meat check totals over the days that have it (day records with meatCheck, or month records
+         that carry these sums already).
+On Input: days - Array of day or month records.
+On Output: { daysMeat, meatButcherEur, meatPurchasedKg, meatUsedEur, meatUsedKg, meatNeedEur, meatNeedKg,
+           meatPortions, meatGapEur, meatGapPct, meatKgPer10, meatAvgPpk }.
+---------------------*/
+function meatSumOf(days){
+  const o = { daysMeat: 0, meatButcherEur: 0, meatPurchasedKg: 0, meatUsedEur: 0, meatUsedKg: 0,
+    meatNeedEur: 0, meatNeedKg: 0, meatPortions: 0 };
+  (days || []).forEach(d => {
+    if (!d) return;
+    if (d.daysMeat != null) {
+      o.daysMeat += Number(d.daysMeat || 0);
+      ["meatButcherEur", "meatPurchasedKg", "meatUsedEur", "meatUsedKg", "meatNeedEur", "meatNeedKg", "meatPortions"]
+        .forEach(k => { o[k] += Number(d[k] || 0); });
+      return;
+    }
+    const m = d.meatCheck;
+    if (!m || !m.meat) return;
+    o.daysMeat += 1;
+    o.meatButcherEur += Number(m.purchasedEur || 0); o.meatPurchasedKg += Number(m.purchasedKg || 0);
+    o.meatUsedEur += Number(m.usedEur || 0); o.meatUsedKg += Number(m.usedKg || 0);
+    o.meatNeedEur += Number(m.needEur || 0); o.meatNeedKg += Number(m.needKg || 0);
+    o.meatPortions += Number(m.portions || 0);
+  });
+  o.meatGapEur = o.meatUsedEur - o.meatNeedEur;
+  o.meatGapPct = o.meatNeedEur > 0 ? o.meatGapEur / o.meatNeedEur : null;
+  o.meatKgPer10 = o.meatPortions > 0 ? o.meatUsedKg / o.meatPortions * 10 : null;
+  o.meatAvgPpk = o.meatPurchasedKg > 0 ? o.meatButcherEur / o.meatPurchasedKg : null;
+  Object.keys(o).forEach(k => { if (o[k] != null && k !== "daysMeat") o[k] = meatR(o[k], k === "meatGapPct" ? 4 : 3); });
+  return o;
+}
+
+/*-------------------
+Purpose: KPI tile «Χασάπης» for a period (month / year): butcher € vs recipe meat €, gap, kg per 10 portions.
+On Input: rec - record with meatSumOf fields.
+On Output: String (empty when no day has a meat check).
+---------------------*/
+function meatKpiHtml(rec){
+  if (!rec || !rec.daysMeat) return "";
+  const g = rec.meatGapPct;
+  return `<div class="kpi ${g != null && g > 0.05 ? "warn" : "good"}"><div class="label">Χασάπης vs συνταγές</div>
+    <div class="value">${fmt(rec.meatButcherEur)}</div>
+    <div class="sub">${rec.daysMeat} ημ. · συνταγές ${fmt(rec.meatNeedEur)} · ${g == null ? "—" : (g >= 0 ? "+" : "−") + Math.abs(g * 100).toFixed(1) + "%"}
+      · ${rec.meatKgPer10 != null ? Number(rec.meatKgPer10).toFixed(2) + " kg/10 μερ." : ""} · ${rec.meatAvgPpk ? fmt(rec.meatAvgPpk) + "/kg" : ""}</div></div>`;
+}
+
+/*-------------------
+Purpose: «Τιμή → βιβλίο»: write the real €/kg of a meat type to the kitchen book (its first ingredient),
+         only after an explicit confirm.
+On Input: type - meat type id.
+On Output: Promise<Boolean> - true when written.
+---------------------*/
+async function meatUpdateKbPrice(type){
+  const t = MEAT_TYPES.find(x => x.id === type);
+  if (!t) return false;
+  const kb = meatKbPrice(type, null);
+  const line = meatResolveLine(meatState.lines[type], kb);
+  if (line.empty || line.est || !line.ppk) return false;
+  const ing = t.ings[0], ppk = mbRound(line.ppk);
+  if (!window.confirm("Ενημέρωση βιβλίου κουζίνας: " + t.el + " (" + ing + ") από " + fmt(kb) + " σε " + fmt(ppk) + "/kg;\nΑλλάζει το food cost όλων των συνταγών με αυτό το υλικό.")) return false;
+  const db = getDb();
+  if (!db) { alert("Λείπει το Firebase Realtime Database."); return false; }
+  try { await db.ref(KITCHEN_DB + "/ingredients/" + ing).set(ppk); }
+  catch (e) { alert("Firebase: " + e.message); return false; }
+  ingredientPrices[ing] = ppk;
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  return true;
 }
 
 
@@ -3301,7 +3948,7 @@ function vatReportHtml(title, rec){
         <div class="label">Καθαρό μετά ΦΠΑ</div>
         <div class="value">${fmt(p.after)}</div>
         <div class="sub">κέρδος − απόδοση ΦΠΑ</div>
-      </div>${methodBKpiHtml(rec)}
+      </div>${methodBKpiHtml(rec)}${meatKpiHtml(rec)}
     </div>`;
 }
 
@@ -3335,7 +3982,7 @@ function fillKpis(id, rec){
       <div class="label">Καθαρό μετά ΦΠΑ</div>
       <div class="value">${fmt(p.after)}</div>
       <div class="sub">μετά την απόδοση στην εφορία</div>
-    </div>${methodBKpiHtml(rec)}${(() => {
+    </div>${methodBKpiHtml(rec)}${meatKpiHtml(rec)}${(() => {
       const t = breakdownText(rec);
       if (!t.ch) return "";
       return `
@@ -3577,7 +4224,7 @@ function summarizeDays(days, label){
     vatOnSales:0, vatOnFood:0, vatDue:0,
     profitBefore:0, profitAfter:0
   };
-  Object.assign(rec, methodBSumOf(days));
+  Object.assign(rec, methodBSumOf(days), meatSumOf(days));
 
   (days || []).forEach(d => {
     const x = withVatProfit({
@@ -3745,7 +4392,7 @@ async function closeYear(y){
     comm:  months.reduce((s,m) => s + Number(m.comm||0), 0),
     fixed: months.reduce((s,m) => s + Number(m.fixed||0), 0)
   });
-  Object.assign(rec, methodBSumOf(months));
+  Object.assign(rec, methodBSumOf(months), meatSumOf(months));
   rec.closedAt = Date.now();
   const db = typeof getDb === "function" ? getDb() : null;
   if (db) {
@@ -3776,7 +4423,7 @@ async function renderYearSection(){
   const fixed    = months.reduce((s,m) => s + Number(m.fixed||0), 0);
   const net      = months.reduce((s,m) => s + Number(m.net||m.profit||0), 0);
   const rec = { year: y, months: months.length, sales, food, comm, fixed, net, ...vatPack(sales, food),
-    ...mergeBreakdowns(months), ...methodBSumOf(months) };
+    ...mergeBreakdowns(months), ...methodBSumOf(months), ...meatSumOf(months) };
   const b2 = document.getElementById("yearBadge");
   if (b2) b2.textContent = closed ? y + " κλεισμένο" : y + " · εκκρεμεί κλείσιμο";
   const yk = document.getElementById("yearKpis");
@@ -4409,6 +5056,8 @@ function renderProfitPlanner(){
 
   renderMethodBResults({ sales, food: foodDay, comm: commDay, fixed });
   if (methodBState.date !== currentPlanDay()) loadMethodBFor(currentPlanDay(), dayLedger[currentPlanDay()] || null);
+  if (meatState.date !== currentPlanDay()) loadMeatFor(currentPlanDay(), dayLedger[currentPlanDay()] || null);
+  else renderMeatResults();
 
   const kpis = document.getElementById("profitKpis");
   if (kpis) kpis.innerHTML = `
@@ -4555,7 +5204,8 @@ function renderProfitPlanner(){
 /*-------------------
 Purpose: Save the recorded day (sales, food, commissions, fixed, net, dishes) to matzourana_days,
          with the method B fields (methodBRecordFields: supplierTotal, supplierLines, runningDay,
-         constantDay, profitB_before, vatDueB, profitB_after, methodB).
+         constantDay, profitB_before, vatDueB, profitB_after, methodB) and the meat check
+         (meatRecordFields: meatLines, meatCheck).
 On Input: none (reads the planner inputs and the portions table).
 On Output: Promise<void>.
 Notes: empty fixed / target fields use the kitchen book planner settings. itemsSchema 2 adds
@@ -4624,7 +5274,8 @@ async function pushToFirebase(){
     : { shop: null, efood: null, wolt: null },
     createdAt: Date.now(),
     dishes,
-    ...methodBRecordFields({ sales, food: foodDay, comm, fixed })
+    ...methodBRecordFields({ sales, food: foodDay, comm, fixed }),
+    ...meatRecordFields(sold.filter(r => !r.isDrink).map(r => ({ key: r.key, name: (r.d && r.d.el) || r.key, qty: r.qty })))
   });
 
   try {
@@ -4638,7 +5289,9 @@ async function pushToFirebase(){
       localStorage.setItem("mz_days", JSON.stringify(dayLedger));
     }
     clearMethodBDraft(date);
+    clearMeatDraft(date);
     if (methodBState.date === date) renderMethodBInputs();
+    if (meatState.date === date) renderMeatResults();
     if (typeof buildMonth === "function") buildMonth(date.slice(0,7));
     if (typeof renderMonthPanel === "function") renderMonthPanel();
     if (typeof loadProfitChart === "function") await loadProfitChart();
@@ -4663,7 +5316,8 @@ Side effects: reads matzourana_days/<date> (fallback: the local dayLedger); sets
           unsaved counts typed earlier for that same date (localStorage mz_ch_date); counts of
           another date are cleared. Checkboxes: daily dishes with portions or in rec.keys
           (fixed-menu items are never ticked); without a record, today's menu picks.
-          Method B entry (supplier total / lines, running cost) from the record (loadMethodBFor).
+          Method B entry (supplier total / lines, running cost) from the record (loadMethodBFor);
+          meat check entry (meatLines) the same way (loadMeatFor).
           Never writes to Firebase.
 ---------------------*/
 async function loadDayFromLedger(){
@@ -4699,9 +5353,11 @@ async function loadDayFromLedger(){
   applyDailyPicks(picks);
   updateDailyPickLock();
   methodBState.date = date;                    // planner must not reload B from the old ledger
+  meatState.date = date;                       // nor the meat check
   renderSalesEntry();
   renderProfitPlanner();
   loadMethodBFor(date, rec);
+  loadMeatFor(date, rec);
   return rec;
 }
 
@@ -4736,7 +5392,7 @@ function buildMonth(ym){
     month: ym, days: days.length,
     sales: sum("sales"), food: sum("food"), comm: sum("comm"),
     fixed: sum("fixed"), profit: sum("profit"), portions: sum("portions"),
-    ...methodBSumOf(days)
+    ...methodBSumOf(days), ...meatSumOf(days)
   };
 }
 
@@ -4757,7 +5413,7 @@ function renderMonthPanel(){
     <div class="kpi"><div class="label">Κόστος πιάτων</div><div class="value">${fmt(m.food)}</div></div>
     <div class="kpi"><div class="label">Προμήθειες</div><div class="value">${fmt(m.comm)}</div></div>
     <div class="kpi"><div class="label">Σταθερά μήνα</div><div class="value">${fmt(m.fixed)}</div></div>
-    <div class="kpi good"><div class="label">Καθαρό μήνα</div><div class="value">${fmt(m.profit)}</div></div>${methodBKpiHtml(m)}`;
+    <div class="kpi good"><div class="label">Καθαρό μήνα</div><div class="value">${fmt(m.profit)}</div></div>${methodBKpiHtml(m)}${meatKpiHtml(m)}`;
   drawFourCharts(days);
 }
 
