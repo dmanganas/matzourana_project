@@ -24,7 +24,8 @@ const currentDailyMenu = [
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
+    "soutzoukakia",
+    "kolokythakia_gemista",
     "lachanontolmades",
 
     // Soups
@@ -32,12 +33,13 @@ const currentDailyMenu = [
     "kotosoupa",
 
     //Veggy
-    "arakas_lemonatos",
+    "melitzanes_imam",
+    "briam",
     "spanakorizo",
+    "arakas_lemonatos",
 
     // Legumes
     "revithia",
-    "fasolada",
     "fakes"
 ];
 
@@ -48,13 +50,15 @@ const currentHighlights = [
     "moschari_kokkinisto",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
-    "keftedakia_tiganita",
+    "soutzoukakia",
+    "kolokythakia_gemista",
 
     "pastitsio",
 
     "giouvarlakia",
     "kotosoupa",
 
+    "melitzanes_imam",
     "spanakorizo",
     "arakas_lemonatos"
 ];
@@ -116,13 +120,13 @@ const menuCatalog = {
     "soutzoukakia": { category: "meat-cooked", el: "Σουτζουκάκια Σμυρνέικα <br><br> (Χειροποίητα με 100% μοσχαρίσιο κιμά)", en: "Smyrna-Style Soutzoukakia <br><br> (Handmade with 100% beef mince)", price: "€9.00" },
     "spetzofai": { category: "meat-cooked", el: "Σπετζοφάϊ με βόειο λουκάνικο <br><br> (Με χωριάτικο λουκάνικο Σερρών, ντομάτα και πιπεριές)", en: "Spetzofai with Beef Sausage <br><br> (With rustic Serres sausage, tomato and peppers)", price: "€8.00" },
     "lachanontolmades": { category: "meat-cooked", el: "Λαχανοντολμάδες <br><br> (Χειροποίητοι με κρεμώδες αυγολέμονο)", en: "Cabbage Rolls <br><br> (Handmade with creamy egg-lemon sauce)", price: "€9.00" },
-    "kolokythakia_gemista": { category: "meat-cooked", el: "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Stuffed Zucchini with Meat & Egg-Lemon Sauce <br><br> (With 100% beef mince from Astakou Meats)", price: "€9.50" },
+    "kolokythakia_gemista": { category: "meat-cooked", el: "Κολοκυθάκια γεμιστά με κιμά αυγολέμονο <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Stuffed Zucchini with Meat & Egg-Lemon Sauce <br><br> (With 100% beef mince from Astakou Meats)", price: "€9.00" },
     "makaronia_kima": { category: "meat-cooked", el: "Μακαρόνια με κιμά (Μπολονέζ) <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Spaghetti with Minced Meat (Bolognese) <br><br> (With 100% beef mince from Astakou Meats)", price: "€9.00" },
     "carbonara": { category: "meat-cooked", el: "Καρμπονάρα <br><br> (Με αυγά, κρέμα γάλακτος, μπέικον και παρμεζάνα)", en: "Carbonara <br><br> (With eggs, cream, bacon and parmesan)", price: "€8.00" },
 
     // ==================== ΠΙΑΤΑ ΛΑΧΑΝΙΚΩΝ ====================
     "moussakas_nistisimos": { category: "veg-cooked", el: "Μουσακάς Νηστίσιμος <br><br> (Μουσακάς χωρίς κρέας, με κιμά σόγιας, ψητές μελιτζάνες και πατάτες)", en: "Vegan Moussaka <br><br> (Made without meat, using soy mince, roasted eggplants and potatoes)", price: "€8.50" },
-    "briam": { category: "veg-cooked", el: "Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές και πατάτες)", en: "Briam <br><br> (With eggplants, courgettes, colorful peppers and potatoes)", price: "€6.50" },
+    "briam": { category: "veg-cooked", el: "Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές και πατάτες)", en: "Briam <br><br> (With eggplants, courgettes, colorful peppers and potatoes)", price: "€7.00" },
     "giantes": { category: "veg-cooked", el: "Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα)", en: "Giant Beans <br><br> (Gigantes Plaki - Baked in a clay pot)", price: "€8.00" },
     "melitzanes_yiahni": { category: "veg-cooked", el: "Μελιτζάνες και πατάτες Γιαχνί <br><br> (Μελιτζάνες και πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Eggplants and Potatoes Yiahni <br><br> (Eggplants and potatoes cooked in tomato sauce)", price: "€6.00" },
     "patates_yiahni": { category: "veg-cooked", el: "Πατάτες Γιαχνί <br><br> (Πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Potatoes Yiahni <br><br> (Potatoes cooked in tomato sauce)", price: "€5.50" },
@@ -649,6 +653,11 @@ const highlightsCatalog = {
         icons: ["dish/meat.png", "dish/pan.png"],
         el: "Κεφτεδάκια  <br> τηγανιτά",
         en: "Fried <br> Meatballs"
+    },
+    "kolokythakia_gemista": {
+        icons: ["dish/meat.png", "dish/stuffed.png"],
+        el: "Κολοκυθάκια <br> γεμιστά <br> αυγολέμονο",
+        en: "Stuffed Zucchini <br> with Egg-Lemon"
     },
     "moscharaki_noua": {
         icons: ["dish/meat.png", "dish/ragout.png"],
