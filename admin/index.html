@@ -386,6 +386,8 @@ tr.tgt-below td { background: var(--red-soft); }
 .mb-line { display: grid; grid-template-columns: minmax(0, 1fr) 7rem 2.4rem; gap: 6px; }
 .mb-line input { font-size: 16px; padding: 5px 8px; min-width: 0; }
 .mb-add { justify-self: start; font-size: .85rem; }
+.mb-save { margin: 8px 0 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mb-save small { color: #777; }
 .mb-compare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .mb-col { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
 .mb-h { font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
@@ -2010,36 +2012,125 @@ function methodBRecordFields(a){
 }
 
 /*-------------------
-Purpose: Keep the method B entry of the shown day in localStorage (mz_mb, with its date), like mz_ch.
+Purpose: Read the unsaved method B drafts from localStorage mz_mb, one per date
+         ({ "YYYY-MM-DD": { supplierTotal, supplierLines, runningDay } }); the older single-entry
+         format ({ date, ... }) is turned into a map with that one date.
 On Input: none.
-On Output: none.
+On Output: Object, date → draft (empty object when nothing is stored).
 ---------------------*/
-function saveMethodBLocal(){
-  localStorage.setItem("mz_mb", JSON.stringify({ ...methodBState, date: currentPlanDay() }));
+function methodBDrafts(){
+  let m = null;
+  try { m = JSON.parse(localStorage.getItem("mz_mb") || "null"); } catch (e) { m = null; }
+  if (!m || typeof m !== "object" || Array.isArray(m)) return {};
+  if (typeof m.date === "string" && ("supplierLines" in m || "supplierTotal" in m || "runningDay" in m)) {
+    return { [m.date]: { supplierTotal: m.supplierTotal, supplierLines: m.supplierLines, runningDay: m.runningDay } };
+  }
+  return m;
 }
 
 /*-------------------
-Purpose: Set the method B entry for a loaded day: from its record, else from an unsaved local entry
-         of the same date, else empty (running prefilled with the share).
+Purpose: Keep the unsaved method B entry of the shown day as that date's draft in mz_mb, so a page
+         reload keeps what was typed and one day's lines never show on another day.
+On Input: none (methodBState; its date, else #planDay).
+On Output: none. Side effects: localStorage mz_mb.
+---------------------*/
+function saveMethodBLocal(){
+  const date = methodBState.date || currentPlanDay();
+  const m = methodBDrafts();
+  m[date] = { supplierTotal: methodBState.supplierTotal, supplierLines: methodBState.supplierLines,
+              runningDay: methodBState.runningDay, at: Date.now() };
+  localStorage.setItem("mz_mb", JSON.stringify(m));
+}
+
+/*-------------------
+Purpose: Drop the draft of a date (after it was saved to matzourana_days, or replaced by the record).
+On Input: date - "YYYY-MM-DD".
+On Output: none. Side effects: localStorage mz_mb.
+---------------------*/
+function clearMethodBDraft(date){
+  const m = methodBDrafts();
+  if (!(date in m)) return;
+  delete m[date];
+  localStorage.setItem("mz_mb", JSON.stringify(m));
+}
+
+/*-------------------
+Purpose: Does a day record carry a saved supplier entry (total or lines) for method B?
+On Input: rec - day record or null.
+On Output: Boolean (runningDay alone does not count: every saved day stores it).
+---------------------*/
+function methodBRecHasSuppliers(rec){
+  if (!rec) return false;
+  const lines = Array.isArray(rec.supplierLines) ? rec.supplierLines
+    : (rec.supplierLines && typeof rec.supplierLines === "object" ? Object.values(rec.supplierLines) : []);
+  return rec.supplierTotal != null || lines.length > 0;
+}
+
+/*-------------------
+Purpose: Set the method B entry for a loaded day. A record with suppliers wins (its draft is dropped);
+         otherwise the unsaved draft of the same date; otherwise empty, with the record's running cost
+         if it has one (else the running share).
 On Input: date - "YYYY-MM-DD"; rec - day record or null.
-On Output: none. Side effects: methodBState, card inputs redrawn.
+On Output: none. Side effects: methodBState, mz_mb, card inputs redrawn.
 ---------------------*/
 function loadMethodBFor(date, rec){
   let st = { date, supplierTotal: null, supplierLines: [], runningDay: null };
-  if (rec && (rec.supplierTotal != null || rec.runningDay != null || rec.supplierLines)) {
+  const draft = methodBDrafts()[date];
+  if (methodBRecHasSuppliers(rec)) {
     const lines = Array.isArray(rec.supplierLines) ? rec.supplierLines
       : (rec.supplierLines ? Object.values(rec.supplierLines) : []);
-    st.supplierLines = lines.map(l => ({ name: (l && l.name) || "", amount: l && l.amount != null ? Number(l.amount) : "" }));
+    st.supplierLines = lines.filter(Boolean).map(l => ({ name: l.name || "", amount: l.amount != null ? Number(l.amount) : "" }));
     st.supplierTotal = st.supplierLines.length ? null : (rec.supplierTotal != null ? Number(rec.supplierTotal) : null);
     st.runningDay = rec.runningDay != null ? Number(rec.runningDay) : null;
-  } else if (!rec) {
-    try {
-      const loc = JSON.parse(localStorage.getItem("mz_mb") || "null");
-      if (loc && loc.date === date) st = { ...st, ...loc, date };
-    } catch (e) {}
+    if (draft) clearMethodBDraft(date);
+  } else if (draft) {
+    st.supplierTotal = draft.supplierTotal != null ? Number(draft.supplierTotal) : null;
+    st.supplierLines = Array.isArray(draft.supplierLines)
+      ? draft.supplierLines.filter(Boolean).map(l => ({ name: l.name || "", amount: l.amount === "" || l.amount == null ? "" : Number(l.amount) }))
+      : [];
+    st.runningDay = draft.runningDay != null ? Number(draft.runningDay)
+      : (rec && rec.runningDay != null ? Number(rec.runningDay) : null);
+  } else if (rec && rec.runningDay != null) {
+    st.runningDay = Number(rec.runningDay);
   }
   methodBState = st;
   renderMethodBInputs();
+}
+
+/*-------------------
+Purpose: «Αποθήκευση Μεθόδου Β»: store only the method B fields of the shown day in its existing record
+         (matzourana_days/<date>, update), with the day's saved sales / food / commissions / fixed,
+         then refresh the month (B days counted by methodB). Never writes matzourana_daily.
+On Input: none (methodBState, #planDay).
+On Output: Promise<Boolean> - true when saved.
+---------------------*/
+async function saveMethodBOnly(){
+  const db = getDb();
+  if (!db) { alert("Λείπει το Firebase Realtime Database."); return false; }
+  const date = currentPlanDay();
+  if (methodBState.date && methodBState.date !== date) { alert("Η Μέθοδος Β δεν αντιστοιχεί στην ημέρα " + date + ". Φόρτωσε ξανά την ημέρα."); return false; }
+  let rec = null;
+  try { rec = (await db.ref("matzourana_days/" + date).once("value")).val(); }
+  catch (e) { alert("Firebase: " + e.message); return false; }
+  if (!rec) { alert("Η ημέρα " + date + " δεν έχει αποθηκευτεί ακόμα. Πάτησε «Αποθήκευση ημέρας» (σώζει και τη Μέθοδο Β)."); return false; }
+  const a = { sales: Number(rec.sales || 0), food: Number(rec.foodDay != null ? rec.foodDay : rec.food || 0),
+              comm: Number(rec.comm || 0), fixed: Number(rec.fixed || 0) };
+  const fields = { ...methodBRecordFields(a), methodBSavedAt: Date.now() };
+  try {
+    await db.ref("matzourana_days/" + date).update(fields);   // null fields are removed
+  } catch (err) { alert("Firebase: " + err.message); return false; }
+  const merged = { ...rec, ...fields };
+  Object.keys(merged).forEach(k => { if (merged[k] == null) delete merged[k]; });
+  dayLedger[date] = merged;
+  localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+  clearMethodBDraft(date);
+  renderMethodBInputs();
+  if (typeof buildMonth === "function") buildMonth(date.slice(0,7));
+  if (typeof renderMonthPanel === "function") renderMonthPanel();
+  if (typeof loadProfitChart === "function") await loadProfitChart();
+  if (typeof closeMonth === "function") await closeMonth(date.slice(0,7));
+  alert("Μέθοδος Β για " + date + " αποθηκεύτηκε" + (fields.methodB ? ": προμηθευτές " + fmt(fields.supplierTotal) + "." : " (χωρίς προμηθευτές)."));
+  return true;
 }
 
 /*-------------------
@@ -2082,7 +2173,9 @@ function renderMethodBInputs(){
           <button type="button" class="btn-ghost mb-del" title="Αφαίρεση" onclick="removeMethodBLine(${i})">−</button>
         </div>`).join("")}
       <button type="button" class="btn-ghost mb-add" onclick="addMethodBLine()">+ Γραμμή προμηθευτή</button>
-    </div>`;
+    </div>
+    <p class="mb-save"><button type="button" class="btn-ghost" onclick="saveMethodBOnly()">Αποθήκευση Μεθόδου Β</button>
+      <small>${dayLedger[methodBState.date || currentPlanDay()] ? "μόνο τα πεδία Β στην αποθηκευμένη ημέρα" : "η ημέρα δεν έχει αποθηκευτεί: «Αποθήκευση ημέρας» σώζει και τη Β"}</small></p>`;
   renderMethodBResults();
 }
 
@@ -4544,6 +4637,8 @@ async function pushToFirebase(){
       dayLedger[date] = rec;
       localStorage.setItem("mz_days", JSON.stringify(dayLedger));
     }
+    clearMethodBDraft(date);
+    if (methodBState.date === date) renderMethodBInputs();
     if (typeof buildMonth === "function") buildMonth(date.slice(0,7));
     if (typeof renderMonthPanel === "function") renderMonthPanel();
     if (typeof loadProfitChart === "function") await loadProfitChart();
