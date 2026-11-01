@@ -655,7 +655,7 @@ const highlightsCatalog = {
         en: "Fried <br> Meatballs"
     },
     "kolokythakia_gemista": {
-        icons: ["dish/meat.png", "dish/stuffed.png"],
+        icons: ["dish/meat.png", "dish/zucchini.png"],
         el: "Κολοκυθάκια <br> γεμιστά <br> αυγολέμονο",
         en: "Stuffed Zucchini <br> with Egg-Lemon"
     },
