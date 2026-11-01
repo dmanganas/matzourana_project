@@ -260,6 +260,10 @@ const dishImageMap = {
         file: "web/greek-dish-14.webp",
         alt: "Κεφτεδάκια τηγανιτά - Μυρωδάτα και τραγανά | Fried Meatballs - Aromatic and crispy"
     },
+    "keftedakia_saltsa": {
+        file: "web/greek-dish-60.webp",
+        alt: "Κεφτεδάκια με σάλτσα - Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας, Matzourana Καλλιθέα | Meatballs in Tomato Sauce - Fragrant fried meatballs slow-cooked in homemade tomato sauce, Matzourana Kallithea"
+    },
     "giouvarlakia": {
         file: "web/greek-dish-16.webp",
         alt: "Γιουβαρλάκια - Με 100% μοσχαρίσιο κιμά και αυγολέμονο | Giouvarlakia - With 100% beef mince in egg-lemon sauce"
@@ -922,7 +926,7 @@ const imageList = [
     'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp',
     'DishImages/web/greek-dish-51.webp', 'DishImages/web/greek-dish-52.webp', 'DishImages/web/greek-dish-53.webp', 'DishImages/web/greek-dish-54.webp',
     'DishImages/web/greek-dish-55.webp', 'DishImages/web/greek-dish-56.webp', 'DishImages/web/greek-dish-57.webp',
-    'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp'
+    'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp'
 ];
 
 const dishAlts = {
@@ -983,7 +987,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-56.webp': "Γεμιστά με superfoods - (Ντομάτες και πιπεριές γεμιστές στο ταψί, με πατάτες) Matzourana Καλλιθέα | Stuffed Vegetables with Superfoods - (Stuffed tomatoes and peppers in the baking tray, with potatoes) Matzourana Kallithea",
     'DishImages/web/greek-dish-57.webp': "Γεμιστά με πλιγούρι - (Ντομάτα και πιπεριά γεμιστές με πλιγούρι, σε σάλτσα ντομάτας) Matzourana Καλλιθέα | Stuffed Vegetables with Bulgur - (Tomato and pepper stuffed with bulgur, in tomato sauce) Matzourana Kallithea",
     'DishImages/web/greek-dish-58.webp': "Σαλάτα Ματζουράνα - (Mix μαρουλιών, ντοματίνια, αγγούρι, πράσινο μήλο, ρόδι, άνηθος & βαλσάμικο) Matzourana Καλλιθέα | Matzourana Salad - (Mixed lettuces, cherry tomatoes, cucumber, green apple, pomegranate, dill & balsamic) Matzourana Kallithea",
-    'DishImages/web/greek-dish-59.webp': "Χαλούμι ψητό - (Με σαλάτα, κόκκινη πιπεριά και λεμόνι) Matzourana Καλλιθέα | Grilled Halloumi - (With salad, red pepper and lemon) Matzourana Kallithea"
+    'DishImages/web/greek-dish-59.webp': "Χαλούμι ψητό - (Με σαλάτα, κόκκινη πιπεριά και λεμόνι) Matzourana Καλλιθέα | Grilled Halloumi - (With salad, red pepper and lemon) Matzourana Kallithea",
+    'DishImages/web/greek-dish-60.webp': "Κεφτεδάκια με σάλτσα - (Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας) Matzourana Καλλιθέα | Meatballs in Tomato Sauce - (Fragrant fried meatballs slow-cooked in homemade tomato sauce) Matzourana Kallithea"
  
 };
 

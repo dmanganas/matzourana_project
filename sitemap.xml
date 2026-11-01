@@ -78,6 +78,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-57.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-58.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-59.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-60.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -179,6 +180,12 @@
   <loc>https://www.matzourana.gr/dishes/moscharaki-noua-with-rice/</loc>
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/keftedakia-saltsa/</loc>
+  <lastmod>2026-11-01</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-60.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/keftedakia-tiganita/</loc>
