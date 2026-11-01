@@ -412,7 +412,29 @@ tr.tgt-below td { background: var(--red-soft); }
   .mb-inputs { grid-template-columns: 1fr; }
 }
 
+/* ===== Ανταγωνισμός tab (admin/competitors.js) ===== */
+.comp-toolbar { align-items: center; }
+#compKpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) { #compKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.comp-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.comp-seg button { border: 0; background: #fff; padding: 8px 12px; cursor: pointer; font: inherit; color: var(--ink); }
+.comp-seg button.active { background: var(--green); color: #fff; }
+.comp-check { display: inline-flex; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); }
+.comp-label { background: var(--amber-soft); color: var(--amber); border-radius: 10px; padding: 8px 12px; font-size: .85rem; margin: 0 0 10px; }
+#tab-competitors th { position: sticky; top: 0; background: #f7faf8; z-index: 1; white-space: nowrap; }
+#tab-competitors th.comp-proposed { background: #f1f4ff; }
+.comp-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.comp-proposed { background: #f8f9ff; }
+.comp-cheaper { color: var(--red); }
+.comp-dearer { color: var(--green); }
+.comp-empty { color: #b9c4bd; }
+.comp-tag { display: inline-block; font-size: .68rem; font-weight: 600; color: var(--blue); background: var(--blue-soft); border-radius: 6px; padding: 1px 6px; }
+.comp-sub { color: var(--muted); font-size: .75rem; }
+.comp-warn { color: var(--amber); font-size: .72rem; }
+.comp-note { color: var(--muted); font-size: .78rem; min-width: 180px; }
+.comp-sources { margin: 12px 0 0; padding-left: 18px; font-size: .85rem; line-height: 1.7; }
 </style>
+<script src="competitors.js" defer></script>
 </head>
 <body class="admin-locked">
 <div class="topbar">
@@ -445,6 +467,7 @@ tr.tgt-below td { background: var(--red-soft); }
     <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κέρδος / Μήνας / Χρόνος</div>
     <div class="tab" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
     <div class="tab" data-tab="target" onclick="switchTab('target')">Στόχος</div>
+    <div class="tab" data-tab="competitors" onclick="switchTab('competitors')">Ανταγωνισμός</div>
   </div>
 
   <div class="sources-bar">
@@ -552,6 +575,37 @@ tr.tgt-below td { background: var(--red-soft); }
         <tbody id="dishTable"></tbody>
       </table>
     </div>
+  </section>
+
+  <!-- COMPETITORS (admin/competitors.js; data only from matzourana_competitors/ after sign-in) -->
+  <section class="panel" id="tab-competitors">
+    <h2>Τιμές ανταγωνιστών Καλλιθέας · μαγειρευτά ημέρας & ψητά <span class="badge" id="compStamp">—</span></h2>
+    <p class="comp-label" id="compLabel" hidden></p>
+    <div class="kpi-grid" id="compKpis"></div>
+    <div class="filters comp-toolbar">
+      <div class="comp-seg" id="compGroup">
+        <button type="button" data-group="all" class="active">Όλα</button>
+        <button type="button" data-group="daily">Μαγειρευτά ημέρας</button>
+        <button type="button" data-group="grill">Ψητά της Ώρας</button>
+      </div>
+      <input type="search" id="compSearch" placeholder="Αναζήτηση πιάτου...">
+      <select id="compSort">
+        <option value="menu">Σειρά μενού</option>
+        <option value="high">Πρώτα όπου είμαστε ακριβότεροι</option>
+        <option value="low">Πρώτα όπου είμαστε φθηνότεροι</option>
+      </select>
+      <label class="comp-check"><input type="checkbox" id="compProposed" checked> Προτεινόμενοι ανταγωνιστές</label>
+      <label class="comp-check">Έλεγχος <select id="compDate"><option value="">—</option></select></label>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead id="compHead"></thead>
+        <tbody id="compBody"></tbody>
+      </table>
+    </div>
+    <p class="note">Διάμεσος = μεσαία τιμή των ανταγωνιστών που έχουν το πιάτο· «Ίδια» = ±2%. Κόκκινη τιμή: ο ανταγωνιστής είναι φθηνότερος από εμάς· πράσινη: ακριβότερος.</p>
+    <h2 class="section-title">Πηγές</h2>
+    <ul class="comp-sources" id="compSources"></ul>
   </section>
 
 <!-- PROFIT -->
@@ -1230,6 +1284,7 @@ function switchTab(id){
   if (id === "profit" && typeof renderProfitPlanner === "function")
     renderProfitPlanner();
   if (id === "target" && typeof renderTargetTab === "function") renderTargetTab();
+  if (id === "competitors" && typeof loadCompetitorPrices === "function") loadCompetitorPrices();
 }
 
 
