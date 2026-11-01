@@ -81,6 +81,8 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-60.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-61.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-62.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-63.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-64.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -394,6 +396,7 @@
   <loc>https://www.matzourana.gr/dishes/salata-chaloumi/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-63.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/ntakos/</loc>
@@ -405,6 +408,7 @@
   <loc>https://www.matzourana.gr/dishes/choriatiki/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-64.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/salata-marouli/</loc>
