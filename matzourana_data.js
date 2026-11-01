@@ -418,7 +418,8 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-21.webp", alt: "Ντάκος - Κριθαροκούλουρο με φέτα ΠΟΠ και τριμμένη ντομάτα, Matzourana Καλλιθέα | Dakos - Cretan rusk with PDO feta and grated tomato, Matzourana Kallithea" } },
     "choriatiki": { table: "salads", group: "salads", row: "Χωριάτικη", pageEl: "Χωριάτικη σαλάτα" },
     "salata_marouli": { table: "salads", group: "salads", row: "Μαρούλι", pageEl: "Σαλάτα Μαρούλι" },
-    "salata_lachano_karoto": { table: "salads", group: "salads", row: "Λαχανό - Καρότο", pageEl: "Σαλάτα Λάχανο - Καρότο" },
+    "salata_lachano_karoto": { table: "salads", group: "salads", row: "Λαχανό - Καρότο", pageEl: "Σαλάτα Λάχανο - Καρότο",
+        photo: { file: "web/greek-dish-62.webp", alt: "Σαλάτα Λάχανο - Καρότο - Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι, Matzourana Καλλιθέα | Cabbage and Carrot Salad - Shredded cabbage with grated carrot, dill and lemon, Matzourana Kallithea" } },
     "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
         photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
     "pantzaria": { table: "salads", group: "salads", row: "Παντζάρια", pageEl: "Παντζάρια σαλάτα",
@@ -929,7 +930,8 @@ const imageList = [
     'DishImages/web/greek-dish-51.webp', 'DishImages/web/greek-dish-52.webp', 'DishImages/web/greek-dish-53.webp', 'DishImages/web/greek-dish-54.webp',
     'DishImages/web/greek-dish-55.webp', 'DishImages/web/greek-dish-56.webp', 'DishImages/web/greek-dish-57.webp',
     'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp',
-    'DishImages/web/greek-dish-61.webp'
+    'DishImages/web/greek-dish-61.webp',
+    'DishImages/web/greek-dish-62.webp'
 ];
 
 const dishAlts = {
@@ -992,7 +994,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-58.webp': "Σαλάτα Ματζουράνα - (Mix μαρουλιών, ντοματίνια, αγγούρι, πράσινο μήλο, ρόδι, άνηθος & βαλσάμικο) Matzourana Καλλιθέα | Matzourana Salad - (Mixed lettuces, cherry tomatoes, cucumber, green apple, pomegranate, dill & balsamic) Matzourana Kallithea",
     'DishImages/web/greek-dish-59.webp': "Χαλούμι ψητό - (Με σαλάτα, κόκκινη πιπεριά και λεμόνι) Matzourana Καλλιθέα | Grilled Halloumi - (With salad, red pepper and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-60.webp': "Κεφτεδάκια με σάλτσα - (Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας) Matzourana Καλλιθέα | Meatballs in Tomato Sauce - (Fragrant fried meatballs slow-cooked in homemade tomato sauce) Matzourana Kallithea",
-    'DishImages/web/greek-dish-61.webp': "Ψωμί προζυμένιο με λάδι και ρίγανη - (Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη) Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - (Toasted sourdough slices with olive oil and oregano) Matzourana Kallithea"
+    'DishImages/web/greek-dish-61.webp': "Ψωμί προζυμένιο με λάδι και ρίγανη - (Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη) Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - (Toasted sourdough slices with olive oil and oregano) Matzourana Kallithea",
+    'DishImages/web/greek-dish-62.webp': "Σαλάτα Λάχανο - Καρότο - (Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι) Matzourana Καλλιθέα | Cabbage and Carrot Salad - (Shredded cabbage with grated carrot, dill and lemon) Matzourana Kallithea"
  
 };
 
