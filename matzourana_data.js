@@ -426,7 +426,9 @@ const fixedMenuDishPages = {
     "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο" },
     "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" },
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
-        photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } }
+        photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } },
+    "psomi_prozymeno": { table: "appetizers", group: "dips", row: "Ψωμί προζυμένιο με λάδι κ’ ρίγανη", pageEl: "Ψωμί προζυμένιο με λάδι και ρίγανη",
+        photo: { file: "web/greek-dish-61.webp", alt: "Ψωμί προζυμένιο με λάδι και ρίγανη - Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη, Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - Toasted sourdough slices with olive oil and oregano, Matzourana Kallithea" } }
 };
 
 // ==================== DISH VIDEOS ====================
@@ -926,7 +928,8 @@ const imageList = [
     'DishImages/web/greek-dish-49.webp', 'DishImages/web/greek-dish-50.webp',
     'DishImages/web/greek-dish-51.webp', 'DishImages/web/greek-dish-52.webp', 'DishImages/web/greek-dish-53.webp', 'DishImages/web/greek-dish-54.webp',
     'DishImages/web/greek-dish-55.webp', 'DishImages/web/greek-dish-56.webp', 'DishImages/web/greek-dish-57.webp',
-    'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp'
+    'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp',
+    'DishImages/web/greek-dish-61.webp'
 ];
 
 const dishAlts = {
@@ -988,7 +991,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-57.webp': "Γεμιστά με πλιγούρι - (Ντομάτα και πιπεριά γεμιστές με πλιγούρι, σε σάλτσα ντομάτας) Matzourana Καλλιθέα | Stuffed Vegetables with Bulgur - (Tomato and pepper stuffed with bulgur, in tomato sauce) Matzourana Kallithea",
     'DishImages/web/greek-dish-58.webp': "Σαλάτα Ματζουράνα - (Mix μαρουλιών, ντοματίνια, αγγούρι, πράσινο μήλο, ρόδι, άνηθος & βαλσάμικο) Matzourana Καλλιθέα | Matzourana Salad - (Mixed lettuces, cherry tomatoes, cucumber, green apple, pomegranate, dill & balsamic) Matzourana Kallithea",
     'DishImages/web/greek-dish-59.webp': "Χαλούμι ψητό - (Με σαλάτα, κόκκινη πιπεριά και λεμόνι) Matzourana Καλλιθέα | Grilled Halloumi - (With salad, red pepper and lemon) Matzourana Kallithea",
-    'DishImages/web/greek-dish-60.webp': "Κεφτεδάκια με σάλτσα - (Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας) Matzourana Καλλιθέα | Meatballs in Tomato Sauce - (Fragrant fried meatballs slow-cooked in homemade tomato sauce) Matzourana Kallithea"
+    'DishImages/web/greek-dish-60.webp': "Κεφτεδάκια με σάλτσα - (Μυρωδάτα τηγανητά κεφτεδάκια σε σπιτική σάλτσα ντομάτας) Matzourana Καλλιθέα | Meatballs in Tomato Sauce - (Fragrant fried meatballs slow-cooked in homemade tomato sauce) Matzourana Kallithea",
+    'DishImages/web/greek-dish-61.webp': "Ψωμί προζυμένιο με λάδι και ρίγανη - (Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη) Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - (Toasted sourdough slices with olive oil and oregano) Matzourana Kallithea"
  
 };
 
