@@ -400,6 +400,8 @@ const dishPagesNoPhoto = [
 //   group  - "grill" | "salads" | "dips"   pageEl/pageEn - optional page title (when the
 //            row name alone is unclear, e.g. "Ματζουράνα" -> "Σαλάτα Ματζουράνα")
 //   photo  - optional { file, alt } like dishImageMap; without it the page has no dish photo
+//   descEl/descEn - optional page description, used instead of the short menu row text
+//            (the menu row stays short, e.g. "Χειροποίητοι Κολοκυθοκεφτέδες 5 τμχ.")
 const fixedMenuDishPages = {
     "fileto_kotopoulo": { table: "grilled-dishes", group: "grill", row: "Φιλέτο Κοτόπουλο",
         photo: { file: "web/greek-dish-15.webp", alt: "Φιλέτο Κοτόπουλο - Ψητό, απαλό και γευστικό, Matzourana Καλλιθέα | Chicken Fillet - Grilled, tender and tasty, Matzourana Kallithea" } },
@@ -431,7 +433,11 @@ const fixedMenuDishPages = {
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
         photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } },
     "psomi_prozymeno": { table: "appetizers", group: "dips", row: "Ψωμί προζυμένιο με λάδι κ’ ρίγανη", pageEl: "Ψωμί προζυμένιο με λάδι και ρίγανη",
-        photo: { file: "web/greek-dish-61.webp", alt: "Ψωμί προζυμένιο με λάδι και ρίγανη - Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη, Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - Toasted sourdough slices with olive oil and oregano, Matzourana Kallithea" } }
+        photo: { file: "web/greek-dish-61.webp", alt: "Ψωμί προζυμένιο με λάδι και ρίγανη - Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη, Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - Toasted sourdough slices with olive oil and oregano, Matzourana Kallithea" } },
+    "kolokythokeftedes": { table: "appetizers", group: "dips", row: "Χειροποίητοι Κολοκυθοκεφτέδες 5 τμχ.", pageEl: "Χειροποίητοι κολοκυθοκεφτέδες", pageEn: "Handmade Zucchini Fritters",
+        descEl: "Με φρέσκο κολοκύθι, μυρωδικά και φέτα, 5 τμχ., σερβιρισμένοι με σως γιαουρτιού με άνηθο και φύλλα πράσινης σαλάτας",
+        descEn: "With fresh zucchini, herbs and feta, 5 pcs., served with a yogurt-dill dip and green salad leaves",
+        photo: { file: "web/greek-dish-23.webp", alt: "Χειροποίητοι κολοκυθοκεφτέδες - Με φρέσκο κολοκύθι, μυρωδικά και φέτα, 5 τμχ., Matzourana Καλλιθέα | Handmade Zucchini Fritters - With fresh zucchini, herbs and feta, 5 pcs., Matzourana Kallithea" } }
 };
 
 // ==================== DISH VIDEOS ====================

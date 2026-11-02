@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261101f'; // bust caches when assets/titles change
+const ASSET_V = '20261102a'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -244,7 +244,7 @@ function readMenuTableRows(tableId) {
 Purpose: Build the catalog entries of the fixed-menu dish pages (grill, salads, dips):
          keys + photo from fixedMenuDishPages, name / description / price from the menu table row.
 On Input: none (matzourana_data.js source + matzourana_menu.html).
-On Output: Object { [key]: { category, el, en, price, fixed: true, table, pageEl, pageEn, photo } }.
+On Output: Object { [key]: { category, el, en, price, fixed: true, table, pageEl, pageEn, descEl, descEn, photo } }.
           Exits with an error when a configured row is missing from its table (menu changed)
           or a key is also a menuCatalog key.
 ---------------------*/
@@ -258,7 +258,8 @@ function readFixedDishes() {
     const row = rows.find(r => clean(r.el) === c.row || split(r.el).name === c.row);
     if (!row) { console.error('Row "' + c.row + '" not found in #' + c.table + ' of matzourana_menu.html (key ' + key + ')'); process.exit(1); }
     out[key] = { category: c.group, el: row.el, en: row.en, price: row.price, fixed: true, table: c.table,
-      pageEl: c.pageEl || null, pageEn: c.pageEn || null, photo: c.photo || null };
+      pageEl: c.pageEl || null, pageEn: c.pageEn || null, descEl: c.descEl || null, descEn: c.descEn || null,
+      photo: c.photo || null };
   }
   return out;
 }
@@ -268,7 +269,8 @@ const photoOf = key => (FIXED[key] ? FIXED[key].photo : dishImageMap[key]) || nu
 
 /*-------------------
 Purpose: Name + description of a dish for its page (fixed-menu dishes may carry a clearer
-         page title, e.g. "Σαλάτα Ματζουράνα" for the menu row "Ματζουράνα").
+         page title, e.g. "Σαλάτα Ματζουράνα" for the menu row "Ματζουράνα", and a fuller page
+         description descEl/descEn instead of the short menu row text, e.g. "(5 pcs.)").
 On Input: key - String DISHES key.
 On Output: { el: { name, desc }, en: { name, desc } }.
 ---------------------*/
@@ -277,6 +279,8 @@ function dishNames(key) {
   const el = split(d.el), en = split(d.en);
   if (d.pageEl) el.name = d.pageEl;
   if (d.pageEn) en.name = d.pageEn;
+  if (d.descEl) el.desc = d.descEl;
+  if (d.descEn) en.desc = d.descEn;
   return { el, en };
 }
 
@@ -382,7 +386,8 @@ const DISH_FAQ = {
   chorta_epochis:                      { q: 'καλά χόρτα εποχής',                   review: /χόρτα|χορτα|horta|seasonal greens/i },
   tzatziki:                            { q: 'καλό τζατζίκι',                       review: /τζατζίκ|τζατζικ|tzatzik/i },
   fava_orektiko:                       { q: 'καλή φάβα',                           review: /φάβα|φαβα|\bfava\b/i },
-  psomi_prozymeno:                     { q: 'καλό προζυμένιο ψωμί',                review: /ψωμ[ίι]|ψωμάκι|προζ[υύ]μ|\bbread\b|sourdough/i }
+  psomi_prozymeno:                     { q: 'καλό προζυμένιο ψωμί',                review: /ψωμ[ίι]|ψωμάκι|προζ[υύ]μ|\bbread\b|sourdough/i },
+  kolokythokeftedes:                   { q: 'καλούς κολοκυθοκεφτέδες',             review: /κολοκυθοκεφτ|kolokythokeft|kolokithokeft|zucchini fritter|courgette fritter/i }
 };
 
 /*-------------------
@@ -516,7 +521,9 @@ On Input: none (static table keyed by menuCatalog key).
 On Output: Object { [key]: Array<[el, en]> }.
 ---------------------*/
 const PUBLIC_INGREDIENTS = {
-  soupies_yiahni: [['Φρέσκες σουπιές', 'Fresh cuttlefish'], ['Σάλτσα ντομάτας', 'Tomato sauce'], ['Πατάτες ή πλιγούρι/ρύζι', 'Potatoes or bulgur/rice']]
+  soupies_yiahni: [['Φρέσκες σουπιές', 'Fresh cuttlefish'], ['Σάλτσα ντομάτας', 'Tomato sauce'], ['Πατάτες ή πλιγούρι/ρύζι', 'Potatoes or bulgur/rice']],
+  kolokythokeftedes: [['Φρέσκο κολοκύθι', 'Fresh zucchini'], ['Μυρωδικά', 'Herbs'], ['Φέτα', 'Feta'],
+    ['Σως γιαουρτιού με άνηθο', 'Yogurt-dill dip'], ['Φύλλα πράσινης σαλάτας', 'Green salad leaves']]
 };
 
 /*-------------------
