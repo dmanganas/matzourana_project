@@ -15,6 +15,14 @@
                                                 category,ours (admin/blackboard price),
                                                 oursSrc:"admin"|"site",site?,order,
                                                 prices:{id:number},note}} }
+   Second table «Ευρύτερη αγορά μαγειρείων» (same rules: read only, owner only):
+     matzourana_competitors/wide/latest        "YYYY-MM-DD"
+     matzourana_competitors/wide/checks/<date> { checkDate, checkedAt, label, method, oursSource,
+                                                datasets:{south:{label,target}, all:{label,target}},
+                                                sources:{id:{name,address,area,zone:"south"|"center",
+                                                platform,url,readOn,distanceKm,rating,ratingCount,ratingScale}},
+                                                dishes:{menuKey:{dish,group,category,ours,oursSrc,order,
+                                                prices:{sourceId:number}}} }
    ============================================================ */
 
 const compState = { data: null, dates: [], group: "all", showProposed: true, search: "", sort: "menu" };
@@ -203,6 +211,7 @@ async function loadCompetitorPrices(date) {
   const latest = date || (await db.ref("matzourana_competitors/latest").once("value")).val() || compState.dates[0];
   compState.data = latest ? (await db.ref("matzourana_competitors/checks/" + latest).once("value")).val() : null;
   renderCompetitorTab();
+  if (!wideState.loaded) loadWideMarket();
 }
 
 /*-------------------
@@ -245,4 +254,209 @@ function initCompetitorTab() {
   document.getElementById("compDate").addEventListener("change", e => { if (e.target.value) loadCompetitorPrices(e.target.value); });
 }
 
+
+/* ============================================================
+   «Ευρύτερη αγορά μαγειρείων» – second table of the tab
+   Statistics per dish over many μαγειρεία of the southern suburbs
+   (Νότια) and of southern suburbs + central Athens (Νότια + Κέντρο).
+   ============================================================ */
+
+const wideState = { data: null, loaded: false, zone: "south", group: "all", sort: "menu" };
+
+/*-------------------
+Purpose: Value at a given fraction of a sorted list (linear interpolation, as in spreadsheets).
+On Input: s - Array<Number> sorted ascending (at least one value); q - fraction 0..1 (0.25 = P25).
+On Output: Number - the quantile.
+---------------------*/
+function wideQuantile(s, q) {
+  const pos = (s.length - 1) * q;
+  const lo = Math.floor(pos), hi = Math.ceil(pos);
+  return s[lo] + (s[hi] - s[lo]) * (pos - lo);
+}
+
+/*-------------------
+Purpose: List the source ids that belong to the chosen dataset.
+On Input: zone - "south" (Νότια) or "all" (Νότια + Κέντρο).
+On Output: Array<String> - source ids of wideState.data.sources in that dataset.
+---------------------*/
+function wideSourceIds(zone) {
+  const all = (wideState.data && wideState.data.sources) || {};
+  return Object.keys(all).filter(id => zone === "all" || all[id].zone === "south");
+}
+
+/*-------------------
+Purpose: Statistics of one dish over the sources of the chosen dataset.
+On Input: d - dish record ({ours, prices:{sourceId:number}}); ids - Array<String> of source ids.
+On Output: Object {n, min, max, med, mean, p25, p75, diff, pct, rank, pos:"higher"|"lower"|"same"|"few"|"none"}
+           rank = percentile of our price (share of sources cheaper than us, ties counted half).
+---------------------*/
+function wideDishStats(d, ids) {
+  const vals = ids.map(id => d.prices ? d.prices[id] : null).filter(v => v != null).map(Number).sort((a, b) => a - b);
+  if (!vals.length) return { n: 0, pos: "none" };
+  const ours = Number(d.ours);
+  const med = wideQuantile(vals, 0.5);
+  const below = vals.filter(v => v < ours - 0.001).length;
+  const equal = vals.filter(v => Math.abs(v - ours) <= 0.001).length;
+  const diff = ours - med, pct = diff / med * 100;
+  let pos = pct > 2 ? "higher" : pct < -2 ? "lower" : "same";
+  if (vals.length < 3) pos = "few";
+  return {
+    n: vals.length, min: vals[0], max: vals[vals.length - 1], med: med,
+    mean: vals.reduce((s, v) => s + v, 0) / vals.length,
+    p25: wideQuantile(vals, 0.25), p75: wideQuantile(vals, 0.75),
+    diff: diff, pct: pct, rank: (below + equal / 2) / vals.length * 100, pos: pos
+  };
+}
+
+/*-------------------
+Purpose: Summary of a list of dish rows (only dishes with at least 3 prices count).
+On Input: rows - Array of rows with .st from wideDishStats.
+On Output: Object {n, avgPct, medPct, avgRank, higher, lower, same}.
+---------------------*/
+function wideSummary(rows) {
+  const r = rows.filter(x => x.st.n >= 3);
+  const avg = f => r.length ? r.reduce((s, x) => s + f(x), 0) / r.length : 0;
+  return {
+    n: r.length, avgPct: avg(x => x.st.pct), avgRank: avg(x => x.st.rank),
+    medPct: r.length ? compMedian(r.map(x => x.st.pct)) : 0,
+    higher: r.filter(x => x.st.pos === "higher").length,
+    lower: r.filter(x => x.st.pos === "lower").length,
+    same: r.filter(x => x.st.pos === "same").length
+  };
+}
+
+/*-------------------
+Purpose: Draw the «Ευρύτερη αγορά μαγειρείων» table (KPIs, table, source list) from wideState.
+On Input: none.
+On Output: none.
+Side effects: replaces the inner HTML of #wideKpis, #wideHead, #wideBody, #wideSources, #wideStamp, #wideLabel.
+---------------------*/
+function renderWideMarket() {
+  const data = wideState.data;
+  const stamp = document.getElementById("wideStamp");
+  const body = document.getElementById("wideBody");
+  if (!stamp || !body) return;
+  const label = document.getElementById("wideLabel");
+  if (!data || !data.dishes || !data.sources) {
+    stamp.textContent = "Δεν υπάρχει έλεγχος";
+    label.hidden = true;
+    document.getElementById("wideKpis").innerHTML = "";
+    document.getElementById("wideHead").innerHTML = "";
+    document.getElementById("wideSources").innerHTML = "";
+    body.innerHTML = '<tr><td colspan="10" class="note">Δεν έχει εγκριθεί ακόμη έλεγχος της ευρύτερης αγοράς μαγειρείων.</td></tr>';
+    return;
+  }
+  stamp.textContent = "Έλεγχος: " + new Date(data.checkDate + "T12:00:00").toLocaleDateString("el-GR", { day: "numeric", month: "long", year: "numeric" });
+  label.textContent = data.label || "";
+  label.hidden = !data.label;
+
+  const ids = wideSourceIds(wideState.zone);
+  const ds = (data.datasets && data.datasets[wideState.zone]) || {};
+  const all = Object.keys(data.dishes).map(key => {
+    const d = data.dishes[key];
+    return Object.assign({ key: key }, d, { st: wideDishStats(d, ids) });
+  }).filter(r => r.st.n > 0);
+  let rows = all.filter(r => wideState.group === "all" || r.group === wideState.group);
+  if (wideState.sort === "high") rows.sort((a, b) => b.st.pct - a.st.pct);
+  else if (wideState.sort === "low") rows.sort((a, b) => a.st.pct - b.st.pct);
+  else if (wideState.sort === "n") rows.sort((a, b) => b.st.n - a.st.n);
+  else rows.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const sDaily = wideSummary(all.filter(r => r.group === "daily"));
+  const sGrill = wideSummary(all.filter(r => r.group === "grill"));
+  const sShown = wideSummary(rows);
+  const nSouth = wideSourceIds("south").length, nAll = wideSourceIds("all").length;
+  document.querySelectorAll("#wideZone button").forEach(b => {
+    b.textContent = (b.dataset.zone === "south" ? "Νότια" : "Νότια + Κέντρο") + " (" + (b.dataset.zone === "south" ? nSouth : nAll) + ")";
+  });
+  const pctTxt = s => s.n ? compSigned(s.avgPct, 1) + "%" : "–";
+  const cls = s => !s.n ? "" : s.avgPct > 2 ? "warn" : s.avgPct < -2 ? "good" : "";
+  document.getElementById("wideKpis").innerHTML = [
+    ["Μαγειρευτά ημέρας vs διάμεσο", pctTxt(sDaily), sDaily.n + " πιάτα · διάμεση διαφορά " + compSigned(sDaily.medPct, 1) + "% · θέση " + Math.round(sDaily.avgRank) + "%", cls(sDaily)],
+    ["Ψητά της Ώρας vs διάμεσο", pctTxt(sGrill), sGrill.n + " πιάτα · διάμεση διαφορά " + compSigned(sGrill.medPct, 1) + "% · θέση " + Math.round(sGrill.avgRank) + "%", cls(sGrill)],
+    ["Ακριβότεροι / Φθηνότεροι / Ίδια", sShown.higher + " / " + sShown.lower + " / " + sShown.same, "στα πιάτα που φαίνονται · ±2%", ""],
+    ["Μέση θέση της τιμής μας", sShown.n ? Math.round(sShown.avgRank) + "%" : "–", "% των μαγειρείων που είναι φθηνότερα", ""],
+    ["Πηγές (μαγειρεία)", String(ids.length), (ds.label || "") + (ds.target ? " · στόχος " + ds.target : "") + " · Νότια " + nSouth + " · Σύνολο " + nAll, ds.target && ids.length < ds.target ? "warn" : ""]
+  ].map(k => `<div class="kpi ${k[3]}"><div class="label">${compEsc(k[0])}</div><div class="value">${compEsc(k[1])}</div><div class="sub">${compEsc(k[2])}</div></div>`).join("");
+
+  document.getElementById("wideHead").innerHTML = "<tr><th>Πιάτο</th><th>Ματζουράνα<br><span class=\"comp-sub\">τιμή admin</span></th>" +
+    "<th>Πηγές<br><span class=\"comp-sub\">n</span></th><th>Ελάχιστη</th><th>Διάμεσος</th><th>Μέσος</th><th>Εύρος<br><span class=\"comp-sub\">P25–P75</span></th>" +
+    "<th>Διαφορά<br><span class=\"comp-sub\">vs διάμεσο</span></th><th>Θέση<br><span class=\"comp-sub\">εκατοστημόριο</span></th><th></th></tr>";
+  const posPill = { higher: '<span class="pill down">Ακριβότεροι</span>', lower: '<span class="pill up">Φθηνότεροι</span>', same: '<span class="pill flat">Ίδια</span>', few: '<span class="pill flat">λίγες τιμές</span>', none: '' };
+  body.innerHTML = rows.map(r => {
+    const st = r.st;
+    return `<tr><td><strong>${compEsc(r.dish)}</strong><div class="comp-sub">${r.group === "grill" ? "Ψητά της Ώρας" : compEsc(r.category || "Μαγειρευτά")}</div></td>` +
+      `<td class="comp-num"><strong>${compEuro(r.ours)}</strong>${compOursNote(r)}</td>` +
+      `<td class="comp-num">${st.n}</td>` +
+      `<td class="comp-num">${compEuro(st.min)}</td>` +
+      `<td class="comp-num"><strong>${compEuro(st.med)}</strong></td>` +
+      `<td class="comp-num">${compEuro(st.mean)}</td>` +
+      `<td class="comp-num">${compEuro(st.p25)} – ${compEuro(st.p75)}</td>` +
+      `<td class="comp-num ${st.pct > 2 ? "comp-cheaper" : st.pct < -2 ? "comp-dearer" : ""}">${compSigned(st.diff, 2).replace(/^([+−±])/, "$1€")} · ${compSigned(st.pct, 0)}%</td>` +
+      `<td class="comp-num">${Math.round(st.rank)}%<div class="wide-bar"><span style="left:${Math.min(100, Math.max(0, st.rank)).toFixed(0)}%"></span></div></td>` +
+      `<td>${posPill[st.pos]}</td></tr>`;
+  }).join("") || '<tr><td colspan="10" class="note">Κανένα πιάτο σε αυτό το φίλτρο.</td></tr>';
+
+  const src = data.sources;
+  const byZone = z => ids.filter(id => src[id].zone === z).sort((a, b) => (src[a].distanceKm || 0) - (src[b].distanceKm || 0));
+  const li = id => { const s = src[id]; return `<li><a href="${compEsc(s.url)}" target="_blank" rel="noopener">${compEsc(s.name)}</a> · ${compEsc(s.area || "")} · ${compEsc(s.address || "")} · ${compEsc(s.platform || "")}${s.distanceKm != null ? " · " + compEsc(String(s.distanceKm).replace(".", ",")) + " km" : ""}</li>`; };
+  const south = byZone("south"), center = byZone("center");
+  document.getElementById("wideSources").innerHTML =
+    `<details><summary>Νότια προάστια (${south.length})</summary><ul class="comp-sources">${south.map(li).join("")}</ul></details>` +
+    (center.length ? `<details><summary>Κέντρο Αθήνας (${center.length})</summary><ul class="comp-sources">${center.map(li).join("")}</ul></details>` : "") +
+    `<p class="note">${compEsc(data.method || "")} Οι δικές μας τιμές: ${compEsc(data.oursSource || "τιμές admin")}.</p>`;
+}
+
+/*-------------------
+Purpose: Load the latest wide-market check from the Realtime Database.
+On Input: none.
+On Output: Promise<void>.
+Side effects: reads matzourana_competitors/wide/latest and /wide/checks/<date> (owner only, via getDb());
+              fills wideState and redraws the second table. Never writes. A read error only shows the empty state.
+---------------------*/
+async function loadWideMarket() {
+  const db = (typeof getDb === "function") ? getDb() : null;
+  if (!db) { renderWideMarket(); return; }
+  try {
+    const latest = (await db.ref("matzourana_competitors/wide/latest").once("value")).val();
+    wideState.data = latest ? (await db.ref("matzourana_competitors/wide/checks/" + latest).once("value")).val() : null;
+    wideState.loaded = true;
+  } catch (e) {
+    console.warn("wide market check not readable", e);
+    wideState.data = null;
+  }
+  renderWideMarket();
+}
+
+/*-------------------
+Purpose: Show a wide-market check that is already in memory (used by the local preview, never by production).
+On Input: data - one check object in the layout described at the top of this file.
+On Output: none.
+---------------------*/
+function showWideCheck(data) {
+  wideState.data = data;
+  wideState.loaded = true;
+  renderWideMarket();
+}
+
+/*-------------------
+Purpose: Connect the controls of the second table (dataset toggle, filter, sort) to wideState.
+On Input: none.
+On Output: none.
+Side effects: adds event listeners to #wideZone, #wideGroup and #wideSort.
+---------------------*/
+function initWideMarket() {
+  const seg = (sel, key) => document.querySelectorAll(sel + " button").forEach(b => b.addEventListener("click", () => {
+    wideState[key] = b.dataset[key];
+    document.querySelectorAll(sel + " button").forEach(x => x.classList.toggle("active", x === b));
+    renderWideMarket();
+  }));
+  if (!document.getElementById("wideZone")) return;
+  seg("#wideZone", "zone");
+  seg("#wideGroup", "group");
+  document.getElementById("wideSort").addEventListener("change", e => { wideState.sort = e.target.value; renderWideMarket(); });
+  renderWideMarket();
+}
+
 document.addEventListener("DOMContentLoaded", initCompetitorTab);
+document.addEventListener("DOMContentLoaded", initWideMarket);

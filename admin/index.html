@@ -433,6 +433,13 @@ td.comp-proposed { background: #f8f9ff; }
 .comp-warn { color: var(--amber); font-size: .72rem; }
 .comp-note { color: var(--muted); font-size: .78rem; min-width: 180px; }
 .comp-sources { margin: 12px 0 0; padding-left: 18px; font-size: .85rem; line-height: 1.7; }
+.wide-title { margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
+#wideKpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) { #wideKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.wide-bar { position: relative; height: 4px; margin-top: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--green-soft), #eef1ef, var(--red-soft)); min-width: 70px; }
+.wide-bar span { position: absolute; top: -3px; width: 4px; height: 10px; margin-left: -2px; border-radius: 2px; background: var(--ink); }
+#wideSources details { margin: 8px 0; }
+#wideSources summary { cursor: pointer; font-weight: 600; }
 </style>
 <script src="competitors.js" defer></script>
 </head>
@@ -606,6 +613,36 @@ td.comp-proposed { background: #f8f9ff; }
     <p class="note">Διάμεσος = μεσαία τιμή των ανταγωνιστών που έχουν το πιάτο· «Ίδια» = ±2%. Κόκκινη τιμή: ο ανταγωνιστής είναι φθηνότερος από εμάς· πράσινη: ακριβότερος.</p>
     <h2 class="section-title">Πηγές</h2>
     <ul class="comp-sources" id="compSources"></ul>
+
+    <h2 class="wide-title">Ευρύτερη αγορά μαγειρείων · νότια προάστια & κέντρο <span class="badge" id="wideStamp">—</span></h2>
+    <p class="comp-label" id="wideLabel" hidden></p>
+    <div class="kpi-grid" id="wideKpis"></div>
+    <div class="filters comp-toolbar">
+      <div class="comp-seg" id="wideZone">
+        <button type="button" data-zone="south" class="active">Νότια (50)</button>
+        <button type="button" data-zone="all">Νότια + Κέντρο (100)</button>
+      </div>
+      <div class="comp-seg" id="wideGroup">
+        <button type="button" data-group="all" class="active">Όλα</button>
+        <button type="button" data-group="daily">Μαγειρευτά ημέρας</button>
+        <button type="button" data-group="grill">Ψητά της Ώρας</button>
+      </div>
+      <select id="wideSort">
+        <option value="menu">Σειρά μενού</option>
+        <option value="high">Πρώτα όπου είμαστε ακριβότεροι</option>
+        <option value="low">Πρώτα όπου είμαστε φθηνότεροι</option>
+        <option value="n">Πρώτα τα πιάτα με τις περισσότερες πηγές</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead id="wideHead"></thead>
+        <tbody id="wideBody"></tbody>
+      </table>
+    </div>
+    <p class="note">Μόνο μαγειρεία (όχι εστιατόρια, ταβέρνες, σουβλατζίδικα). Διάμεσος = μεσαία τιμή· Εύρος P25–P75 = οι μισές τιμές της αγοράς είναι μέσα σε αυτό το εύρος. Θέση = ποσοστό των μαγειρείων που έχουν το πιάτο φθηνότερα από εμάς (50% = ακριβώς στη μέση). «Ίδια» = ±2%· «λίγες τιμές» = κάτω από 3 πηγές.</p>
+    <h2 class="section-title">Πηγές ευρύτερης αγοράς</h2>
+    <div id="wideSources"></div>
   </section>
 
 <!-- PROFIT -->
