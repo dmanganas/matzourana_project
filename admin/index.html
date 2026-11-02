@@ -4038,6 +4038,17 @@ function vatPack(sales, food){
   return { salesNet, foodNet, vatOnSales, vatOnFood, vatDue };
 }
 
+/*-------------------
+Purpose: Profit before / after VAT of a day from ACTUAL numbers only (counted sales, their food cost,
+         platform commissions, fixed share); never from the target or a hypothetical turnover.
+On Input: sales - Number (VAT incl.), food - Number, comm - Number, fixed - Number.
+On Output: Object - withVatProfit result { sales, food, comm, fixed, salesNet, foodNet, vatOnSales,
+           vatOnFood, vatDue, profitBefore, profitAfter, ... } (same formula as the saved day record).
+---------------------*/
+function actualDayProfit(sales, food, comm, fixed){
+  return withVatProfit({ sales: Number(sales) || 0, food: Number(food) || 0, comm: Number(comm) || 0, fixed: Number(fixed) || 0 });
+}
+
 function withVatProfit(rec){
   const v = vatPack(rec.sales, rec.food);
   const before = Number(rec.sales||0) - Number(rec.food||0)
@@ -5181,23 +5192,28 @@ function renderProfitPlanner(){
   const favorite = soldFoodOnly[0] || null;
   
 
-  const foodDay = useSold ? soldFood : (p * selFood);
-  const sales   = useSold ? soldSales : (p * ticket);
+  // Profit before / after VAT comes ONLY from the counted portions (same formula as the saved day,
+  // withVatProfit). The target only drives the "Μερίδες για στόχο" tile, never the profit figures.
+  const act = actualDayProfit(useSold ? soldSales : 0, useSold ? soldFood : 0, useSold ? commDay : 0, fixed);
+  const foodDay = act.food, sales = act.sales;
   const totalDayCost = fixed + foodDay + commDay;
-  const netBefore = sales - totalDayCost;
-
+  const netBefore = act.profitBefore;
   const rate = (typeof VAT_RATE !== "undefined") ? VAT_RATE : 0.13;
-  const vatSales = sales - sales / (1 + rate);
-  const vatFood  = foodDay - foodDay / (1 + rate);
-  const vatDue   = Math.max(0, vatSales - vatFood);
-  const netAfter = netBefore - vatDue;
+  const vatSales = act.vatOnSales, vatFood = act.vatOnFood, vatDue = act.vatDue;
+  const netAfter = act.profitAfter;
+  const hypoSales = p * ticket;   // what the target would need (shown only in the target tile)
 
   const mix = (typeof mixOverride === "function") ? mixOverride() : null;
   const mixTxt = mix
     ? Math.round(mix.local*100) + "/" + Math.round(mix.efood*100) + "/" + Math.round(mix.wolt*100)
     : "μερίδες πίνακα";
 
-  renderMethodBResults({ sales, food: foodDay, comm: commDay, fixed });
+  if (useSold) renderMethodBResults({ sales, food: foodDay, comm: commDay, fixed });
+  else {
+    methodBLastA = null;
+    const mbBox = document.getElementById("methodBResults");
+    if (mbBox) mbBox.innerHTML = '<p class="note">Γράψε μερίδες Κατάστημα / e-food / Wolt: το κέρδος (Α / Β) υπολογίζεται μόνο από πραγματικές πωλήσεις.</p>';
+  }
   if (methodBState.date !== currentPlanDay()) loadMethodBFor(currentPlanDay(), dayLedger[currentPlanDay()] || null);
   if (meatState.date !== currentPlanDay()) loadMeatFor(currentPlanDay(), dayLedger[currentPlanDay()] || null);
   else renderMeatResults();
@@ -5208,7 +5224,7 @@ function renderProfitPlanner(){
       <div class="value">${fmt(fixed)}</div><div class="sub">Νοίκι, ΔΕΗ, μισθοί, εφορία</div></div>
     <div class="kpi"><div class="label">Food cost / ημέρα</div>
       <div class="value">${fmt(foodDay)}</div>
-      <div class="sub">${useSold ? (soldQty + " μετρημένες μερίδες") : (p + " × " + fmt(selFood))}</div></div>
+      <div class="sub">${useSold ? (soldQty + " μετρημένες μερίδες") : "δεν έχουν γραφτεί μερίδες"}</div></div>
     <div class="kpi"><div class="label">Προμήθειες e-food + Wolt</div>
       <div class="value">${fmt(commDay)}</div><div class="sub">${pctTxt(CH_COMM.efood)} / ${pctTxt(CH_COMM.wolt)} · ${mixTxt}</div></div>
     <div class="kpi">
@@ -5227,19 +5243,19 @@ function renderProfitPlanner(){
       <div class="sub">food ${fmt(food)} · ${(foodPct * 100).toFixed(1)}% · καθαρό ticket ${fmt(ticket / (1 + rate))}</div>
     </div>
     <div class="kpi good"><div class="label">Μερίδες για στόχο €${target}</div>
-      <div class="value">${p}</div><div class="sub">με μέσο ticket (χωρίς προμήθεια)</div></div>
+      <div class="value">${p}</div><div class="sub">με μέσο ticket (χωρίς προμήθεια) · υποθετικές πωλήσεις ${fmt(hypoSales)}</div></div>
     <div class="kpi good"><div class="label">Αγαπημένο σήμερα</div>
       <div class="value">${favorite ? favorite.qty : "—"}</div>
       <div class="sub">${favorite ? favorite.d.el : "Γράψε μερίδες στα 3 κανάλια"}</div></div>
-    <div class="kpi ${netBefore>=target?"good":"warn"}">
+    <div class="kpi ${!useSold ? "" : netBefore>=target?"good":"warn"}">
       <div class="label">Κέρδος προ ΦΠΑ</div>
-      <div class="value">${fmt(netBefore)}</div>
-      <div class="sub">Πωλήσεις ${fmt(sales)} − κόστος ${fmt(totalDayCost)}</div>
+      <div class="value">${useSold ? fmt(netBefore) : "—"}</div>
+      <div class="sub">${useSold ? "Πωλήσεις " + fmt(sales) + " − κόστος " + fmt(totalDayCost) : "μόνο από πραγματικές πωλήσεις · γράψε μερίδες"}</div>
     </div>
-    <div class="kpi ${netAfter>=target?"good":"warn"}">
+    <div class="kpi ${!useSold ? "" : netAfter>=target?"good":"warn"}">
       <div class="label">Καθαρό μετά ΦΠΑ</div>
-      <div class="value">${fmt(netAfter)}</div>
-      <div class="sub">απόδοση ${fmt(vatDue)} · εκροές ${fmt(vatSales)} − εισροές ${fmt(vatFood)}</div>
+      <div class="value">${useSold ? fmt(netAfter) : "—"}</div>
+      <div class="sub">${useSold ? "απόδοση " + fmt(vatDue) + " · εκροές " + fmt(vatSales) + " − εισροές " + fmt(vatFood) : "μόνο από πραγματικές πωλήσεις · γράψε μερίδες"}</div>
     </div>`;
 
   let favBox = document.getElementById("favReport");
