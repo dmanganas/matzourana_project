@@ -456,9 +456,50 @@ td.comp-proposed { background: #f8f9ff; }
 .sales-share-efood { background: #d4402f; }
 .sales-share-wolt { background: #1aa3d9; }
 .sales-share-takeaway { background: var(--green); }
+
+/* ===== Navigation: categories → sub-tabs ===== */
+.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.cat-tab { background: #fff; border: 1px solid var(--line); padding: 10px 16px; border-radius: 12px; cursor: pointer;
+  font-weight: 750; color: var(--green-dark); }
+.cat-tab.active { background: var(--green-dark); color: #fff; border-color: var(--green-dark); }
+.tabs.sub-tabs { padding: 8px 10px; background: var(--green-soft); border-radius: 12px; }
+.tabs.sub-tabs .tab { padding: 7px 12px; font-size: .9rem; }
+.tabs.sub-tabs .tab[hidden] { display: none; }
+
+/* ===== Collapsible card (Χασάπης) ===== */
+.fold-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.fold-head .section-title { margin: 0; }
+.fold-btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; font-weight: 650; }
+.fold-body { margin-top: 10px; }
+
+/* ===== Στατιστικά & Μισθός / Στόχος (admin/insights.js) ===== */
+#statKpis, #goalKpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { #statKpis, #goalKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ins-warn { background: var(--amber-soft); border: 1px solid #f1d6a8; color: #7a4a06; border-radius: 10px; padding: 8px 12px; margin: 8px 0; font-size: .86rem; }
+.ins-note { color: var(--muted); font-size: .82rem; }
+.ins-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1000px) { .ins-grid { grid-template-columns: 1fr; } }
+.ins-chart { position: relative; height: 240px; }
+.gap-pos { color: var(--green); font-weight: 700; }
+.gap-neg { color: var(--red); font-weight: 700; }
+.goal-row { display: grid; grid-template-columns: minmax(150px, 1.6fr) minmax(160px, 2.4fr) 52px 74px 74px 86px 70px; gap: 8px;
+  align-items: center; padding: 6px 4px; border-bottom: 1px solid var(--line); font-size: .86rem; }
+.goal-row.head { font-weight: 700; color: var(--muted); font-size: .74rem; text-transform: uppercase; }
+.goal-row input[type=range] { width: 100%; accent-color: var(--green); }
+.goal-row input[type=number] { width: 64px; }
+.goal-row .hist { color: var(--muted); font-size: .75rem; }
+.floor-bar { position: relative; height: 18px; border-radius: 9px; background: #edf1ee; overflow: hidden; margin: 8px 0 4px; }
+.floor-bar > span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 9px; }
+.floor-bar > i { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--ink); }
+.me-tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+.me-star { background: var(--green-soft); color: var(--green); }
+.me-plow { background: #e8f0fb; color: #1f5fbf; }
+.me-puzzle { background: var(--amber-soft); color: var(--amber); }
+.me-dog { background: var(--red-soft); color: var(--red); }
 </style>
 <script src="competitors.js?v=20261102c" defer></script>
 <script src="sales.js?v=20261102c" defer></script>
+<script src="insights.js?v=20261102d" defer></script>
 </head>
 <body class="admin-locked">
 <div class="topbar">
@@ -482,17 +523,27 @@ td.comp-proposed { background: #f8f9ff; }
 </div>
 
 <div class="wrap">
-  <div class="tabs">
-    <div class="tab active" data-tab="overview" onclick="switchTab('overview')">Επισκόπηση</div>
-    <div class="tab" data-tab="ingredients" onclick="switchTab('ingredients')">Υλικά & Τιμές</div>
-    <div class="tab" data-tab="recipes" onclick="switchTab('recipes')">Συνταγές</div>
-    <div class="tab" data-tab="dishes" onclick="switchTab('dishes')">Πιάτα & Food Cost</div>
-    <div class="tab" data-tab="profit" onclick="switchTab('profit')">Κέρδος / Ημέρα</div>
-    <div class="tab" data-tab="channels" onclick="switchTab('channels')">Κέρδος / Μήνας / Χρόνος</div>
-    <div class="tab" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
-    <div class="tab" data-tab="target" onclick="switchTab('target')">Στόχος</div>
-    <div class="tab" data-tab="competitors" onclick="switchTab('competitors')">Ανταγωνισμός</div>
-    <div class="tab" data-tab="sales" onclick="switchTab('sales')">Πωλήσεις</div>
+  <div class="cat-tabs" id="catTabs" role="tablist">
+    <div class="cat-tab" data-cat="cost" onclick="switchCategory('cost')">Κόστος</div>
+    <div class="cat-tab active" data-cat="analysis" onclick="switchCategory('analysis')">Ανάλυση κατηγοριών</div>
+    <div class="cat-tab" data-cat="sales" onclick="switchCategory('sales')">Πωλήσεις</div>
+    <div class="cat-tab" data-cat="stats" onclick="switchCategory('stats')">Στατιστικά</div>
+    <div class="cat-tab" data-cat="goal" onclick="switchCategory('goal')">Στόχος</div>
+    <div class="cat-tab" data-cat="market" onclick="switchCategory('market')">Ανταγωνισμός</div>
+  </div>
+  <div class="tabs sub-tabs">
+    <div class="tab" data-cat="cost" data-tab="ingredients" onclick="switchTab('ingredients')" hidden>Υλικά & Τιμές</div>
+    <div class="tab" data-cat="cost" data-tab="recipes" onclick="switchTab('recipes')" hidden>Συνταγές</div>
+    <div class="tab" data-cat="cost" data-tab="dishes" onclick="switchTab('dishes')" hidden>Πιάτα & Food Cost</div>
+    <div class="tab active" data-cat="analysis" data-tab="overview" onclick="switchTab('overview')">Επισκόπηση</div>
+    <div class="tab" data-cat="analysis" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
+    <div class="tab" data-cat="sales" data-tab="profit" onclick="switchTab('profit')" hidden>Κέρδος / Ημέρα</div>
+    <div class="tab" data-cat="sales" data-tab="sales" onclick="switchTab('sales')" hidden>Φύλλα πωλήσεων</div>
+    <div class="tab" data-cat="stats" data-tab="stats" onclick="switchTab('stats')" hidden>Ημέρες &amp; είσπραξη</div>
+    <div class="tab" data-cat="stats" data-tab="channels" onclick="switchTab('channels')" hidden>Μήνας / Χρόνος</div>
+    <div class="tab" data-cat="goal" data-tab="goal" onclick="switchTab('goal')" hidden>Μισθός &amp; σχέδιο ημέρας</div>
+    <div class="tab" data-cat="goal" data-tab="target" onclick="switchTab('target')" hidden>Στόχος τζίρου</div>
+    <div class="tab" data-cat="market" data-tab="competitors" onclick="switchTab('competitors')" hidden>Ανταγωνισμός</div>
   </div>
 
   <div class="sources-bar">
@@ -716,6 +767,12 @@ td.comp-proposed { background: #f8f9ff; }
       <div class="note" id="planDaySource"></div>
     </div>
     <div class="card-mini">
+      <div class="section-title">Πραγματική είσπραξη ημέρας (€)</div>
+      <input type="number" id="actualIncome" value="" placeholder="—" step="0.1" min="0" oninput="this.dataset.touched='1'; renderIncomeHint()">
+      <div class="note" id="actualIncomeHint">Το χειρόγραφο σύνολο· αποθηκεύεται μαζί με την ημέρα.</div>
+      <button type="button" class="btn-ghost" style="margin-top:6px" onclick="saveActualIncome()">Αποθήκευση μόνο είσπραξης</button>
+    </div>
+    <div class="card-mini">
       <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
       <input type="number" id="targetProfit" value="" placeholder="—" step="50" min="0" onchange="renderProfitPlanner()">
     </div>
@@ -767,11 +824,17 @@ td.comp-proposed { background: #f8f9ff; }
   </div>
 
   <div class="card-mini meat-check" id="meatCheck">
-    <div class="section-title">Χασάπης / Έλεγχος κρέατος</div>
-    <div id="meatInputs"></div>
-    <div id="meatResults"></div>
-    <div id="meatDishes"></div>
-    <div id="meatTrend"></div>
+    <div class="fold-head">
+      <div class="section-title">Χασάπης / Έλεγχος κρέατος</div>
+      <button type="button" class="fold-btn" id="meatFoldBtn" aria-expanded="false" aria-controls="meatFoldBody"
+        onclick="toggleFold('meatFoldBody', 'meatFoldBtn')">Εμφάνιση ▾</button>
+    </div>
+    <div class="fold-body" id="meatFoldBody" hidden>
+      <div id="meatInputs"></div>
+      <div id="meatResults"></div>
+      <div id="meatDishes"></div>
+      <div id="meatTrend"></div>
+    </div>
   </div>
 
   <div class="kpi-grid" id="profitKpis"></div>
@@ -856,6 +919,40 @@ td.comp-proposed { background: #f8f9ff; }
       <div class="section-title">Δυναμικός στόχος ημέρας · πρόβλεψη από το μισοσυμπληρωμένο χαρτί</div>
       <div id="tgtLiveControls"></div>
       <div id="tgtLive"></div>
+    </div>
+  </section>
+
+  <!-- ΣΤΑΤΙΣΤΙΚΑ: all saved days (matzourana_days) + sales sheets (matzourana_sales), read only -->
+  <section class="panel" id="tab-stats">
+    <h2>Στατιστικά ημερών <span class="badge" id="statBadge">—</span></h2>
+    <div id="statWarn"></div>
+    <div class="kpi-grid" id="statKpis"></div>
+    <div class="ins-grid">
+      <div class="card-mini"><div class="section-title">Καθαρό μετά ΦΠΑ ανά ημέρα · κυλιόμενος μέσος 7 ημερών · μισθός</div>
+        <div class="ins-chart"><canvas id="statTrendChart"></canvas></div></div>
+      <div class="card-mini"><div class="section-title">Ανά ημέρα εβδομάδας</div><div id="statWeekday"></div></div>
+    </div>
+    <div class="card-mini" style="margin-top:14px"><div class="section-title">Όλες οι αποθηκευμένες ημέρες · υπολογισμένες πωλήσεις vs πραγματική είσπραξη</div>
+      <div class="table-wrap" id="statDays"></div></div>
+    <div class="card-mini" style="margin-top:14px"><div class="section-title">Φύλλα πωλήσεων</div><div id="statSheets"></div></div>
+  </section>
+
+  <!-- ΜΙΣΘΟΣ & ΣΧΕΔΙΟ: planning only (sliders), separate from the actual-profit KPIs; nothing written -->
+  <section class="panel" id="tab-goal">
+    <h2>Μισθός ιδιοκτήτη &amp; σχέδιο ημέρας <span class="badge" id="goalBadge">σχεδιασμός</span></h2>
+    <p class="ins-note">Σχέδιο μόνο: δεν αλλάζει τα πραγματικά κέρδη. Ίδιος τύπος με την αποθήκευση ημέρας: (πωλήσεις − food − προμήθειες − σταθερά) − ΦΠΑ 13% (εκροές − εισροές food).</p>
+    <div id="goalControls"></div>
+    <div id="goalWarn"></div>
+    <div class="kpi-grid" id="goalKpis"></div>
+    <div id="goalFloorBar"></div>
+    <div class="card-mini" style="margin-top:14px"><div class="section-title">Μερίδες ανά πιάτο ημέρας (μπάρες)</div><div id="goalSliders"></div></div>
+    <div class="ins-grid" style="margin-top:14px">
+      <div class="card-mini"><div class="section-title">Νεκρό σημείο &amp; μερίδες για τον μισθό</div><div id="goalBreakEven"></div></div>
+      <div class="card-mini"><div class="section-title">Κανάλια: takeaway vs e-food / Wolt</div><div id="goalChannels"></div></div>
+      <div class="card-mini"><div class="section-title">Menu engineering (περιθώριο × δημοφιλία)</div><div id="goalMenuEng"></div></div>
+      <div class="card-mini"><div class="section-title">Προτεινόμενο μενού ημέρας (ιστορική ζήτηση)</div><div id="goalSuggest"></div></div>
+      <div class="card-mini"><div class="section-title">Τάση καθαρού μετά ΦΠΑ vs μισθός</div><div class="ins-chart"><canvas id="goalTrendChart"></canvas></div><div id="goalTrendNote"></div></div>
+      <div class="card-mini"><div class="section-title">Τι θα γινόταν αν… (τιμές · μόνο πρόταση)</div><div id="goalWhatIf"></div></div>
     </div>
   </section>
 </div>
@@ -1374,6 +1471,54 @@ function switchTab(id){
   if (id === "target" && typeof renderTargetTab === "function") renderTargetTab();
   if (id === "competitors" && typeof loadCompetitorPrices === "function") loadCompetitorPrices();
   if (id === "sales" && typeof loadSalesLog === "function") loadSalesLog();
+  if (id === "stats" && typeof renderStatsTab === "function") renderStatsTab();
+  if (id === "goal" && typeof renderGoalTab === "function") renderGoalTab();
+  syncAdminNav(id);
+}
+
+/*-------------------
+Purpose: Show the sub-tabs of the category that holds tab id and mark both active.
+On Input: id - String, data-tab of a sub-tab (e.g. "profit").
+On Output: none. Side effects: .cat-tab.active, hidden on .tab of other categories,
+           localStorage mz_nav_<cat> = last sub-tab of that category.
+---------------------*/
+function syncAdminNav(id){
+  const tab = document.querySelector('.tab[data-tab="' + id + '"]');
+  const cat = tab ? tab.dataset.cat : null;
+  if (!cat) return;
+  document.querySelectorAll(".cat-tab").forEach(c => c.classList.toggle("active", c.dataset.cat === cat));
+  document.querySelectorAll(".tabs.sub-tabs .tab").forEach(t => { t.hidden = t.dataset.cat !== cat; });
+  try { localStorage.setItem("mz_nav_" + cat, id); } catch (e) {}
+}
+
+/*-------------------
+Purpose: Open a category: its last used sub-tab, else its first one.
+On Input: cat - "cost" | "analysis" | "sales" | "stats" | "goal" | "market".
+On Output: none (switchTab does the rest).
+---------------------*/
+function switchCategory(cat){
+  let id = null;
+  try { id = localStorage.getItem("mz_nav_" + cat); } catch (e) {}
+  if (!id || !document.querySelector('.tab[data-cat="' + cat + '"][data-tab="' + id + '"]')) {
+    const first = document.querySelector('.tab[data-cat="' + cat + '"]');
+    id = first ? first.dataset.tab : null;
+  }
+  if (id) switchTab(id);
+}
+
+/*-------------------
+Purpose: Show / hide a collapsible card body (e.g. the butcher check), collapsed by default.
+On Input: bodyId - id of the body element; btnId - id of the toggle button.
+On Output: none. Side effects: hidden attribute, aria-expanded and button text.
+---------------------*/
+function toggleFold(bodyId, btnId){
+  const body = document.getElementById(bodyId), btn = document.getElementById(btnId);
+  if (!body) return;
+  body.hidden = !body.hidden;
+  if (btn) {
+    btn.setAttribute("aria-expanded", body.hidden ? "false" : "true");
+    btn.textContent = body.hidden ? "Εμφάνιση ▾" : "Απόκρυψη ▴";
+  }
 }
 
 
@@ -3080,6 +3225,7 @@ const CH_EL   = { local: "Κατάστημα", efood: "e-food", wolt: "Wolt" };
 
 let portionChannels = JSON.parse(localStorage.getItem("mz_ch") || "{}");
 let dayLedger = JSON.parse(localStorage.getItem("mz_days") || "{}");
+let salesSheets = {};         // matzourana_sales/days (loadAllDays), read only
 let dayLoadSeq = 0;           // guards loadDayFromLedger against out-of-order date changes
 let siteDailyPicks = [];      // today's menu picks (matzourana_daily), used for dates without a record
 
@@ -3118,6 +3264,7 @@ function setCh(key, ch, val){
   if (totalPortions(key) > 0 && !document.querySelector('#salesEntry input[data-ch-key="' + key + '"]')
       && typeof renderSalesEntry === "function") renderSalesEntry();
   if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  if (typeof renderIncomeHint === "function") renderIncomeHint();
 }
 
 /*-------------------
@@ -3986,8 +4133,7 @@ let profitChartObj = null;
 async function loadProfitChart(){
   const db = getDb();
   if (!db) return;
-  const snap = await db.ref("matzourana_days").orderByKey().limitToLast(30).once("value");
-  const val = snap.val() || {};
+  const val = (await loadAllDays()).days || {};
   const rows = Object.keys(val).sort().map(k => val[k]);
 
   const canvas = document.getElementById("fbProfitCanvas");
@@ -4585,22 +4731,14 @@ async function renderYearSection(){
   if (yk) fillKpis("yearKpis", rec);
 }
 
+/*-------------------
+Purpose: Month / year report: reload ALL saved days (loadAllDays), then draw the month panel
+         and the year section.
+On Input: none.
+On Output: Promise<void>.
+---------------------*/
 async function loadMonthFromFirebase(){
-  const db = typeof getDb === "function" ? getDb() : null;
-  if (db) {
-    try {
-      const snap = await db.ref("matzourana_days").once("value");
-      const all = snap.val() || {};
-      if (typeof dayLedger === "undefined") window.dayLedger = {};
-      Object.keys(all).forEach(k => {
-        const d = all[k];
-        if (!d || typeof d !== "object") return;
-        const date = String(d.date || k).slice(0,10);
-        dayLedger[date] = { ...d, date };
-      });
-      localStorage.setItem("mz_days", JSON.stringify(dayLedger));
-    } catch (e) { console.warn("load days", e); }
-  }
+  await loadAllDays();
   const rm = document.getElementById("reportMonth");
   if (rm && !rm.value) rm.value = currentYm();
   renderMonthPanel();
@@ -5434,6 +5572,7 @@ async function pushToFirebase(){
     : { shop: null, efood: null, wolt: null },
     createdAt: Date.now(),
     dishes,
+    ...actualIncomeFields(date),
     ...methodBRecordFields({ sales, food: foodDay, comm, fixed }),
     ...meatRecordFields(sold.filter(r => !r.isDrink).map(r => ({ key: r.key, name: (r.d && r.d.el) || r.key, qty: r.qty })))
   });
@@ -5495,10 +5634,11 @@ async function loadDayFromLedger(){
   }
   if (!rec && dayLedger[date]) rec = dayLedger[date];
   // No saved day: take the portions from the sales sheet (matzourana_sales/days/<date>), never saved here.
-  let sheet = null;
-  if (!rec && db) {
-    try { sheet = salesSheetToChannels((await db.ref("matzourana_sales/days/" + date).once("value")).val()); }
+  let sheet = null, sheetRaw = null;
+  if (db) {
+    try { sheetRaw = (await db.ref("matzourana_sales/days/" + date).once("value")).val(); }
     catch (e) { console.warn("Sales sheet load:", e); }
+    if (!rec) sheet = salesSheetToChannels(sheetRaw);
   }
   if (seq !== dayLoadSeq) return rec;          // a newer date was picked meanwhile
   let channels = {};
@@ -5537,6 +5677,7 @@ async function loadDayFromLedger(){
   if (unknown.length) source += " Άγνωστα κλειδιά (δεν μετρήθηκαν σωστά): " + unknown.join(", ") + ".";
   const srcEl = document.getElementById("planDaySource");
   if (srcEl) srcEl.textContent = source;
+  fillActualIncome(rec, sheetRaw);
   if (typeof renderDishTable === "function") renderDishTable();
   applyDailyPicks(picks);
   updateDailyPickLock();
@@ -5676,14 +5817,113 @@ function drawFourCharts(days){
   });
 }
 
-async function loadMonthFromFirebase(){
+/*-------------------
+Purpose: Load ALL saved days (matzourana_days) and all sales sheets (matzourana_sales/days) once
+         per call into dayLedger / salesSheets, so every statistics view uses every day.
+On Input: none.
+On Output: Promise<{ days: Object, sheets: Object }>. Firebase days replace the browser copies of
+           the same date; browser-only days are kept (a save that never reached Firebase).
+Side effects: dayLedger, salesSheets, localStorage mz_days. Never writes to Firebase.
+---------------------*/
+async function loadAllDays(){
   const db = (typeof getDb === "function" && getDb()) || window.rtdb;
-  if (!db) return;
-  const snap = await db.ref("matzourana_days").once("value");
-  const all = snap.val() || {};
-  dayLedger = { ...dayLedger, ...all };
+  if (!db) return { days: dayLedger, sheets: salesSheets };
+  try {
+    const all = (await db.ref("matzourana_days").once("value")).val() || {};
+    Object.keys(all).forEach(k => {
+      const d = all[k];
+      if (!d || typeof d !== "object") return;
+      const date = String(d.date || k).slice(0, 10);
+      dayLedger[date] = { ...d, date };
+    });
+    localStorage.setItem("mz_days", JSON.stringify(dayLedger));
+  } catch (e) { console.warn("load days", e); }
+  try { salesSheets = (await db.ref("matzourana_sales/days").once("value")).val() || {}; }
+  catch (e) { console.warn("load sales sheets", e); }
+  return { days: dayLedger, sheets: salesSheets };
+}
+
+/*-------------------
+Purpose: Fields of the day record for the actual (handwritten) income of #actualIncome.
+On Input: date - "YYYY-MM-DD" being saved.
+On Output: { revenueRecorded: Number|null, revenueConfirmed: Boolean, revenueNote?, salesSource? }.
+           Typed by the owner → confirmed; untouched value from an unconfirmed sales sheet / record
+           → stays unconfirmed. Note and sheet source of an existing record are kept.
+---------------------*/
+function actualIncomeFields(date){
+  const el = document.getElementById("actualIncome");
+  const v = el && el.value !== "" ? Number(el.value) : null;
+  const prev = dayLedger[date] || {};
+  const touched = !!(el && el.dataset.touched);
+  const out = {
+    revenueRecorded: (v != null && isFinite(v) && v > 0) ? Math.round(v * 100) / 100 : null,
+    revenueConfirmed: v != null && (touched || prev.revenueConfirmed === true || (el && el.dataset.confirmed === "1"))
+  };
+  if (prev.revenueNote) out.revenueNote = prev.revenueNote;
+  if (prev.salesSource) out.salesSource = prev.salesSource;
+  return out;
+}
+
+/*-------------------
+Purpose: Put the actual income of the loaded day into #actualIncome: saved record first, else the
+         sales sheet (revenue.recorded); empty when neither has one.
+On Input: rec - day record or null; sheet - matzourana_sales/days/<date> record or null.
+On Output: none. Side effects: #actualIncome value / data-touched / data-confirmed, hint text.
+---------------------*/
+function fillActualIncome(rec, sheet){
+  const el = document.getElementById("actualIncome");
+  if (!el) return;
+  let v = null, conf = false, from = "";
+  if (rec && rec.revenueRecorded != null) { v = rec.revenueRecorded; conf = rec.revenueConfirmed === true; from = "αποθηκευμένη ημέρα"; }
+  else if (sheet && sheet.revenue && sheet.revenue.recorded != null) { v = sheet.revenue.recorded; conf = sheet.revenue.confirmed === true; from = "φύλλο πωλήσεων"; }
+  el.value = v != null ? v : "";
+  delete el.dataset.touched;
+  el.dataset.confirmed = conf ? "1" : "";
+  el.dataset.from = from;
+  renderIncomeHint();
+}
+
+/*-------------------
+Purpose: Hint under #actualIncome: where the value came from and the gap to the computed sales.
+On Input: none (reads #actualIncome and the computed sales of the shown day).
+On Output: none.
+---------------------*/
+function renderIncomeHint(){
+  const el = document.getElementById("actualIncome"), hint = document.getElementById("actualIncomeHint");
+  if (!el || !hint) return;
+  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const sales = sold.reduce((s, r) => s + (r.salesDay || 0), 0);
+  if (el.value === "") { hint.textContent = "Το χειρόγραφο σύνολο· αποθηκεύεται μαζί με την ημέρα."; return; }
+  const v = Number(el.value);
+  const conf = el.dataset.touched ? "γραμμένη τώρα" : (el.dataset.confirmed === "1" ? "επιβεβαιωμένη" : "ανεπιβεβαίωτη");
+  const gap = sales > 0 ? " · υπολογισμένες " + fmt(sales) + " · διαφορά " + (v - sales >= 0 ? "+" : "") + fmt(v - sales).replace("€-", "−€") : "";
+  hint.textContent = (el.dataset.from ? "Από " + el.dataset.from + " · " : "") + conf + gap;
+}
+
+/*-------------------
+Purpose: Save only the actual income of an already saved day (matzourana_days/<date>), without
+         re-saving the dishes.
+On Input: none (#planDay, #actualIncome).
+On Output: Promise<void>. Side effects: Firebase update of revenueRecorded / revenueConfirmed
+           (after a confirm dialog), dayLedger; alerts when the day is not saved yet.
+---------------------*/
+async function saveActualIncome(){
+  const db = getDb();
+  if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
+  const date = currentPlanDay();
+  const rec = (await db.ref("matzourana_days/" + date).once("value")).val();
+  if (!rec) { alert("Η ημέρα " + date + " δεν έχει αποθηκευτεί. Πάτα «Αποθήκευση ημέρας» (σώζει και την είσπραξη)."); return; }
+  const el = document.getElementById("actualIncome");
+  const v = el && el.value !== "" ? Math.round(Number(el.value) * 100) / 100 : null;
+  if (v != null && !(v > 0)) { alert("Γράψε ποσό είσπραξης."); return; }
+  if (!confirm("Είσπραξη " + date + ": " + (v == null ? "διαγραφή" : fmt(v)) + " (επιβεβαιωμένη). Αποθήκευση;")) return;
+  const fields = { revenueRecorded: v, revenueConfirmed: v != null };
+  await db.ref("matzourana_days/" + date).update(fields);
+  dayLedger[date] = { ...rec, ...fields, date };
   localStorage.setItem("mz_days", JSON.stringify(dayLedger));
-  renderMonthPanel();
+  if (el) { el.dataset.confirmed = v != null ? "1" : ""; delete el.dataset.touched; el.dataset.from = "αποθηκευμένη ημέρα"; }
+  renderIncomeHint();
+  alert("Είσπραξη " + date + " αποθηκεύτηκε.");
 }
 
 function applySuggested(write){
@@ -5773,6 +6013,7 @@ async function afterAdminUnlock() {
   const dailyKeys = await loadDailyMenuFromFirebase();
   siteDailyPicks = dailyKeys.slice();
   if (dailyKeys.length) applyDailyPicks(dailyKeys);
+  await loadAllDays();            // every saved day + sales sheet for the statistics
   await loadDayFromLedger();      // #planDay (today when empty) → both tables, KPIs, highlights
   renderChannels();
 }
