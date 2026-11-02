@@ -482,6 +482,7 @@ On Output: Promise<void>.
 async function renderGoalTab(){
   goalLoadState();
   if (typeof loadAllDays === "function" && !renderGoalTab.loaded) { await loadAllDays(); renderGoalTab.loaded = true; }
+  await insLoadCompetitors();
   const hist = goalHistory();
   if (!goalState.plan) { goalState.plan = goalDefaultPlan(hist); goalSaveState(); }
   const s = salarySettings(), mix = goalMix(hist), wd = insWeekday(currentPlanDay());
@@ -514,8 +515,30 @@ async function renderGoalTab(){
 }
 
 /*-------------------
-Purpose: Draw one slider row per daily dish (planned portions), with price, food cost, unit
-         contribution after VAT & commissions and history.
+Purpose: Price bounds of the planned-price slider of a dish: −20% … +30% of the current admin
+         price, in €0.10 steps.
+On Input: price - current price (Number).
+On Output: { min, max } rounded to €0.10.
+---------------------*/
+function goalPriceRange(price){
+  return { min: Math.max(0.1, Math.floor(price * 0.8 * 10) / 10), max: Math.ceil(price * 1.3 * 10) / 10 };
+}
+
+/*-------------------
+Purpose: Planned price of a dish (current admin price + planning change in goalState.priceDelta).
+On Input: k - menu key.
+On Output: Number (€), or null for an unknown item.
+---------------------*/
+function goalPlanPrice(k){
+  const g = goalItem(k);
+  if (!g) return null;
+  return Math.round((g.price + Number(goalState.priceDelta[k] || 0)) * 100) / 100;
+}
+
+/*-------------------
+Purpose: Draw one row per daily dish: portions slider, planned-price slider (with change vs the
+         current price, competitor median hint and reset), food cost, unit contribution after VAT &
+         commissions and line total.
 On Input: hist, mix, wd.
 On Output: none.
 ---------------------*/
@@ -525,46 +548,234 @@ function goalRenderSliders(hist, mix, wd){
   const keys = goalDishKeys(hist);
   const rows = keys.map(k => {
     const g = goalItem(k), it = hist.items[k], e = goalExpected(it, wd), n = Number(goalState.plan[k] || 0);
-    const p = g.price + Number(goalState.priceDelta[k] || 0);
-    const u = goalUnitAfter(p, g.fc, mix);
+    const p = goalPlanPrice(k), r = goalPriceRange(g.price);
     const max = Math.max(20, Math.ceil(((it && Math.max(...it.perDay)) || 0) * 2));
+    const ek = insEsc(k);
     const histTxt = it ? `ιστ. ${e.n.toFixed(1)}/ημ. (${e.basis === "weekday" ? INS_WEEKDAYS[wd].slice(0, 3) + " " : ""}${e.obs} ημ.)${it.days < INS_LOW_DISH ? " · λίγα δεδομένα" : ""}` : "χωρίς ιστορικό";
-    return `<div class="goal-row" data-goal-key="${insEsc(k)}">
+    return `<div class="goal-row" data-goal-key="${ek}">
       <div><b>${insEsc(g.name)}</b><div class="hist">${histTxt}</div></div>
-      <input type="range" min="0" max="${max}" step="1" value="${n}" oninput="goalSetPortion('${insEsc(k)}', this.value)">
+      <input type="range" min="0" max="${max}" step="1" value="${n}" aria-label="μερίδες" oninput="goalSetPortion('${ek}', this.value)">
       <div><b data-goal-n>${n}</b></div>
-      <div>${insEur(p)}</div><div>${insEur(g.fc)}${g.noCost ? " ?" : ""}</div>
-      <div class="${u >= 0 ? "gap-pos" : "gap-neg"}">${insEur(u)}</div>
-      <div data-goal-line>${insEur(u * n)}</div></div>`;
+      <div><input type="range" data-goal-price min="${r.min}" max="${r.max}" step="0.1" value="${p}" aria-label="τιμή" oninput="goalSetPrice('${ek}', this.value)">
+        <div class="comp" data-goal-comp>${goalCompHint(k, p)}</div></div>
+      <div><b data-goal-p>${insEur(p)}</b> <button type="button" class="rst" title="τρέχουσα τιμή ${insEur(g.price)}" onclick="goalResetPrice('${ek}')">↺</button>
+        <div class="pchg" data-goal-pchg>${goalPriceChangeText(k)}</div></div>
+      <div>${insEur(g.fc)}${g.noCost ? " ?" : ""}</div>
+      <div data-goal-u></div>
+      <div data-goal-line></div></div>`;
   }).join("");
   const fm = goalFixedMenuAvg(hist);
-  box.innerHTML = `<div class="goal-row head"><div>Πιάτο</div><div>Μερίδες</div><div>#</div><div>Τιμή</div><div>Food</div><div>Συνεισφ./μερ.</div><div>Σύνολο</div></div>` +
+  box.innerHTML = `<div class="goal-row head"><div>Πιάτο</div><div>Μερίδες</div><div>#</div><div>Τιμή σχεδίου</div><div>Τιμή · αλλαγή</div><div>Food</div><div>Συνεισφ./μερ.</div><div>Σύνολο</div></div>` +
     (rows || '<p class="ins-note">Δεν υπάρχουν πιάτα σημερινού μενού.</p>') +
     `<p class="ins-note" style="margin-top:8px">
       <label><input type="checkbox" ${goalState.incFixedMenu ? "checked" : ""} onchange="goalState.incFixedMenu=this.checked;goalSaveState();goalRecalc()">
       Σταθερό μενού (σαλάτες, ψωμί, ψητά, ποτά): ιστορικός μέσος ${fm.portions.toFixed(1)} μερ./ημ. · πωλήσεις ${insEur(fm.sales)}</label> ·
       <label><input type="checkbox" ${goalState.showAll ? "checked" : ""} onchange="goalState.showAll=this.checked;goalSaveState();renderGoalTab()"> όλα τα πιάτα με ιστορικό</label><br>
-      Συνεισφορά/μερίδα = (τιμή − food)/1.13 − τιμή × προμήθεια μείγματος (${(goalCommRate(mix) * 100).toFixed(1)}%). «?» = χωρίς συνταγή (food 0).</p>`;
+      Συνεισφορά/μερίδα = (τιμή − food)/1.13 − τιμή × προμήθεια μείγματος (${(goalCommRate(mix) * 100).toFixed(1)}%). «?» = χωρίς συνταγή (food 0).
+      Τιμή σχεδίου: −20% … +30% της τρέχουσας τιμής admin, βήμα €0.10· <b>μόνο σχεδιασμός</b>, οι πραγματικές τιμές δεν αλλάζουν.
+      Ανταγωνισμός: διάμεσος γειτονικών (εγκεκριμένοι) · αγορά = ευρύτερη αγορά μαγειρείων (μόνο ανάγνωση).</p>`;
+  keys.forEach(k => goalRefreshRow(k, mix));
 }
 
 /*-------------------
-Purpose: Slider moved: store the portions and refresh the totals (rows are not redrawn).
+Purpose: Refresh the live numbers of one dish row (portions, price, change, competitor hint, unit
+         contribution and line total) without redrawing the sliders.
+On Input: k - menu key; mix - channel shares (optional; plan mix when missing).
+On Output: none.
+---------------------*/
+function goalRefreshRow(k, mix){
+  const row = document.querySelector('.goal-row[data-goal-key="' + k + '"]');
+  const g = goalItem(k);
+  if (!row || !g) return;
+  mix = mix || goalMix(goalHistory());
+  const n = Number(goalState.plan[k] || 0), p = goalPlanPrice(k), u = goalUnitAfter(p, g.fc, mix);
+  const set = (sel, html) => { const el = row.querySelector(sel); if (el) el.innerHTML = html; };
+  set("[data-goal-n]", String(n));
+  set("[data-goal-p]", insEur(p));
+  set("[data-goal-pchg]", goalPriceChangeText(k));
+  set("[data-goal-comp]", goalCompHint(k, p));
+  set("[data-goal-u]", `<span class="${u >= 0 ? "gap-pos" : "gap-neg"}">${insEur(u)}</span>`);
+  set("[data-goal-line]", insEur(u * n));
+}
+
+/*-------------------
+Purpose: Text of the planned-price change vs the current admin price.
+On Input: k - menu key.
+On Output: HTML String ("τρέχουσα" when unchanged).
+---------------------*/
+function goalPriceChangeText(k){
+  const g = goalItem(k), d = Number(goalState.priceDelta[k] || 0);
+  if (!g || Math.abs(d) < 0.005) return '<span class="ins-note">τρέχουσα</span>';
+  return `<span class="${d > 0 ? "gap-pos" : "gap-neg"}">${insGap(d)} (${d > 0 ? "+" : "−"}${Math.abs(d / g.price * 100).toFixed(1)}%)</span> <span class="ins-note">από ${insEur(g.price)}</span>`;
+}
+
+/*-------------------
+Purpose: Slider moved: store the portions and refresh the row and the totals.
 On Input: key - String; val - slider value.
 On Output: none.
 ---------------------*/
 function goalSetPortion(key, val){
   goalState.plan[key] = Math.max(0, Math.round(Number(val) || 0));
   goalSaveState();
-  const row = document.querySelector('.goal-row[data-goal-key="' + key + '"]');
-  if (row) {
-    const hist = goalHistory(), mix = goalMix(hist), g = goalItem(key);
-    const u = goalUnitAfter(g.price + Number(goalState.priceDelta[key] || 0), g.fc, mix);
-    row.querySelector("[data-goal-n]").textContent = goalState.plan[key];
-    row.querySelector("[data-goal-line]").textContent = insEur(u * goalState.plan[key]);
-  }
+  goalRefreshRow(key);
   goalRecalc();
 }
 
+/*-------------------
+Purpose: Price slider moved: store the planned price as a change vs the current admin price
+         (planning only, never written anywhere else) and refresh the row and the totals.
+On Input: key - String; val - planned price (€).
+On Output: none.
+---------------------*/
+function goalSetPrice(key, val){
+  const g = goalItem(key);
+  if (!g) return;
+  const p = Math.round(Number(val) * 10) / 10;
+  const d = Math.round((p - g.price) * 100) / 100;
+  if (Math.abs(d) < 0.005) delete goalState.priceDelta[key]; else goalState.priceDelta[key] = d;
+  goalSaveState();
+  goalRefreshRow(key);
+  goalRecalc();
+}
+
+/*-------------------
+Purpose: Back to the current admin price for one dish.
+On Input: key - String.
+On Output: none.
+---------------------*/
+function goalResetPrice(key){
+  delete goalState.priceDelta[key];
+  goalSaveState();
+  const g = goalItem(key), row = document.querySelector('.goal-row[data-goal-key="' + key + '"] [data-goal-price]');
+  if (row && g) row.value = g.price;
+  goalRefreshRow(key);
+  goalRecalc();
+}
+
+/*-------------------
+Purpose: Every planned price back to the current admin price.
+On Input: none.
+On Output: none.
+---------------------*/
+function goalResetPrices(){
+  goalState.priceDelta = {};
+  goalSaveState();
+  renderGoalTab();
+}
+
+/*-------------------
+Purpose: Whole plan back to the start: portions from history, current prices, history channel mix.
+On Input: none.
+On Output: none.
+---------------------*/
+function goalResetAll(){
+  goalState.priceDelta = {};
+  goalState.mix = null;
+  goalState.plan = goalDefaultPlan(goalHistory());
+  goalSaveState();
+  renderGoalTab();
+}
+
+/* ------------------------------- competitor prices (read only) ------------------------------- */
+let insComp = null;
+
+/*-------------------
+Purpose: Read the latest approved competitor check and the latest wider-market check once
+         (owner only, via getDb(); never writes).
+On Input: none.
+On Output: Promise<Object> { near: check|null, wide: check|null }.
+---------------------*/
+async function insLoadCompetitors(){
+  if (insComp) return insComp;
+  const db = (typeof getDb === "function") ? getDb() : null;
+  if (!db) return { near: null, wide: null };
+  try {
+    const l = (await db.ref("matzourana_competitors/latest").once("value")).val();
+    const near = l ? (await db.ref("matzourana_competitors/checks/" + l).once("value")).val() : null;
+    const wl = (await db.ref("matzourana_competitors/wide/latest").once("value")).val();
+    const wide = wl ? (await db.ref("matzourana_competitors/wide/checks/" + wl).once("value")).val() : null;
+    insComp = { near, wide };
+  } catch (e) { insComp = { near: null, wide: null }; }
+  return insComp;
+}
+
+/*-------------------
+Purpose: Competitor medians of one dish: approved nearby competitors and the wider market.
+On Input: k - menu key.
+On Output: { near: {med, n}|null, wide: {med, n}|null }.
+---------------------*/
+function insCompStats(k){
+  const out = { near: null, wide: null };
+  if (!insComp) return out;
+  const key = (typeof salesKey === "function") ? salesKey(k) : k;
+  const med = xs => { const a = xs.slice().sort((x, y) => x - y), m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
+  const n = insComp.near, w = insComp.wide;
+  const nd = n && n.dishes && (n.dishes[k] || n.dishes[key]);
+  if (nd && nd.prices) {
+    const comps = n.competitors || {};
+    const v = Object.keys(nd.prices).filter(id => !comps[id] || comps[id].status === "approved").map(id => Number(nd.prices[id])).filter(x => x > 0);
+    if (v.length) out.near = { med: med(v), n: v.length };
+  }
+  const wd = w && w.dishes && (w.dishes[k] || w.dishes[key]);
+  if (wd && wd.prices) {
+    const v = Object.values(wd.prices).map(Number).filter(x => x > 0);
+    if (v.length) out.wide = { med: med(v), n: v.length };
+  }
+  return out;
+}
+
+/*-------------------
+Purpose: Small competitor hint under a planned-price slider.
+On Input: k - menu key; p - planned price.
+On Output: HTML String ("" when no matching dish).
+---------------------*/
+function goalCompHint(k, p){
+  const c = insCompStats(k), parts = [];
+  const rel = m => { const d = (p - m) / m * 100; return `<span class="${Math.abs(d) <= 2 ? "" : d > 0 ? "gap-neg" : "gap-pos"}">${d > 0 ? "+" : d < 0 ? "−" : "±"}${Math.abs(d).toFixed(0)}%</span>`; };
+  if (c.near) parts.push(`γειτ. ${insEur(c.near.med)} (${c.near.n}) ${rel(c.near.med)}`);
+  if (c.wide) parts.push(`αγορά ${insEur(c.wide.med)} (${c.wide.n})`);
+  return parts.length ? parts.join(" · ") : "χωρίς τιμή ανταγωνισμού";
+}
+
+/* ------------------------------- explanation: μισθός vs τζίρος ------------------------------- */
+
+/*-------------------
+Purpose: Greek explanation box: turnover (τζίρος) vs owner salary (profit after VAT), with the
+         live numbers of the given assumptions (what €100 of turnover leaves, turnover needed).
+On Input: o - { mix: channel shares, foodPct: food cost share of sales (0..1), fixed: €/day,
+          floor: salary €/day or null, label: String describing the assumptions }.
+On Output: HTML String.
+---------------------*/
+function insExplainHtml(o){
+  const c = goalCommRate(o.mix);
+  const per100 = 100 * ((1 - o.foodPct) / (1 + VAT_RATE) - c);
+  const food = 100 * o.foodPct, comm = 100 * c, vat = 100 * (1 - o.foodPct) * VAT_RATE / (1 + VAT_RATE);
+  const need = o.floor == null || per100 <= 0 ? null : (o.fixed + o.floor) / per100 * 100;
+  const s = salarySettings();
+  return `<div class="ins-explain"><b>Τζίρος ή μισθός;</b><br>
+    <b>Τζίρος</b> = όλα όσα πληρώνουν οι πελάτες σε μια ημέρα (μερίδες × τιμή, με τον ΦΠΑ μέσα), από κατάστημα, e-food και Wolt.
+    Δεν είναι κέρδος. Από αυτόν φεύγουν: <b>food cost</b> (πρώτες ύλες), <b>προμήθειες</b> πλατφορμών, τα <b>σταθερά</b> της ημέρας (ενοίκιο, μισθοί, ρεύμα, αέριο…)
+    και ο <b>ΦΠΑ 13%</b> (ΦΠΑ πωλήσεων − ΦΠΑ αγορών food).<br>
+    <b>Μισθός ιδιοκτήτη</b> = ό,τι μένει στο τέλος = <b>καθαρό μετά ΦΠΑ</b>. ${o.floor == null ? "Δεν έχει οριστεί ακόμη." : `Κατώτατο σήμερα <b>${insEur(o.floor)}</b>/ημέρα${s.step ? `, +${insEur(s.step)} κάθε μήνα από ${insEsc(s.start || "—")}` : ""}.`}<br>
+    ${insEsc(o.label)}: κάθε <b>€100 τζίρου</b> → food ${insEur(food)} · προμήθειες ${insEur(comm)} · ΦΠΑ ${insEur(vat)} → μένουν <b>${insEur(per100)}</b> για σταθερά και μισθό.
+    ${need == null ? "" : `Για σταθερά ${insEur(o.fixed)} + μισθό ${insEur(o.floor)} χρειάζεται τζίρος περίπου <b>${insEur(need)}</b>/ημέρα.`}</div>`;
+}
+
+/*-------------------
+Purpose: Historical averages of all saved days for the turnover sliders: portions/day, average
+         ticket, food cost share and channel mix (from days that have them).
+On Input: none.
+On Output: { days, portions, ticket, foodPct, mix } (null values when there is no history).
+---------------------*/
+function insHistoryAverages(){
+  const rows = insAllDayStats();
+  const withP = rows.filter(r => r.portions > 0);
+  const P = withP.reduce((s, r) => s + r.portions, 0), S = withP.reduce((s, r) => s + r.sales, 0);
+  const withF = rows.filter(r => r.sales > 0 && r.food > 0);
+  const FS = withF.reduce((s, r) => s + r.sales, 0), F = withF.reduce((s, r) => s + r.food, 0);
+  return { days: rows.length, portions: withP.length ? P / withP.length : null, ticket: P ? S / P : null,
+           foodPct: FS ? F / FS : null, mix: goalHistory().mix };
+}
 /*-------------------
 Purpose: Change the plan channel mix (null = back to history) and redraw.
 On Input: ch - "local" | "efood" | "wolt" | null; val - percent.
@@ -614,6 +825,9 @@ function goalRecalc(){
   const hist = goalHistory(), mix = goalMix(hist), date = currentPlanDay(), wd = insWeekday(date);
   const t = goalTotals(hist, mix), floor = salaryFloorFor(date);
   const gap = floor == null ? null : t.profitAfter - floor;
+  const ex = document.getElementById("goalExplain");
+  if (ex) ex.innerHTML = insExplainHtml({ mix, foodPct: t.sales > 0 ? t.food / t.sales : (insHistoryAverages().foodPct || 0), fixed: t.fixed, floor,
+    label: "Με το σχέδιο (μείγμα " + Math.round(mix.local * 100) + "/" + Math.round(mix.efood * 100) + "/" + Math.round(mix.wolt * 100) + ", food " + (t.sales > 0 ? (t.food / t.sales * 100).toFixed(1) : "—") + "% του τζίρου)" });
   const k = document.getElementById("goalKpis");
   if (k) k.innerHTML = [
     ["Μερίδες σχεδίου", (t.portions + t.fm.portions).toFixed(0), t.portions + " πιάτα ημέρας + " + t.fm.portions.toFixed(1) + " σταθερό μενού"],
@@ -785,4 +999,164 @@ function goalRenderWhatIf(hist, mix, t){
   box.innerHTML = `<p>+€0.50 σε όλα τα πιάτα του σχεδίου: <b>${insGap(all)}</b> / ημέρα (ίδιες μερίδες).</p>` +
     (top.length ? "<table><tbody>" + top.map(x => `<tr><td>${insEsc(x.name)}</td><td>${x.n} μερ.</td><td>+€0.50 → <b>${insGap(x.add)}</b></td></tr>`).join("") + "</tbody></table>" : "") +
     '<p class="ins-note">Δεν υπάρχουν δεδομένα ελαστικότητας: υποθέτουμε ίδια ζήτηση. Μόνο πρόταση· οι τιμές αλλάζουν μόνο από τα Πιάτα & Food Cost.</p>';
+}
+
+/* ------------------------------- Στόχος τζίρου: general sliders ------------------------------- */
+let tzState = null;
+
+/*-------------------
+Purpose: Load / create the turnover-slider state (localStorage mz_tziros; planning only).
+         Defaults come from the saved days (history), else from the planner settings.
+On Input: none.
+On Output: tzState { portions, ticket, foodPct (%), mix: {local, efood, wolt} (%) }.
+---------------------*/
+function tzLoadState(){
+  if (tzState) return tzState;
+  try { tzState = JSON.parse(localStorage.getItem("mz_tziros") || "null"); } catch (e) { tzState = null; }
+  if (!tzState) tzState = tzDefaults();
+  return tzState;
+}
+
+/*-------------------
+Purpose: Default slider values from history (all saved days), falling back to planner settings.
+On Input: none.
+On Output: { portions, ticket, foodPct, mix } like tzState.
+---------------------*/
+function tzDefaults(){
+  const h = insHistoryAverages();
+  const ticket = h.ticket || Number(planSetting("planner.avgTicket")) || 0;
+  const foodPct = h.foodPct != null ? h.foodPct * 100 : Number(planSetting("planner.avgFoodPct")) || 0;
+  return { portions: Math.round(h.portions || 0), ticket: Math.round(ticket * 10) / 10, foodPct: Math.round(foodPct * 10) / 10,
+           mix: { local: Math.round(h.mix.local * 100), efood: Math.round(h.mix.efood * 100), wolt: 100 - Math.round(h.mix.local * 100) - Math.round(h.mix.efood * 100) } };
+}
+
+/*-------------------
+Purpose: Keep the turnover-slider state in localStorage (mz_tziros).
+On Input: none.
+On Output: none.
+---------------------*/
+function tzSaveState(){
+  try { localStorage.setItem("mz_tziros", JSON.stringify(tzState)); } catch (e) {}
+}
+
+/*-------------------
+Purpose: Στόχος τζίρου: draw the explanation box and the general sliders (portions, average ticket,
+         channel mix, food cost %), then the live numbers.
+On Input: none.
+On Output: Promise<void>.
+---------------------*/
+async function renderTurnoverTab(){
+  if (typeof loadAllDays === "function" && !renderTurnoverTab.loaded) { await loadAllDays(); renderTurnoverTab.loaded = true; }
+  tzLoadState();
+  const box = document.getElementById("tzSliders");
+  if (!box) return;
+  const h = insHistoryAverages();
+  const pMax = Math.max(200, Math.ceil((tzState.portions || 0) * 1.5 / 10) * 10);
+  const tMax = Math.max(20, Math.ceil((tzState.ticket || 0) * 1.5));
+  const sl = (id, label, min, max, step, val, fn, hint) => `<div><label>${label}: <span class="v" id="${id}V"></span></label>
+      <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" oninput="${fn}">
+      <div class="ins-note">${hint}</div></div>`;
+  box.innerHTML = `<div class="tz-grid">
+    ${sl("tzPortions", "Σύνολο μερίδων / ημέρα", 0, pMax, 1, tzState.portions, "tzSet('portions', this.value)", "ιστορικό " + (h.portions == null ? "—" : h.portions.toFixed(1)) + " · " + h.days + " ημέρες")}
+    ${sl("tzTicket", "Μέσο εισιτήριο / μερίδα", 1, tMax, 0.1, tzState.ticket, "tzSet('ticket', this.value)", "ιστορικό " + insEur(h.ticket))}
+    ${sl("tzFood", "Food cost % του τζίρου", 10, 70, 0.5, tzState.foodPct, "tzSet('foodPct', this.value)", "ιστορικό " + (h.foodPct == null ? "—" : (h.foodPct * 100).toFixed(1) + "%"))}
+    ${sl("tzLocal", "Κατάστημα / takeaway %", 0, 100, 1, tzState.mix.local, "tzSetMix('local', this.value)", "προμήθεια " + Math.round((CH_COMM.local || 0) * 100) + "%")}
+    ${sl("tzEfood", "e-food %", 0, 100, 1, tzState.mix.efood, "tzSetMix('efood', this.value)", "προμήθεια " + Math.round((CH_COMM.efood || 0) * 100) + "%")}
+    ${sl("tzWolt", "Wolt %", 0, 100, 1, tzState.mix.wolt, "tzSetMix('wolt', this.value)", "προμήθεια " + Math.round((CH_COMM.wolt || 0) * 100) + "%")}
+  </div>
+  <button type="button" class="btn-ghost" onclick="tzReset()">Επαναφορά από ιστορικό</button>
+  ${h.days < INS_LOW_DAYS ? '<div class="ins-warn">Ιστορικό μόνο ' + h.days + " αποθηκευμένων ημερών: οι αρχικές τιμές είναι ενδεικτικές.</div>" : ""}`;
+  tzRecalc();
+}
+
+/*-------------------
+Purpose: One general slider moved (portions, ticket or food %).
+On Input: field - "portions" | "ticket" | "foodPct"; val - slider value.
+On Output: none.
+---------------------*/
+function tzSet(field, val){
+  tzState[field] = Number(val) || 0;
+  tzSaveState();
+  tzRecalc();
+}
+
+/*-------------------
+Purpose: One channel slider moved: the other two channels share the rest in their current
+         proportion, so the mix always totals 100%.
+On Input: ch - "local" | "efood" | "wolt"; val - percent.
+On Output: none.
+---------------------*/
+function tzSetMix(ch, val){
+  const v = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+  const others = ["local", "efood", "wolt"].filter(x => x !== ch);
+  const rest = 100 - v, cur = others.reduce((s, x) => s + Number(tzState.mix[x] || 0), 0);
+  tzState.mix[ch] = v;
+  const first = cur > 0 ? Math.round(rest * tzState.mix[others[0]] / cur) : Math.round(rest / 2);
+  tzState.mix[others[0]] = first;
+  tzState.mix[others[1]] = rest - first;
+  others.forEach(x => { const el = document.getElementById("tz" + x.charAt(0).toUpperCase() + x.slice(1)); if (el) el.value = tzState.mix[x]; });
+  tzSaveState();
+  tzRecalc();
+}
+
+/*-------------------
+Purpose: Turnover sliders back to the history averages.
+On Input: none.
+On Output: none.
+---------------------*/
+function tzReset(){
+  tzState = tzDefaults();
+  tzSaveState();
+  renderTurnoverTab();
+}
+
+/*-------------------
+Purpose: Live turnover numbers with withVatProfit: turnover = portions × ticket; food = turnover ×
+         food %; commissions = turnover × mix commission; fixed = #fixedDaily. Shows KPIs, the salary
+         floor bar and the gap, the turnover / portions / ticket needed for the salary, and the
+         explanation box.
+On Input: none.
+On Output: none.
+---------------------*/
+function tzRecalc(){
+  const mix = { local: tzState.mix.local / 100, efood: tzState.mix.efood / 100, wolt: tzState.mix.wolt / 100 };
+  const sales = tzState.portions * tzState.ticket, f = tzState.foodPct / 100;
+  const fixed = Number(document.getElementById("fixedDaily")?.value || planSetting("planner.fixedDaily")) || 0;
+  const comm = sales * goalCommRate(mix);
+  const x = withVatProfit({ sales, food: sales * f, comm, fixed });
+  const floor = salaryFloorFor(currentPlanDay()), gap = floor == null ? null : x.profitAfter - floor;
+  const setV = (id, t) => { const el = document.getElementById(id + "V"); if (el) el.textContent = t; };
+  setV("tzPortions", String(tzState.portions)); setV("tzTicket", insEur(tzState.ticket)); setV("tzFood", tzState.foodPct.toFixed(1) + "%");
+  setV("tzLocal", tzState.mix.local + "%"); setV("tzEfood", tzState.mix.efood + "%"); setV("tzWolt", tzState.mix.wolt + "%");
+  const k = document.getElementById("tzKpis");
+  if (k) k.innerHTML = [
+    ["Τζίρος / ημέρα", insEur(sales), tzState.portions + " μερίδες × " + insEur(tzState.ticket)],
+    ["Κέρδος προ ΦΠΑ", insEur(x.profitBefore), "food " + insEur(sales * f) + " · προμήθειες " + insEur(comm) + " · σταθερά " + insEur(fixed)],
+    ["ΦΠΑ 13%", insEur(x.vatDue), "εκροές − εισροές food"],
+    ["Καθαρό μετά ΦΠΑ (μισθός)", insEur(x.profitAfter), floor == null ? "όρισε μισθό στο Μισθός & σχέδιο" : "μισθός " + insEur(floor) + " · " + (gap >= 0 ? "πάνω " : "λείπουν ") + insEur(Math.abs(gap))]
+  ].map(([l, v, s], i) => `<div class="kpi${i === 3 && floor != null ? (gap >= 0 ? " good" : " bad") : ""}"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${insEsc(s)}</div></div>`).join("");
+  const fb = document.getElementById("tzFloorBar");
+  if (fb) {
+    if (floor == null) fb.innerHTML = "";
+    else {
+      const top = Math.max(floor * 2, x.profitAfter, 1), pct = Math.max(0, Math.min(100, x.profitAfter / top * 100));
+      fb.innerHTML = `<div class="floor-bar"><span style="width:${pct}%;background:${gap >= 0 ? "var(--green)" : "var(--red)"}"></span><i style="left:${floor / top * 100}%"></i></div>
+        <div class="ins-note">Μαύρη γραμμή = μισθός ${insEur(floor)} (καθαρό μετά ΦΠΑ). Τώρα ${insEur(x.profitAfter)} · διαφορά <span class="${gap >= 0 ? "gap-pos" : "gap-neg"}">${insGap(gap)}</span>.</div>`;
+    }
+  }
+  const per = (1 - f) / (1 + VAT_RATE) - goalCommRate(mix);
+  const nd = document.getElementById("tzNeed");
+  if (nd) {
+    if (floor == null || per <= 0) nd.innerHTML = per <= 0 ? '<div class="ins-warn">Με αυτό το food cost και τις προμήθειες κάθε € τζίρου είναι ζημιά.</div>' : "";
+    else {
+      const needSales = (fixed + floor) / per, beSales = fixed / per;
+      nd.innerHTML = `<table><tbody>
+        <tr><td>Τζίρος για νεκρό σημείο (μετά ΦΠΑ = 0)</td><td><b>${insEur(beSales)}</b></td><td>${tzState.ticket > 0 ? Math.ceil(beSales / tzState.ticket) + " μερίδες" : "—"}</td></tr>
+        <tr><td>Τζίρος για τον μισθό ${insEur(floor)}</td><td><b>${insEur(needSales)}</b></td><td>${tzState.ticket > 0 ? Math.ceil(needSales / tzState.ticket) + " μερίδες × " + insEur(tzState.ticket) : "—"}</td></tr>
+        <tr><td>…ή με ${tzState.portions} μερίδες</td><td colspan="2">μέσο εισιτήριο <b>${tzState.portions > 0 ? insEur(needSales / tzState.portions) : "—"}</b></td></tr>
+      </tbody></table><p class="ins-note">Ίδιος τύπος με την αποθήκευση ημέρας (withVatProfit). Ο ΦΠΑ υπολογίζεται στα έσοδα μείον food· ισχύει όταν ο ΦΠΑ ημέρας είναι θετικός.</p>`;
+    }
+  }
+  const ex = document.getElementById("tzExplain");
+  if (ex) ex.innerHTML = insExplainHtml({ mix, foodPct: f, fixed, floor, label: "Με τις μπάρες (μείγμα " + tzState.mix.local + "/" + tzState.mix.efood + "/" + tzState.mix.wolt + ", food " + tzState.foodPct.toFixed(1) + "%)" });
 }

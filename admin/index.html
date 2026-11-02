@@ -482,12 +482,21 @@ td.comp-proposed { background: #f8f9ff; }
 .ins-chart { position: relative; height: 240px; }
 .gap-pos { color: var(--green); font-weight: 700; }
 .gap-neg { color: var(--red); font-weight: 700; }
-.goal-row { display: grid; grid-template-columns: minmax(150px, 1.6fr) minmax(160px, 2.4fr) 52px 74px 74px 86px 70px; gap: 8px;
+.goal-row { display: grid; grid-template-columns: minmax(140px, 1.4fr) minmax(120px, 1.8fr) 40px minmax(140px, 1.8fr) 118px 64px 78px 70px; gap: 8px;
   align-items: center; padding: 6px 4px; border-bottom: 1px solid var(--line); font-size: .86rem; }
 .goal-row.head { font-weight: 700; color: var(--muted); font-size: .74rem; text-transform: uppercase; }
 .goal-row input[type=range] { width: 100%; accent-color: var(--green); }
 .goal-row input[type=number] { width: 64px; }
 .goal-row .hist { color: var(--muted); font-size: .75rem; }
+.goal-row .pchg { font-size: .75rem; }
+.goal-row .comp { color: var(--muted); font-size: .72rem; }
+.goal-row .rst { border: 0; background: none; cursor: pointer; color: var(--muted); padding: 0 2px; font-size: .9rem; }
+.ins-explain { background: #f3f7fb; border: 1px solid #d6e2ef; border-radius: 12px; padding: 10px 14px; margin: 8px 0 12px; font-size: .86rem; line-height: 1.45; }
+.ins-explain b { color: var(--ink); }
+.tz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 18px; margin: 6px 0 12px; }
+.tz-grid label { display: block; font-size: .8rem; color: var(--muted); }
+.tz-grid input[type=range] { width: 100%; accent-color: var(--green); }
+.tz-grid .v { font-weight: 700; color: var(--ink); }
 .floor-bar { position: relative; height: 18px; border-radius: 9px; background: #edf1ee; overflow: hidden; margin: 8px 0 4px; }
 .floor-bar > span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 9px; }
 .floor-bar > i { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--ink); }
@@ -499,7 +508,7 @@ td.comp-proposed { background: #f8f9ff; }
 </style>
 <script src="competitors.js?v=20261102c" defer></script>
 <script src="sales.js?v=20261102c" defer></script>
-<script src="insights.js?v=20261102d" defer></script>
+<script src="insights.js?v=20261102e" defer></script>
 </head>
 <body class="admin-locked">
 <div class="topbar">
@@ -910,6 +919,14 @@ td.comp-proposed { background: #f8f9ff; }
   <!-- ΣΤΟΧΟΣ: target planner + live day extrapolation (admin only, nothing written to Firebase) -->
   <section class="panel" id="tab-target">
     <h2>Στόχος κέρδους ημέρας</h2>
+    <div id="tzExplain"></div>
+    <div class="card-mini tgt-card">
+      <div class="section-title">Γενικές μπάρες τζίρου · σχεδιασμός (δεν αλλάζει τίποτα πραγματικό)</div>
+      <div id="tzSliders"></div>
+      <div class="kpi-grid" id="tzKpis"></div>
+      <div id="tzFloorBar"></div>
+      <div id="tzNeed"></div>
+    </div>
     <div class="card-mini tgt-card">
       <div class="section-title">Σχεδιασμός στόχου · με βάση μια αποθηκευμένη ημέρα</div>
       <div id="tgtControls"></div>
@@ -941,11 +958,14 @@ td.comp-proposed { background: #f8f9ff; }
   <section class="panel" id="tab-goal">
     <h2>Μισθός ιδιοκτήτη &amp; σχέδιο ημέρας <span class="badge" id="goalBadge">σχεδιασμός</span></h2>
     <p class="ins-note">Σχέδιο μόνο: δεν αλλάζει τα πραγματικά κέρδη. Ίδιος τύπος με την αποθήκευση ημέρας: (πωλήσεις − food − προμήθειες − σταθερά) − ΦΠΑ 13% (εκροές − εισροές food).</p>
+    <div id="goalExplain"></div>
     <div id="goalControls"></div>
     <div id="goalWarn"></div>
     <div class="kpi-grid" id="goalKpis"></div>
     <div id="goalFloorBar"></div>
-    <div class="card-mini" style="margin-top:14px"><div class="section-title">Μερίδες ανά πιάτο ημέρας (μπάρες)</div><div id="goalSliders"></div></div>
+    <div class="card-mini" style="margin-top:14px"><div class="section-title" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">Μερίδες &amp; τιμή ανά πιάτο ημέρας (μπάρες)
+        <span><button type="button" class="btn-ghost" onclick="goalResetPrices()">Επαναφορά όλων των τιμών</button>
+        <button type="button" class="btn-ghost" onclick="goalResetAll()">Επαναφορά όλων</button></span></div><div id="goalSliders"></div></div>
     <div class="ins-grid" style="margin-top:14px">
       <div class="card-mini"><div class="section-title">Νεκρό σημείο &amp; μερίδες για τον μισθό</div><div id="goalBreakEven"></div></div>
       <div class="card-mini"><div class="section-title">Κανάλια: takeaway vs e-food / Wolt</div><div id="goalChannels"></div></div>
@@ -1469,6 +1489,7 @@ function switchTab(id){
   if (id === "profit" && typeof renderProfitPlanner === "function")
     renderProfitPlanner();
   if (id === "target" && typeof renderTargetTab === "function") renderTargetTab();
+  if (id === "target" && typeof renderTurnoverTab === "function") renderTurnoverTab();
   if (id === "competitors" && typeof loadCompetitorPrices === "function") loadCompetitorPrices();
   if (id === "sales" && typeof loadSalesLog === "function") loadSalesLog();
   if (id === "stats" && typeof renderStatsTab === "function") renderStatsTab();
