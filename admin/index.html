@@ -713,6 +713,7 @@ td.comp-proposed { background: #f8f9ff; }
     <div class="card-mini">
       <div class="section-title">Ημέρα</div>
       <input type="date" id="planDay" onchange="loadDayFromLedger()">
+      <div class="note" id="planDaySource"></div>
     </div>
     <div class="card-mini">
       <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
@@ -5473,7 +5474,9 @@ On Output: Promise<Object|null> - the loaded day record, or null when the date h
 Side effects: reads matzourana_days/<date> (fallback: the local dayLedger); sets portionChannels
           from rec.channels (legacy keys migrated). A date without a record starts empty, except
           unsaved counts typed earlier for that same date (localStorage mz_ch_date); counts of
-          another date are cleared. Checkboxes: daily dishes with portions or in rec.keys
+          another date are cleared. Without a record and without typed counts, the portions come
+          from the sales sheet matzourana_sales/days/<date> (salesSheetToChannels); #planDaySource
+          says where the counts came from. Checkboxes: daily dishes with portions or in rec.keys
           (fixed-menu items are never ticked); without a record, today's menu picks.
           Method B entry (supplier total / lines, running cost) from the record (loadMethodBFor);
           meat check entry (meatLines) the same way (loadMeatFor).
@@ -5491,23 +5494,49 @@ async function loadDayFromLedger(){
     catch (e) { console.warn("Day load:", e); }
   }
   if (!rec && dayLedger[date]) rec = dayLedger[date];
+  // No saved day: take the portions from the sales sheet (matzourana_sales/days/<date>), never saved here.
+  let sheet = null;
+  if (!rec && db) {
+    try { sheet = salesSheetToChannels((await db.ref("matzourana_sales/days/" + date).once("value")).val()); }
+    catch (e) { console.warn("Sales sheet load:", e); }
+  }
   if (seq !== dayLoadSeq) return rec;          // a newer date was picked meanwhile
   let channels = {};
+  let source = "";
   if (rec) {
     dayLedger[date] = rec;
     channels = rec.channels || {};
-  } else if (localStorage.getItem("mz_ch_date") === date) {
-    try { channels = JSON.parse(localStorage.getItem("mz_ch") || "{}"); } catch (e) { channels = {}; }
+    source = "Αποθηκευμένη ημέρα (matzourana_days).";
+  } else {
+    let typed = {};
+    if (localStorage.getItem("mz_ch_date") === date) {
+      try { typed = JSON.parse(localStorage.getItem("mz_ch") || "{}"); } catch (e) { typed = {}; }
+    }
+    if (Object.keys(typed).length) {
+      channels = typed;
+      source = "Μη αποθηκευμένες μερίδες που έγραψες για " + date + ".";
+    } else if (sheet && sheet.count) {
+      channels = sheet.channels;
+      source = "Δεν υπάρχει αποθηκευμένη ημέρα· οι μερίδες ήρθαν από το φύλλο πωλήσεων (Πωλήσεις, "
+             + sheet.count + " πιάτα, " + sheet.portions + " μερίδες, takeaway → Κατάστημα). Έλεγξε και πάτα «Αποθήκευση ημέρας».";
+    } else {
+      source = "Δεν υπάρχει αποθηκευμένη ημέρα ούτε φύλλο πωλήσεων για " + date + ".";
+    }
   }
   portionChannels = migrateSalesChannels(channels, salesLegacyToKey);
   localStorage.setItem("mz_ch", JSON.stringify(portionChannels));
   localStorage.setItem("mz_ch_date", date);
 
   const isDaily = k => menuCatalog[k] && !salesItems[k] && !salesLegacyToKey[k];
-  const picks = rec
-    ? [...new Set([...(rec.keys || []), ...Object.keys(portionChannels)])]
-        .filter(k => isDaily(k) && (totalPortions(k) > 0 || (rec.keys || []).includes(k)))
+  const recKeys = rec ? (rec.keys || []) : [];
+  const picks = (rec || Object.keys(portionChannels).length)
+    ? [...new Set([...recKeys, ...Object.keys(portionChannels)])]
+        .filter(k => isDaily(k) && (totalPortions(k) > 0 || recKeys.includes(k)))
     : siteDailyPicks.slice();
+  const unknown = Object.keys(portionChannels).filter(k => !salesItemOf(k));
+  if (unknown.length) source += " Άγνωστα κλειδιά (δεν μετρήθηκαν σωστά): " + unknown.join(", ") + ".";
+  const srcEl = document.getElementById("planDaySource");
+  if (srcEl) srcEl.textContent = source;
   if (typeof renderDishTable === "function") renderDishTable();
   applyDailyPicks(picks);
   updateDailyPickLock();
@@ -5518,6 +5547,29 @@ async function loadDayFromLedger(){
   loadMethodBFor(date, rec);
   loadMeatFor(date, rec);
   return rec;
+}
+
+/*-------------------
+Purpose: Turn a sales-sheet day (matzourana_sales/days/<date>) into planner portion channels.
+On Input: rec - Object|null { items: { id: { key, efood, wolt, takeaway } }, free: {...} }.
+On Output: null when rec has no items, else { channels: { key: { local, efood, wolt } }, count, portions }.
+           takeaway counts go to "local" (Κατάστημα); free items (rec.free) are not counted;
+           counts of the same key are added.
+---------------------*/
+function salesSheetToChannels(rec){
+  const items = rec && rec.items;
+  if (!items || typeof items !== "object") return null;
+  const channels = {};
+  let portions = 0;
+  Object.values(items).forEach(it => {
+    if (!it || !it.key) return;
+    const l = Number(it.takeaway || 0), e = Number(it.efood || 0), w = Number(it.wolt || 0);
+    if (!(l + e + w > 0)) return;
+    const c = channels[it.key] || (channels[it.key] = { local: 0, efood: 0, wolt: 0 });
+    c.local += l; c.efood += e; c.wolt += w;
+    portions += l + e + w;
+  });
+  return { channels, count: Object.keys(channels).length, portions };
 }
 
 /*-------------------
