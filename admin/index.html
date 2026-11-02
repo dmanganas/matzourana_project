@@ -440,8 +440,25 @@ td.comp-proposed { background: #f8f9ff; }
 .wide-bar span { position: absolute; top: -3px; width: 4px; height: 10px; margin-left: -2px; border-radius: 2px; background: var(--ink); }
 #wideSources details { margin: 8px 0; }
 #wideSources summary { cursor: pointer; font-weight: 600; }
+
+/* ===== Πωλήσεις tab (admin/sales.js) ===== */
+#salesKpis { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+#salesSumKpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) { #salesKpis, #salesSumKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+#tab-sales th { white-space: nowrap; }
+#tab-sales tfoot th { background: #f7faf8; border-top: 2px solid var(--line); }
+.sales-bar { height: 4px; margin-top: 4px; border-radius: 2px; background: #eef1ef; min-width: 50px; }
+.sales-bar span { display: block; height: 4px; border-radius: 2px; background: var(--green); }
+.sales-step { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; }
+#salesExpected { margin-top: 18px; }
+.sales-share { display: flex; height: 26px; border-radius: 8px; overflow: hidden; margin: 6px 0 14px; font-size: .75rem; color: #fff; }
+.sales-share span { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+.sales-share-efood { background: #d4402f; }
+.sales-share-wolt { background: #1aa3d9; }
+.sales-share-takeaway { background: var(--green); }
 </style>
-<script src="competitors.js" defer></script>
+<script src="competitors.js?v=20261102c" defer></script>
+<script src="sales.js?v=20261102c" defer></script>
 </head>
 <body class="admin-locked">
 <div class="topbar">
@@ -475,6 +492,7 @@ td.comp-proposed { background: #f8f9ff; }
     <div class="tab" data-tab="opt" onclick="switchTab('opt')">Ανάλυση / Βελτιστοποίηση</div>
     <div class="tab" data-tab="target" onclick="switchTab('target')">Στόχος</div>
     <div class="tab" data-tab="competitors" onclick="switchTab('competitors')">Ανταγωνισμός</div>
+    <div class="tab" data-tab="sales" onclick="switchTab('sales')">Πωλήσεις</div>
   </div>
 
   <div class="sources-bar">
@@ -643,6 +661,38 @@ td.comp-proposed { background: #f8f9ff; }
     <p class="note">Μόνο μαγειρεία (όχι εστιατόρια, ταβέρνες, σουβλατζίδικα). Διάμεσος = μεσαία τιμή· Εύρος P25–P75 = οι μισές τιμές της αγοράς είναι μέσα σε αυτό το εύρος. Θέση = ποσοστό των μαγειρείων που έχουν το πιάτο φθηνότερα από εμάς (50% = ακριβώς στη μέση). «Ίδια» = ±2%· «λίγες τιμές» = κάτω από 3 πηγές.</p>
     <h2 class="section-title">Πηγές ευρύτερης αγοράς</h2>
     <div id="wideSources"></div>
+  </section>
+
+  <!-- SALES LOG (admin/sales.js; data only from matzourana_sales/ after sign-in) -->
+  <section class="panel" id="tab-sales">
+    <h2>Πωλήσεις ημέρας · μερίδες ανά κανάλι <span class="badge" id="salesStamp">—</span></h2>
+    <div class="filters comp-toolbar">
+      <button type="button" class="sales-step" data-step="-1" title="Προηγούμενη ημέρα">‹</button>
+      <label class="comp-check">Ημέρα <input type="date" id="salesDate"></label>
+      <button type="button" class="sales-step" data-step="1" title="Επόμενη ημέρα">›</button>
+      <label class="comp-check">Αποθηκευμένες <select id="salesSaved"><option value="">—</option></select></label>
+    </div>
+    <div class="kpi-grid" id="salesKpis"></div>
+    <div class="table-wrap">
+      <table>
+        <thead id="salesHead"></thead>
+        <tbody id="salesBody"></tbody>
+        <tfoot id="salesFoot"></tfoot>
+      </table>
+    </div>
+    <div class="table-wrap" id="salesExpected"></div>
+    <ul class="comp-sources" id="salesNotes"></ul>
+
+    <h2 class="wide-title">Σύνοψη ημερών <span class="badge" id="salesSumStamp">—</span></h2>
+    <div class="kpi-grid" id="salesSumKpis"></div>
+    <div class="sales-share" id="salesShare"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Πιάτο</th><th class="comp-num">efood</th><th class="comp-num">Wolt</th><th class="comp-num">Takeaway</th><th class="comp-num">Σύνολο</th><th class="comp-num">Ημέρες</th><th class="comp-num">Μερίδιο</th></tr></thead>
+        <tbody id="salesTop"></tbody>
+      </table>
+    </div>
+    <p class="note">Ιδιωτικά στοιχεία: διαβάζονται μόνο μετά τη σύνδεση του ιδιοκτήτη από το matzourana_sales/ και δεν γράφονται από αυτή τη σελίδα. Αναμενόμενη είσπραξη = μερίδες × τιμή admin· το δωρεάν ψωμί μετράει €0.</p>
   </section>
 
 <!-- PROFIT -->
@@ -1322,6 +1372,7 @@ function switchTab(id){
     renderProfitPlanner();
   if (id === "target" && typeof renderTargetTab === "function") renderTargetTab();
   if (id === "competitors" && typeof loadCompetitorPrices === "function") loadCompetitorPrices();
+  if (id === "sales" && typeof loadSalesLog === "function") loadSalesLog();
 }
 
 
