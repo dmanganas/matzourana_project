@@ -437,7 +437,11 @@ const fixedMenuDishPages = {
     "kolokythokeftedes": { table: "appetizers", group: "dips", row: "Χειροποίητοι Κολοκυθοκεφτέδες 5 τμχ.", pageEl: "Χειροποίητοι κολοκυθοκεφτέδες", pageEn: "Handmade Zucchini Fritters",
         descEl: "Με φρέσκο κολοκύθι, μυρωδικά και φέτα, 5 τμχ., σερβιρισμένοι με σως γιαουρτιού με άνηθο και φύλλα πράσινης σαλάτας",
         descEn: "With fresh zucchini, herbs and feta, 5 pcs., served with a yogurt-dill dip and green salad leaves",
-        photo: { file: "web/greek-dish-23.webp", alt: "Χειροποίητοι κολοκυθοκεφτέδες - Με φρέσκο κολοκύθι, μυρωδικά και φέτα, 5 τμχ., Matzourana Καλλιθέα | Handmade Zucchini Fritters - With fresh zucchini, herbs and feta, 5 pcs., Matzourana Kallithea" } }
+        photo: { file: "web/greek-dish-23.webp", alt: "Χειροποίητοι κολοκυθοκεφτέδες - Με φρέσκο κολοκύθι, μυρωδικά και φέτα, 5 τμχ., Matzourana Καλλιθέα | Handmade Zucchini Fritters - With fresh zucchini, herbs and feta, 5 pcs., Matzourana Kallithea" } },
+    "tyrokroketes": { table: "appetizers", group: "dips", row: "Τυροκροκέτες με 4 τυριά",
+        descEl: "Χειροποίητες τραγανές κροκέτες με 4 τυριά, σερβιρισμένες με σως μαντζουράνα",
+        descEn: "Handmade crispy croquettes with four cheeses, served with marjoram sauce",
+        photo: { file: "web/greek-dish-65.webp", alt: "Τυροκροκέτες με 4 τυριά - Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα, Matzourana Καλλιθέα | Four-Cheese Croquettes - Handmade crispy croquettes with four cheeses and marjoram sauce, Matzourana Kallithea" } }
 };
 
 // ==================== DISH VIDEOS ====================
@@ -939,7 +943,8 @@ const imageList = [
     'DishImages/web/greek-dish-55.webp', 'DishImages/web/greek-dish-56.webp', 'DishImages/web/greek-dish-57.webp',
     'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp',
     'DishImages/web/greek-dish-61.webp',
-    'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp'
+    'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
+    'DishImages/web/greek-dish-65.webp'
 ];
 
 const dishAlts = {
@@ -1005,7 +1010,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-61.webp': "Ψωμί προζυμένιο με λάδι και ρίγανη - (Ψημένες φέτες προζυμένιου ψωμιού με ελαιόλαδο και ρίγανη) Matzourana Καλλιθέα | Sourdough Bread with Oil and Oregano - (Toasted sourdough slices with olive oil and oregano) Matzourana Kallithea",
     'DishImages/web/greek-dish-62.webp': "Σαλάτα Λάχανο - Καρότο - (Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι) Matzourana Καλλιθέα | Cabbage and Carrot Salad - (Shredded cabbage with grated carrot, dill and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-63.webp': "Σαλάτα Χαλούμι - (Mix μαρουλιών, ντοματίνια, καρύδια, φρέσκο κρεμμυδάκι, καρότο, φλοίδες χαλουμιού και βαλσάμικο) Matzourana Καλλιθέα | Halloumi Salad - (Mixed lettuces, cherry tomatoes, walnuts, spring onion, carrot, halloumi shavings and balsamic) Matzourana Kallithea",
-    'DishImages/web/greek-dish-64.webp': "Χωριάτικη σαλάτα - (Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη) Matzourana Καλλιθέα | Greek Village Salad - (Tomato, cucumber, green pepper, onion, olives, feta and oregano) Matzourana Kallithea"
+    'DishImages/web/greek-dish-64.webp': "Χωριάτικη σαλάτα - (Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη) Matzourana Καλλιθέα | Greek Village Salad - (Tomato, cucumber, green pepper, onion, olives, feta and oregano) Matzourana Kallithea",
+    'DishImages/web/greek-dish-65.webp': "Τυροκροκέτες με 4 τυριά - (Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα) Matzourana Καλλιθέα | Four-Cheese Croquettes - (Handmade crispy croquettes with four cheeses and marjoram sauce) Matzourana Kallithea"
  
 };
 

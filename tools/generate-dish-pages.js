@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261102a'; // bust caches when assets/titles change
+const ASSET_V = '20261102b'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -387,7 +387,8 @@ const DISH_FAQ = {
   tzatziki:                            { q: 'καλό τζατζίκι',                       review: /τζατζίκ|τζατζικ|tzatzik/i },
   fava_orektiko:                       { q: 'καλή φάβα',                           review: /φάβα|φαβα|\bfava\b/i },
   psomi_prozymeno:                     { q: 'καλό προζυμένιο ψωμί',                review: /ψωμ[ίι]|ψωμάκι|προζ[υύ]μ|\bbread\b|sourdough/i },
-  kolokythokeftedes:                   { q: 'καλούς κολοκυθοκεφτέδες',             review: /κολοκυθοκεφτ|kolokythokeft|kolokithokeft|zucchini fritter|courgette fritter/i }
+  kolokythokeftedes:                   { q: 'καλούς κολοκυθοκεφτέδες',             review: /κολοκυθοκεφτ|kolokythokeft|kolokithokeft|zucchini fritter|courgette fritter/i },
+  tyrokroketes:                        { q: 'τυροκροκέτες',                        review: /τυροκροκέτ|τυροκροκετ|tyrokroket|cheese croquette/i }
 };
 
 /*-------------------
@@ -523,7 +524,8 @@ On Output: Object { [key]: Array<[el, en]> }.
 const PUBLIC_INGREDIENTS = {
   soupies_yiahni: [['Φρέσκες σουπιές', 'Fresh cuttlefish'], ['Σάλτσα ντομάτας', 'Tomato sauce'], ['Πατάτες ή πλιγούρι/ρύζι', 'Potatoes or bulgur/rice']],
   kolokythokeftedes: [['Φρέσκο κολοκύθι', 'Fresh zucchini'], ['Μυρωδικά', 'Herbs'], ['Φέτα', 'Feta'],
-    ['Σως γιαουρτιού με άνηθο', 'Yogurt-dill dip'], ['Φύλλα πράσινης σαλάτας', 'Green salad leaves']]
+    ['Σως γιαουρτιού με άνηθο', 'Yogurt-dill dip'], ['Φύλλα πράσινης σαλάτας', 'Green salad leaves']],
+  tyrokroketes: [['Τυριά (4 είδη)', 'Four cheeses'], ['Σως μαντζουράνα', 'Marjoram sauce']]
 };
 
 /*-------------------
