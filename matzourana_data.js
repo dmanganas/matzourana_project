@@ -19,13 +19,14 @@ const currentDailyMenu = [
     // Freshly Cooked
 
     //Meat
-    "moschari_kokkinisto",
-    "bifteki_moscharisia",
+    "moschari_giouvesti",
+    "moschari_lemonato",
+    "kokoras_hilopites",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "soutzoukakia",
-    "kolokythakia_gemista",
+    "keftedakia_tiganita",
     "lachanontolmades",
 
     // Soups
@@ -33,13 +34,10 @@ const currentDailyMenu = [
     "kotosoupa",
 
     //Veggy
-    "melitzanes_imam",
-    "briam",
-    "spanakorizo",
-    "arakas_lemonatos",
+    "giantes",
+    "fasolakia",
 
     // Legumes
-    "revithia",
     "fakes"
 ];
 
@@ -47,20 +45,21 @@ const currentDailyMenu = [
 const currentHighlights = [
 
     "line",
-    "moschari_kokkinisto",
-    "bifteki_moscharisia",
+    "moschari_giouvesti",
+    "moschari_lemonato",
+    "kokoras_hilopites",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
-    "soutzoukakia",
-    "kolokythakia_gemista",
+    "keftedakia_tiganita",
+    "lachanontolmades",
 
     "pastitsio",
 
     "giouvarlakia",
     "kotosoupa",
 
-    "melitzanes_imam",
-    "spanakorizo",
-    "arakas_lemonatos"
+    "giantes",
+    "fasolakia"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -114,7 +113,7 @@ const menuCatalog = {
 
     "choirines_brizoles": { category: "meat-cooked", el: "Χοιρινές Μπριζόλες με πατάτες", en: "Pork Chops with Potatoes", price: "€10.20" },
     "kokoras_krasatos": { category: "meat-cooked", el: "Κόκορας κρασάτος <br><br> (Από εκλεκτά κοτόπουλα Ναυπάκτου)", en: "Rooster in Wine Sauce <br><br> (From select Nafpaktos chickens)", price: "€9.50" },
-    "kokoras_hilopites": { category: "meat-cooked", el: "Κόκορας με χωριάτικες χυλοπίτες", en: "Rooster with Country-Style Pasta (Hilopites)", price: "€9.50" },
+    "kokoras_hilopites": { category: "meat-cooked", el: "Κόκορας με χωριάτικες χυλοπίτες", en: "Rooster with Country-Style Pasta (Hilopites)", price: "€10.00" },
     "kokoras_stifado": { category: "meat-cooked", el: "Κόκορας Στιφάδο <br><br> (Μυρωδάτος και αργομαγειρεμένος)", en: "Rooster Stifado <br><br> (Fragrant and slow-cooked)", price: "€10.00" },
     "kanelonia": { category: "meat-cooked", el: "Κανελόνια με κιμά <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού)", en: "Cannelloni with Mince <br><br> (With 100% beef mince from Astakou Meats)", price: "€8.00" },
     "soutzoukakia": { category: "meat-cooked", el: "Σουτζουκάκια Σμυρνέικα <br><br> (Χειροποίητα με 100% μοσχαρίσιο κιμά)", en: "Smyrna-Style Soutzoukakia <br><br> (Handmade with 100% beef mince)", price: "€9.00" },
@@ -722,6 +721,16 @@ const highlightsCatalog = {
         icons: ["dish/chicken.png", "dish/wine.png"],
         el: "Κόκορας <br> κρασάτος",
         en: "Rooster <br> in Wine Sauce"
+    },
+    "kokoras_hilopites": {
+        icons: ["dish/chicken.png", "dish/macaroni.png"],
+        el: "Κόκορας <br> με χυλοπίτες",
+        en: "Rooster <br> with Hilopites"
+    },
+    "lachanontolmades": {
+        icons: ["dish/meat.png", "dish/stuffed.png"],
+        el: "Λαχανο- <br> ντολμάδες",
+        en: "Stuffed <br> Cabbage Rolls"
     },
     "kotopoulo_frikase": {
         icons: ["dish/chicken.png", "dish/frikase.png"],
