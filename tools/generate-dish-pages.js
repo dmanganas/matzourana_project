@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261102b'; // bust caches when assets/titles change
+const ASSET_V = '20261103a'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -360,6 +360,7 @@ const DISH_FAQ = {
   kritharoto_garides:                  { q: 'καλό κριθαρότο με γαρίδες',           review: /κριθαρότ|κριθαροτ|kritharot|orzo/i },
   mydopilafo:                          { q: 'καλό μυδοπίλαφο',                     review: /μυδοπίλαφ|μυδοπιλαφ|mydopilaf|mussel/i },
   gavros_plaki:                        { q: 'καλό γαύρο πλακί',                    review: /γαύρ|γαυρ|gavro|anchov/i },
+  gavros_lemonatos:                    { q: 'καλό γαύρο λεμονάτο',                 review: /γαύρ|γαυρ|gavro|anchov/i },
   ksifias_lemonatos:                   { q: 'καλό ξιφία λεμονάτο',                 review: /ξιφία|ξιφια|ksifia|xifia|swordfish/i },
   glossa_lemonati:                     { q: 'καλή γλώσσα λεμονάτη',                review: /γλώσσα λεμον|glossa|\bsole\b/i },
   giouvarlakia:                        { q: 'καλά γιουβαρλάκια',                   review: /γιουβαρλ|giouvarl|youvarl/i },

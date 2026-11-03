@@ -345,6 +345,10 @@ const dishImageMap = {
         file: "web/greek-dish-48.webp",
         alt: "Γαύρος φρέσκος πλακί - Με φρέσκια ντομάτα, ελαιόλαδο και μυρωδικά, Matzourana Καλλιθέα | Fresh Baked Anchovies - With fresh tomato, olive oil and herbs, Matzourana Kallithea"
     },
+    "gavros_lemonatos": {
+        file: "web/greek-dish-66.webp",
+        alt: "Γαύρος φρέσκος λεμονάτος - Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά, Matzourana Καλλιθέα | Fresh Anchovies with Lemon - With fresh lemon, olive oil and herbs, Matzourana Kallithea"
+    },
     "ksifias_lemonatos": {
         file: "web/greek-dish-38.webp",
         alt: "Ξιφίας λεμονάτος - Τρυφερός ξιφίας με λεμόνι, ελαιόλαδο και αρωματικά, με πατάτες και ψητή ντομάτα | Swordfish in Lemon Sauce - Tender swordfish with lemon, olive oil and aromatic herbs, with potatoes and roasted tomato"
@@ -944,7 +948,7 @@ const imageList = [
     'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp',
     'DishImages/web/greek-dish-61.webp',
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
-    'DishImages/web/greek-dish-65.webp'
+    'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp'
 ];
 
 const dishAlts = {
@@ -1011,7 +1015,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-62.webp': "Σαλάτα Λάχανο - Καρότο - (Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι) Matzourana Καλλιθέα | Cabbage and Carrot Salad - (Shredded cabbage with grated carrot, dill and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-63.webp': "Σαλάτα Χαλούμι - (Mix μαρουλιών, ντοματίνια, καρύδια, φρέσκο κρεμμυδάκι, καρότο, φλοίδες χαλουμιού και βαλσάμικο) Matzourana Καλλιθέα | Halloumi Salad - (Mixed lettuces, cherry tomatoes, walnuts, spring onion, carrot, halloumi shavings and balsamic) Matzourana Kallithea",
     'DishImages/web/greek-dish-64.webp': "Χωριάτικη σαλάτα - (Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη) Matzourana Καλλιθέα | Greek Village Salad - (Tomato, cucumber, green pepper, onion, olives, feta and oregano) Matzourana Kallithea",
-    'DishImages/web/greek-dish-65.webp': "Τυροκροκέτες με 4 τυριά - (Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα) Matzourana Καλλιθέα | Four-Cheese Croquettes - (Handmade crispy croquettes with four cheeses and marjoram sauce) Matzourana Kallithea"
+    'DishImages/web/greek-dish-65.webp': "Τυροκροκέτες με 4 τυριά - (Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα) Matzourana Καλλιθέα | Four-Cheese Croquettes - (Handmade crispy croquettes with four cheeses and marjoram sauce) Matzourana Kallithea",
+    'DishImages/web/greek-dish-66.webp': "Γαύρος φρέσκος λεμονάτος - (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά) Matzourana Καλλιθέα | Fresh Anchovies with Lemon - (With fresh lemon, olive oil and herbs) Matzourana Kallithea"
  
 };
 
