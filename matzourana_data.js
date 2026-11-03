@@ -728,7 +728,7 @@ const highlightsCatalog = {
         en: "Rooster <br> with Hilopites"
     },
     "lachanontolmades": {
-        icons: ["dish/meat.png", "dish/stuffed.png"],
+        icons: ["dish/meat.png", "dish/lachanontolmades.png"],
         el: "Λαχανο- <br> ντολμάδες",
         en: "Stuffed <br> Cabbage Rolls"
     },
