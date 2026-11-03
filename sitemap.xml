@@ -85,6 +85,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-64.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-65.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-66.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-67.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -204,6 +205,12 @@
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-25.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/kotopoulo-frikase/</loc>
+  <lastmod>2026-11-03</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-67.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/choirines-brizoles/</loc>

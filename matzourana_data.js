@@ -109,7 +109,7 @@ const menuCatalog = {
     "kotopoulo_fournou": { category: "meat-cooked", el: "Κοτόπουλο στο φούρνο, ελευθέρας βοσκής", en: "Free-Range Roast Chicken", price: "€9.00" },
     
     "kotopoulo_bouti": { category: "meat-cooked", el: "Κοτόπουλο μπούτι στο φούρνο, με πατάτες <br><br> (Παραδοσιακό κοτόπουλο Ελευθέρας βοσκής από την Ναύπακτο)", en: "Oven-Baked Chicken Leg with Potatoes <br><br> (Traditional free-range chicken from Nafpaktos)", price: "€9.00" },
-    "kotopoulo_frikase": { category: "meat-cooked", el: "Κοτόπουλο φρικασέ <br><br> (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα)", en: "Chicken Fricassee <br><br> (Free-range chicken fricassee with fresh lettuce and wild greens)", price: "€9.50" },
+    "kotopoulo_frikase": { category: "meat-cooked", el: "Κοτόπουλο φρικασέ <br><br> (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο)", en: "Chicken Fricassee <br><br> (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce)", price: "€9.50" },
 
     "choirines_brizoles": { category: "meat-cooked", el: "Χοιρινές Μπριζόλες με πατάτες", en: "Pork Chops with Potatoes", price: "€10.20" },
     "kokoras_krasatos": { category: "meat-cooked", el: "Κόκορας κρασάτος <br><br> (Από εκλεκτά κοτόπουλα Ναυπάκτου)", en: "Rooster in Wine Sauce <br><br> (From select Nafpaktos chickens)", price: "€9.50" },
@@ -270,6 +270,10 @@ const dishImageMap = {
     "kotopoulo_bouti": {
         file: "web/greek-dish-25.webp",
         alt: "Κοτόπουλο μπούτι στο φούρνο με πατάτες - Ζουμερό μπούτι κοτόπουλου ψημένο με πατάτες | Oven-Baked Chicken Leg with Potatoes - Juicy oven-baked chicken leg with potatoes"
+    },
+    "kotopoulo_frikase": {
+        file: "web/greek-dish-67.webp",
+        alt: "Κοτόπουλο φρικασέ - Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο, Matzourana Καλλιθέα | Chicken Fricassee - Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce, Matzourana Kallithea"
     },
     "melitzanes_imam": {
         file: "web/greek-dish-26.webp",
@@ -957,7 +961,8 @@ const imageList = [
     'DishImages/web/greek-dish-58.webp', 'DishImages/web/greek-dish-59.webp', 'DishImages/web/greek-dish-60.webp',
     'DishImages/web/greek-dish-61.webp',
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
-    'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp'
+    'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
+    'DishImages/web/greek-dish-67.webp'
 ];
 
 const dishAlts = {
@@ -1025,7 +1030,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-63.webp': "Σαλάτα Χαλούμι - (Mix μαρουλιών, ντοματίνια, καρύδια, φρέσκο κρεμμυδάκι, καρότο, φλοίδες χαλουμιού και βαλσάμικο) Matzourana Καλλιθέα | Halloumi Salad - (Mixed lettuces, cherry tomatoes, walnuts, spring onion, carrot, halloumi shavings and balsamic) Matzourana Kallithea",
     'DishImages/web/greek-dish-64.webp': "Χωριάτικη σαλάτα - (Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη) Matzourana Καλλιθέα | Greek Village Salad - (Tomato, cucumber, green pepper, onion, olives, feta and oregano) Matzourana Kallithea",
     'DishImages/web/greek-dish-65.webp': "Τυροκροκέτες με 4 τυριά - (Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα) Matzourana Καλλιθέα | Four-Cheese Croquettes - (Handmade crispy croquettes with four cheeses and marjoram sauce) Matzourana Kallithea",
-    'DishImages/web/greek-dish-66.webp': "Γαύρος φρέσκος λεμονάτος - (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά) Matzourana Καλλιθέα | Fresh Anchovies with Lemon - (With fresh lemon, olive oil and herbs) Matzourana Kallithea"
+    'DishImages/web/greek-dish-66.webp': "Γαύρος φρέσκος λεμονάτος - (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά) Matzourana Καλλιθέα | Fresh Anchovies with Lemon - (With fresh lemon, olive oil and herbs) Matzourana Kallithea",
+    'DishImages/web/greek-dish-67.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea"
  
 };
 

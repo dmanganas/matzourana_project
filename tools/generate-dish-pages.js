@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261103c'; // bust caches when assets/titles change
+const ASSET_V = '20261103d'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -345,6 +345,7 @@ const DISH_FAQ = {
   keftedakia_tiganita:                 { q: 'καλά κεφτεδάκια',                     review: /κεφτεδ|keftedak|keftede|meatballs/i },
   keftedakia_saltsa:                   { q: 'καλά κεφτεδάκια με σάλτσα',           review: /κεφτεδάκια με σάλτσα|κεφτεδακια με σαλτσα|keftedakia me saltsa|meatballs in (tomato )?sauce/i },
   kotopoulo_bouti:                     { q: 'καλό κοτόπουλο φούρνου με πατάτες',    review: /κοτόπουλ|κοτοπουλ|kotopoul|chicken/i },
+  kotopoulo_frikase:                   { q: 'καλό κοτόπουλο φρικασέ',              review: /φρικασ|frikas|fricass/i },
   choirines_brizoles:                  { q: 'καλές χοιρινές μπριζόλες',            review: /μπριζόλ|brizol|pork chop/i },
   kokoras_krasatos:                    { q: 'καλό κόκορα κρασάτο',                 review: /κόκορ|κοκορ|kokora|rooster/i },
   soutzoukakia:                        { q: 'καλά σουτζουκάκια σμυρνέικα',         review: /σουτζουκ|soutzouk|soutsouk|soudzouk/i },
