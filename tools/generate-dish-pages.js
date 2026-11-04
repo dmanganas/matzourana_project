@@ -27,7 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.matzourana.gr/';
 const DATA_FILE = 'matzourana_data.js';
-const ASSET_V = '20261104a'; // bust caches when assets/titles change
+const ASSET_V = '20261104b'; // bust caches when assets/titles change
 const html = fs.readFileSync(path.join(ROOT, DATA_FILE), 'utf8');
 
 /*-------------------
@@ -149,6 +149,26 @@ function readNoPhotoKeys() {
   return html.indexOf('const dishPagesNoPhoto =') >= 0 ? extractObject('dishPagesNoPhoto') : [];
 }
 const dishPagesNoPhoto = readNoPhotoKeys();
+
+/*-------------------
+Purpose: Read and check the optional dishPageAlias map (a dish that reuses another dish's
+         photo and page, e.g. kokoras_hilopites -> kokoras_krasatos). Alias keys get no page.
+On Input: none (matzourana_data.js source already loaded in `html`).
+On Output: Object { [aliasKey]: targetKey }; {} when the map is not defined.
+          Exits with an error when an alias key has its own photo/page or is unknown,
+          or the target has no dish page (photo or dishPagesNoPhoto).
+---------------------*/
+function readDishPageAlias() {
+  if (html.indexOf('const dishPageAlias =') < 0) return {};
+  const map = extractObject('dishPageAlias');
+  for (const [key, target] of Object.entries(map)) {
+    if (!menuCatalog[key]) { console.error('dishPageAlias key is not a menuCatalog key: ' + key); process.exit(1); }
+    if (dishImageMap[key] || dishPagesNoPhoto.includes(key)) { console.error('dishPageAlias key has its own page: ' + key); process.exit(1); }
+    if (!dishImageMap[target] && !dishPagesNoPhoto.includes(target)) { console.error('dishPageAlias target has no dish page: ' + key + ' -> ' + target); process.exit(1); }
+  }
+  return map;
+}
+const dishPageAlias = readDishPageAlias();
 
 const CATEGORY = {
   'freshly-cooked': 'Φρεσκομαγειρεμένα', 'meat-cooked': 'Πιάτα Κρεατικών', 'veg-cooked': 'Πιάτα Λαχανικών',

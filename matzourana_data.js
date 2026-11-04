@@ -397,6 +397,15 @@ const dishPagesNoPhoto = [
     "choirines_brizoles"          // greek-dish-13 is the grilled chop - moved to brizola_choirini 2026-10-29
 ];
 
+// ==================== DISH PAGE / PHOTO ALIASES ====================
+// A dish without its own page or photo that should use another dish's photo and page
+// (dishes/<target>/) on the daily menu, the highlights and the menu photo panel.
+// key -> target key (the target must have a dishImageMap entry or be in dishPagesNoPhoto).
+// The generator writes no page for alias keys.
+const dishPageAlias = {
+    "kokoras_hilopites": "kokoras_krasatos"   // Κόκορας με χωριάτικες χυλοπίτες -> κόκορας κρασάτος photo/page (2026-11-04)
+};
+
 // ==================== DISH PAGES FOR THE FIXED MENU TABLES ====================
 // Dish pages (dishes/<slug>/) for rows of the fixed price tables on matzourana_menu.html:
 // Ψητά της Ώρας (#grilled-dishes), Σαλάτες (#salads) and the dips of Ορεκτικά (#appetizers).

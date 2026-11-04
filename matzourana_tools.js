@@ -317,7 +317,7 @@ function showMenu(menuId, silent) {
     const prioritizedImages = [];
     let remainingImages = [...imageList];
     currentDailyMenu.forEach(key => {
-        const imgInfo = dishImageMap[key];
+        const imgInfo = dishPhotoOf(key);
         if (imgInfo) {
             const fullPath = `DishImages/${imgInfo.file}`;
             if (imageList.includes(fullPath)) {
@@ -346,12 +346,35 @@ function showMenu(menuId, silent) {
 
 
 /*-------------------
+Purpose: Resolve a catalog key to the key whose photo and dish page it uses
+         (dishPageAlias in matzourana_data.js, e.g. kokoras_hilopites -> kokoras_krasatos).
+On Input: key - String, catalog key.
+On Output: String - the alias target key, or the key itself when it has no alias.
+---------------------*/
+function dishPageKey(key) {
+    if (key && typeof dishPageAlias !== 'undefined' && dishPageAlias[key]) return dishPageAlias[key];
+    return key;
+}
+
+/*-------------------
+Purpose: Look up the photo (dishImageMap entry) a catalog key shows, following dishPageAlias.
+On Input: key - String, catalog key.
+On Output: Object { file, alt } from dishImageMap, or null when the dish has no photo.
+---------------------*/
+function dishPhotoOf(key) {
+    if (!key || typeof dishImageMap === 'undefined') return null;
+    return dishImageMap[key] || dishImageMap[dishPageKey(key)] || null;
+}
+
+/*-------------------
 Purpose: Build the public URL path of a dish SEO page from its catalog key.
 On Input: key - String, a menuCatalog / dishImageMap key (e.g. "pastitsio").
-On Output: String path "/dishes/<slug>/" (underscores become hyphens), or "" when key is empty.
+On Output: String path "/dishes/<slug>/" (underscores become hyphens; dishPageAlias keys get
+          their target's page), or "" when key is empty.
 ---------------------*/
 function dishPagePath(key) {
     if (!key) return '';
+    key = dishPageKey(key);
     return '/dishes/' + String(key).toLowerCase().replace(/_/g, '-') + '/';
 }
 
@@ -359,10 +382,12 @@ function dishPagePath(key) {
 Purpose: Tell whether a catalog key has a crawlable dish SEO page.
 On Input: key - String, catalog key.
 On Output: Boolean - true when dishImageMap has an entry for that key (page with photo),
-          or the key is listed in dishPagesNoPhoto (page kept, no correct photo yet).
+          or the key is listed in dishPagesNoPhoto (page kept, no correct photo yet);
+          dishPageAlias keys answer for their target key.
 ---------------------*/
 function hasDishPage(key) {
     if (!key) return false;
+    key = dishPageKey(key);
     if (typeof dishImageMap !== 'undefined' && dishImageMap[key]) return true;
     return typeof dishPagesNoPhoto !== 'undefined' && dishPagesNoPhoto.includes(key);
 }
@@ -570,7 +595,8 @@ function buildMenuSchema(menuUrl) {
         currentDailyMenu.forEach(k => {
             const d = menuCatalog[k];
             if (!d || !d.el) return;
-            const img = dishImageMap[k] ? dishImageMap[k].file : null;
+            const ph = dishPhotoOf(k);
+            const img = ph ? ph.file : null;
             (groups[d.category] = groups[d.category] || []).push(item(d.el, d.en, d.price, img));
         });
         Object.keys(DAILY_CATEGORY_LABELS).forEach(c => {
