@@ -87,6 +87,8 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-66.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-67.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-68.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-69.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-70.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -442,6 +444,18 @@
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-37.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/antidia/</loc>
+  <lastmod>2026-11-04</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-69.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/brokolo/</loc>
+  <lastmod>2026-11-04</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-70.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/pantzaria/</loc>
