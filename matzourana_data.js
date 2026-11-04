@@ -435,7 +435,10 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
     "pantzaria": { table: "salads", group: "salads", row: "Παντζάρια", pageEl: "Παντζάρια σαλάτα",
         photo: { file: "web/greek-dish-10.webp", alt: "Παντζάρια - Φρέσκια και γευστική παντζαροσαλάτα, Matzourana Καλλιθέα | Beetroot Salad - Fresh and tasty beetroot salad, Matzourana Kallithea" } },
-    "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο" },
+    "tzatziki": { table: "appetizers", group: "dips", row: "Τζατζίκι χειροποίητο",
+        descEl: "Γιαούρτι, αγγούρι, σκόρδο, άνηθος και λίγο ελαιόλαδο",
+        descEn: "Yoghurt, cucumber, garlic, dill and a touch of olive oil",
+        photo: { file: "web/greek-dish-68.webp", alt: "Τζατζίκι χειροποίητο - Με ελαιόλαδο, μια ελιά και άνηθο, Matzourana Καλλιθέα | Homemade Tzatziki - With olive oil, an olive and dill, Matzourana Kallithea" } },
     "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" },
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
         photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } },
@@ -962,7 +965,7 @@ const imageList = [
     'DishImages/web/greek-dish-61.webp',
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
-    'DishImages/web/greek-dish-67.webp'
+    'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp'
 ];
 
 const dishAlts = {
@@ -1031,7 +1034,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-64.webp': "Χωριάτικη σαλάτα - (Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη) Matzourana Καλλιθέα | Greek Village Salad - (Tomato, cucumber, green pepper, onion, olives, feta and oregano) Matzourana Kallithea",
     'DishImages/web/greek-dish-65.webp': "Τυροκροκέτες με 4 τυριά - (Χειροποίητες τραγανές κροκέτες με 4 τυριά και σως μαντζουράνα) Matzourana Καλλιθέα | Four-Cheese Croquettes - (Handmade crispy croquettes with four cheeses and marjoram sauce) Matzourana Kallithea",
     'DishImages/web/greek-dish-66.webp': "Γαύρος φρέσκος λεμονάτος - (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά) Matzourana Καλλιθέα | Fresh Anchovies with Lemon - (With fresh lemon, olive oil and herbs) Matzourana Kallithea",
-    'DishImages/web/greek-dish-67.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea"
+    'DishImages/web/greek-dish-67.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea",
+    'DishImages/web/greek-dish-68.webp': "Τζατζίκι χειροποίητο - (Με ελαιόλαδο, μια ελιά και άνηθο) Matzourana Καλλιθέα | Homemade Tzatziki - (With olive oil, an olive and dill) Matzourana Kallithea"
  
 };
 

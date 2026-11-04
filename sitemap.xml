@@ -86,6 +86,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-65.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-66.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-67.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-68.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -452,6 +453,7 @@
   <loc>https://www.matzourana.gr/dishes/tzatziki/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-68.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/fava-orektiko/</loc>
