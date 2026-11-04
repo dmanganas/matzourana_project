@@ -780,6 +780,14 @@ td.comp-proposed { background: #f8f9ff; }
       <input type="number" id="actualIncome" value="" placeholder="—" step="0.1" min="0" oninput="this.dataset.touched='1'; renderIncomeHint()">
       <div class="note" id="actualIncomeHint">Το χειρόγραφο σύνολο· αποθηκεύεται μαζί με την ημέρα.</div>
       <button type="button" class="btn-ghost" style="margin-top:6px" onclick="saveActualIncome()">Αποθήκευση μόνο είσπραξης</button>
+      <div class="section-title" style="margin-top:12px">Πωλήσεις χωρίς ανάλυση πιάτων (€)</div>
+      <input type="text" id="lumpLabel" placeholder="π.χ. Τραπέζι (χωρίς ανάλυση)" oninput="onLumpInput()">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px">
+        <label class="note">Κατάστημα<input type="number" id="lump_local" value="" placeholder="—" step="0.1" min="0" oninput="onLumpInput()"></label>
+        <label class="note">e-food<input type="number" id="lump_efood" value="" placeholder="—" step="0.1" min="0" oninput="onLumpInput()"></label>
+        <label class="note">Wolt<input type="number" id="lump_wolt" value="" placeholder="—" step="0.1" min="0" oninput="onLumpInput()"></label>
+      </div>
+      <div class="note" id="lumpHint">Ποσό χωρίς μερίδες (π.χ. τραπέζι)· μετράει στις πωλήσεις, προμήθεια καναλιού, food cost με το μέσο % των πιάτων· αποθηκεύεται μαζί με την ημέρα.</div>
     </div>
     <div class="card-mini">
       <div class="section-title">Στόχος καθαρού / ημέρα (€)</div>
@@ -3786,6 +3794,47 @@ function mergeBreakdowns(list){
   });
   return out;
 }
+/*-------------------
+Purpose: Sold rows for lump sums without a dish breakdown (e.g. a table), one per channel, shaped
+         like dishesWithSales() rows so the day totals, salesBreakdown, VAT and profit A/B include them.
+On Input: lump - { local|efood|wolt: { amount, label } } (missing / non-positive amounts skipped);
+          dishRows - Array from dishesWithSales() (their food / sales give the average food %);
+          comm - { local|efood|wolt: share } (CH_COMM).
+On Output: Array of { key:"lump_<ch>", lump:true, d:{ el }, qty:0, price, fc, salesDay, foodDay, commDay,
+           contribDay, group, isDrink:false, noCost:false, foodPct, ch:{ local|efood|wolt:{ n:0, sales, comm, food, net } } }.
+---------------------*/
+function lumpSalesRows(lump, dishRows, comm){
+  const sales = (dishRows || []).reduce((s, r) => s + (r.salesDay || 0), 0);
+  const food  = (dishRows || []).reduce((s, r) => s + (r.foodDay || 0), 0);
+  const foodPct = sales > 0 ? food / sales : 0;
+  const out = [];
+  ["local", "efood", "wolt"].forEach(c => {
+    const x = (lump || {})[c] || {};
+    const amount = Math.round(Number(x.amount || 0) * 100) / 100;
+    if (!(amount > 0)) return;
+    const cm = amount * Number((comm || {})[c] || 0), fd = amount * foodPct;
+    const ch = { local: { n:0, sales:0, comm:0, food:0, net:0 }, efood: { n:0, sales:0, comm:0, food:0, net:0 }, wolt: { n:0, sales:0, comm:0, food:0, net:0 } };
+    ch[c] = { n: 0, sales: amount, comm: cm, food: fd, net: amount - cm - fd };
+    out.push({ key: "lump_" + c, lump: true, channel: c, d: { el: String(x.label || "").trim() || LUMP_GROUP_EL },
+      qty: 0, price: amount, fc: fd, salesDay: amount, foodDay: fd, commDay: cm, contribDay: amount - cm - fd,
+      group: LUMP_GROUP_EL, fixed: false, isDrink: false, noCost: false, foodPct, ch });
+  });
+  return out;
+}
+const LUMP_GROUP_EL = "Χωρίς ανάλυση";
+
+/*-------------------
+Purpose: Lump sums of a sales sheet (channel names takeaway / efood / wolt) in planner channels.
+On Input: sheet - matzourana_sales/days/<date> record or null ({ lumpSales: { takeaway|efood|wolt: { amount, label } } }).
+On Output: { local|efood|wolt: { amount, label } } (empty Object when there are none).
+---------------------*/
+function sheetLumpToChannels(sheet){
+  const src = (sheet && sheet.lumpSales) || {}, out = {};
+  [["takeaway", "local"], ["efood", "efood"], ["wolt", "wolt"]].forEach(([a, b]) => {
+    if (src[a] && Number(src[a].amount) > 0) out[b] = { amount: Number(src[a].amount), label: src[a].label || "" };
+  });
+  return out;
+}
 /* ===== end SOLD ITEMS pure helpers ===== */
 
 /* ===== SOLD ITEMS · STATE + UI (admin page) ===== */
@@ -4079,7 +4128,7 @@ On Output: none.
 function updateSalesEntryTotals(){
   const box = document.getElementById("salesEntry");
   if (!box) return;
-  const sold = dishesWithSales();
+  const sold = daySoldRows();
   const b = salesBreakdown(sold);
   const ids = { [SALES_DAILY_GROUP.el]: SALES_DAILY_GROUP.id };
   SALES_GROUPS.forEach(g => { ids[g.el] = g.id; });
@@ -4093,7 +4142,8 @@ function updateSalesEntryTotals(){
   if (badge) badge.textContent = b.units + " τεμ. · " + fmt(total);
   const chEl = document.getElementById("salesEntryChannels");
   if (chEl) chEl.textContent = CH_KEYS.map(c =>
-    CH_EL[c] + " " + b.byChannel[c].n + " τεμ. · " + fmt(b.byChannel[c].sales)).join("  |  ");
+    CH_EL[c] + " " + b.byChannel[c].n + " τεμ. · " + fmt(b.byChannel[c].sales)).join("  |  ")
+    + sold.filter(r => r.lump).map(r => "  |  " + r.d.el + " (" + CH_EL[r.channel] + ") " + fmt(r.salesDay)).join("");
 }
 
 /*-------------------
@@ -5340,13 +5390,14 @@ function renderProfitPlanner(){
   const selFood = rows.length ? rows.reduce((s,r) => s + r.fc, 0) / rows.length : food;
   const p = portionsFor(ticket - food, fixed, target) || 0;
 
-  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const sold = (typeof daySoldRows === "function") ? daySoldRows() : [];
   const useSold = sold.length > 0;
+  const lumpRows = sold.filter(r => r.lump);
   const soldQty   = sold.reduce((s,r) => s + (r.qty || 0), 0);
   const soldFood  = sold.reduce((s,r) => s + (r.foodDay || 0), 0);
   const soldSales = sold.reduce((s,r) => s + (r.salesDay || 0), 0);
   const commDay   = sold.reduce((s,r) => s + (r.commDay || 0), 0);
-  const soldFoodOnly = sold.filter(r =>
+  const soldFoodOnly = sold.filter(r => !r.lump &&
     r.d && r.d.category !== "drinks" && r.d.type !== "drinks"
   ).sort((a,b) => (b.qty || 0) - (a.qty || 0));
   const favorite = soldFoodOnly[0] || null;
@@ -5390,7 +5441,7 @@ function renderProfitPlanner(){
     <div class="kpi">
       <div class="label">Πωλήσεις με ΦΠΑ</div>
       <div class="value">${fmt(sales)}</div>
-      <div class="sub">καθαρή αξία ${fmt(sales / (1 + rate))}</div>
+      <div class="sub">καθαρή αξία ${fmt(sales / (1 + rate))}${lumpRows.map(r => " · εκ των οποίων " + r.d.el + " (" + CH_EL[r.channel] + ") " + fmt(r.salesDay)).join("")}</div>
     </div>
     <div class="kpi">
       <div class="label">Σύνολο κόστους ημέρας</div>
@@ -5530,13 +5581,16 @@ On Output: Promise<void>.
 Notes: empty fixed / target fields use the kitchen book planner settings. itemsSchema 2 adds
        byChannel/byGroup/units/foodPortions/noCostKeys. "favorite" = top-selling dish by portions,
        drinks and bread excluded (topFoodItemName). The month is stored once, by closeMonth.
+       Lump sums without dishes (lumpRecordFields → lumpSales) are part of sales / food / comm,
+       byChannel and byGroup («Χωρίς ανάλυση»), never of dishes / keys / portions.
 ---------------------*/
 async function pushToFirebase(){
   const db = getDb();
   if (!db) { alert("Λείπει το Firebase Realtime Database."); return; }
 
-  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
-  if (!sold.length) {
+  const sold = (typeof daySoldRows === "function") ? daySoldRows() : [];
+  const soldDishes = sold.filter(r => !r.lump);
+  if (!soldDishes.length) {
     alert("Δεν υπάρχουν μερίδες. Γράψε Κατάστημα / e-food / Wolt στις Παραγγελίες ημέρας.");
     return;
   }
@@ -5553,7 +5607,7 @@ async function pushToFirebase(){
   const net = sales - foodDay - comm - fixed;
 
   const dishes = {};
-  sold.forEach(r => {
+  soldDishes.forEach(r => {
     const c = (typeof chOf === "function") ? chOf(r.key) : { local:r.qty, efood:0, wolt:0 };
     dishes[r.key] = {
       name: r.d.el, qty: r.qty, price: r.price,
@@ -5581,10 +5635,10 @@ async function pushToFirebase(){
     channels: (typeof portionChannels !== "undefined") ? JSON.parse(JSON.stringify(portionChannels)) : {},
     byChannel: brk.byChannel, byGroup: brk.byGroup,
     units: brk.units, foodPortions: brk.foodPortions,
-    noCostKeys: sold.filter(r => r.noCost).map(r => r.key),
+    noCostKeys: soldDishes.filter(r => r.noCost).map(r => r.key),
     itemsSchema: 2,
-    keys: sold.map(r => r.key),
-    favorite: topFoodItemName(sold),
+    keys: soldDishes.map(r => r.key),
+    favorite: topFoodItemName(soldDishes),
     favorites: (typeof favorites !== "undefined")
     ? JSON.parse(JSON.stringify(favorites))
     : { shop: [], efood: [], wolt: [] },
@@ -5594,8 +5648,9 @@ async function pushToFirebase(){
     createdAt: Date.now(),
     dishes,
     ...actualIncomeFields(date),
+    ...lumpRecordFields(sold),
     ...methodBRecordFields({ sales, food: foodDay, comm, fixed }),
-    ...meatRecordFields(sold.filter(r => !r.isDrink).map(r => ({ key: r.key, name: (r.d && r.d.el) || r.key, qty: r.qty })))
+    ...meatRecordFields(soldDishes.filter(r => !r.isDrink).map(r => ({ key: r.key, name: (r.d && r.d.el) || r.key, qty: r.qty })))
   });
 
   try {
@@ -5699,6 +5754,7 @@ async function loadDayFromLedger(){
   const srcEl = document.getElementById("planDaySource");
   if (srcEl) srcEl.textContent = source;
   fillActualIncome(rec, sheetRaw);
+  fillLumpSales(rec, sheetRaw);
   if (typeof renderDishTable === "function") renderDishTable();
   applyDailyPicks(picks);
   updateDailyPickLock();
@@ -5912,13 +5968,99 @@ On Output: none.
 function renderIncomeHint(){
   const el = document.getElementById("actualIncome"), hint = document.getElementById("actualIncomeHint");
   if (!el || !hint) return;
-  const sold = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  const sold = (typeof daySoldRows === "function") ? daySoldRows() : [];
   const sales = sold.reduce((s, r) => s + (r.salesDay || 0), 0);
   if (el.value === "") { hint.textContent = "Το χειρόγραφο σύνολο· αποθηκεύεται μαζί με την ημέρα."; return; }
   const v = Number(el.value);
   const conf = el.dataset.touched ? "γραμμένη τώρα" : (el.dataset.confirmed === "1" ? "επιβεβαιωμένη" : "ανεπιβεβαίωτη");
-  const gap = sales > 0 ? " · υπολογισμένες " + fmt(sales) + " · διαφορά " + (v - sales >= 0 ? "+" : "") + fmt(v - sales).replace("€-", "−€") : "";
+  const d = Math.round((v - sales) * 100) / 100 || 0;
+  const gap = sales > 0 ? " · υπολογισμένες " + fmt(sales) + " · διαφορά " + (d >= 0 ? "+" : "") + fmt(d).replace("€-", "−€") : "";
   hint.textContent = (el.dataset.from ? "Από " + el.dataset.from + " · " : "") + conf + gap;
+}
+
+/*-------------------
+Purpose: Lump sums typed under «Πραγματική είσπραξη» (#lump_local / #lump_efood / #lump_wolt, one #lumpLabel).
+On Input: none.
+On Output: { local|efood|wolt: { amount, label } } with positive amounts only.
+---------------------*/
+function readLumpInputs(){
+  const label = String((document.getElementById("lumpLabel") || {}).value || "").trim();
+  const out = {};
+  ["local", "efood", "wolt"].forEach(c => {
+    const el = document.getElementById("lump_" + c);
+    const v = el && el.value !== "" ? Number(el.value) : 0;
+    if (isFinite(v) && v > 0) out[c] = { amount: Math.round(v * 100) / 100, label };
+  });
+  return out;
+}
+
+/*-------------------
+Purpose: Sold rows of the shown day: dish rows (dishesWithSales) plus the lump-sum rows (lumpSalesRows).
+On Input: none (reads portionChannels and the lump inputs).
+On Output: Array of rows; lump rows carry lump:true and qty 0.
+---------------------*/
+function daySoldRows(){
+  const dishes = (typeof dishesWithSales === "function") ? dishesWithSales() : [];
+  return dishes.concat(lumpSalesRows(readLumpInputs(), dishes, CH_COMM));
+}
+
+/*-------------------
+Purpose: Put the lump sums of the loaded day into the inputs: the saved day when there is one,
+         else the sales sheet (lumpSales, takeaway → Κατάστημα); empty when neither has any.
+On Input: rec - day record or null; sheet - matzourana_sales/days/<date> record or null.
+On Output: none. Side effects: lump input values, #lumpHint.
+---------------------*/
+function fillLumpSales(rec, sheet){
+  const lump = rec ? ((rec && rec.lumpSales) || {}) : sheetLumpToChannels(sheet);
+  const lab = document.getElementById("lumpLabel");
+  if (lab) lab.value = (Object.values(lump).find(x => x && x.label) || {}).label || "";
+  ["local", "efood", "wolt"].forEach(c => {
+    const el = document.getElementById("lump_" + c);
+    if (el) el.value = lump[c] && Number(lump[c].amount) > 0 ? Number(lump[c].amount) : "";
+  });
+  renderLumpHint();
+  renderIncomeHint();
+}
+
+/*-------------------
+Purpose: Hint under the lump inputs: each lump line with its commission and food cost.
+On Input: none.
+On Output: none.
+---------------------*/
+function renderLumpHint(){
+  const hint = document.getElementById("lumpHint");
+  if (!hint) return;
+  const rows = daySoldRows().filter(r => r.lump);
+  hint.textContent = rows.length
+    ? rows.map(r => r.d.el + " · " + CH_EL[r.channel] + " " + fmt(r.salesDay) + " · προμήθεια " + fmt(r.commDay)
+        + " · food " + fmt(r.foodDay) + " (" + (r.foodPct * 100).toFixed(1) + "% των πιάτων)").join("  |  ")
+    : "Ποσό χωρίς μερίδες (π.χ. τραπέζι)· μετράει στις πωλήσεις, προμήθεια καναλιού, food cost με το μέσο % των πιάτων· αποθηκεύεται μαζί με την ημέρα.";
+}
+
+/*-------------------
+Purpose: A lump input changed: redraw the totals that include it.
+On Input: none.
+On Output: none.
+---------------------*/
+function onLumpInput(){
+  renderLumpHint();
+  if (typeof updateSalesEntryTotals === "function") updateSalesEntryTotals();
+  if (typeof renderProfitPlanner === "function") renderProfitPlanner();
+  renderIncomeHint();
+}
+
+/*-------------------
+Purpose: Day-record field of the lump sums (amount, label, commission, food cost and food % per channel).
+On Input: rows - lump rows from daySoldRows().
+On Output: { lumpSales: { local|efood|wolt: { amount, label, comm, food, foodPct } } } or {} when there are none.
+---------------------*/
+function lumpRecordFields(rows){
+  const r2 = v => Math.round(v * 100) / 100;
+  const out = {};
+  (rows || []).filter(r => r.lump).forEach(r => {
+    out[r.channel] = { amount: r2(r.salesDay), label: r.d.el, comm: r2(r.commDay), food: r2(r.foodDay), foodPct: Math.round(r.foodPct * 10000) / 10000 };
+  });
+  return Object.keys(out).length ? { lumpSales: out } : {};
 }
 
 /*-------------------
