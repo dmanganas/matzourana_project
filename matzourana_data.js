@@ -19,25 +19,27 @@ const currentDailyMenu = [
     // Freshly Cooked
 
     //Meat
-    "moschari_giouvesti",
-    "moschari_lemonato",
-    "kokoras_hilopites",
-    "kotopoulo_frikase",
+    "moschari_kokkinisto",
+    "galeos_lemonatos",
+    "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
+    "soutzoukakia",
     "lachanontolmades",
 
     // Soups
     "giouvarlakia",
     "kotosoupa",
+    "psarosoupa",
 
     //Veggy
+    "gemista_superfoods",
     "giantes",
     "fasolakia",
 
     // Legumes
+    "fasolada",
     "fakes"
 ];
 
@@ -45,19 +47,19 @@ const currentDailyMenu = [
 const currentHighlights = [
 
     "line",
-    "moschari_giouvesti",
-    "moschari_lemonato",
-    "kokoras_hilopites",
-    "kotopoulo_frikase",
+    "moschari_kokkinisto",
+    "galeos_lemonatos",
+    "bifteki_moscharisia",
     "kotopoulo_bouti",
-    "keftedakia_tiganita",
-    "lachanontolmades",
-
     "pastitsio",
+    "soutzoukakia",
+    "lachanontolmades",
 
     "giouvarlakia",
     "kotosoupa",
+    "psarosoupa",
 
+    "gemista_superfoods",
     "giantes",
     "fasolakia"
 ];
@@ -132,7 +134,7 @@ const menuCatalog = {
     "melitzanes_imam": { category: "veg-cooked", el: "Μελιτζάνες ιμάμ με φέτα ΠΟΠ <br><br> (Τσακώνικες μελιτζάνες με σάλτσα ντομάτας και τριμμένη φέτα)", en: "Imam Eggplants with PDO Feta <br><br> (Tsakonian eggplants with tomato sauce and grated PDO feta)", price: "€7.50" },
     "gemista": { category: "veg-cooked", el: "Γεμιστά <br><br> (Ντομάτα και πιπεριά με πλιγούρι, μυρωδικά και πατατούλες)", en: "Stuffed Vegetables <br><br> (Tomato and pepper with bulgur, herbs and potatoes)", price: "€8.00" },
     "gemista_rice": { category: "veg-cooked", el: "Γεμιστά με ρύζι <br><br> (Ντομάτα και πιπεριά με ρύζι, μυρωδικά και πατατούλες)", en: "Stuffed Vegetables with Rice <br><br> (Tomato and pepper with rice, herbs and potatoes)", price: "€7.50" },
-    "gemista_superfoods": { category: "veg-cooked", el: "Γεμιστά με superfoods <br><br> (Σταφίδες, κουκουνάρι, κράνμπερι, καρύδια)", en: "Stuffed Vegetables with Superfoods <br><br> (Raisins, pine nuts, cranberries, walnuts)", price: "€8.50" },
+    "gemista_superfoods": { category: "veg-cooked", el: "Γεμιστά με superfoods <br><br> (Σταφίδες, κουκουνάρι, κράνμπερι, καρύδια)", en: "Stuffed Vegetables with Superfoods <br><br> (Raisins, pine nuts, cranberries, walnuts)", price: "€8.00" },
     "anginares_polita": { category: "veg-cooked", el: "Αγγινάρες φρέσκιες αλά πολίτα <br><br> (Με φρέσκιες αγγινάρες και λεμονάτες πατάτες)", en: "Fresh Artichokes à la Polita <br><br> (With fresh artichokes and lemony potatoes)", price: "€9.00" },
     "manitaria_frikase": { category: "veg-cooked", el: "Μανιτάρια Φρικασέ <br><br> (Έκρηξη γεύσης με αρωματικά χόρτα)", en: "Mushroom Fricassee <br><br> (An explosion of flavor with aromatic herbs)", price: "€7.50" },
     "revithia_frikase": { category: "veg-cooked", el: "Ρεβύθια Φρικασέ <br><br> (Vegan συνταγή, εύκολη και πολύ υγιεινή)", en: "Chickpea Fricassee <br><br> (Vegan recipe, easy and very healthy)", price: "€7.50" },
@@ -202,7 +204,7 @@ const menuCatalog = {
 
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
-    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€6.50" },
+    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.50" },
     "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
