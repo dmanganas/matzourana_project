@@ -380,8 +380,8 @@ const dishImageMap = {
         alt: "Φρέσκες σουπιές γιαχνί - Σε σάλτσα ντομάτας, με πλιγούρι, Matzourana Καλλιθέα | Fresh Cuttlefish Yiahni - In tomato sauce, with bulgur, Matzourana Kallithea"
     },
     "bifteki_moscharisia": {
-        file: "web/greek-dish-54.webp",
-        alt: "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - Χειροποίητα 300γρ, Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - Handmade 300g beef patties, Matzourana Kallithea"
+        file: "web/greek-dish-71.webp",
+        alt: "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη, Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - Handmade 300g beef patties with oven potatoes and oregano, Matzourana Kallithea"
     },
     "gemista_superfoods": {
         file: "web/greek-dish-56.webp",
@@ -985,7 +985,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp'
 ];
 
 const dishAlts = {
@@ -1057,7 +1057,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-67.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea",
     'DishImages/web/greek-dish-68.webp': "Τζατζίκι χειροποίητο - (Με ελαιόλαδο, μια ελιά και άνηθο) Matzourana Καλλιθέα | Homemade Tzatziki - (With olive oil, an olive and dill) Matzourana Kallithea",
     'DishImages/web/greek-dish-69.webp': "Αντίδια - (Βραστά αντίδια με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Endive Greens - (Boiled endive greens with olive oil and lemon) Matzourana Kallithea",
-    'DishImages/web/greek-dish-70.webp': "Μπρόκολο - (Βραστό μπρόκολο με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Broccoli - (Boiled broccoli with olive oil and lemon) Matzourana Kallithea"
+    'DishImages/web/greek-dish-70.webp': "Μπρόκολο - (Βραστό μπρόκολο με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Broccoli - (Boiled broccoli with olive oil and lemon) Matzourana Kallithea",
+    'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea"
  
 };
 
