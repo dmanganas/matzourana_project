@@ -387,6 +387,10 @@ const dishImageMap = {
         file: "web/greek-dish-56.webp",
         alt: "Γεμιστά με superfoods - Ντομάτες και πιπεριές γεμιστές στο ταψί, με πατάτες, Matzourana Καλλιθέα | Stuffed Vegetables with Superfoods - Stuffed tomatoes and peppers in the baking tray, with potatoes, Matzourana Kallithea"
     },
+    "fava": {
+        file: "web/greek-dish-72.webp",
+        alt: "Φάβα - Με μαϊντανό, κρεμμύδι και λεμόνι, Matzourana Καλλιθέα | Fava - Yellow split peas with parsley, onion and lemon, Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -458,7 +462,8 @@ const fixedMenuDishPages = {
         descEl: "Γιαούρτι, αγγούρι, σκόρδο, άνηθος και λίγο ελαιόλαδο",
         descEn: "Yoghurt, cucumber, garlic, dill and a touch of olive oil",
         photo: { file: "web/greek-dish-68.webp", alt: "Τζατζίκι χειροποίητο - Με ελαιόλαδο, μια ελιά και άνηθο, Matzourana Καλλιθέα | Homemade Tzatziki - With olive oil, an olive and dill, Matzourana Kallithea" } },
-    "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)" },
+    "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)",
+        photo: { file: "web/greek-dish-72.webp", alt: "Φάβα - Με μαϊντανό, κρεμμύδι και λεμόνι, Matzourana Καλλιθέα | Fava - Yellow split peas with parsley, onion and lemon, Matzourana Kallithea" } },
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
         photo: { file: "web/greek-dish-59.webp", alt: "Χαλούμι ψητό - Με σαλάτα, κόκκινη πιπεριά και λεμόνι, Matzourana Καλλιθέα | Grilled Halloumi - With salad, red pepper and lemon, Matzourana Kallithea" } },
     "psomi_prozymeno": { table: "appetizers", group: "dips", row: "Ψωμί προζυμένιο με λάδι κ’ ρίγανη", pageEl: "Ψωμί προζυμένιο με λάδι και ρίγανη",
@@ -985,7 +990,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp'
 ];
 
 const dishAlts = {
@@ -1058,7 +1063,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-68.webp': "Τζατζίκι χειροποίητο - (Με ελαιόλαδο, μια ελιά και άνηθο) Matzourana Καλλιθέα | Homemade Tzatziki - (With olive oil, an olive and dill) Matzourana Kallithea",
     'DishImages/web/greek-dish-69.webp': "Αντίδια - (Βραστά αντίδια με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Endive Greens - (Boiled endive greens with olive oil and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-70.webp': "Μπρόκολο - (Βραστό μπρόκολο με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Broccoli - (Boiled broccoli with olive oil and lemon) Matzourana Kallithea",
-    'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea"
+    'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea",
+    'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea"
  
 };
 

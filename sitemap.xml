@@ -90,6 +90,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-69.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-70.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-71.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-72.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -372,6 +373,12 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-45.jpg</image:loc></image:image>
 </url>
 <url>
+  <loc>https://www.matzourana.gr/dishes/fava/</loc>
+  <lastmod>2026-11-05</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-72.jpg</image:loc></image:image>
+</url>
+<url>
   <loc>https://www.matzourana.gr/dishes/fileto-kotopoulo/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
@@ -474,6 +481,7 @@
   <loc>https://www.matzourana.gr/dishes/fava-orektiko/</loc>
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-72.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/chaloumi-psito/</loc>
