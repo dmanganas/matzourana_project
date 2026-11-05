@@ -19,26 +19,25 @@ const currentDailyMenu = [
     // Freshly Cooked
 
     //Meat
-    "moschari_kokkinisto",
-    "galeos_lemonatos",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "soutzoukakia",
+    "keftedakia_tiganita",
     "lachanontolmades",
 
     // Soups
     "giouvarlakia",
     "kotosoupa",
-    "psarosoupa",
 
     //Veggy
-    "gemista_superfoods",
-    "giantes",
-    "fasolakia",
+    "arakas_lemonatos",
+    "spanakorizo",
 
     // Legumes
+    "revithia",
     "fasolada",
     "fakes"
 ];
@@ -47,21 +46,19 @@ const currentDailyMenu = [
 const currentHighlights = [
 
     "line",
-    "moschari_kokkinisto",
-    "galeos_lemonatos",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
-    "soutzoukakia",
+    "keftedakia_tiganita",
     "lachanontolmades",
 
     "giouvarlakia",
     "kotosoupa",
-    "psarosoupa",
 
-    "gemista_superfoods",
-    "giantes",
-    "fasolakia"
+    "arakas_lemonatos",
+    "spanakorizo"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
