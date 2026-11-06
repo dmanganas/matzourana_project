@@ -393,6 +393,10 @@ const dishImageMap = {
         file: "web/greek-dish-72.webp",
         alt: "Φάβα - Με μαϊντανό, κρεμμύδι και λεμόνι, Matzourana Καλλιθέα | Fava - Yellow split peas with parsley, onion and lemon, Matzourana Kallithea"
     },
+    "makaronia_kima": {
+        file: "web/greek-dish-73.webp",
+        alt: "Μακαρόνια με κιμά (Μπολονέζ) - Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - With 100% beef mince from Astakou Meats, Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -992,7 +996,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp'
 ];
 
 const dishAlts = {
@@ -1066,7 +1070,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-69.webp': "Αντίδια - (Βραστά αντίδια με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Endive Greens - (Boiled endive greens with olive oil and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-70.webp': "Μπρόκολο - (Βραστό μπρόκολο με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Broccoli - (Boiled broccoli with olive oil and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea",
-    'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea"
+    'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea",
+    'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea"
  
 };
 
