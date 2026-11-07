@@ -724,6 +724,16 @@ On Output: String, the full HTML document. Dishes without a photo get no dish <i
           salads, dips) never say "when it is on the daily menu"; their note and button point
           to their own menu table.
 ---------------------*/
+// Explicit culinary classification, not inferred from vegetarian category.
+const LADERA_PAGES = new Set(['briam', 'fasolakia', 'melitzanes_imam', 'arakas_lemonatos', 'gemista', 'gemista_superfoods', 'giantes', 'spanakorizo']);
+// Verified dish-specific press mentions, never scored customer reviews.
+const DISH_PRESS = {
+  briam: { el: 'το πολύχρωμο μπριάμ', en: 'the colourful briam' },
+  moschari_lemonato: { el: 'μια μερίδα λεμονάτο μοσχαράκι', en: 'a portion of lemony beef' },
+  kokoras_krasatos: { el: 'έναν κόκορα κρασάτο', en: 'a rooster cooked in wine' }
+};
+const DISH_PRESS_URL = 'https://www.iefimerida.gr/poli/ta-pio-nostima-ladera-tis-athinas';
+
 function page(key, allKeys) {
   const d = DISHES[key];
   const img = photoOf(key);
@@ -742,12 +752,14 @@ function page(key, allKeys) {
 
   // Titles ~50–60 chars, descriptions ≤155
   // Prefer "<Πιάτο> στην Καλλιθέα | Matzourana"; very long names keep the shorter form.
+  const isLadera = LADERA_PAGES.has(key);
   const titleFull = `${el.name} στην Καλλιθέα | Matzourana`;
-  const title = titleFull.length <= 60 ? titleFull : clipMeta(`${el.name} Καλλιθέα | Matzourana`, 60);
+  const title = isLadera ? `${el.name} – Λαδερά στην Καλλιθέα | Matzourana`
+    : (titleFull.length <= 60 ? titleFull : clipMeta(`${el.name} Καλλιθέα | Matzourana`, 60));
   // "<Πιάτο> στην Καλλιθέα – <description>. Matzourana Καλλιθέα, address, phone, price": only the
   // description is shortened, so address, phone and price always stay in the meta description.
   const descTail = ` Matzourana Καλλιθέα, Δημοσθένους 48. 210 9577 846.` + (price ? ` Από €${price.replace('.', ',')}.` : '');
-  const descHead = `${el.name} στην Καλλιθέα`;
+  const descHead = isLadera ? `${el.name}. Λαδερά στην Αθήνα` : `${el.name} στην Καλλιθέα`;
   const descBody = el.desc ? ' – ' + el.desc.charAt(0).toLowerCase() + el.desc.slice(1) : '';
   const desc = clipMeta(descHead + fitWords(descBody, 155 - descHead.length - descTail.length - 1) + '.' + descTail, 155);
 
@@ -883,7 +895,10 @@ ${JSON.stringify(ld, null, 2)}
     ${picture}
     ${el.desc ? `<p>${esc(el.desc)}.</p>` : ''}
     <p>${esc(el.name)} από το μαγειρείο <strong>Ματζουράνα</strong> στην Καλλιθέα (${esc(catEl)}): ${fx ? 'από τον σταθερό κατάλογο του μενού μας, με φρέσκα, προσεκτικά επιλεγμένα υλικά' : 'σπιτικό φαγητό, μαγειρεμένο καθημερινά με φρέσκα, προσεκτικά επιλεγμένα υλικά'}. Αναζητάτε <strong>${esc(el.name)} Matzourana Καλλιθέα</strong>; Παραγγείλτε τηλεφωνικά ή μέσω efood / Wolt.</p>
-    <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea${fx ? ', on our fixed menu every opening day' : ''}. Order for delivery across the wider Kallithea area.</p>
+${isLadera ? `    <p class="dish-category">Λαδερά <span class="en" lang="en">/ Greek olive-oil dishes</span></p>
+    <p>Για λαδερά στην Αθήνα, δοκιμάστε ${esc(el.name)} στη Matzourana στην Καλλιθέα, όταν υπάρχει στο μενού ημέρας.</p>
+    <p class="en" lang="en">For Greek olive-oil dishes in Athens, try ${esc(en.name)} at Matzourana in Kallithea, when available on the daily menu.</p>
+` : ''}    <p class="en" lang="en">${esc(en.name)}${en.desc ? ' – ' + esc(en.desc) : ''}. Home-style Greek ${esc(catEn).toLowerCase()} at Matzourana Eatery, Dimosthenous 48, Kallithea${fx ? ', on our fixed menu every opening day' : ''}. Order for delivery across the wider Kallithea area.</p>
     ${price ? `<p class="price">€${price.replace('.', ',')}</p>` : ''}
     <p class="views-note" id="dish-views" hidden><img src="../../Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async"><span class="vn-text"><span class="vn-num"></span> <span class="vn-word">προβολές</span></span></p>
 ${fx ? `    <p class="note">Είναι ${fx.menuEl} του σταθερού μας μενού, κάθε μέρα που είμαστε ανοιχτά (Τρίτη–Κυριακή 12:00–19:30). Για απορίες, καλέστε μας.</p>
@@ -908,7 +923,16 @@ ${fx ? `    <p class="note">Είναι ${fx.menuEl} του σταθερού μα
       <p>Ωράριο: <strong>Τρίτη–Κυριακή 12:00–19:30</strong> · <strong>Δευτέρα κλειστά</strong>.</p>
       <p class="en" lang="en">Hours: Tuesday–Sunday 12:00–19:30 · Closed on Mondays.</p>
     </section>
-${review ? `
+${DISH_PRESS[key] ? `
+    <section class="press" aria-labelledby="press-title">
+      <h2 id="press-title">Αναφορά στον Τύπο <span class="en" lang="en">/ Press mention</span></h2>
+      <blockquote lang="el">«${esc(DISH_PRESS[key].el)}»</blockquote>
+      <p class="en" lang="en">“${esc(DISH_PRESS[key].en)}” — Translated excerpt</p>
+      <p>iefimerida.gr · Ζωή Παπαφωτίου · <time datetime="2026-07-23">23/07/2026</time></p>
+      <p class="en" lang="en">iefimerida.gr · Zoi Papafotiou · 23 July 2026</p>
+      <a href="${DISH_PRESS_URL}" target="_blank" rel="noopener noreferrer">Διαβάστε το άρθρο <span class="en" lang="en">/ Read the article (in Greek)</span></a>
+    </section>
+` : ''}${review ? `
     <section class="review" aria-labelledby="review-title">
       <h2 id="review-title">Τι λένε οι πελάτες μας <span class="en" lang="en">/ What customers say</span></h2>
       <blockquote lang="${review.lang}">«${esc(review.text)}»</blockquote>
