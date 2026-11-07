@@ -443,6 +443,10 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-62.webp", alt: "Σαλάτα Λάχανο - Καρότο - Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι, Matzourana Καλλιθέα | Cabbage and Carrot Salad - Shredded cabbage with grated carrot, dill and lemon, Matzourana Kallithea" } },
     "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
         photo: { file: "web/greek-dish-37.webp", alt: "Χόρτα Εποχής - Βραστά χόρτα εποχής με ελαιόλαδο και λεμόνι, Matzourana Καλλιθέα | Seasonal Greens - Boiled seasonal greens with olive oil and lemon, Matzourana Kallithea" } },
+    "vrasta_lachanika": { table: "salads", group: "salads", row: "Βραστά λαχανικά", pageEl: "Βραστά λαχανικά", pageEn: "Boiled Vegetables",
+        descEl: "Βραστά κολοκυθάκια και χόρτα, με λεμόνι.",
+        descEn: "Boiled courgettes and greens, with lemon.",
+        photo: { file: "web/greek-dish-74.webp", alt: "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea" } },
     "antidia": { table: "salads", group: "salads", row: "Αντίδια", pageEl: "Σαλάτα αντίδια",
         descEl: "Βραστά αντίδια με ελαιόλαδο και λεμόνι",
         descEn: "Boiled endive greens with olive oil and lemon",
@@ -990,7 +994,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp'
 ];
 
 const dishAlts = {
@@ -1065,7 +1069,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-70.webp': "Μπρόκολο - (Βραστό μπρόκολο με ελαιόλαδο και λεμόνι) Matzourana Καλλιθέα | Broccoli - (Boiled broccoli with olive oil and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea",
     'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea",
-    'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea"
+    'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea",
+    'DishImages/web/greek-dish-74.webp': "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea"
  
 };
 
