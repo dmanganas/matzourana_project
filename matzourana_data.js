@@ -16,54 +16,42 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    // Freshly Cooked
-
-    //Meat
     "moschari_kokkinisto",
+    "kreatosoupa",
     "bifteki_moscharisia",
-    "kokoras_krasatos",
+    "kotopoulo_bamies",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
     "soutzoukakia",
     "lachanontolmades",
-
-    // Seafood (fish on the board)
-    "galeos_lemonatos",
-
-    // Soups
     "giouvarlakia",
-    "psarosoupa",
-
-    //Veggy
+    "moussakas",
+    "giantes",
     "melitzanes_imam",
-    "spanakorizo",
     "arakas_lemonatos",
-
-    // Legumes
-    "fasolada",
-    "fakes"
+    "spanakorizo",
+    "revithia",
+    "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
-
     "line",
     "moschari_kokkinisto",
-    "galeos_lemonatos",
+    "kreatosoupa",
     "bifteki_moscharisia",
-    "kokoras_krasatos",
+    "kotopoulo_bamies",
     "kotopoulo_bouti",
     "pastitsio",
-    "keftedakia_tiganita",
     "soutzoukakia",
     "lachanontolmades",
     "giouvarlakia",
-    "psarosoupa",
+    "moussakas",
+    "giantes",
     "melitzanes_imam",
-    "spanakorizo",
-    "arakas_lemonatos"
+    "arakas_lemonatos",
+    "spanakorizo"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -89,7 +77,7 @@ const menuCatalog = {
     "pastitsio": { category: "meat-cooked", el: "Παστίτσιο <br><br> (Με χειροποίητη μπεσαμέλ, 100% μοσχαρίσιο κιμά και ριγκατόνι)", en: "Pastitsio <br><br> (With handmade béchamel, 100% beef mince and rigatoni)", price: "€9.00" },
     "krepes_zampon_tyri": { category: "meat-cooked", el: "Κρέπες ζαμπόν-τυρί <br><br> (Κρέπες με ζαμπόν και κεφαλοτύρι στο φούρνο)", en: "Ham-Cheese Crepes <br><br> (Crepes with ham and kefalotyri baked in the oven)", price: "€7.50" },
     "krepes_kima": { category: "meat-cooked", el: "Κρέπες με κιμά και μπεσαμέλ <br><br> (Κρέπες με κιμά και μπεσαμέλ στο φούρνο)", en: "Crepes with Mince and Béchamel <br><br> (Crepes with mince and béchamel baked in the oven)", price: "€8.00" },
-    "moussakas": { category: "meat-cooked", el: "Μουσακάς <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ και ψητές μελιτζάνες)", en: "Moussaka <br><br> (With 100% beef mince from Astakou Meats, rich béchamel and roasted eggplants)", price: "€10.00" },
+    "moussakas": { category: "meat-cooked", el: "Μουσακάς <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού, πλούσια μπεσαμέλ και ψητές μελιτζάνες)", en: "Moussaka <br><br> (With 100% beef mince from Astakou Meats, rich béchamel and roasted eggplants)", price: "€8.50" },
     "gioulmpasi": { category: "meat-cooked", el: "Γιούλμπασι στην λαδόκολλα", en: "Gioulmpasi in Greaseproof Paper", price: "€12.00" },
     "kleftiko": { category: "meat-cooked", el: "Κλέφτικο στη λαδόκολλα <br><br> (Αργοψημένο με πατάτες, πιπεριές και αρωματικά)", en: "Kleftiko in Parchment <br><br> (Slow-roasted with potatoes, peppers and Greek herbs)", price: "€9.00" },
     "papoutsakia": { category: "meat-cooked", el: "Μελιτζάνες παπουτσάκια <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και βελούδινη μπεσαμέλ)", en: "Stuffed Eggplants (Papoutsakia) <br><br> (With 100% beef mince from Astakou Meats and velvety béchamel)", price: "€8.90" },
@@ -112,6 +100,7 @@ const menuCatalog = {
     "kotopoulo_kokkinisto": { category: "meat-cooked", el: "Κοτόπουλο κοκκινιστό Ελευθέρας βοσκής <br><br> (Παραδοσιακό κοτόπουλο Ελευθέρας βοσκής από την Ναύπακτο)", en: "Free-Range Chicken in Red Sauce <br><br> (Traditional free-range chicken from Nafpaktos)", price: "€9.00" },
     "kotopoulo_fournou": { category: "meat-cooked", el: "Κοτόπουλο στο φούρνο, ελευθέρας βοσκής", en: "Free-Range Roast Chicken", price: "€9.00" },
     
+    "kotopoulo_bamies": { category: "meat-cooked", el: "Κοτόπουλο με μπάμιες <br><br> (Κοτόπουλο μαγειρεμένο με μπάμιες.)", en: "Chicken with Okra <br><br> (Chicken cooked with okra.)", price: "€10.00" },
     "kotopoulo_bouti": { category: "meat-cooked", el: "Κοτόπουλο μπούτι στο φούρνο, με πατάτες <br><br> (Παραδοσιακό κοτόπουλο Ελευθέρας βοσκής από την Ναύπακτο)", en: "Oven-Baked Chicken Leg with Potatoes <br><br> (Traditional free-range chicken from Nafpaktos)", price: "€9.00" },
     "kotopoulo_frikase": { category: "meat-cooked", el: "Κοτόπουλο φρικασέ <br><br> (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο)", en: "Chicken Fricassee <br><br> (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce)", price: "€9.50" },
 
@@ -196,7 +185,7 @@ const menuCatalog = {
     "patsas_vrastos": { category: "soups", el: "Πατσάς βραστός <br><br> (Με μοσχάρι, λεμονάτος)", en: "Boiled Tripe Soup <br><br> (With beef, lemony)", price: "€10.00" },
     "patsas_anamiktos": { category: "soups", el: "Πατσάς ανάμικτος <br><br> (Με μοσχάρι και αρνί, λεμονάτος)", en: "Mixed Tripe Soup <br><br> (With beef and lamb)", price: "€10.00" },
     "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.50" },
-    "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.00" },
+    "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.50" },
     "borscht": { category: "soups", el: "Σούπα Μπορς (Μπόρστ) <br><br> (Με μοσχάρι, λάχανο και παντζάρι)", en: "Borscht Soup <br><br> (With beef, cabbage and beetroot)", price: "€8.00" },
     "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.00" },
     "magiritsa": { category: "soups", el: "Μαγειρίτσα <br><br> (Κλασική πασχαλινή σούπα με αρνί και αυγολέμονο)", en: "Magiritsa <br><br> (Classic Easter soup with lamb and egg-lemon sauce)", price: "€10.00" },
@@ -739,6 +728,11 @@ const highlightsCatalog = {
     
 
     // ==================== POULTRY ====================
+    "kotopoulo_bamies": {
+        icons: ["dish/chicken.png", "dish/okra.png"],
+        el: "Κοτόπουλο <br> με μπάμιες",
+        en: "Chicken <br> with Okra"
+    },
     "kotopoulo_bouti": {
         icons: ["dish/chicken.png", "dish/oven.png"],
         el: "Κοτόπουλο <br> μπούτι <br> με πατάτες",
