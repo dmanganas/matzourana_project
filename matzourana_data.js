@@ -438,7 +438,10 @@ const fixedMenuDishPages = {
         photo: { file: "web/greek-dish-21.webp", alt: "Ντάκος - Κριθαροκούλουρο με φέτα ΠΟΠ και τριμμένη ντομάτα, Matzourana Καλλιθέα | Dakos - Cretan rusk with PDO feta and grated tomato, Matzourana Kallithea" } },
     "choriatiki": { table: "salads", group: "salads", row: "Χωριάτικη", pageEl: "Χωριάτικη σαλάτα",
         photo: { file: "web/greek-dish-64.webp", alt: "Χωριάτικη σαλάτα - Ντομάτα, αγγούρι, πράσινη πιπεριά, κρεμμύδι, ελιές, φέτα και ρίγανη, Matzourana Καλλιθέα | Greek Village Salad - Tomato, cucumber, green pepper, onion, olives, feta and oregano, Matzourana Kallithea" } },
-    "salata_marouli": { table: "salads", group: "salads", row: "Μαρούλι", pageEl: "Σαλάτα Μαρούλι" },
+    "salata_marouli": { table: "salads", group: "salads", row: "Σαλάτα μαρούλι με άνηθο", pageEl: "Σαλάτα μαρούλι με άνηθο", pageEn: "Lettuce Salad with Dill",
+        descEl: "Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι.",
+        descEn: "Lettuce with dill, spring onion and lemon.",
+        photo: { file: "web/greek-dish-75.webp", alt: "Σαλάτα μαρούλι με άνηθο - Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι. Matzourana Καλλιθέα | Lettuce Salad with Dill - Lettuce with dill, spring onion and lemon. Matzourana Kallithea" } },
     "salata_lachano_karoto": { table: "salads", group: "salads", row: "Λαχανό - Καρότο", pageEl: "Σαλάτα Λάχανο - Καρότο",
         photo: { file: "web/greek-dish-62.webp", alt: "Σαλάτα Λάχανο - Καρότο - Ψιλοκομμένο λάχανο με τριμμένο καρότο, άνηθο και λεμόνι, Matzourana Καλλιθέα | Cabbage and Carrot Salad - Shredded cabbage with grated carrot, dill and lemon, Matzourana Kallithea" } },
     "chorta_epochis": { table: "salads", group: "salads", row: "Χόρτα Εποχής",
@@ -994,7 +997,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp'
 ];
 
 const dishAlts = {
@@ -1070,7 +1073,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-71.webp': "Μπιφτέκια μοσχαρίσια με πατάτες στον φούρνο - (Χειροποίητα 300γρ, με πατάτες φούρνου και ρίγανη) Matzourana Καλλιθέα | Oven-Baked Beef Patties with Potatoes - (Handmade 300g beef patties with oven potatoes and oregano) Matzourana Kallithea",
     'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea",
-    'DishImages/web/greek-dish-74.webp': "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea"
+    'DishImages/web/greek-dish-74.webp': "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea",
+    'DishImages/web/greek-dish-75.webp': "Σαλάτα μαρούλι με άνηθο - Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι. Matzourana Καλλιθέα | Lettuce Salad with Dill - Lettuce with dill, spring onion and lemon. Matzourana Kallithea"
  
 };
 
