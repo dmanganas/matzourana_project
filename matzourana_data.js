@@ -464,6 +464,10 @@ const fixedMenuDishPages = {
         descEl: "Γιαούρτι, αγγούρι, σκόρδο, άνηθος και λίγο ελαιόλαδο",
         descEn: "Yoghurt, cucumber, garlic, dill and a touch of olive oil",
         photo: { file: "web/greek-dish-68.webp", alt: "Τζατζίκι χειροποίητο - Με ελαιόλαδο, μια ελιά και άνηθο, Matzourana Καλλιθέα | Homemade Tzatziki - With olive oil, an olive and dill, Matzourana Kallithea" } },
+    "tyrokafteri": { table: "appetizers", group: "dips", row: "Τυροκαυτερή Χειροποίητη", pageEl: "Τυροκαυτερή Χειροποίητη", pageEn: "Handmade Tyrokafteri",
+        descEl: "Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς.",
+        descEn: "An irresistible homemade spicy cheese spread with feta from Kefalonia.",
+        photo: { file: "web/greek-dish-76.webp", alt: "Τυροκαυτερή Χειροποίητη - Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς. Matzourana Καλλιθέα | Handmade Tyrokafteri - An irresistible homemade spicy cheese spread with feta from Kefalonia. Matzourana Kallithea" } },
     "fava_orektiko": { table: "appetizers", group: "dips", row: "Φάβα (με μαϊντανό, κρεμμύδι κ’ λεμόνι)",
         photo: { file: "web/greek-dish-72.webp", alt: "Φάβα - Με μαϊντανό, κρεμμύδι και λεμόνι, Matzourana Καλλιθέα | Fava - Yellow split peas with parsley, onion and lemon, Matzourana Kallithea" } },
     "chaloumi_psito": { table: "appetizers", group: "dips", row: "Χαλούμι ψητό",
@@ -974,7 +978,7 @@ const highlightsCatalog = {
 // Photos shuffled next to the menu tables, and their bilingual alt texts ("EL | EN")
 const imageList = [
     'DishImages/web/greek-dish-1.webp', 'DishImages/web/greek-dish-2.webp', 'DishImages/web/greek-dish-3.webp',
-    'DishImages/web/greek-dish-4.webp', 'DishImages/web/greek-dish-5.webp', 'DishImages/web/greek-dish-6.webp',
+    'DishImages/web/greek-dish-4.webp', 'DishImages/web/greek-dish-76.webp', 'DishImages/web/greek-dish-6.webp',
     'DishImages/web/greek-dish-7.webp', 'DishImages/web/greek-dish-8.webp', 'DishImages/web/greek-dish-9.webp',
     'DishImages/web/greek-dish-10.webp', 'DishImages/web/greek-dish-11.webp', 'DishImages/web/greek-dish-12.webp',
     'DishImages/web/greek-dish-13.webp', 'DishImages/web/greek-dish-14.webp', 'DishImages/web/greek-dish-15.webp',
@@ -1074,7 +1078,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-72.webp': "Φάβα - (Με μαϊντανό, κρεμμύδι και λεμόνι) Matzourana Καλλιθέα | Fava - (Yellow split peas with parsley, onion and lemon) Matzourana Kallithea",
     'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea",
     'DishImages/web/greek-dish-74.webp': "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea",
-    'DishImages/web/greek-dish-75.webp': "Σαλάτα μαρούλι με άνηθο - Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι. Matzourana Καλλιθέα | Lettuce Salad with Dill - Lettuce with dill, spring onion and lemon. Matzourana Kallithea"
+    'DishImages/web/greek-dish-75.webp': "Σαλάτα μαρούλι με άνηθο - Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι. Matzourana Καλλιθέα | Lettuce Salad with Dill - Lettuce with dill, spring onion and lemon. Matzourana Kallithea",
+    'DishImages/web/greek-dish-76.webp': "Τυροκαυτερή Χειροποίητη - Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς. Matzourana Καλλιθέα | Handmade Tyrokafteri - An irresistible homemade spicy cheese spread with feta from Kefalonia. Matzourana Kallithea"
  
 };
 
