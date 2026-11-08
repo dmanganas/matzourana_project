@@ -24,6 +24,7 @@ const currentDailyMenu = [
     "kotopoulo_bouti",
     "makaronia_kima",
     "kotosoupa",
+    "psarosoupa",
     "lachanontolmades",
     "giouvarlakia",
     "moussakas",
@@ -47,6 +48,7 @@ const currentHighlights = [
     "giouvarlakia",
     "kotosoupa",
     "kreatosoupa",
+    "psarosoupa",
     "moussakas",
     "briam",
     "arakas_lemonatos"
