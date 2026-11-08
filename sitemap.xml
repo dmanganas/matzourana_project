@@ -94,6 +94,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-73.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-74.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-75.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-77.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -492,6 +493,12 @@
   <lastmod>2026-10-28</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-68.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/feta/</loc>
+  <lastmod>2026-11-08</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-77.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/tyrokafteri/</loc>

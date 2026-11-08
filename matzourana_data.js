@@ -464,6 +464,10 @@ const fixedMenuDishPages = {
         descEl: "Γιαούρτι, αγγούρι, σκόρδο, άνηθος και λίγο ελαιόλαδο",
         descEn: "Yoghurt, cucumber, garlic, dill and a touch of olive oil",
         photo: { file: "web/greek-dish-68.webp", alt: "Τζατζίκι χειροποίητο - Με ελαιόλαδο, μια ελιά και άνηθο, Matzourana Καλλιθέα | Homemade Tzatziki - With olive oil, an olive and dill, Matzourana Kallithea" } },
+    "feta": { table: "appetizers", group: "dips", row: "Φέτα ΠΟΠ Ηπείρου με έξτρα παρθένο ελαιόλαδο κ’ ρίγανη", pageEl: "Φέτα ΠΟΠ Ηπείρου", pageEn: "Epirus PDO Feta",
+        descEl: "Με έξτρα παρθένο ελαιόλαδο και ρίγανη.",
+        descEn: "With extra virgin olive oil and oregano.",
+        photo: { file: "web/greek-dish-77.webp", alt: "Φέτα ΠΟΠ Ηπείρου - Με έξτρα παρθένο ελαιόλαδο και ρίγανη. Matzourana Καλλιθέα | Epirus PDO Feta - With extra virgin olive oil and oregano. Matzourana Kallithea" } },
     "tyrokafteri": { table: "appetizers", group: "dips", row: "Τυροκαυτερή Χειροποίητη", pageEl: "Τυροκαυτερή Χειροποίητη", pageEn: "Handmade Tyrokafteri",
         descEl: "Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς.",
         descEn: "An irresistible homemade spicy cheese spread with feta from Kefalonia.",
@@ -1001,7 +1005,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp'
 ];
 
 const dishAlts = {
@@ -1079,7 +1083,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-73.webp': "Μακαρόνια με κιμά (Μπολονέζ) - (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού) Matzourana Καλλιθέα | Spaghetti with Minced Meat (Bolognese) - (With 100% beef mince from Astakou Meats) Matzourana Kallithea",
     'DishImages/web/greek-dish-74.webp': "Βραστά λαχανικά - Βραστά κολοκυθάκια και χόρτα, με λεμόνι, Matzourana Καλλιθέα | Boiled Vegetables - Boiled courgettes and greens, with lemon, Matzourana Kallithea",
     'DishImages/web/greek-dish-75.webp': "Σαλάτα μαρούλι με άνηθο - Μαρούλι με άνηθο, φρέσκο κρεμμυδάκι και λεμόνι. Matzourana Καλλιθέα | Lettuce Salad with Dill - Lettuce with dill, spring onion and lemon. Matzourana Kallithea",
-    'DishImages/web/greek-dish-76.webp': "Τυροκαυτερή Χειροποίητη - Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς. Matzourana Καλλιθέα | Handmade Tyrokafteri - An irresistible homemade spicy cheese spread with feta from Kefalonia. Matzourana Kallithea"
+    'DishImages/web/greek-dish-76.webp': "Τυροκαυτερή Χειροποίητη - Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς. Matzourana Καλλιθέα | Handmade Tyrokafteri - An irresistible homemade spicy cheese spread with feta from Kefalonia. Matzourana Kallithea",
+    'DishImages/web/greek-dish-77.webp': "Φέτα ΠΟΠ Ηπείρου - Με έξτρα παρθένο ελαιόλαδο και ρίγανη. Matzourana Καλλιθέα | Epirus PDO Feta - With extra virgin olive oil and oregano. Matzourana Kallithea"
  
 };
 
