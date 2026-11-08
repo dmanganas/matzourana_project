@@ -16,42 +16,40 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_kokkinisto",
+    "moschari_giouvetsi",
+    "moschari_lemonato",
     "kreatosoupa",
     "bifteki_moscharisia",
-    "kotopoulo_bamies",
+    "kokoras_hilopites",
     "kotopoulo_bouti",
-    "pastitsio",
     "makaronia_kima",
-    "soutzoukakia",
+    "kotosoupa",
     "lachanontolmades",
     "giouvarlakia",
     "moussakas",
-    "giantes",
     "melitzanes_imam",
-    "arakas_lemonatos",
-    "spanakorizo",
-    "revithia",
+    "fasolakia",
+    "briam",
+    "fakes",
     "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_kokkinisto",
-    "kreatosoupa",
+    "moschari_giouvetsi",
+    "moschari_lemonato",
     "bifteki_moscharisia",
-    "kotopoulo_bamies",
+    "kokoras_hilopites",
     "kotopoulo_bouti",
-    "pastitsio",
-    "soutzoukakia",
+    "keftedakia_tiganita",
     "lachanontolmades",
     "giouvarlakia",
+    "kotosoupa",
+    "kreatosoupa",
     "moussakas",
-    "giantes",
-    "melitzanes_imam",
-    "arakas_lemonatos",
-    "spanakorizo"
+    "briam",
+    "arakas_lemonatos"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
