@@ -16,42 +16,42 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_giouvetsi",
-    "moschari_lemonato",
-    "kreatosoupa",
+    "moschari_kokkinisto",
     "bifteki_moscharisia",
-    "kokoras_hilopites",
+    "kotopoulo_ragou",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
+    "pastitsio",
     "makaronia_kima",
-    "kotosoupa",
-    "psarosoupa",
+    "soutzoukakia",
+    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
-    "moussakas",
-    "melitzanes_imam",
+    "kotosoupa",
     "fasolakia",
     "briam",
-    "fakes",
+    "spanakorizo",
+    "revithia",
     "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_giouvetsi",
-    "moschari_lemonato",
+    "moschari_kokkinisto",
     "bifteki_moscharisia",
-    "kokoras_hilopites",
+    "kotopoulo_ragou",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
-    "keftedakia_tiganita",
+    "pastitsio",
+    "soutzoukakia",
+    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
-    "kreatosoupa",
-    "psarosoupa",
-    "moussakas",
+    "fasolakia",
     "briam",
-    "arakas_lemonatos"
+    "spanakorizo"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -101,6 +101,7 @@ const menuCatalog = {
     "kotopoulo_fournou": { category: "meat-cooked", el: "Κοτόπουλο στο φούρνο, ελευθέρας βοσκής", en: "Free-Range Roast Chicken", price: "€9.00" },
     
     "kotopoulo_bamies": { category: "meat-cooked", el: "Κοτόπουλο με μπάμιες <br><br> (Κοτόπουλο μαγειρεμένο με μπάμιες.)", en: "Chicken with Okra <br><br> (Chicken cooked with okra.)", price: "€10.00" },
+    "kotopoulo_ragou": { category: "meat-cooked", el: "Κοτόπουλο ραγού <br><br> (Κοτόπουλο ραγού με μελιτζάνες και πατάτες.)", en: "Chicken Ragout <br><br> (Chicken ragout with eggplant and potatoes.)", price: "€10.00" },
     "kotopoulo_bouti": { category: "meat-cooked", el: "Κοτόπουλο μπούτι στο φούρνο, με πατάτες <br><br> (Παραδοσιακό κοτόπουλο Ελευθέρας βοσκής από την Ναύπακτο)", en: "Oven-Baked Chicken Leg with Potatoes <br><br> (Traditional free-range chicken from Nafpaktos)", price: "€9.00" },
     "kotopoulo_frikase": { category: "meat-cooked", el: "Κοτόπουλο φρικασέ <br><br> (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο)", en: "Chicken Fricassee <br><br> (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce)", price: "€9.50" },
 
@@ -747,6 +748,11 @@ const highlightsCatalog = {
         icons: ["dish/chicken.png", "dish/okra.png"],
         el: "Κοτόπουλο <br> με μπάμιες",
         en: "Chicken <br> with Okra"
+    },
+    "kotopoulo_ragou": {
+        icons: ["dish/chicken.png", "dish/eggplant.png"],
+        el: "Κοτόπουλο <br> ραγού",
+        en: "Chicken <br> Ragout"
     },
     "kotopoulo_bouti": {
         icons: ["dish/chicken.png", "dish/oven.png"],
