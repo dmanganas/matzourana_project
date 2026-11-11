@@ -395,6 +395,10 @@ const dishImageMap = {
         file: "web/greek-dish-79.webp",
         alt: "Ψαρόσουπα με φρέσκο ψάρι. Matzourana Καλλιθέα | Fish Soup with Fresh Fish. Matzourana Kallithea"
     },
+    "manitaria_frikase": {
+        file: "web/greek-dish-80.webp",
+        alt: "Μανιτάρια Φρικασέ - Έκρηξη γεύσης με αρωματικά χόρτα. Matzourana Καλλιθέα | Mushroom Fricassee - An explosion of flavor with aromatic herbs. Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -1019,7 +1023,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp', 'DishImages/web/greek-dish-80.webp'
 ];
 
 const dishAlts = {
@@ -1100,7 +1104,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-76.webp': "Τυροκαυτερή Χειροποίητη - Τυροκαυτερή με ακαταμάχητη, σπιτική συνταγή, με φέτα Κεφαλονιάς. Matzourana Καλλιθέα | Handmade Tyrokafteri - An irresistible homemade spicy cheese spread with feta from Kefalonia. Matzourana Kallithea",
     'DishImages/web/greek-dish-77.webp': "Φέτα ΠΟΠ Ηπείρου - Με έξτρα παρθένο ελαιόλαδο και ρίγανη. Matzourana Καλλιθέα | Epirus PDO Feta - With extra virgin olive oil and oregano. Matzourana Kallithea",
     'DishImages/web/greek-dish-78.webp': "Ρεβύθια - Για όσους προσέχουν τη διατροφή τους. Matzourana Καλλιθέα | Chickpea Stew. Matzourana Kallithea",
-    'DishImages/web/greek-dish-79.webp': "Ψαρόσουπα με φρέσκο ψάρι. Matzourana Καλλιθέα | Fish Soup with Fresh Fish. Matzourana Kallithea"
+    'DishImages/web/greek-dish-79.webp': "Ψαρόσουπα με φρέσκο ψάρι. Matzourana Καλλιθέα | Fish Soup with Fresh Fish. Matzourana Kallithea",
+    'DishImages/web/greek-dish-80.webp': "Μανιτάρια Φρικασέ - Έκρηξη γεύσης με αρωματικά χόρτα. Matzourana Καλλιθέα | Mushroom Fricassee - An explosion of flavor with aromatic herbs. Matzourana Kallithea"
  
 };
 
