@@ -16,41 +16,41 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_kokkinisto",
+    "moschari_lemonato",
+    "galeos_fournou",
+    "kreatosoupa",
+    "psarosoupa",
     "bifteki_moscharisia",
-    "kotopoulo_ragou",
-    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
+    "keftedakia_tiganita",
     "soutzoukakia",
-    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
+    "manitaria_frikase",
     "kotosoupa",
-    "fasolakia",
-    "briam",
     "spanakorizo",
     "revithia",
-    "fasolada"
+    "fasolada",
+    "fakes"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_kokkinisto",
+    "moschari_lemonato",
+    "galeos_fournou",
+    "kreatosoupa",
+    "psarosoupa",
     "bifteki_moscharisia",
-    "kotopoulo_ragou",
-    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
+    "keftedakia_tiganita",
     "soutzoukakia",
-    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
-    "fasolakia",
-    "briam",
     "spanakorizo"
 ];
 
@@ -83,7 +83,7 @@ const menuCatalog = {
     "papoutsakia": { category: "meat-cooked", el: "Μελιτζάνες παπουτσάκια <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και βελούδινη μπεσαμέλ)", en: "Stuffed Eggplants (Papoutsakia) <br><br> (With 100% beef mince from Astakou Meats and velvety béchamel)", price: "€8.90" },
     "gemista_kima": { category: "meat-cooked", el: "Γεμιστά με κιμά <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και ρύζι)", en: "Stuffed Vegetables with Mince <br><br> (With 100% beef mince from Astakou Meats and rice)", price: "€8.00" },
     "bifteki_kotopoulo": { category: "meat-cooked", el: "Μπιφτέκια κοτόπουλο στον φούρνο <br><br> (Πολύ νόστιμο και ελαφρύ)", en: "Baked Chicken Patties <br><br> (Very tasty and light)", price: "€9.50" },
-    "bifteki_moscharisia": { category: "meat-cooked", el: "Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα 300γρ)", en: "Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties)", price: "€10.00" },
+    "bifteki_moscharisia": { category: "meat-cooked", el: "Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα 300γρ)", en: "Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties)", price: "€9.00" },
     "moschari_stifado": { category: "meat-cooked", el: "Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό)", en: "Beef Stifado <br><br> (Traditional and fragrant)", price: "€13.50" },
     "moschari_kokkinisto": { category: "meat-cooked", el: "Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι χτένι από Κρέατα Αστακού)", en: "Beef in Red Sauce <br><br> (Tender beef shank from Astakou Meats)", price: "€12.00" },
     "moschari_ragout": { category: "meat-cooked", el: "Μοσχάρι ραγού <br><br> (Τρυφερό μοσχαράκι κοκκινιστό με πατάτες ραγού)", en: "Beef Ragout <br><br> (Tender beef in red sauce with potato ragout)", price: "€10.50" },
@@ -128,7 +128,7 @@ const menuCatalog = {
     "gemista_rice": { category: "veg-cooked", el: "Γεμιστά με ρύζι <br><br> (Ντομάτα και πιπεριά με ρύζι, μυρωδικά και πατατούλες)", en: "Stuffed Vegetables with Rice <br><br> (Tomato and pepper with rice, herbs and potatoes)", price: "€7.50" },
     "gemista_superfoods": { category: "veg-cooked", el: "Γεμιστά με superfoods <br><br> (Σταφίδες, κουκουνάρι, κράνμπερι, καρύδια)", en: "Stuffed Vegetables with Superfoods <br><br> (Raisins, pine nuts, cranberries, walnuts)", price: "€8.00" },
     "anginares_polita": { category: "veg-cooked", el: "Αγγινάρες φρέσκιες αλά πολίτα <br><br> (Με φρέσκιες αγγινάρες και λεμονάτες πατάτες)", en: "Fresh Artichokes à la Polita <br><br> (With fresh artichokes and lemony potatoes)", price: "€9.00" },
-    "manitaria_frikase": { category: "veg-cooked", el: "Μανιτάρια Φρικασέ <br><br> (Έκρηξη γεύσης με αρωματικά χόρτα)", en: "Mushroom Fricassee <br><br> (An explosion of flavor with aromatic herbs)", price: "€7.50" },
+    "manitaria_frikase": { category: "veg-cooked", el: "Μανιτάρια Φρικασέ <br><br> (Έκρηξη γεύσης με αρωματικά χόρτα)", en: "Mushroom Fricassee <br><br> (An explosion of flavor with aromatic herbs)", price: "€8.50" },
     "revithia_frikase": { category: "veg-cooked", el: "Ρεβύθια Φρικασέ <br><br> (Vegan συνταγή, εύκολη και πολύ υγιεινή)", en: "Chickpea Fricassee <br><br> (Vegan recipe, easy and very healthy)", price: "€7.50" },
     "arakas_lemonatos": { category: "veg-cooked", el: "Αρακάς λεμονάτος <br><br> (Με πατάτες, καρότο και άνιθο)", en: "Lemony Peas <br><br> (With potatoes, carrot and dill)", price: "€6.50" },
     "fasolakia": { category: "veg-cooked", el: "Φρέσκα Φασολάκια λαδερά <br><br> (Με ντοματούλα και πατάτες)", en: "Fresh Green Beans in Olive Oil <br><br> (With tomato and potatoes)", price: "€7.00" },
