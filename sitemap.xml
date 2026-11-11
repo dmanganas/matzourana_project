@@ -98,6 +98,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-78.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-79.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-80.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-81.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -390,6 +391,12 @@
   <lastmod>2026-10-19</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-16.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/fakes/</loc>
+  <lastmod>2026-11-11</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-81.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/fasolada/</loc>
