@@ -16,21 +16,19 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_lemonato",
-    "galeos_fournou",
+    "moschari_kokkinisto",
+    "galeos_lemonatos",
     "kreatosoupa",
-    "psarosoupa",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
-    "soutzoukakia",
     "lachanontolmades",
+    "kolokythakia_gemista",
     "giouvarlakia",
-    "manitaria_frikase",
     "kotosoupa",
-    "spanakorizo",
+    "giantes",
+    "briam",
     "revithia",
     "fasolada",
     "fakes"
@@ -39,19 +37,18 @@ const currentDailyMenu = [
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_lemonato",
-    "galeos_fournou",
+    "moschari_kokkinisto",
+    "galeos_lemonatos",
     "kreatosoupa",
-    "psarosoupa",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
-    "keftedakia_tiganita",
-    "soutzoukakia",
     "lachanontolmades",
+    "kolokythakia_gemista",
     "giouvarlakia",
     "kotosoupa",
-    "spanakorizo"
+    "giantes",
+    "briam"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -83,7 +80,7 @@ const menuCatalog = {
     "papoutsakia": { category: "meat-cooked", el: "Μελιτζάνες παπουτσάκια <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και βελούδινη μπεσαμέλ)", en: "Stuffed Eggplants (Papoutsakia) <br><br> (With 100% beef mince from Astakou Meats and velvety béchamel)", price: "€8.90" },
     "gemista_kima": { category: "meat-cooked", el: "Γεμιστά με κιμά <br><br> (Με 100% μοσχαρίσιο κιμά από Κρέατα Αστακού και ρύζι)", en: "Stuffed Vegetables with Mince <br><br> (With 100% beef mince from Astakou Meats and rice)", price: "€8.00" },
     "bifteki_kotopoulo": { category: "meat-cooked", el: "Μπιφτέκια κοτόπουλο στον φούρνο <br><br> (Πολύ νόστιμο και ελαφρύ)", en: "Baked Chicken Patties <br><br> (Very tasty and light)", price: "€9.50" },
-    "bifteki_moscharisia": { category: "meat-cooked", el: "Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα 300γρ)", en: "Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties)", price: "€9.00" },
+    "bifteki_moscharisia": { category: "meat-cooked", el: "Μπιφτέκια Μοσχαρίσια με πατάτες στον φούρνο <br><br> (Χειροποίητα 300γρ)", en: "Oven-Baked Beef Patties with Potatoes <br><br> (Handmade 300g beef patties)", price: "€10.00" },
     "moschari_stifado": { category: "meat-cooked", el: "Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό)", en: "Beef Stifado <br><br> (Traditional and fragrant)", price: "€13.50" },
     "moschari_kokkinisto": { category: "meat-cooked", el: "Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι χτένι από Κρέατα Αστακού)", en: "Beef in Red Sauce <br><br> (Tender beef shank from Astakou Meats)", price: "€12.00" },
     "moschari_ragout": { category: "meat-cooked", el: "Μοσχάρι ραγού <br><br> (Τρυφερό μοσχαράκι κοκκινιστό με πατάτες ραγού)", en: "Beef Ragout <br><br> (Tender beef in red sauce with potato ragout)", price: "€10.50" },
