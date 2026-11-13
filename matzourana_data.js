@@ -18,20 +18,22 @@
 const currentDailyMenu = [
     "moschari_kokkinisto",
     "galeos_lemonatos",
-    "kreatosoupa",
+    "psarosoupa",
     "bifteki_moscharisia",
+    "kokoras_krasatos",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
     "pastitsio",
-    "makaronia_kima",
+    "keftedakia_saltsa",
+    "soutzoukakia",
     "lachanontolmades",
-    "kolokythakia_gemista",
     "giouvarlakia",
     "kotosoupa",
-    "giantes",
+    "fasolakia",
     "briam",
+    "spanakorizo",
     "revithia",
-    "fasolada",
-    "fakes"
+    "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
@@ -39,16 +41,20 @@ const currentHighlights = [
     "line",
     "moschari_kokkinisto",
     "galeos_lemonatos",
-    "kreatosoupa",
+    "psarosoupa",
     "bifteki_moscharisia",
+    "kokoras_krasatos",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
     "pastitsio",
+    "keftedakia_saltsa",
+    "soutzoukakia",
     "lachanontolmades",
-    "kolokythakia_gemista",
     "giouvarlakia",
     "kotosoupa",
-    "giantes",
-    "briam"
+    "fasolakia",
+    "briam",
+    "spanakorizo"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -185,7 +191,7 @@ const menuCatalog = {
     "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.50" },
     "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.50" },
     "borscht": { category: "soups", el: "Σούπα Μπορς (Μπόρστ) <br><br> (Με μοσχάρι, λάχανο και παντζάρι)", en: "Borscht Soup <br><br> (With beef, cabbage and beetroot)", price: "€8.00" },
-    "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.00" },
+    "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.50" },
     "magiritsa": { category: "soups", el: "Μαγειρίτσα <br><br> (Κλασική πασχαλινή σούπα με αρνί και αυγολέμονο)", en: "Magiritsa <br><br> (Classic Easter soup with lamb and egg-lemon sauce)", price: "€10.00" },
     "giouvarlakia": { category: "soups", el: "Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά)", en: "Meatball Egg-Lemon Soup", price: "€9.00" },
     "hortosoupa_trahanas": { category: "soups", el: "Χορτόσουπα με τραχανά", en: "Vegetable Soup with Trahana", price: "€5.50" },
