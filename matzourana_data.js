@@ -16,44 +16,40 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_giouvesti",
+    "perka_fournou",
+    "moschari_kokkinisto",
     "moschari_lemonato",
+    "kreatosoupa",
     "bifteki_moscharisia",
-    "kotopoulo_ragou",
+    "mydopilafo",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_saltsa",
+    "soutzoukakia",
     "lachanontolmades",
-    "giouvarlakia",
     "kotosoupa",
-    "bamies_fournou",
     "giantes",
-    "fasolakia",
-    "briam",
     "revithia",
     "spanakorizo",
-    "fasolada",
-    "fakes"
+    "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_giouvesti",
+    "moschari_kokkinisto",
     "moschari_lemonato",
+    "kreatosoupa",
     "bifteki_moscharisia",
-    "kotopoulo_ragou",
+    "mydopilafo",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
-    "keftedakia_saltsa",
+    "soutzoukakia",
     "lachanontolmades",
-    "giouvarlakia",
     "kotosoupa",
-    "bamies_fournou",
     "giantes",
-    "fasolakia",
-    "briam",
     "spanakorizo"
 ];
 
@@ -183,13 +179,14 @@ const menuCatalog = {
     "gavros_lemonatos": { category: "seafood", el: "Γαύρος φρέσκος λεμονάτος <br><br> (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά!)", en: "Fresh Anchovies with Lemon <br><br> (With fresh lemon, olive oil, and herbs)", price: "€9.00" },
     "perka_plaki": { category: "seafood", el: "Πέρκα πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Baked Perch <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€10.00" },
     "perka_lemonati": { category: "seafood", el: "Πέρκα Λεμονάτη <br><br> (Με φρέσκο λεμόνι και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Lemon Perch <br><br> (With fresh lemon and herbs, baked in a clay pot for extra deliciousness)", price: "€12.50" },
+    "perka_fournou": { category: "seafood", el: "Πέρκα στο φούρνο", en: "Baked Perch in the Oven", price: "€13.50" },
     "glossa_lemonati": { category: "seafood", el: "Γλώσσα Λεμονάτη με πατάτες <br><br> (Φιλέτο γλώσσας μαγειρεμένο με φρέσκο λεμόνι, ελαιόλαδο και αρωματικά μυρωδικά, σερβιρισμένο με πατάτες)", en: "Lemon Sole in Lemon Sauce with Potatoes <br><br> (Sole fillet cooked with fresh lemon, olive oil, and aromatic herbs, served with potatoes)", price: "€9.00" },
     "peskandritsa_plaki": { category: "seafood", el: "Πεσκανδρίτσα πλακί <br><br> (Φρέσκια πεσκανδρίτσα μαγειρεμένη με ντομάτα, κρεμμύδι και αρωματικά μυρωδικά, ψημένη στη γάστρα για πλούσια γεύση και άρωμα θάλασσας)", en: "Monkfish Plaki <br><br> (Fresh monkfish cooked with tomato, onion and aromatic herbs, baked in a clay pot for rich flavor and a true taste of the sea)", price: "€15.00" },
 
     // ==================== ΣΟΥΠΕΣ ====================
     "patsas_vrastos": { category: "soups", el: "Πατσάς βραστός <br><br> (Με μοσχάρι, λεμονάτος)", en: "Boiled Tripe Soup <br><br> (With beef, lemony)", price: "€10.00" },
     "patsas_anamiktos": { category: "soups", el: "Πατσάς ανάμικτος <br><br> (Με μοσχάρι και αρνί, λεμονάτος)", en: "Mixed Tripe Soup <br><br> (With beef and lamb)", price: "€10.00" },
-    "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€9.00" },
+    "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.50" },
     "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.50" },
     "borscht": { category: "soups", el: "Σούπα Μπορς (Μπόρστ) <br><br> (Με μοσχάρι, λάχανο και παντζάρι)", en: "Borscht Soup <br><br> (With beef, cabbage and beetroot)", price: "€8.00" },
     "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.50" },
@@ -201,7 +198,7 @@ const menuCatalog = {
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
     "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.50" },
-    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€7.00" },
+    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
 
