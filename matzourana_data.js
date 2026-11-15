@@ -38,6 +38,7 @@ const currentDailyMenu = [
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
+    "perka_fournou",
     "moschari_kokkinisto",
     "moschari_lemonato",
     "kreatosoupa",
@@ -179,7 +180,7 @@ const menuCatalog = {
     "gavros_lemonatos": { category: "seafood", el: "Γαύρος φρέσκος λεμονάτος <br><br> (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά!)", en: "Fresh Anchovies with Lemon <br><br> (With fresh lemon, olive oil, and herbs)", price: "€9.00" },
     "perka_plaki": { category: "seafood", el: "Πέρκα πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Baked Perch <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€10.00" },
     "perka_lemonati": { category: "seafood", el: "Πέρκα Λεμονάτη <br><br> (Με φρέσκο λεμόνι και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Lemon Perch <br><br> (With fresh lemon and herbs, baked in a clay pot for extra deliciousness)", price: "€12.50" },
-    "perka_fournou": { category: "seafood", el: "Πέρκα στο φούρνο", en: "Baked Perch in the Oven", price: "€13.50" },
+    "perka_fournou": { category: "seafood", el: "Πέρκα στο φούρνο <br><br> (Με ελαιόλαδο, φρέσκο λεμόνι και μυρωδικά, ψημένη στο φούρνο)", en: "Baked Perch in the Oven <br><br> (With olive oil, fresh lemon and herbs, baked in the oven)", price: "€13.50" },
     "glossa_lemonati": { category: "seafood", el: "Γλώσσα Λεμονάτη με πατάτες <br><br> (Φιλέτο γλώσσας μαγειρεμένο με φρέσκο λεμόνι, ελαιόλαδο και αρωματικά μυρωδικά, σερβιρισμένο με πατάτες)", en: "Lemon Sole in Lemon Sauce with Potatoes <br><br> (Sole fillet cooked with fresh lemon, olive oil, and aromatic herbs, served with potatoes)", price: "€9.00" },
     "peskandritsa_plaki": { category: "seafood", el: "Πεσκανδρίτσα πλακί <br><br> (Φρέσκια πεσκανδρίτσα μαγειρεμένη με ντομάτα, κρεμμύδι και αρωματικά μυρωδικά, ψημένη στη γάστρα για πλούσια γεύση και άρωμα θάλασσας)", en: "Monkfish Plaki <br><br> (Fresh monkfish cooked with tomato, onion and aromatic herbs, baked in a clay pot for rich flavor and a true taste of the sea)", price: "€15.00" },
 
@@ -976,6 +977,11 @@ const highlightsCatalog = {
         icons: ["dish/fish.png", "dish/lemon.png"],
         el: "Πέρκα <br> λεμονάτη",
         en: "Perch   <br> in Lemon <br> Sauce"
+    },
+    "perka_fournou": {
+        icons: ["dish/fish.png", "dish/oven.png"],
+        el: "Πέρκα <br> στο φούρνο",
+        en: "Perch <br> in the Oven"
     },
     //"kalo_kalokairi": {
     //    icons: ["sun-logo.png"],
