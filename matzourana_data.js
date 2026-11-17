@@ -16,42 +16,39 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "perka_fournou",
-    "moschari_kokkinisto",
+    "moschari_giouvesti",
     "moschari_lemonato",
-    "kreatosoupa",
+    "galeos_lemonatos",
     "bifteki_moscharisia",
-    "mydopilafo",
-    "kokoras_krasatos",
+    "kokoras_hilopites",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
     "soutzoukakia",
-    "lachanontolmades",
+    "keftedakia_tiganita",
     "kotosoupa",
-    "giantes",
+    "manitarosoupa",
+    "arakas_lemonatos",
     "revithia",
-    "spanakorizo",
     "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "perka_fournou",
-    "moschari_kokkinisto",
+    "moschari_giouvesti",
     "moschari_lemonato",
-    "kreatosoupa",
+    "galeos_lemonatos",
     "bifteki_moscharisia",
-    "mydopilafo",
-    "kokoras_krasatos",
+    "kokoras_hilopites",
+    "kotopoulo_frikase",
     "kotopoulo_bouti",
     "pastitsio",
     "soutzoukakia",
-    "lachanontolmades",
+    "keftedakia_tiganita",
     "kotosoupa",
-    "giantes",
-    "spanakorizo"
+    "arakas_lemonatos"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -194,7 +191,7 @@ const menuCatalog = {
     "magiritsa": { category: "soups", el: "Μαγειρίτσα <br><br> (Κλασική πασχαλινή σούπα με αρνί και αυγολέμονο)", en: "Magiritsa <br><br> (Classic Easter soup with lamb and egg-lemon sauce)", price: "€10.00" },
     "giouvarlakia": { category: "soups", el: "Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά)", en: "Meatball Egg-Lemon Soup", price: "€9.00" },
     "hortosoupa_trahanas": { category: "soups", el: "Χορτόσουπα με τραχανά", en: "Vegetable Soup with Trahana", price: "€5.50" },
-    "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€7.00" },
+    "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€8.00" },
 
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
