@@ -101,6 +101,7 @@
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-81.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-82.webp</image:loc></image:image>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-83.webp</image:loc></image:image>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-84.webp</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/matzourana_gallery.html</loc>
@@ -315,6 +316,12 @@
   <lastmod>2026-10-27</lastmod>
   <priority>0.8</priority>
   <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-50.jpg</image:loc></image:image>
+</url>
+<url>
+  <loc>https://www.matzourana.gr/dishes/bamies-fournou/</loc>
+  <lastmod>2026-11-18</lastmod>
+  <priority>0.8</priority>
+  <image:image><image:loc>https://www.matzourana.gr/DishImages/web/greek-dish-84.jpg</image:loc></image:image>
 </url>
 <url>
   <loc>https://www.matzourana.gr/dishes/spanakorizo/</loc>

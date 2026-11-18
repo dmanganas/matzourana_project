@@ -134,7 +134,7 @@ const menuCatalog = {
     "revithia_frikase": { category: "veg-cooked", el: "Ρεβύθια Φρικασέ <br><br> (Vegan συνταγή, εύκολη και πολύ υγιεινή)", en: "Chickpea Fricassee <br><br> (Vegan recipe, easy and very healthy)", price: "€7.50" },
     "arakas_lemonatos": { category: "veg-cooked", el: "Αρακάς λεμονάτος <br><br> (Με πατάτες, καρότο και άνιθο)", en: "Lemony Peas <br><br> (With potatoes, carrot and dill)", price: "€6.50" },
     "fasolakia": { category: "veg-cooked", el: "Φρέσκα Φασολάκια λαδερά <br><br> (Με ντοματούλα και πατάτες)", en: "Fresh Green Beans in Olive Oil <br><br> (With tomato and potatoes)", price: "€7.00" },
-    "bamies_fournou": { category: "veg-cooked", el: "Μπάμιες στο Φούρνο <br><br> (Φρέσκες με ντοματούλα)", en: "Baked Okra <br><br> (Fresh with tomato)", price: "€8.00" },
+    "bamies_fournou": { category: "veg-cooked", el: "Μπάμιες στο Φούρνο <br><br> (Φρέσκες μπάμιες με ντοματούλα και πατάτες, στο φούρνο)", en: "Baked Okra <br><br> (Fresh okra with tomato and potatoes, baked in the oven)", price: "€8.00" },
     "bamies_yiahni": { category: "veg-cooked", el: "Μπάμιες Γιαχνί <br><br> (Φρέσκες μαγειρεμένες με ντοματούλα)", en: "Okra Stew <br><br> (Fresh slow-cooked with tomato)", price: "€7.50" },
     "spanakorizo": { category: "veg-cooked", el: "Σπανακόρυζο <br><br> (Λεμονάτο με ντομάτα και φρέσκο άνηθο)", en: "Spinach Rice <br><br> (Lemony with tomato and fresh dill)", price: "€6.50" },
     "kounoupidi_yiahni": { category: "veg-cooked", el: "Κουνουπίδι Γιαχνί <br><br> (Με ντοματούλα και κανέλα)", en: "Stewed Cauliflower Yiahni <br><br> (With tomato and cinnamon)", price: "€6.00" },
@@ -413,6 +413,10 @@ const dishImageMap = {
     "galeos_fournou": {
         file: "web/greek-dish-83.webp",
         alt: "Γαλέος στο φούρνο - Φρέσκος γαλέος ψημένος στο φούρνο. Matzourana Καλλιθέα | Oven-baked Galeos - Fresh galeos baked in the oven. Matzourana Kallithea"
+    },
+    "bamies_fournou": {
+        file: "web/greek-dish-84.webp",
+        alt: "Μπάμιες στο Φούρνο - Φρέσκες μπάμιες με ντοματούλα και πατάτες, στο φούρνο. Matzourana Καλλιθέα | Baked Okra - Fresh okra with tomato and potatoes, baked in the oven. Matzourana Kallithea"
     },
     // Add more mappings here when you add new photos
 };
@@ -1043,7 +1047,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp', 'DishImages/web/greek-dish-80.webp', 'DishImages/web/greek-dish-81.webp', 'DishImages/web/greek-dish-82.webp', 'DishImages/web/greek-dish-83.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp', 'DishImages/web/greek-dish-80.webp', 'DishImages/web/greek-dish-81.webp', 'DishImages/web/greek-dish-82.webp', 'DishImages/web/greek-dish-83.webp', 'DishImages/web/greek-dish-84.webp'
 ];
 
 const dishAlts = {
@@ -1128,7 +1132,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-80.webp': "Μανιτάρια Φρικασέ - Έκρηξη γεύσης με αρωματικά χόρτα. Matzourana Καλλιθέα | Mushroom Fricassee - An explosion of flavor with aromatic herbs. Matzourana Kallithea",
     'DishImages/web/greek-dish-81.webp': "Φακές - Δυναμωτικές και νόστιμες. Matzourana Καλλιθέα | Lentil Soup - Energizing and delicious. Matzourana Kallithea",
     'DishImages/web/greek-dish-82.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea",
-    'DishImages/web/greek-dish-83.webp': "Γαλέος στο φούρνο - Φρέσκος γαλέος ψημένος στο φούρνο. Matzourana Καλλιθέα | Oven-baked Galeos - Fresh galeos baked in the oven. Matzourana Kallithea"
+    'DishImages/web/greek-dish-83.webp': "Γαλέος στο φούρνο - Φρέσκος γαλέος ψημένος στο φούρνο. Matzourana Καλλιθέα | Oven-baked Galeos - Fresh galeos baked in the oven. Matzourana Kallithea",
+    'DishImages/web/greek-dish-84.webp': "Μπάμιες στο Φούρνο - Φρέσκες μπάμιες με ντοματούλα και πατάτες, στο φούρνο. Matzourana Καλλιθέα | Baked Okra - Fresh okra with tomato and potatoes, baked in the oven. Matzourana Kallithea"
  
 };
 
