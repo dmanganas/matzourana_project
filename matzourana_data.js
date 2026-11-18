@@ -410,6 +410,10 @@ const dishImageMap = {
         file: "web/greek-dish-81.webp",
         alt: "Φακές - Δυναμωτικές και νόστιμες. Matzourana Καλλιθέα | Lentil Soup - Energizing and delicious. Matzourana Kallithea"
     },
+    "galeos_fournou": {
+        file: "web/greek-dish-83.webp",
+        alt: "Γαλέος στο φούρνο - Φρέσκος γαλέος ψημένος στο φούρνο. Matzourana Καλλιθέα | Oven-baked Galeos - Fresh galeos baked in the oven. Matzourana Kallithea"
+    },
     // Add more mappings here when you add new photos
 };
 
@@ -1039,7 +1043,7 @@ const imageList = [
     'DishImages/web/greek-dish-62.webp', 'DishImages/web/greek-dish-63.webp', 'DishImages/web/greek-dish-64.webp',
     'DishImages/web/greek-dish-65.webp', 'DishImages/web/greek-dish-66.webp',
     'DishImages/web/greek-dish-67.webp', 'DishImages/web/greek-dish-68.webp',
-    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp', 'DishImages/web/greek-dish-80.webp', 'DishImages/web/greek-dish-81.webp', 'DishImages/web/greek-dish-82.webp'
+    'DishImages/web/greek-dish-69.webp', 'DishImages/web/greek-dish-70.webp', 'DishImages/web/greek-dish-71.webp', 'DishImages/web/greek-dish-72.webp', 'DishImages/web/greek-dish-73.webp', 'DishImages/web/greek-dish-74.webp', 'DishImages/web/greek-dish-75.webp', 'DishImages/web/greek-dish-77.webp', 'DishImages/web/greek-dish-78.webp', 'DishImages/web/greek-dish-79.webp', 'DishImages/web/greek-dish-80.webp', 'DishImages/web/greek-dish-81.webp', 'DishImages/web/greek-dish-82.webp', 'DishImages/web/greek-dish-83.webp'
 ];
 
 const dishAlts = {
@@ -1123,7 +1127,8 @@ const dishAlts = {
     'DishImages/web/greek-dish-79.webp': "Ψαρόσουπα με φρέσκο ψάρι. Matzourana Καλλιθέα | Fish Soup with Fresh Fish. Matzourana Kallithea",
     'DishImages/web/greek-dish-80.webp': "Μανιτάρια Φρικασέ - Έκρηξη γεύσης με αρωματικά χόρτα. Matzourana Καλλιθέα | Mushroom Fricassee - An explosion of flavor with aromatic herbs. Matzourana Kallithea",
     'DishImages/web/greek-dish-81.webp': "Φακές - Δυναμωτικές και νόστιμες. Matzourana Καλλιθέα | Lentil Soup - Energizing and delicious. Matzourana Kallithea",
-    'DishImages/web/greek-dish-82.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea"
+    'DishImages/web/greek-dish-82.webp': "Κοτόπουλο φρικασέ - (Κοτόπουλο ελευθέρας βοσκής φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο) Matzourana Καλλιθέα | Chicken Fricassee - (Free-range chicken fricassee with fresh lettuce and wild greens in egg-lemon sauce) Matzourana Kallithea",
+    'DishImages/web/greek-dish-83.webp': "Γαλέος στο φούρνο - Φρέσκος γαλέος ψημένος στο φούρνο. Matzourana Καλλιθέα | Oven-baked Galeos - Fresh galeos baked in the oven. Matzourana Kallithea"
  
 };
 
