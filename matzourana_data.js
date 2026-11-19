@@ -16,43 +16,43 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_giouvesti",
+    "moschari_kokkinisto",
     "moschari_lemonato",
-    "galeos_fournou",
-    "psarosoupa",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "soutzoukakia",
+    "keftedakia_tiganita",
+    "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
-    "manitaria_frikase",
-    "gemista_superfoods",
-    "bamies_fournou",
+    "giantes",
+    "melitzanes_imam",
     "fasolakia",
     "spanakorizo",
-    "revithia",
-    "fasolada"
+    "fasolada",
+    "fakes"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_giouvesti",
+    "moschari_kokkinisto",
     "moschari_lemonato",
-    "galeos_fournou",
-    "psarosoupa",
     "bifteki_moscharisia",
     "kotopoulo_bouti",
     "pastitsio",
-    "soutzoukakia",
+    "makaronia_kima",
+    "keftedakia_tiganita",
+    "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
-    "gemista_superfoods",
-    "bamies_fournou",
+    "giantes",
+    "melitzanes_imam",
     "fasolakia",
-    "spanakorizo"
+    "spanakorizo",
+    "fasolada",
+    "fakes"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -878,6 +878,11 @@ const highlightsCatalog = {
         el: "Παστίτσιο",
         en: "Pastitsio"
     },
+    "makaronia_kima": {
+        icons: ["dish/spagetti.png", "dish/meat.png"],
+        el: "Μακαρόνια <br> με κιμά",
+        en: "Spaghetti <br> Bolognese"
+    },
      "bamies_fournou": {
         icons: ["dish/okra.png", "dish/okraoven.png"],
         el: "Μπάμιες <br> στο Φούρνο ",
@@ -915,6 +920,16 @@ const highlightsCatalog = {
         icons: ["dish/meat.png", "dish/girl-soup-tight.png"],
         el: "Κρεατόσουπα",
         en: "Meat <br> Soup"
+    },
+    "fasolada": {
+        icons: ["dish/fasolada.png", "dish/girl-soup-tight.png"],
+        el: "Φασολάδα",
+        en: "Bean <br> Soup"
+    },
+    "fakes": {
+        icons: ["dish/lentils.png", "dish/girl-soup-tight.png"],
+        el: "Φακές",
+        en: "Lentil <br> Soup"
     },
 
    
