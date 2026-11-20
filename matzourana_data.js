@@ -16,9 +16,11 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_kokkinisto",
+    "lavraki_fileto",
+    "moschari_giouvesti",
     "moschari_lemonato",
     "bifteki_moscharisia",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
@@ -27,19 +29,19 @@ const currentDailyMenu = [
     "giouvarlakia",
     "kotosoupa",
     "giantes",
-    "melitzanes_imam",
     "fasolakia",
     "spanakorizo",
-    "fasolada",
-    "fakes"
+    "revithia",
+    "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_kokkinisto",
+    "moschari_giouvesti",
     "moschari_lemonato",
     "bifteki_moscharisia",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
@@ -48,11 +50,9 @@ const currentHighlights = [
     "giouvarlakia",
     "kotosoupa",
     "giantes",
-    "melitzanes_imam",
     "fasolakia",
     "spanakorizo",
-    "fasolada",
-    "fakes"
+    "fasolada"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -172,7 +172,7 @@ const menuCatalog = {
     "kritharoto_garides": { category: "seafood", el: "Κριθαρότο με γαρίδες <br><br> (Αρωματικό και κρεμώδες κριθαρότο με ζουμερές γαρίδες και φυτική κρέμα γάλακτος — ελαφρύ και απολαυστικό)", en: "Shrimp Orzo <br><br> (Aromatic and creamy orzo with juicy shrimps and plant-based cream — light and delightful)", price: "€14.50" },
     "garidoma": { category: "seafood", el: "Γαριδομακαρονάδα <br><br> (Με φρέσκια ντομάτα και ζουμερές γαρίδες σε σπιτική κόκκινη σάλτσα. Ένα ακαταμάχητος συνδυασμός με γεύση θάλασσας!)", en: "Shrimps Spaghetti <br><br> (With fresh tomato and juicy shrimps in homemade red sauce. An irresistible combination with a taste of the sea)", price: "€17.00" },
     "garidoma_small": { category: "seafood", el: "Γαριδομακαρονάδα <br><br> (Με φρέσκια ντομάτα και ζουμερές γαρίδούλες σε σπιτική κόκκινη σάλτσα. Ένα ακαταμάχητος συνδυασμός με γεύση θάλασσας!)", en: "Shrimps Spaghetti (Baby shrimps) <br><br> (With fresh tomato and juicy baby shrimps in homemade red sauce. An irresistible combination with a taste of the sea)", price: "€10.50" },
-    "lavraki_fileto": { category: "seafood", el: "Λαβρακι φιλέτο στο φούρνο <br><br> (Φιλέτο από φρέσκο λαβράκι, ψημένο στο φούρνο με πατάτες και λεμόνι, γεμάτο με μεσογειακή γεύση!)", en: "Oven-Baked Sea Bass Fillet <br><br> (Fillet of fresh sea bass, oven-baked with potatoes and lemon, bursting with Mediterranean flavor)", price: "€13.00" },
+    "lavraki_fileto": { category: "seafood", el: "Λαβρακι φιλέτο στο φούρνο <br><br> (Φιλέτο από φρέσκο λαβράκι, ψημένο στο φούρνο με πατάτες και λεμόνι, γεμάτο με μεσογειακή γεύση!)", en: "Oven-Baked Sea Bass Fillet <br><br> (Fillet of fresh sea bass, oven-baked with potatoes and lemon, bursting with Mediterranean flavor)", price: "€12.50" },
     "mydopilafo": { category: "seafood", el: "Μυδοπίλαφο <br><br> (Με φρέσκα μύδια και υπέροχη γεύση, όλος ο χρόνος μοιάζει καλοκαίρι!)", en: "Mussel Pilaf <br><br> (With fresh mussels and a wonderful taste, every season feels like summer)", price: "€10.00" },
     "marinara": { category: "seafood", el: "Μαρινάρα με Σπαγγέτι <br><br> (Ένα πιάτο θαλασσινών που αιχμαλωτίζει τη φρεσκάδα του καλοκαιριού και την αίσθηση της θάλασσας)", en: "Marinara Spaghetti <br><br> (A seafood dish that captures the freshness of summer and the feeling of the sea)", price: "€9.50" },
     "sardeles_fileto_plaki": { category: "seafood", el: "Σαρδέλες Φιλέτο Πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Sardines Fillet Plaki <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€9.00" },
