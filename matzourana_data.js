@@ -19,17 +19,19 @@ const currentDailyMenu = [
     "lavraki_fileto",
     "moschari_giouvesti",
     "moschari_lemonato",
+    "galeos_lemonatos",
     "bifteki_moscharisia",
     "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
+    "soutzoukakia",
     "lachanontolmades",
+    "kolokythakia_gemista",
     "giouvarlakia",
     "kotosoupa",
     "giantes",
-    "fasolakia",
+    "melitzanes_imam",
     "spanakorizo",
     "revithia",
     "fasolada"
@@ -38,20 +40,24 @@ const currentDailyMenu = [
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
+    "lavraki_fileto",
     "moschari_giouvesti",
     "moschari_lemonato",
+    "galeos_lemonatos",
     "bifteki_moscharisia",
     "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
+    "soutzoukakia",
     "lachanontolmades",
+    "kolokythakia_gemista",
     "giouvarlakia",
     "kotosoupa",
     "giantes",
-    "fasolakia",
+    "melitzanes_imam",
     "spanakorizo",
+    "revithia",
     "fasolada"
 ];
 
@@ -931,6 +937,11 @@ const highlightsCatalog = {
         el: "Φακές",
         en: "Lentil <br> Soup"
     },
+    "revithia": {
+        icons: ["dish/soup.png", "dish/girl-soup-tight.png"],
+        el: "Ρεβύθια",
+        en: "Chickpea <br> Stew"
+    },
 
    
     // ==================== FISH / SEAFOOD ====================
@@ -1031,6 +1042,11 @@ const highlightsCatalog = {
         icons: ["dish/fish.png", "dish/oven.png"],
         el: "Γαλέος <br> στο φούρνο",
         en: "Galeos <br> in the Oven"
+    },
+    "lavraki_fileto": {
+        icons: ["dish/fish.png", "dish/oven.png"],
+        el: "Φιλέτο <br> λαβράκι <br> στο φούρνο",
+        en: "Sea Bass Fillet <br> in the Oven"
     },
 
 };
