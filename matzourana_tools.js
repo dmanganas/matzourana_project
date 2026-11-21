@@ -514,10 +514,11 @@ Purpose: Put a small "Πιο δημοφιλές / Most popular" badge (hand-draw
          notebook (home page).
 On Input: none. Uses dishViewCounts, currentDailyMenu, currentHighlights, getLang().
 On Output: none.
-Side effects: removes old .popular-badge spans, then adds one after the dish link of each
-          popular dish. Each list ranks its own dishes. The badge is a sibling of the link, so
-          the link text stays the dish name. Safe to call before the counts arrive
-          (does nothing).
+Side effects: removes old .popular-badge spans, then adds one for each popular dish.
+          On the daily menu table the badge is a sibling after the dish link; in the
+          highlights notepad it is appended inside .nb-dish-title, under the name.
+          Each list ranks its own dishes. The link text stays the dish name. Safe to
+          call before the counts arrive (does nothing).
 ---------------------*/
 function markPopularDishes() {
     if (!dishViewCounts) return;
@@ -525,7 +526,7 @@ function markPopularDishes() {
     const label = lang === 'en' ? 'Most popular' : 'Πιο δημοφιλές';
     const lists = [
         { box: document.getElementById('daily-menu-table'), keys: typeof currentDailyMenu !== 'undefined' ? currentDailyMenu : [] },
-        { box: document.getElementById('daily-highlights-body'), keys: typeof currentHighlights !== 'undefined' ? currentHighlights : [] }
+        { box: document.querySelector('.nb-redesign .nb-dishes') || document.getElementById('daily-highlights-body'), keys: typeof currentHighlights !== 'undefined' ? currentHighlights : [] }
     ];
     lists.forEach(({ box, keys }) => {
         if (!box) return;
@@ -537,7 +538,9 @@ function markPopularDishes() {
             badge.className = 'popular-badge';
             badge.title = label + ' – ' + dishViewCounts[key] + (lang === 'en' ? ' views' : ' προβολές');
             badge.innerHTML = '<img class="popular-icon" src="Logos/dish/views.webp" alt="" width="17" height="12" decoding="async">' + label;
-            link.insertAdjacentElement('afterend', badge);
+            const title = link.closest('.nb-dish-title');
+            if (title) title.appendChild(badge);
+            else link.insertAdjacentElement('afterend', badge);
         });
     });
 }
@@ -1089,15 +1092,36 @@ function applySeasonalTheme() {
 // ===== HOME =====
 
 /*-------------------
-Purpose: Draw the "today's highlights" notebook on the home page: the weekday row,
-         the highlighted dishes with their icons, and on closed days the closed message
-         instead of dishes (Mondays: plus the Matzourana_Monday video; holiday closures
-         with closesShop:true: that message's text).
+Purpose: Flatten a highlight label: drop forced <br> so the name can wrap naturally,
+         and remove a soft hyphen immediately before a <br> ("Λαχανο- <br> ντολμάδες"
+         becomes "Λαχανοντολμάδες", not "Λαχανο- ντολμάδες").
+On Input: html - String, possibly with <br> tags.
+On Output: String, single-spaced plain text (tags other than that hyphen+br stripped
+          of the breaks only; remaining markup is left as text after the br pass).
+Used by: renderDailyHighlights.
+---------------------*/
+function flattenBreaks(html) {
+    return String(html || '')
+        .replace(/-\s*<br\s*\/?>\s*/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/*-------------------
+Purpose: Draw the "today's highlights" notebook on the home page: the girl-and-notebook
+         art with a Mynerve heading, the weekday line, the highlighted dishes in two
+         columns (icons, name, live menuCatalog price) with the official logo as a
+         watermark, and on closed days the closed message instead of dishes (Mondays:
+         plus the Matzourana_Monday video; holiday closures with closesShop:true: that
+         message's text).
 On Input: none. Language: getLang().
-          Data: currentHighlights + highlightsCatalog (matzourana_data.js); isShopClosedToday().
+          Data: currentHighlights + highlightsCatalog + menuCatalog (matzourana_data.js);
+          isShopClosedToday().
 On Output: none.
-Side effects: replaces the contents of <tbody id="daily-highlights-body">;
-          does nothing if that element is not on the page. Then asks
+Side effects: builds .nb-art / .nb-body on the .daily-highlights panel (adds .nb-redesign),
+          hides the legacy highlights table, and empties <tbody id="daily-highlights-body">.
+          Does nothing if that element is not on the page. Then asks
           scheduleMusicStoriesFit() to re-fit the Music Stories (the notebook height
           may have changed).
 Used by: initPage('home') and the 'languageChange' event.
@@ -1105,6 +1129,8 @@ Used by: initPage('home') and the 'languageChange' event.
 function renderDailyHighlights() {
     const tbody = document.getElementById('daily-highlights-body');
     if (!tbody) return;
+    const panel = tbody.closest('.daily-highlights');
+    if (!panel) return;
 
     const lang = getLang();
     const dayIndex = getAthensDayIndex();
@@ -1115,49 +1141,112 @@ function renderDailyHighlights() {
     const dayEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
     const dayLabelEl = '🗓️ ' + dayEl;
     const dayLabelEn = '🗓️ ' + dayEn;
-    const dayRow = '<tr class="highlight-row animate-write" id="highlights-day-row">' +
-        '<td class="highlight-name lang" colspan="2" data-el="' + dayLabelEl + '" data-en="' + dayLabelEn + '">' +
-        (lang === 'en' ? dayLabelEn : dayLabelEl) + '</td></tr>';
-    let dayRowAdded = false;
-    let html = '';
 
-    currentHighlights.forEach(key => {
-        // The day goes right after the leading spacer line
-        if (!dayRowAdded && key !== 'line') { html += dayRow; dayRowAdded = true; }
-        // Closed days: no dishes, only the spacer
-        if (isClosed && key !== 'line') return;
-        const dish = highlightsCatalog[key];
-        if (!dish) return;
-        let iconHTML = '';
-        dish.icons.forEach(icon => {
-            iconHTML += '<img src="Logos/' + icon.replace(/\.png$/i, '.webp') + '" alt="' + icon + '" class="category-icon" decoding="async">';
-        });
-        html += '<tr class="highlight-row animate-write">';
-        html += '<td class="highlight-icons">' + iconHTML + '</td>';
-        html += '<td class="highlight-name lang" data-el="' + dish.el + '" data-en="' + dish.en + '">' + dishNameLinked(key, dish.el, dish.en, lang) + '</td>';
-        html += '</tr>';
-    });
-    if (!dayRowAdded) html += dayRow;
+    panel.classList.add('nb-redesign');
+    panel.setAttribute('lang', lang === 'en' ? 'en' : 'el');
+    panel.querySelectorAll('.nb-art, .nb-body').forEach(el => el.remove());
+    tbody.innerHTML = '';
+
+    const art = document.createElement('div');
+    art.className = 'nb-art';
+    art.innerHTML =
+        '<img src="Logos/dish/views-note.webp" alt="" width="360" height="256" decoding="async">' +
+        '<p class="nb-heading lang" data-el="Σημερινές προτάσεις από την Matzourana" ' +
+        'data-en="Today\'s picks from Matzourana"></p>';
+    art.querySelector('.nb-heading').textContent = (lang === 'en')
+        ? "Today's picks from Matzourana"
+        : 'Σημερινές προτάσεις από την Matzourana';
+    const table = panel.querySelector('.highlights-table');
+    panel.insertBefore(art, table || panel.firstChild);
+
+    const body = document.createElement('div');
+    body.className = 'nb-body';
+
+    const mark = document.createElement('img');
+    mark.className = 'nb-watermark';
+    mark.src = 'MatzouranaImages/matzourana-logo.png';
+    mark.alt = '';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.decoding = 'async';
+    body.appendChild(mark);
+
+    const dayNode = document.createElement('div');
+    dayNode.className = 'nb-day lang';
+    dayNode.setAttribute('data-el', dayLabelEl);
+    dayNode.setAttribute('data-en', dayLabelEn);
+    dayNode.textContent = (lang === 'en' ? dayLabelEn : dayLabelEl);
+    body.appendChild(dayNode);
 
     if (isMonday) {
         const closedEl = 'Δευτέρα – Κλειστά. Καλή ξεκούραση! 🌿 Ανυπομονούμε να σας εξυπηρετήσουμε από αύριο!';
         const closedEn = 'Monday – Closed. Enjoy your day off! 🌿 We look forward to serving you tomorrow!';
-        html += '<tr class="highlight-row animate-write" id="highlights-closed-row">' +
-            '<td class="highlight-name lang" colspan="2" data-el="' + closedEl + '" data-en="' + closedEn + '">' +
-            (lang === 'en' ? closedEn : closedEl) + '</td></tr>';
-        // Monday video (muted loop; clicks pass through to the panel button)
-        html += '<tr class="highlight-row animate-write" id="highlights-monday-video-row"><td colspan="2">' +
-            '<video src="Videos/Matzourana_Monday.mp4" poster="Videos/matzourana-monday-poster.jpg" autoplay muted loop playsinline preload="metadata" ' +
-            'aria-label="' + (lang === 'en' ? 'Closed every Monday – see you again from Tuesday!' : 'Κάθε Δευτέρα κλειστά – από την Τρίτη και πάλι μαζί!') + '" ' +
-            'style="display: block; width: 100%; max-width: 240px; max-height: 60vh; height: auto; margin: 0.4em auto 0; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); pointer-events: none;">' +
-            '</video></td></tr>';
+        const closed = document.createElement('p');
+        closed.className = 'nb-closed lang';
+        closed.setAttribute('data-el', closedEl);
+        closed.setAttribute('data-en', closedEn);
+        closed.textContent = (lang === 'en' ? closedEn : closedEl);
+        body.appendChild(closed);
+        const videoWrap = document.createElement('div');
+        videoWrap.className = 'nb-monday-video';
+        const aria = (lang === 'en')
+            ? 'Closed every Monday – see you again from Tuesday!'
+            : 'Κάθε Δευτέρα κλειστά – από την Τρίτη και πάλι μαζί!';
+        videoWrap.innerHTML = '<video src="Videos/Matzourana_Monday.mp4" poster="Videos/matzourana-monday-poster.jpg" autoplay muted loop playsinline preload="metadata" ' +
+            'aria-label="' + aria + '"></video>';
+        body.appendChild(videoWrap);
     } else if (isClosed) {
-        const t = closedInfo.texts;
-        html += '<tr class="highlight-row animate-write" id="highlights-closed-row">' +
-            '<td class="highlight-name lang" colspan="2" data-el="' + t.el.replace(/"/g, '&quot;') + '" data-en="' + t.en.replace(/"/g, '&quot;') + '">' +
-            (lang === 'en' ? t.en : t.el) + '</td></tr>';
+        const texts = closedInfo.texts;
+        const closed = document.createElement('p');
+        closed.className = 'nb-closed lang';
+        closed.setAttribute('data-el', texts.el);
+        closed.setAttribute('data-en', texts.en);
+        closed.textContent = (lang === 'en' ? texts.en : texts.el);
+        body.appendChild(closed);
+    } else {
+        const grid = document.createElement('div');
+        grid.className = 'nb-dishes';
+        currentHighlights.forEach(key => {
+            if (key === 'line') return;
+            const dish = highlightsCatalog[key];
+            if (!dish) return;
+            const elName = flattenBreaks(dish.el);
+            const enName = flattenBreaks(dish.en);
+            let iconHTML = '';
+            dish.icons.forEach(icon => {
+                iconHTML += '<img src="Logos/' + icon.replace(/\.png$/i, '.webp') + '" alt="' + icon + '" class="category-icon" decoding="async">';
+            });
+            const item = document.createElement('div');
+            item.className = 'nb-dish';
+            item.setAttribute('data-key', key);
+
+            const ic = document.createElement('div');
+            ic.className = 'nb-dish-icons';
+            ic.innerHTML = iconHTML;
+
+            const title = document.createElement('div');
+            title.className = 'nb-dish-title';
+            const nm = document.createElement('div');
+            nm.className = 'nb-dish-name lang';
+            nm.setAttribute('data-el', elName);
+            nm.setAttribute('data-en', enName);
+            nm.innerHTML = dishNameLinked(key, elName, enName, lang);
+            title.appendChild(nm);
+
+            const pr = document.createElement('div');
+            pr.className = 'nb-dish-price';
+            if (typeof menuCatalog !== 'undefined' && menuCatalog[key] && menuCatalog[key].price) {
+                pr.textContent = String(menuCatalog[key].price);
+            }
+
+            item.appendChild(ic);
+            item.appendChild(title);
+            item.appendChild(pr);
+            grid.appendChild(item);
+        });
+        body.appendChild(grid);
     }
-    tbody.innerHTML = html;
+
+    panel.appendChild(body);
     markPopularDishes();
     scheduleMusicStoriesFit();
 }
