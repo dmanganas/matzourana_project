@@ -938,7 +938,7 @@ const highlightsCatalog = {
         en: "Lentil <br> Soup"
     },
     "revithia": {
-        icons: ["dish/soup.png", "dish/girl-soup-tight.png"],
+        icons: ["dish/revithia.png", "dish/girl-soup-tight.png"],
         el: "Ρεβύθια",
         en: "Chickpea <br> Stew"
     },
