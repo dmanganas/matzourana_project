@@ -2745,10 +2745,11 @@ body[data-page="home"] #contact-map { width: 750px; }
 .nb-dish-name {
     min-width: 0;
     max-width: 100%;
-    font-weight: bold;
-    color: #4A5A4A;
-    font-size: 1em;          /* 16px on desktop — readable, like proposal 2 */
-    line-height: 1.32;
+    font-family: 'Mynerve', 'Open Sans', cursive;
+    font-weight: 400;
+    color: #1f4d2b;
+    font-size: 1.08em;       /* slightly up from 1em so the light 400 cut stays legible */
+    line-height: 1.35;
     text-align: left;
     overflow-wrap: break-word;
     word-break: normal;
@@ -2764,6 +2765,11 @@ body[data-page="home"] #contact-map { width: 750px; }
     max-width: 100%;
     overflow-wrap: break-word;
     word-break: normal;
+    font-family: 'Mynerve', 'Open Sans', cursive;
+    font-weight: 400;
+    color: #1f4d2b;
+    font-size: 1.08em;
+    line-height: 1.35;
 }
 
 /* Badge is a child of the title cell, small, directly under the name.
@@ -2808,7 +2814,7 @@ body[data-page="home"] #contact-map { width: 750px; }
     font-family: 'Mynerve', 'Open Sans', cursive;
     font-weight: 400;
     color: #1f4d2b;
-    font-size: 1.05em;       /* Mynerve, same visual size as proposal 2 titles */
+    font-size: 1.08em;       /* match handwritten titles */
     line-height: 1.2;
     text-align: right;
     white-space: nowrap;
