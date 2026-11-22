@@ -1275,7 +1275,7 @@ function columnContentHeight(col) {
 /*-------------------
 Purpose: Make the right column of the home hero (ending with the Music Stories) end
          where the left column (ending with the rating card) ends, by showing only as
-         many whole rows of Music Stories as fit: minimum 1 row, maximum all 6.
+         many whole rows of Music Stories as fit: minimum 1 row, maximum all 8.
 On Input: none. Reads the DOM: .yt-grid inside the hero .section-container.
 On Output: Number of stories shown (0 if there is no Music Stories grid on the page).
 Side effects: toggles class 'yt-fit-hidden' on the .yt-preview cards (only when the

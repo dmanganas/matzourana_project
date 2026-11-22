@@ -2375,7 +2375,7 @@ a.map-btn {
     justify-content: flex-start;
 }
 
-/* ===== Music Stories grid (index.html): 6 Shorts, 3x2 on desktop, 2x3 on phones =====
+/* ===== Music Stories grid (index.html): 8 Shorts, 3 columns on desktop, 2 per row on tablet and phones =====
    Only .yt-grid is touched, so the seasonal-message previews (.yt-previews) stay as they were.
    hqdefault.jpg of a Short is 4:3 with black side bars; a 9:16 box + object-fit:cover crops them. */
 .yt-previews.yt-grid {
@@ -2426,6 +2426,13 @@ a.map-btn {
     }
     .yt-grid .yt-preview { max-width: none; }
     .yt-grid .yt-title { font-size: 0.72em; }
+}
+
+@media (max-width: 600px) {
+    .yt-previews.yt-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
 }
 
 /* ===== Nav menu with Matzourana face icons (partials/header.html) =====
