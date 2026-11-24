@@ -16,51 +16,43 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "moschari_kokkinisto",
-    "galeos_fournou",
-    "kreatosoupa",
+    "arni_frikase",
+    "soupies_krasates",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
-    "kokoras_krasatos",
     "kotopoulo_bouti",
+    "sardeles_fileto_plaki",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
-    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
+    "kolokythakia_gemista",
     "kotosoupa",
-    "giantes",
-    "fasolakia",
-    "arakas_lemonatos",
+    "briam",
     "spanakorizo",
     "revithia",
-    "fasolada",
-    "fakes"
+    "fasolada"
 ];
 
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "moschari_kokkinisto",
-    "galeos_fournou",
-    "kreatosoupa",
+    "arni_frikase",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
-    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
-    "keftedakia_tiganita",
-    "keftedakia_saltsa",
     "lachanontolmades",
     "giouvarlakia",
+    "kolokythakia_gemista",
     "kotosoupa",
-    "giantes",
-    "fasolakia",
-    "arakas_lemonatos",
+    "briam",
     "spanakorizo",
     "revithia",
-    "fasolada",
-    "fakes"
+    "fasolada"
 ];
 
 /* =============== END OF DAILY UPDATE ZONE =============== */
@@ -78,6 +70,7 @@ const menuCatalog = {
     "kokoretsi": { category: "meat-cooked", el: "Κοκορέτσι χειροποίητο <br><br> (Παραδοσιακό κοκορέτσι φτιαγμένο στο χέρι, ψημένο αργά)", en: "Handmade Kokoretsi <br><br> (Traditional hand-prepared kokoretsi, slow-roasted)", price: "€15.50" },
     "katsikaki_frikase": { category: "meat-cooked", el: "Κατσικάκι φρικασέ <br><br> (Πεντανόστιμο κατσικάκι φρικασέ με φρέσκα μαρούλια και άγρια χόρτα)", en: "Kid Goat Fricassee <br><br> (Delicious kid goat fricassee with fresh lettuce and wild greens)", price: "€16.00" },
     "arni_kotsi_frikase": { category: "meat-cooked", el: "Αρνί κότσι φρικασέ <br><br> (Τρυφερό αρνίσιο κότσι με φρέσκα μαρούλια και άγρια χόρτα)", en: "Lamb Shank Fricassee <br><br> (Tender lamb shank with fresh lettuce and seasonal wild greens)", price: "€16.00" },
+    "arni_frikase": { category: "meat-cooked", el: "Αρνάκι φρικασέ <br><br> (Τρυφερό αρνάκι φρικασέ με φρέσκα μαρούλια και άγρια χόρτα, σε σάλτσα αυγολέμονο)", en: "Lamb Fricassee <br><br> (Tender lamb fricassee with fresh lettuce and wild greens in egg-lemon sauce)", price: "€13.00" },
     "arnaki_galaktos": { category: "meat-cooked", el: "Αρνάκι γάλακτος μακαρονάδα <br><br> (Τρυφερό αρνάκι γάλακτος σιγομαγειρεμένο με πλούσια σάλτσα)", en: "Milk-Fed Lamb Pasta <br><br> (Tender milk-fed lamb slowly cooked with rich sauce and pasta)", price: "€16.50" },
     "arni_paidaki": { category: "meat-cooked", el: "Αρνί παϊδάκι στο φούρνο <br><br> (Λεμονάτο αρνίσιο παιδάκι με μελωμένες πατάτες φούρνου)", en: "Roast Lamb Ribs <br><br> (Lemony lamb ribs with tender oven-baked potatoes)", price: "€15.50" },
     "choirino_selino": { category: "meat-cooked", el: "Χοιρινό με Σέλινο <br><br> (Αργομαγειρεμένο χοιρινό με τρυφερό σέλινο και πλούσια σάλτσα)", en: "Pork with Celery <br><br> (Slow-cooked pork with tender celery and rich warm sauce)", price: "€10.00" },
@@ -129,7 +122,7 @@ const menuCatalog = {
 
     // ==================== ΠΙΑΤΑ ΛΑΧΑΝΙΚΩΝ ====================
     "moussakas_nistisimos": { category: "veg-cooked", el: "Μουσακάς Νηστίσιμος <br><br> (Μουσακάς χωρίς κρέας, με κιμά σόγιας, ψητές μελιτζάνες και πατάτες)", en: "Vegan Moussaka <br><br> (Made without meat, using soy mince, roasted eggplants and potatoes)", price: "€8.50" },
-    "briam": { category: "veg-cooked", el: "Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές και πατάτες)", en: "Briam <br><br> (With eggplants, courgettes, colorful peppers and potatoes)", price: "€8.00" },
+    "briam": { category: "veg-cooked", el: "Μπριάμ <br><br> (Με μελιτζάνες, κολοκυθάκια, πολύχρωμες πιπεριές και πατάτες)", en: "Briam <br><br> (With eggplants, courgettes, colorful peppers and potatoes)", price: "€7.00" },
     "giantes": { category: "veg-cooked", el: "Γίγαντες φασόλια <br><br> (Γίγαντες Πλακί - Στη γάστρα)", en: "Giant Beans <br><br> (Gigantes Plaki - Baked in a clay pot)", price: "€7.00" },
     "melitzanes_yiahni": { category: "veg-cooked", el: "Μελιτζάνες και πατάτες Γιαχνί <br><br> (Μελιτζάνες και πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Eggplants and Potatoes Yiahni <br><br> (Eggplants and potatoes cooked in tomato sauce)", price: "€6.00" },
     "patates_yiahni": { category: "veg-cooked", el: "Πατάτες Γιαχνί <br><br> (Πατάτες μαγειρεμένες σε σάλτσα ντομάτας)", en: "Potatoes Yiahni <br><br> (Potatoes cooked in tomato sauce)", price: "€5.50" },
@@ -170,7 +163,7 @@ const menuCatalog = {
     "spaghetti_garida": { category: "seafood", el: "Σπαγγέτι με σάλτσα γαρίδας <br><br> (Με φρέσκες γαρίδες και πλούσια σάλτσα ντομάτας)", en: "Spaghetti with Shrimp Sauce <br><br> (Made with fresh shrimp and a rich tomato sauce)", price: "€9.50" },
     "soupies_yiahni": { category: "seafood", el: "Φρέσκες σουπιές γιαχνί <br><br> (Με πατάτες ή πλιγούρι/ρύζι ή με γαρνιτούρα της επιλογής σας από τα διαθέσιμα πιάτα ημέρας)", en: "Fresh Cuttlefish Yiahni <br><br> (With potatoes, or bulgur/rice, or a side of your choice from the day's dishes)", price: "€10.00" },
     "kalamarakia_yiahni": { category: "seafood", el: "Καλαμαράκια γιαχνί <br><br> (Με πατάτες ή πλιγούρι/ρύζι ή με γαρνιτούρα της επιλογής σας από τα διαθέσιμα πιάτα ημέρας)", en: "Calamari Yiahni <br><br> (With potatoes, or bulgur/rice, or a side of your choice from the day's dishes)", price: "€11.00" },
-    "soupies_krasates": { category: "seafood", el: "Σουπιές Κρασάτες <br><br> (Φρέσκες σουπιές μαγειρεμένες με λευκό ή κόκκινο κρασί, κρεμμύδι και αρωματικά μυρωδικά. Ένα παραδοσιακό πιάτο θαλασσινών με πλούσια γεύση)", en: "Cuttlefish in White Wine <br><br> (Fresh cuttlefish cooked with white or red wine, onion, and aromatic herbs. A traditional seafood dish with rich flavor)", price: "€10.00" },
+    "soupies_krasates": { category: "seafood", el: "Σουπιές Κρασάτες <br><br> (Φρέσκες σουπιές μαγειρεμένες με λευκό ή κόκκινο κρασί, κρεμμύδι και αρωματικά μυρωδικά. Ένα παραδοσιακό πιάτο θαλασσινών με πλούσια γεύση)", en: "Cuttlefish in White Wine <br><br> (Fresh cuttlefish cooked with white or red wine, onion, and aromatic herbs. A traditional seafood dish with rich flavor)", price: "€12.50" },
     "soupies_spanaki": { category: "seafood", el: "Σουπιές με σπανάκι <br><br> (Τρυφερές σουπιές μαγειρεμένες με φρέσκο σπανάκι, μυρωδικά και λεμόνι. Ένα παραδοσιακό, νηστίσιμο πιάτο γεμάτο γεύση και άρωμα θάλασσας)", en: "Cuttlefish with Spinach <br><br> (Tender cuttlefish cooked with fresh spinach, herbs and a hint of lemon. A traditional seafood dish full of flavor)", price: "€10.00" },
     "oktapodi_stifado": { category: "seafood", el: "Χταπόδι στιφάδο από φρέσκο χταπόδι <br><br> (Παραδοσιακό και γεμάτο αρώματα! Με φρέσκο χταπόδι, κρεμμυδάκια και σάλτσα ντομάτας)", en: "Octopus Stifado with Fresh Octopus <br><br> (Traditional and full of aromas! With fresh octopus, small onions, and tomato sauce)", price: "€13.00" },
     "oktapodi_makaroni": { category: "seafood", el: "Χταπόδι με κοφτό μακαρονάκι <br><br> (Τρυφερό φρέσκο χταπόδι μαγειρεμένο αργά με κοφτό μακαρονάκι σε πλούσια σάλτσα ντομάτας, αρωματισμένη με βότανα και ελαιόλαδο)", en: "Octopus with Short Pasta <br><br> (Tender fresh octopus slowly cooked with short pasta in a rich tomato sauce, flavored with herbs and olive oil)", price: "€12.50" },
@@ -196,19 +189,19 @@ const menuCatalog = {
     // ==================== ΣΟΥΠΕΣ ====================
     "patsas_vrastos": { category: "soups", el: "Πατσάς βραστός <br><br> (Με μοσχάρι, λεμονάτος)", en: "Boiled Tripe Soup <br><br> (With beef, lemony)", price: "€10.00" },
     "patsas_anamiktos": { category: "soups", el: "Πατσάς ανάμικτος <br><br> (Με μοσχάρι και αρνί, λεμονάτος)", en: "Mixed Tripe Soup <br><br> (With beef and lamb)", price: "€10.00" },
-    "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.00" },
+    "kotosoupa": { category: "soups", el: "Κοτόσουπα <br><br> (Θρεπτική και πολύ νόστιμη)", en: "Chicken Soup <br><br> (Nutritious and very tasty)", price: "€8.50" },
     "kreatosoupa": { category: "soups", el: "Κρεατόσουπα <br><br> (Με μοσχάρι, πατάτα, καρότο και σέλινο)", en: "Meat Soup <br><br> (With beef, potato, carrot and celery)", price: "€10.50" },
     "borscht": { category: "soups", el: "Σούπα Μπορς (Μπόρστ) <br><br> (Με μοσχάρι, λάχανο και παντζάρι)", en: "Borscht Soup <br><br> (With beef, cabbage and beetroot)", price: "€8.00" },
     "psarosoupa": { category: "soups", el: "Ψαρόσουπα με φρέσκο ψάρι", en: "Fish Soup with Fresh Fish", price: "€10.50" },
     "magiritsa": { category: "soups", el: "Μαγειρίτσα <br><br> (Κλασική πασχαλινή σούπα με αρνί και αυγολέμονο)", en: "Magiritsa <br><br> (Classic Easter soup with lamb and egg-lemon sauce)", price: "€10.00" },
-    "giouvarlakia": { category: "soups", el: "Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά)", en: "Meatball Egg-Lemon Soup", price: "€8.50" },
+    "giouvarlakia": { category: "soups", el: "Γιουβαρλάκια <br><br> (Με 100% μοσχαρίσιο κιμά)", en: "Meatball Egg-Lemon Soup", price: "€9.00" },
     "hortosoupa_trahanas": { category: "soups", el: "Χορτόσουπα με τραχανά", en: "Vegetable Soup with Trahana", price: "€5.50" },
     "manitarosoupa": { category: "soups", el: "Μανιταρόσουπα <br><br> (Γήινη ζεστή σούπα μανιταριών)", en: "Mushroom Soup <br><br> (Earthy warm mushroom soup)", price: "€8.00" },
 
     // ==================== ΟΣΠΡΙΑ ====================
     "fakes": { category: "legumes", el: "Φακές <br><br> (Δυναμωτικές και νόστιμες)", en: "Lentil Soup <br><br> (Energizing and delicious)", price: "€5.00" },
-    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.00" },
-    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€5.50" },
+    "fasolada": { category: "legumes", el: "Φασολάδα <br><br> (Χυλωμένη και ασυναγώνιστη)", en: "Fasolada (Bean Soup) <br><br> (Creamy and unrivaled)", price: "€5.50" },
+    "revithia": { category: "legumes", el: "Ρεβύθια <br><br> (Για όσους προσέχουν τη διατροφή τους)", en: "Chickpea Stew", price: "€6.50" },
     "fava": { category: "legumes", el: "Φάβα <br><br> (Γευστική, δυναμωτική και απολαυστική)", en: "Fava <br><br> (Flavorful, energizing, and delightful)", price: "€5.50" },
     "fakes_kokkines": { category: "legumes", el: "Κόκκινες Φακές <br><br> (Ζεστή, βελούδινη σούπα από κόκκινες φακές, θρεπτική και γεμάτη γεύση)", en: "Red Lentil Soup <br><br> (A warm, velvety red lentil soup, nourishing and full of flavor)", price: "€5.50" },
 
@@ -736,6 +729,11 @@ const highlightsCatalog = {
         icons: ["dish/sheep.png", "dish/oven.png"],
         el: "Αρνάκι <br> γάλακτος",
         en: "Milk-Fed <br> Lamb"
+    },
+    "arni_frikase": {
+        icons: ["dish/sheep.png", "dish/frikase.png"],
+        el: "Αρνάκι <br> φρικασέ",
+        en: "Lamb <br> Fricassee"
     },
     "bifteki_moscharisia": {
         icons: ["dish/patties.png", "dish/pattiesoven.png"],
