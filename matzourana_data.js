@@ -16,20 +16,22 @@
 
 // ★★★★★ ONLY EDIT THIS ARRAY ★★★★★  (daily dishes table: keys of menuCatalog)
 const currentDailyMenu = [
-    "arni_frikase",
-    "moschari_kokkinisto",
+    "ksifias_fournou_patates",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
-    "kokoras_hilopites",
-    "kotopoulo_frikase",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
+    "sardeles_fileto_plaki",
     "pastitsio",
     "makaronia_kima",
     "keftedakia_tiganita",
     "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
+    "giantes",
+    "melitzanes_imam",
     "fasolakia",
-    "briam",
     "revithia",
     "fasolada",
     "fakes"
@@ -38,11 +40,11 @@ const currentDailyMenu = [
 // ★★★★★ Change daily highlights here ★★★★★  (home notebook: keys of highlightsCatalog)
 const currentHighlights = [
     "line",
-    "arni_frikase",
-    "moschari_kokkinisto",
+    "ksifias_fournou_patates",
+    "moschari_giouvesti",
+    "moschari_lemonato",
     "bifteki_moscharisia",
-    "kokoras_hilopites",
-    "kotopoulo_frikase",
+    "kokoras_krasatos",
     "kotopoulo_bouti",
     "pastitsio",
     "makaronia_kima",
@@ -50,8 +52,9 @@ const currentHighlights = [
     "lachanontolmades",
     "giouvarlakia",
     "kotosoupa",
+    "giantes",
+    "melitzanes_imam",
     "fasolakia",
-    "briam",
     "revithia",
     "fasolada",
     "fakes"
@@ -91,7 +94,7 @@ const menuCatalog = {
     "moschari_stifado": { category: "meat-cooked", el: "Μοσχαράκι Στιφάδο <br><br> (Παραδοσιακό και μοσχομυριστό)", en: "Beef Stifado <br><br> (Traditional and fragrant)", price: "€13.50" },
     "moschari_kokkinisto": { category: "meat-cooked", el: "Μοσχάρι κοκκινιστό <br><br> (Τρυφερό μοσχαράκι χτένι από Κρέατα Αστακού)", en: "Beef in Red Sauce <br><br> (Tender beef shank from Astakou Meats)", price: "€12.00" },
     "moschari_ragout": { category: "meat-cooked", el: "Μοσχάρι ραγού <br><br> (Τρυφερό μοσχαράκι κοκκινιστό με πατάτες ραγού)", en: "Beef Ragout <br><br> (Tender beef in red sauce with potato ragout)", price: "€10.50" },
-    "moschari_giouvesti": { category: "meat-cooked", el: "Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα)", en: "Beef Giouvetsi <br><br> (Traditional beef giouvetsi with grated myzithra)", price: "€12.50" },
+    "moschari_giouvesti": { category: "meat-cooked", el: "Μοσχάρι Γιουβέτσι <br><br> (Παραδοσιακό μοσχαράκι γιουβέτσι με τριμμένη μυζήθρα)", en: "Beef Giouvetsi <br><br> (Traditional beef giouvetsi with grated myzithra)", price: "€12.00" },
     "moschari_lemonato": { category: "meat-cooked", el: "Μοσχαράκι λεμονάτο <br><br> (Τρυφερό μοσχάρι χτένι λεμονάτο)", en: "Lemony Beef Stew <br><br> (Tender lemony beef shank)", price: "€12.00" },
     "rolo_moscharisio": { category: "meat-cooked", el: "Ρολό μοσχαρίσιου κιμά <br><br> (Ρολό 100% μοσχαρίσιου κιμά γεμιστό με φέτα ΠΟΠ)", en: "Beef Roll <br><br> (100% beef roll stuffed with PDO goat feta)", price: "€11.00" },
     "rolo_kotopoulo": { category: "meat-cooked", el: "Ρολό κοτόπουλο γεμιστό <br><br> (Με μπέικον, γραβιέρα, πιπεριές και πατάτες φούρνου)", en: "Stuffed Chicken Roll <br><br> (With bacon, graviera, peppers and oven-baked potatoes)", price: "€10.00" },
@@ -181,6 +184,7 @@ const menuCatalog = {
     "sardeles_fileto_plaki": { category: "seafood", el: "Σαρδέλες Φιλέτο Πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Sardines Fillet Plaki <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€9.00" },
     "gavros_plaki": { category: "seafood", el: "Γαύρος φρέσκος πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Fresh Baked Anchovies <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€9.00" },
     "ksifias_lemonatos": { category: "seafood", el: "Ξιφίας λεμονάτος <br><br> (Τρυφερός ξιφίας μαγειρεμένος με λεμόνι, ελαιόλαδο και αρωματικά, προσφέροντας μια δροσερή και ισορροπημένη γεύση)", en: "Swordfish in Lemon Sauce <br><br> (Tender swordfish cooked with lemon, olive oil, and aromatic herbs, offering a fresh and well-balanced flavor)", price: "€15.50" },
+    "ksifias_fournou_patates": { category: "seafood", el: "Ξιφίας στο φούρνο με πατάτες <br><br> (Τρυφερός ξιφίας ψημένος στο φούρνο με πατάτες, ελαιόλαδο και μυρωδικά)", en: "Oven-baked swordfish with potatoes <br><br> (Tender swordfish baked in the oven with potatoes, olive oil and herbs)", price: "€13.50" },
     "gavros_lemonatos": { category: "seafood", el: "Γαύρος φρέσκος λεμονάτος <br><br> (Με φρέσκο λεμόνι, ελαιόλαδο και μυρωδικά!)", en: "Fresh Anchovies with Lemon <br><br> (With fresh lemon, olive oil, and herbs)", price: "€9.00" },
     "perka_plaki": { category: "seafood", el: "Πέρκα πλακί <br><br> (Με φρέσκια ντομάτα και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Baked Perch <br><br> (With fresh tomato and herbs, baked in a clay pot for extra deliciousness)", price: "€10.00" },
     "perka_lemonati": { category: "seafood", el: "Πέρκα Λεμονάτη <br><br> (Με φρέσκο λεμόνι και μυρωδικά, στη γάστρα για έξτρα νοστιμιά!)", en: "Lemon Perch <br><br> (With fresh lemon and herbs, baked in a clay pot for extra deliciousness)", price: "€12.50" },
@@ -439,7 +443,8 @@ const dishPagesNoPhoto = [
 // key -> target key (the target must have a dishImageMap entry or be in dishPagesNoPhoto).
 // The generator writes no page for alias keys.
 const dishPageAlias = {
-    "kokoras_hilopites": "kokoras_krasatos"   // Κόκορας με χωριάτικες χυλοπίτες -> κόκορας κρασάτος photo/page (2026-11-04)
+    "kokoras_hilopites": "kokoras_krasatos",   // Κόκορας με χωριάτικες χυλοπίτες -> κόκορας κρασάτος photo/page (2026-11-04)
+    "ksifias_fournou_patates": "ksifias_lemonatos"   // Ξιφίας στο φούρνο με πατάτες -> ξιφίας λεμονάτος photo/page (2026-11-27)
 };
 
 // ==================== DISH PAGES FOR THE FIXED MENU TABLES ====================
@@ -1009,6 +1014,11 @@ const highlightsCatalog = {
         icons: ["dish/fish.png", "dish/tomato.png"],
         el: "Ξιφίας <br> λεμονάτος",
         en: "Swordfish   <br> in Lemon <br> Sauce"
+    },
+    "ksifias_fournou_patates": {
+        icons: ["dish/fish.png", "dish/oven.png"],
+        el: "Ξιφίας <br> στο φούρνο <br> με πατάτες",
+        en: "Oven-baked <br> Swordfish <br> with Potatoes"
     },
     "perka_lemonati": {
         icons: ["dish/fish.png", "dish/lemon.png"],
